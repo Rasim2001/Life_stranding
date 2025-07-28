@@ -1,22 +1,32 @@
+using Infastructure.Services.Input;
+using Infastructure.StaticData.Spider;
+using Infastructure.StaticData.StaticDataService;
 using UnityEngine;
+using Zenject;
 
 namespace CameraFollow
 {
     public class CameraFollower : MonoBehaviour
     {
-        [SerializeField] private Transform _target;
-        [SerializeField] private float _smoothTime = 0.3f;
-        [SerializeField] private float _rotationSpeed = 5f;
-        [SerializeField] private float _mouseSpeed = 5f;
-        [SerializeField] private float _scrollSensitivity = 5f;
+        private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
 
-        private Vector3 _velocity;
-
+        private Transform _target;
         private bool _isMouseRotating;
         private float _currentYRotation;
         private float _mouseSensitivity;
 
+        private Vector3 _velocity;
         private Vector3 _offsetMovePosition;
+        private IInputService _inputService;
+        private IStaticDataService _staticDataService;
+
+
+        [Inject]
+        public void Construct(IInputService inputService, IStaticDataService staticDataService)
+        {
+            _staticDataService = staticDataService;
+            _inputService = inputService;
+        }
 
         public void SetTarget(Transform spiderTransform) =>
             _target = spiderTransform;
@@ -43,11 +53,11 @@ namespace CameraFollow
 
         private void HandleScrollWheel()
         {
-            float scrollInput = Input.GetAxis("Mouse ScrollWheel");
+            float scrollInput = _inputService.ScrollWheelAxis;
 
             if (scrollInput != 0f)
             {
-                _mouseSensitivity -= scrollInput * _scrollSensitivity;
+                _mouseSensitivity -= scrollInput * SpiderStaticData.ScrollSensitivity;
                 _mouseSensitivity = Mathf.Clamp(_mouseSensitivity, 0, 5f);
             }
 
@@ -56,16 +66,16 @@ namespace CameraFollow
 
         private void HandleMouse()
         {
-            if (Input.GetMouseButtonDown(1))
+            if (_inputService.RightMousePressed)
                 _isMouseRotating = true;
 
-            if (Input.GetMouseButtonUp(1))
+            if (_inputService.RightMouseUp)
                 _isMouseRotating = false;
 
             if (_isMouseRotating)
             {
-                float mouseX = Input.GetAxis("Mouse X");
-                _currentYRotation += mouseX * _mouseSpeed * Time.deltaTime;
+                float mouseX = _inputService.MouseXAxis;
+                _currentYRotation += mouseX * SpiderStaticData.MouseSpeed * Time.deltaTime;
 
                 transform.rotation = Quaternion.Euler(0, _currentYRotation, 0);
             }
@@ -79,7 +89,7 @@ namespace CameraFollow
                 transform.position,
                 targetPosition,
                 ref _velocity,
-                _smoothTime
+                SpiderStaticData.SmoothTime
             );
         }
 
@@ -91,7 +101,7 @@ namespace CameraFollow
             transform.rotation = Quaternion.Lerp(
                 transform.rotation,
                 targetRotation,
-                Time.fixedDeltaTime * _rotationSpeed
+                Time.fixedDeltaTime * SpiderStaticData.RotationSpeed
             );
         }
     }

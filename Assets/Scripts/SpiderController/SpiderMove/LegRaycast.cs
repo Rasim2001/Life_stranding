@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace _2
+namespace SpiderController.SpiderMove
 {
     public class LegRaycast : MonoBehaviour
     {

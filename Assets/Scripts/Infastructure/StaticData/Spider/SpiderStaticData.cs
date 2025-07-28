@@ -19,5 +19,11 @@ namespace Infastructure.StaticData.Spider
         public float MouseSensitivity = 2f;
         public float MaxAngle = 45f;
         public float RotationSpeed;
+
+        [Header("MouseLookZoom")]
+        public float SmoothTime = 0.3f;
+        public float MouseRotationSpeed = 6f;
+        public float MouseSpeed = 400f;
+        public float ScrollSensitivity = 15f;
     }
 }

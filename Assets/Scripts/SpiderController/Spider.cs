@@ -1,6 +1,7 @@
 using _2;
 using Infastructure.Services.Input;
 using Infastructure.StaticData.StaticDataService;
+using SpiderController.SpiderMove;
 using SpiderController.StateMachine;
 using UnityEngine;
 using Zenject;
@@ -35,8 +36,6 @@ namespace SpiderController
         public void Initialize()
         {
             _spiderPlane = new SpiderPlane(_planeIndicator, _rotationPlaneTransform, _inputService, _staticDataService);
-            _spiderPlane.Initialize();
-
             _stateMachine = new SpiderStateMachine(this, _inputService, _staticDataService, _legs);
         }
 

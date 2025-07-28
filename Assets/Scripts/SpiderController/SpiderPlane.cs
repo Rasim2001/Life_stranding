@@ -12,8 +12,7 @@ namespace SpiderController
         private readonly IStaticDataService _staticDataService;
         private readonly PlaneIndicator _planeIndicator;
         private readonly Transform _rotationPlaneTransform;
-
-        private SpiderStaticData _spiderStaticData;
+        private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
 
         private Vector2 _mouseInput;
         private Vector2 _initialMousePosition;
@@ -32,12 +31,10 @@ namespace SpiderController
             _rotationPlaneTransform = rotationPlaneTransform;
         }
 
-        public void Initialize() =>
-            _spiderStaticData = _staticDataService.SpiderStaticData;
 
         public void Update()
         {
-            if (_spiderStaticData == null)
+            if (SpiderStaticData == null)
                 return;
 
             if (_inputService.LeftMousePressed)
@@ -57,8 +54,13 @@ namespace SpiderController
                 HandleMousePosition();
         }
 
-        public void FixedUpdate() =>
+        public void FixedUpdate()
+        {
+            if (SpiderStaticData == null)
+                return;
+
             ApplyRotation();
+        }
 
         private void HandleMousePosition()
         {
@@ -73,25 +75,22 @@ namespace SpiderController
             _mouseInput.x = -_mouseInput.x;
             _mouseInput.y = -_mouseInput.y;
 
-            _mouseInput *= _spiderStaticData.MouseSensitivity;
+            _mouseInput *= SpiderStaticData.MouseSensitivity;
         }
 
         private void ApplyRotation()
         {
-            if (_spiderStaticData == null)
-                return;
-
-            float targetAngleX = Mathf.Clamp(-_mouseInput.y * _spiderStaticData.MaxAngle, -_spiderStaticData.MaxAngle,
-                _spiderStaticData.MaxAngle);
-            float targetAngleZ = Mathf.Clamp(_mouseInput.x * _spiderStaticData.MaxAngle, -_spiderStaticData.MaxAngle,
-                _spiderStaticData.MaxAngle);
+            float targetAngleX = Mathf.Clamp(-_mouseInput.y * SpiderStaticData.MaxAngle, -SpiderStaticData.MaxAngle,
+                SpiderStaticData.MaxAngle);
+            float targetAngleZ = Mathf.Clamp(_mouseInput.x * SpiderStaticData.MaxAngle, -SpiderStaticData.MaxAngle,
+                SpiderStaticData.MaxAngle);
 
             Quaternion targetLocalRotation = Quaternion.Euler(targetAngleX, 0f, targetAngleZ);
 
             _rotationPlaneTransform.localRotation = Quaternion.Slerp(
                 _rotationPlaneTransform.localRotation,
                 targetLocalRotation,
-                Time.fixedDeltaTime * _spiderStaticData.RotationSpeed);
+                Time.fixedDeltaTime * SpiderStaticData.RotationSpeed);
         }
     }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace _2
+namespace SpiderController.SpiderMove
 {
     [Serializable]
     public struct LegDataStruct

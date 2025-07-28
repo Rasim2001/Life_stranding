@@ -1,6 +1,7 @@
 using _2;
 using Infastructure.Services.Input;
 using Infastructure.StaticData.StaticDataService;
+using SpiderController.SpiderMove;
 
 namespace SpiderController.StateMachine.States
 {
@@ -18,17 +19,14 @@ namespace SpiderController.StateMachine.States
 
             Data.Speed = SpiderStaticData.FastSpeed;
 
-            float multiplier = SpiderStaticData.FastSpeed / SpiderStaticData.Speed;
-            foreach (LegDataStruct legData in Legs)
-                legData.Leg.SetAcceleration(multiplier);
+            ApplyFastRunning();
         }
 
         public override void Exit()
         {
             base.Exit();
 
-            foreach (LegDataStruct legData in Legs)
-                legData.Leg.SetDefaultSpeed();
+            ApplyDefaultSpeed();
         }
 
         public override void Update()
@@ -42,6 +40,19 @@ namespace SpiderController.StateMachine.States
                 StateMachine.SwitchState<IdlingState>();
             else
                 StateMachine.SwitchState<RunningState>();
+        }
+
+        private void ApplyFastRunning()
+        {
+            float multiplier = SpiderStaticData.FastSpeed / SpiderStaticData.Speed;
+            foreach (LegDataStruct legData in Legs)
+                legData.Leg.SetAcceleration(multiplier);
+        }
+
+        private void ApplyDefaultSpeed()
+        {
+            foreach (LegDataStruct legData in Legs)
+                legData.Leg.SetDefaultSpeed();
         }
     }
 }

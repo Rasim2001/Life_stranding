@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace _2
+namespace SpiderController.SpiderMove
 {
     public class LegTarget : MonoBehaviour
     {

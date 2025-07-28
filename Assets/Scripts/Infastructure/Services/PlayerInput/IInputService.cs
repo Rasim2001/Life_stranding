@@ -9,5 +9,9 @@ namespace Infastructure.Services.Input
         bool IsLeftShiftUp { get; }
         bool LeftMousePressed { get; }
         bool LeftMouseUp { get; }
+        bool RightMousePressed { get; }
+        bool RightMouseUp { get; }
+        float ScrollWheelAxis { get; }
+        float MouseXAxis { get; }
     }
 }

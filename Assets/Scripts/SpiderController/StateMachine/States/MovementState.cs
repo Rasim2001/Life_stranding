@@ -2,6 +2,7 @@ using _2;
 using Infastructure.Services.Input;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
+using SpiderController.SpiderMove;
 using UnityEngine;
 
 namespace SpiderController.StateMachine.States
@@ -51,10 +52,8 @@ namespace SpiderController.StateMachine.States
             Data.Velocity = Data.Input * Data.Speed;
         }
 
-        public virtual void Update()
-        {
+        public virtual void Update() =>
             TryMoveLegs();
-        }
 
         public void FixedUpdate()
         {

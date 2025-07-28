@@ -12,7 +12,12 @@ namespace Infastructure.Services.Input
 
         public bool LeftMousePressed => UnityEngine.Input.GetMouseButtonDown(0);
         public bool LeftMouseUp => UnityEngine.Input.GetMouseButtonUp(0);
-        
+
+        public bool RightMousePressed => UnityEngine.Input.GetMouseButtonDown(1);
+        public bool RightMouseUp => UnityEngine.Input.GetMouseButtonUp(1);
+        public float ScrollWheelAxis => UnityEngine.Input.GetAxis("Mouse ScrollWheel");
+        public float MouseXAxis => UnityEngine.Input.GetAxis("Mouse X");
+
         public bool IsLeftShiftPressed => UnityEngine.Input.GetKeyDown(KeyCode.LeftShift);
         public bool IsLeftShiftUp => UnityEngine.Input.GetKeyUp(KeyCode.LeftShift);
     }
