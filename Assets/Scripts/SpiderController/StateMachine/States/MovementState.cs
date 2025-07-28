@@ -53,8 +53,10 @@ namespace SpiderController.StateMachine.States
             Data.Velocity = Data.Input * Data.Speed;
         }
 
-        public virtual void Update() =>
+        public virtual void Update()
+        {
             TryMoveLegs();
+        }
 
         public void FixedUpdate()
         {
@@ -81,8 +83,6 @@ namespace SpiderController.StateMachine.States
         {
             Vector3 forwardMovement = Spider.transform.forward * (Data.Velocity.z * Time.fixedDeltaTime);
             Vector3 verticalMovement = new Vector3(0, Data.YVelocity, 0) * Time.fixedDeltaTime;
-
-            //Debug.Log($"{Data.Velocity.y} / {Data.Speed}");
 
             Vector3 newPosition = Spider.Rigidbody.position + forwardMovement + verticalMovement;
 
@@ -159,6 +159,9 @@ namespace SpiderController.StateMachine.States
             int count = 0;
             for (int i = 0; i < Legs.Length; i++)
             {
+                if (!Legs[i].Raycast.IsGrounded)
+                    continue;
+
                 int i1 = (i + 1) % Legs.Length;
                 int i2 = (i + 2) % Legs.Length;
                 int i3 = (i + 3) % Legs.Length;
@@ -167,10 +170,10 @@ namespace SpiderController.StateMachine.States
                 Vector3 v2 = legPositions[i3] - legPositions[i1];
                 Vector3 normal = Vector3.Cross(v1, v2).normalized;
 
-                if (normal.y < 0)
-                    normal = -normal;
+                /*if (normal.y < 0)
+                    normal = -normal;*/
 
-                normalSum += normal;
+                normalSum -= normal;
                 count++;
             }
 
@@ -180,12 +183,7 @@ namespace SpiderController.StateMachine.States
             Quaternion targetRotation =
                 Quaternion.FromToRotation(Spider.transform.up, averageNormal) * Rigidbody.rotation;
 
-            Vector3 euler = targetRotation.eulerAngles;
-            euler.y = Rigidbody.rotation.eulerAngles.y;
-
-            Quaternion noYawRotation = Quaternion.Euler(euler);
-
-            Quaternion smoothedRotation = Quaternion.Slerp(Rigidbody.rotation, noYawRotation,
+            Quaternion smoothedRotation = Quaternion.Slerp(Rigidbody.rotation, targetRotation,
                 Time.fixedDeltaTime * SpiderStaticData.LerpSpeedFromGround);
 
             Rigidbody.MoveRotation(smoothedRotation);

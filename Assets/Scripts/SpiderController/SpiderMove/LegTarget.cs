@@ -16,10 +16,10 @@ namespace SpiderController.SpiderMove
         [SerializeField] private Vector3 _position;
         private float _stepSpeedDefault;
 
+
         private void Awake()
         {
             _movement = new Movement();
-
             _stepSpeedDefault = _stepSpeed;
         }
 
@@ -28,7 +28,7 @@ namespace SpiderController.SpiderMove
             if (_movement.IsMoving)
             {
                 _movement.Progress = Mathf.Clamp01(_movement.Progress + Time.deltaTime * _stepSpeed);
-                _position = _movement.Evaluate(Vector3.up, _stepCurve);
+                _position = _movement.Evaluate(transform.up, _stepCurve);
 
                 if (_movement.Progress >= 1f)
                     _movement.IsMoving = false;
