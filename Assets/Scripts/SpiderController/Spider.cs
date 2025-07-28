@@ -14,7 +14,9 @@ namespace SpiderController
         [SerializeField] private PlaneIndicator _planeIndicator;
         [SerializeField] private Transform _rotationPlaneTransform;
         [SerializeField] private LegDataStruct[] _legs;
+        [SerializeField] private GroundChecker _groundChecker;
         public Rigidbody Rigidbody => _rigidbody;
+        public GroundChecker GroundChecker => _groundChecker;
 
         private Rigidbody _rigidbody;
         private SpiderStateMachine _stateMachine;

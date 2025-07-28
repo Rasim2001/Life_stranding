@@ -1,12 +1,10 @@
-using _2;
 using Infastructure.Services.Input;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
-using UnityEngine;
 
-namespace SpiderController.StateMachine.States
+namespace SpiderController.StateMachine.States.Ground
 {
-    public class RunningState : MovementState
+    public class RunningState : GroundedState
     {
         public RunningState(
             ISpiderStateMachine stateMachine,

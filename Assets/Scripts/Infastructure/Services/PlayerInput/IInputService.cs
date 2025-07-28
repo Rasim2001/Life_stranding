@@ -13,5 +13,6 @@ namespace Infastructure.Services.Input
         bool RightMouseUp { get; }
         float ScrollWheelAxis { get; }
         float MouseXAxis { get; }
+        bool JumpPressed { get; }
     }
 }

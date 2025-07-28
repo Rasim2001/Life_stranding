@@ -101,7 +101,7 @@ namespace CameraFollow
             transform.rotation = Quaternion.Lerp(
                 transform.rotation,
                 targetRotation,
-                Time.fixedDeltaTime * SpiderStaticData.RotationSpeed
+                Time.fixedDeltaTime * SpiderStaticData.MouseRotationSpeed
             );
         }
     }

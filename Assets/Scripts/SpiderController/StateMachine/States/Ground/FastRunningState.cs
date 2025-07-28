@@ -1,11 +1,10 @@
-using _2;
 using Infastructure.Services.Input;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
 
-namespace SpiderController.StateMachine.States
+namespace SpiderController.StateMachine.States.Ground
 {
-    public class FastRunningState : MovementState
+    public class FastRunningState : GroundedState
     {
         public FastRunningState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,

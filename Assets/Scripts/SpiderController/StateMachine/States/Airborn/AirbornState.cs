@@ -1,27 +1,28 @@
-using _2;
 using Infastructure.Services.Input;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
 using UnityEngine;
 
-namespace SpiderController.StateMachine.States
+namespace SpiderController.StateMachine.States.Airborn
 {
-    public class IdlingState : MovementState
+    public class AirbornState : MovementState
     {
-        public IdlingState(ISpiderStateMachine stateMachine, IInputService inputService,
+        private readonly GroundChecker _groundChecker;
+
+        protected AirbornState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
             LegDataStruct[] legs) : base(stateMachine, inputService, staticDataService, spider, stateMachineData, legs)
         {
+            _groundChecker = spider.GroundChecker;
         }
 
         public override void Enter()
         {
             base.Enter();
 
-            Rigidbody.linearVelocity = Vector3.zero;
-            Rigidbody.angularVelocity = Vector3.zero;
-
-            Data.Speed = 0;
+            _groundChecker.SetAirbornLegState();
+            
+            Data.Speed = SpiderStaticData.JumpSpeed;
         }
 
 
@@ -29,10 +30,7 @@ namespace SpiderController.StateMachine.States
         {
             base.Update();
 
-            if (IsInputZero())
-                return;
-
-            StateMachine.SwitchState<RunningState>();
+            Data.YVelocity -= SpiderStaticData.BaseGravity * Time.deltaTime;
         }
     }
 }

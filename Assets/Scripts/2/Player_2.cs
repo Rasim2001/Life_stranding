@@ -60,7 +60,7 @@ namespace _2
                     _rigidbody.angularVelocity = Vector3.zero;
 
                     foreach (LegDataStruct leg in _legs)
-                        leg.Raycast.SetDefaultPosition();
+                        leg.Raycast.SetAirbornState();
                 }
 
                 return;
@@ -90,7 +90,7 @@ namespace _2
             _rigidbody.useGravity = true;
 
             foreach (LegDataStruct leg in _legs)
-                leg.Raycast.SetJumpPosition();
+                leg.Raycast.SetGroundState();
 
             _rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
         }

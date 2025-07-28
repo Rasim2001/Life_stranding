@@ -15,6 +15,7 @@ namespace SpiderController.StateMachine.States
         protected readonly LegDataStruct[] Legs;
         protected Rigidbody Rigidbody => Spider.Rigidbody;
         protected SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
+        protected IInputService InputService => _inputService;
 
         private readonly IStaticDataService _staticDataService;
         private readonly IInputService _inputService;
@@ -60,6 +61,9 @@ namespace SpiderController.StateMachine.States
             MoveBodySpider();
             RotateTowardsMoveDirection();
 
+            if (!Mathf.Approximately(Data.YVelocity, 0))
+                return;
+
             AdjustBodyHeight();
             AdjustBodyOrientation();
         }
@@ -76,7 +80,11 @@ namespace SpiderController.StateMachine.States
         private void MoveBodySpider()
         {
             Vector3 forwardMovement = Spider.transform.forward * (Data.Velocity.z * Time.fixedDeltaTime);
-            Vector3 newPosition = Spider.Rigidbody.position + forwardMovement;
+            Vector3 verticalMovement = new Vector3(0, Data.YVelocity, 0) * Time.fixedDeltaTime;
+
+            //Debug.Log($"{Data.Velocity.y} / {Data.Speed}");
+
+            Vector3 newPosition = Spider.Rigidbody.position + forwardMovement + verticalMovement;
 
             Rigidbody.MovePosition(newPosition);
         }

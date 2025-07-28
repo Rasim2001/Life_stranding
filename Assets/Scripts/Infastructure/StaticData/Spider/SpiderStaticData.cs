@@ -25,5 +25,12 @@ namespace Infastructure.StaticData.Spider
         public float MouseRotationSpeed = 6f;
         public float MouseSpeed = 400f;
         public float ScrollSensitivity = 15f;
+
+        [Header("JumpingState")]
+        public float JumpSpeed;
+        public float MaxHeight;
+        public float TimeToReachMaxHeight;
+        public float StartYVelocity => 2 * MaxHeight / TimeToReachMaxHeight;
+        public float BaseGravity => 2f * MaxHeight / (TimeToReachMaxHeight * TimeToReachMaxHeight);
     }
 }
