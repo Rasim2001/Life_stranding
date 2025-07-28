@@ -17,7 +17,7 @@ namespace Infastructure.States
 
         public void Enter()
         {
-            DOTween.KillAll();
+            Debug.Log("EnterLoadLevelState");
 
             _sceneLoader.Load(AssetsPath.GameScene, OnLoaded);
         }

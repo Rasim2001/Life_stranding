@@ -1,4 +1,5 @@
 ﻿using Infastructure.StaticData.StaticDataService;
+using UnityEngine;
 using Zenject;
 
 namespace Infastructure.States
@@ -21,7 +22,7 @@ namespace Infastructure.States
             _stateMachine.Enter<LoadLevelState>();
         }
 
-        private void InitServices() =>
+        private void InitServices() => 
             _staticDataService.LoadStaticData();
 
         public void Exit()

@@ -2,10 +2,10 @@ using UnityEngine;
 
 namespace _2.RotationPlaneManagement
 {
-    public class RotationPlane : RotationPlaneBase
+    public class RotationPlane : MonoBehaviour
     {
         [SerializeField] private PlaneIndicator _planeIndicator;
-        
+
         [SerializeField] private float _mouseSensitivity = 2f;
         [SerializeField] private float _maxAngle = 45f;
         [SerializeField] private float _rotationSpeed;

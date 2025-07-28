@@ -11,5 +11,11 @@ namespace Infastructure.Factories.GameFactories
 
         public GameFactory(DiContainer diContainer) =>
             _diContainer = diContainer;
+
+        public GameObject CreateSpider() =>
+            _diContainer.InstantiatePrefabResource(AssetsPath.SpiderPath);
+
+        public GameObject CreateCameraSystem() =>
+            _diContainer.InstantiatePrefabResource(AssetsPath.CameraSystemPath);
     }
 }

@@ -1,7 +1,7 @@
 using Infastructure.Factories.GameFactories;
+using Infastructure.Services.Input;
 using Infastructure.Services.Window.GameWindowService;
 using Infastructure.States;
-using UnityEngine;
 using Zenject;
 
 namespace Infastructure.CompositionRoot
@@ -10,7 +10,6 @@ namespace Infastructure.CompositionRoot
     {
         public override void InstallBindings()
         {
-            Debug.Log("Scene Installer");
             BindBuildLevelState();
 
             BindWindowService();
@@ -18,7 +17,12 @@ namespace Infastructure.CompositionRoot
             BindGameFactory();
 
             BindUIFactory();
+
+            BindInputService();
         }
+
+        private void BindInputService() =>
+            Container.BindInterfacesAndSelfTo<InputService>().AsSingle();
 
 
         private void BindBuildLevelState() =>

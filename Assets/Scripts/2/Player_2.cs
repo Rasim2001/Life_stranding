@@ -1,5 +1,4 @@
 using System;
-using _1;
 using UnityEngine;
 
 namespace _2
@@ -9,7 +8,7 @@ namespace _2
     {
         [SerializeField] private LayerMask _layerMask;
 
-        [SerializeField] private LegData_2[] _legs;
+        [SerializeField] private LegDataStruct[] _legs;
         [SerializeField] private float _stepLength = 0.75f;
         [SerializeField] private float _speed = 2;
         [SerializeField] private float _lerpForwardSpeed = 2;
@@ -44,7 +43,7 @@ namespace _2
 
             InputHandle();
             HandleAcceleration();
-
+            
 
             if (_isJumping && _rigidbody.velocity.y <= 0)
             {
@@ -53,15 +52,13 @@ namespace _2
 
                 if (_hit.collider != null)
                 {
-                    Debug.Log("Jumping");
-
                     _isJumping = false;
                     _rigidbody.useGravity = false;
 
                     _rigidbody.linearVelocity = Vector3.zero;
                     _rigidbody.angularVelocity = Vector3.zero;
 
-                    foreach (LegData_2 leg in _legs)
+                    foreach (LegDataStruct leg in _legs)
                         leg.Raycast.SetDefaultPosition();
                 }
 
@@ -71,9 +68,9 @@ namespace _2
             if (_isJumping)
                 return;
 
-            TryMoveLegs();
-            //AdjustBodyHeight();
-            //AdjustBodyOrientation();
+            //TryMoveLegs();
+            AdjustBodyHeight();
+            AdjustBodyOrientation();
         }
 
         private bool HandleJump()
@@ -91,7 +88,7 @@ namespace _2
             _isJumping = true;
             _rigidbody.useGravity = true;
 
-            foreach (LegData_2 leg in _legs)
+            foreach (LegDataStruct leg in _legs)
                 leg.Raycast.SetJumpPosition();
 
             _rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
@@ -105,7 +102,7 @@ namespace _2
             {
                 _speed *= mulyiplayer;
 
-                foreach (LegData_2 legData in _legs)
+                foreach (LegDataStruct legData in _legs)
                     legData.Leg.SetAcceleration(mulyiplayer);
             }
 
@@ -113,7 +110,7 @@ namespace _2
             {
                 _speed = _speedDefault;
 
-                foreach (LegData_2 legData in _legs)
+                foreach (LegDataStruct legData in _legs)
                     legData.Leg.SetDefaultSpeed();
             }
         }
@@ -123,8 +120,8 @@ namespace _2
             if (_isJumping)
                 return;
 
-            MoveBodySpider();
-            RotateTowardsMoveDirection();
+            //MoveBodySpider();
+            //RotateTowardsMoveDirection();
         }
 
 
@@ -136,7 +133,7 @@ namespace _2
         {
             for (int index = 0; index < _legs.Length; index++)
             {
-                ref LegData_2 legData = ref _legs[index];
+                ref LegDataStruct legData = ref _legs[index];
 
                 if (!CanMove(index))
                     continue;
@@ -153,8 +150,8 @@ namespace _2
         private bool CanMove(int legIndex)
         {
             int legsCount = _legs.Length;
-            LegData_2 n1 = _legs[(legIndex + legsCount - 1) % legsCount];
-            LegData_2 n2 = _legs[(legIndex + 1) % legsCount];
+            LegDataStruct n1 = _legs[(legIndex + legsCount - 1) % legsCount];
+            LegDataStruct n2 = _legs[(legIndex + 1) % legsCount];
 
             return !n1.Leg.IsMoving && !n2.Leg.IsMoving;
         }
@@ -254,14 +251,6 @@ namespace _2
 
                 _rigidbody.MoveRotation(newRotation);
             }
-        }
-
-
-        [Serializable]
-        private struct LegData_2
-        {
-            public LegTarget_2 Leg;
-            public LegRaycast Raycast;
         }
     }
 }

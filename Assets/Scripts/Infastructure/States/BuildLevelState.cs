@@ -1,8 +1,11 @@
 using System;
+using CameraFollow;
 using DG.Tweening;
 using Infastructure.Factories.GameFactories;
 using Infastructure.Services.PlayerProgressService;
 using Infastructure.StaticData.StaticDataService;
+using SpiderController;
+using UnityEngine;
 using Zenject;
 
 namespace Infastructure.States
@@ -31,16 +34,29 @@ namespace Infastructure.States
             InitGameWorld();
 
 
-        public void Dispose() =>
-            DOTween.KillAll();
+        public void Dispose()
+        {
+        }
 
 
         private void InitGameWorld()
         {
-            /*InitUIRoot();
-            InitHud();
-            InitTable();
-            InitInput();*/
+            Spider spider = InitSpider();
+            InitCameraSystem(spider);
+        }
+
+        private Spider InitSpider()
+        {
+            Spider spider = _gameFactory.CreateSpider().GetComponent<Spider>();
+            spider.Initialize();
+
+            return spider;
+        }
+
+        private void InitCameraSystem(Spider spider)
+        {
+            CameraSystem cameraSystem = _gameFactory.CreateCameraSystem().GetComponent<CameraSystem>();
+            cameraSystem.Initialize(spider.transform);
         }
     }
 }
