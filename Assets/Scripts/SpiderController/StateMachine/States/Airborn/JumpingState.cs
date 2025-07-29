@@ -26,7 +26,7 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Update();
 
-            if (Data.YVelocity < 0 || _spiderGroundChecker.IsTouches)
+            if (Data.YVelocity < 0 || _spiderGroundChecker.IsTouchesWithLegs)
                 StateMachine.SwitchState<FallingState>();
         }
     }

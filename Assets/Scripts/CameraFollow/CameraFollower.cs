@@ -12,7 +12,10 @@ namespace CameraFollow
 
         private Transform _target;
         private bool _isMouseRotating;
+
         private float _currentYRotation;
+        private float _currentXRotation;
+
         private float _mouseSensitivity;
 
         private Vector3 _velocity;
@@ -58,7 +61,7 @@ namespace CameraFollow
             if (scrollInput != 0f)
             {
                 _mouseSensitivity -= scrollInput * SpiderStaticData.ScrollSensitivity;
-                _mouseSensitivity = Mathf.Clamp(_mouseSensitivity, 0, 5f);
+                _mouseSensitivity = Mathf.Clamp(_mouseSensitivity, -2, 5f);
             }
 
             _offsetMovePosition = new Vector3(0, _mouseSensitivity, 0);
@@ -75,9 +78,12 @@ namespace CameraFollow
             if (_isMouseRotating)
             {
                 float mouseX = _inputService.MouseXAxis;
-                _currentYRotation += mouseX * SpiderStaticData.MouseSpeed * Time.deltaTime;
+                float mouseY = _inputService.MouseYAxis;
 
-                transform.rotation = Quaternion.Euler(0, _currentYRotation, 0);
+                _currentYRotation += mouseX * SpiderStaticData.MouseSpeed * Time.deltaTime;
+                //_currentXRotation += -mouseY * SpiderStaticData.MouseSpeed * Time.deltaTime;
+
+                transform.rotation = Quaternion.Euler(_currentXRotation, _currentYRotation, 0);
             }
         }
 
@@ -96,8 +102,9 @@ namespace CameraFollow
         private void RotateToTarget()
         {
             _currentYRotation = transform.eulerAngles.y;
+            //_currentXRotation = transform.eulerAngles.x;
 
-            Quaternion targetRotation = Quaternion.Euler(0, _target.eulerAngles.y, 0f);
+            Quaternion targetRotation = Quaternion.Euler(_currentXRotation, _target.eulerAngles.y, 0f);
             transform.rotation = Quaternion.Lerp(
                 transform.rotation,
                 targetRotation,

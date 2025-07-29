@@ -2,6 +2,7 @@ using Infastructure.Services.Input;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
+using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Airborn
 {
@@ -20,8 +21,19 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Update();
 
-            if (_spiderGroundChecker.IsTouches)
+            if (_spiderGroundChecker.IsTouchesWithLegs)
             {
+                Data.YVelocity = 0;
+
+                if (IsInputZero())
+                    StateMachine.SwitchState<IdlingState>();
+                else
+                    StateMachine.SwitchState<RunningState>();
+            }
+            else if (_spiderGroundChecker.IsTouchingGround)
+            {
+                Spider.transform.localEulerAngles = Vector3.zero;
+
                 Data.YVelocity = 0;
 
                 if (IsInputZero())

@@ -21,7 +21,7 @@ namespace SpiderController.StateMachine.States.Airborn
             base.Enter();
 
             _groundChecker.SetAirbornLegState();
-            
+
             Data.Speed = SpiderStaticData.JumpSpeed;
         }
 

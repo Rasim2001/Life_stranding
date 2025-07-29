@@ -29,15 +29,11 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Update();
 
-            if (_groundChecker.IsTouches == false)
+            if (_groundChecker.IsTouchesWithLegs == false)
                 StateMachine.SwitchState<FallingState>();
 
             if (InputService.JumpPressed)
-            {
-                Debug.Log("JumpPressed");
-
                 StateMachine.SwitchState<JumpingState>();
-            }
         }
     }
 }

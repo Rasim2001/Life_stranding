@@ -17,6 +17,7 @@ namespace Infastructure.Services.Input
         public bool RightMouseUp => UnityEngine.Input.GetMouseButtonUp(1);
         public float ScrollWheelAxis => UnityEngine.Input.GetAxis("Mouse ScrollWheel");
         public float MouseXAxis => UnityEngine.Input.GetAxis("Mouse X");
+        public float MouseYAxis => UnityEngine.Input.GetAxis("Mouse Y");
 
         public bool IsLeftShiftPressed => UnityEngine.Input.GetKeyDown(KeyCode.LeftShift);
         public bool IsLeftShiftUp => UnityEngine.Input.GetKeyUp(KeyCode.LeftShift);

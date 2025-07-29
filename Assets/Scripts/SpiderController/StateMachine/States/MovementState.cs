@@ -14,8 +14,8 @@ namespace SpiderController.StateMachine.States
         protected readonly Spider Spider;
         protected readonly LegDataStruct[] Legs;
         protected Rigidbody Rigidbody => Spider.Rigidbody;
-        protected SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
         protected IInputService InputService => _inputService;
+        protected SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
 
         private readonly IStaticDataService _staticDataService;
         private readonly IInputService _inputService;
@@ -53,10 +53,8 @@ namespace SpiderController.StateMachine.States
             Data.Velocity = Data.Input * Data.Speed;
         }
 
-        public virtual void Update()
-        {
+        public virtual void Update() =>
             TryMoveLegs();
-        }
 
         public void FixedUpdate()
         {
@@ -134,10 +132,21 @@ namespace SpiderController.StateMachine.States
         {
             Vector3 avgLegPos = Vector3.zero;
 
-            for (int i = 0; i < Legs.Length; i++)
-                avgLegPos += Legs[i].Raycast.Position;
+            int count = 0;
 
-            avgLegPos /= Legs.Length;
+            for (int i = 0; i < Legs.Length; i++)
+            {
+                if (Legs[i].Raycast.IsGrounded)
+                {
+                    avgLegPos += Legs[i].Raycast.Position;
+                    count++;
+                }
+            }
+
+            if (count == 0)
+                return;
+
+            avgLegPos /= count;
 
             Vector3 localAvgLegPos = Spider.transform.InverseTransformPoint(avgLegPos);
             float targetY = localAvgLegPos.y + SpiderStaticData.DistanceFromGround;

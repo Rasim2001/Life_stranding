@@ -6,8 +6,10 @@ namespace SpiderController
 {
     public class GroundChecker : MonoBehaviour
     {
+        [SerializeField] private LayerMask _groundLayer;
         [SerializeField] private LegRaycast[] _legRaycasts;
-        public bool IsTouches { get; private set; }
+        public bool IsTouchesWithLegs { get; private set; }
+        public bool IsTouchingGround { get; private set; }
 
         public void SetGroundLegState()
         {
@@ -21,7 +23,11 @@ namespace SpiderController
                 legRaycast.SetAirbornState();
         }
 
-        private void Update() =>
-            IsTouches = _legRaycasts.Any(x => x.IsGrounded);
+        private void Update()
+        {
+            IsTouchesWithLegs = _legRaycasts.All(x => x.IsGrounded);
+
+            IsTouchingGround = Physics.CheckSphere(transform.position, 1, _groundLayer);
+        }
     }
 }
