@@ -6,7 +6,9 @@ namespace CameraFollow
     {
         [SerializeField] private CameraFollower _cameraFollower;
 
-        public void Initialize(Transform spiderTransform) =>
+        public void Initialize(Transform spiderTransform)
+        {
             _cameraFollower.SetTarget(spiderTransform);
+        }
     }
 }

@@ -25,9 +25,9 @@ namespace SpiderController
 
         private void Update()
         {
-            IsTouchesWithLegs = _legRaycasts.All(x => x.IsGrounded);
+            IsTouchesWithLegs = _legRaycasts.Any(x => x.IsGrounded);
 
-            IsTouchingGround = Physics.CheckSphere(transform.position, 1, _groundLayer);
+            IsTouchingGround = Physics.CheckSphere(transform.position, 0.5f, _groundLayer);
         }
     }
 }

@@ -1,6 +1,7 @@
 using Infastructure.Services.Input;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
+using Unity.Cinemachine;
 using UnityEngine;
 using Zenject;
 
@@ -14,7 +15,6 @@ namespace CameraFollow
         private bool _isMouseRotating;
 
         private float _currentYRotation;
-        private float _currentXRotation;
 
         private float _mouseSensitivity;
 
@@ -22,6 +22,8 @@ namespace CameraFollow
         private Vector3 _offsetMovePosition;
         private IInputService _inputService;
         private IStaticDataService _staticDataService;
+
+        private CinemachineBrain _cinemachineBrain;
 
 
         [Inject]
@@ -31,8 +33,13 @@ namespace CameraFollow
             _inputService = inputService;
         }
 
-        public void SetTarget(Transform spiderTransform) =>
+        public void SetTarget(Transform spiderTransform)
+        {
             _target = spiderTransform;
+
+            /*if (_cinemachineBrain != null)
+                _cinemachineBrain.WorldUpOverride = transform;*/
+        }
 
         private void LateUpdate()
         {
@@ -78,12 +85,10 @@ namespace CameraFollow
             if (_isMouseRotating)
             {
                 float mouseX = _inputService.MouseXAxis;
-                float mouseY = _inputService.MouseYAxis;
 
                 _currentYRotation += mouseX * SpiderStaticData.MouseSpeed * Time.deltaTime;
-                //_currentXRotation += -mouseY * SpiderStaticData.MouseSpeed * Time.deltaTime;
 
-                transform.rotation = Quaternion.Euler(_currentXRotation, _currentYRotation, 0);
+                transform.rotation = Quaternion.Euler(0, _currentYRotation, 0);
             }
         }
 
@@ -102,9 +107,10 @@ namespace CameraFollow
         private void RotateToTarget()
         {
             _currentYRotation = transform.eulerAngles.y;
-            //_currentXRotation = transform.eulerAngles.x;
 
-            Quaternion targetRotation = Quaternion.Euler(_currentXRotation, _target.eulerAngles.y, 0f);
+            Quaternion targetRotation =
+                Quaternion.Euler(0, _target.eulerAngles.y, 0);
+
             transform.rotation = Quaternion.Lerp(
                 transform.rotation,
                 targetRotation,

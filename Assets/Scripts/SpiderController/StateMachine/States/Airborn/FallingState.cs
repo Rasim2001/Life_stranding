@@ -21,19 +21,11 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Update();
 
-            if (_spiderGroundChecker.IsTouchesWithLegs)
-            {
-                Data.YVelocity = 0;
-
-                if (IsInputZero())
-                    StateMachine.SwitchState<IdlingState>();
-                else
-                    StateMachine.SwitchState<RunningState>();
-            }
-            else if (_spiderGroundChecker.IsTouchingGround)
-            {
+            if (_spiderGroundChecker.IsTouchingGround)
                 Spider.transform.localEulerAngles = Vector3.zero;
 
+            if (_spiderGroundChecker.IsTouchesWithLegs || _spiderGroundChecker.IsTouchingGround)
+            {
                 Data.YVelocity = 0;
 
                 if (IsInputZero())

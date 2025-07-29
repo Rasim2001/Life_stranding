@@ -33,9 +33,9 @@ namespace SpiderController.SpiderMove
 
             if (!hitFound)
             {
-                for (int i = 0; i <= _offsetRayCount - 1; i++)
+                for (int x = 0; x <= _offsetRayCount - 1; x++)
                 {
-                    float angleOffset = _offsetDistance * i;
+                    float angleOffset = _offsetDistance * x;
 
                     Vector3 rightDirection = Quaternion.AngleAxis(angleOffset, transform.right) * baseDirection;
                     Ray rightRay = new Ray(origin, rightDirection);
@@ -49,7 +49,7 @@ namespace SpiderController.SpiderMove
 
                     Debug.DrawRay(rightRay.origin, rightRay.direction * _rayDistance, Color.yellow);
 
-                    Vector3 leftDirection = Quaternion.AngleAxis(-angleOffset, transform.forward) * baseDirection;
+                    Vector3 leftDirection = Quaternion.AngleAxis(-angleOffset, transform.right) * baseDirection;
                     Ray leftRay = new Ray(origin, leftDirection);
 
                     if (Physics.Raycast(leftRay, out _hit, _rayDistance, _layerMask))
@@ -60,6 +60,38 @@ namespace SpiderController.SpiderMove
                     }
 
                     Debug.DrawRay(leftRay.origin, leftRay.direction * _rayDistance, Color.yellow);
+                }
+
+                if (!hitFound)
+                {
+                    for (int z = 0; z <= _offsetRayCount - 1; z++)
+                    {
+                        float angleOffset = _offsetDistance * z;
+
+                        Vector3 rightDirection = Quaternion.AngleAxis(angleOffset, transform.forward) * baseDirection;
+                        Ray rightRay = new Ray(origin, rightDirection);
+
+                        if (Physics.Raycast(rightRay, out _hit, _rayDistance, _layerMask))
+                        {
+                            hitFound = true;
+                            Debug.DrawRay(rightRay.origin, rightRay.direction * _rayDistance, Color.green);
+                            break;
+                        }
+
+                        Debug.DrawRay(rightRay.origin, rightRay.direction * _rayDistance, Color.yellow);
+
+                        Vector3 leftDirection = Quaternion.AngleAxis(-angleOffset, transform.forward) * baseDirection;
+                        Ray leftRay = new Ray(origin, leftDirection);
+
+                        if (Physics.Raycast(leftRay, out _hit, _rayDistance, _layerMask))
+                        {
+                            hitFound = true;
+                            Debug.DrawRay(leftRay.origin, leftRay.direction * _rayDistance, Color.green);
+                            break;
+                        }
+
+                        Debug.DrawRay(leftRay.origin, leftRay.direction * _rayDistance, Color.yellow);
+                    }
                 }
             }
 
