@@ -55,9 +55,11 @@ namespace SpiderController.StateMachine.States
             Data.Velocity = Data.Input * Data.Speed;
         }
 
-        public virtual void Update()
-        {
+        public virtual void Update() => 
             TryMoveLegs();
+
+        public virtual void LateUpdate()
+        {
         }
 
         public virtual void FixedUpdate()
@@ -81,35 +83,37 @@ namespace SpiderController.StateMachine.States
         protected bool IsFastRunUp() =>
             _inputService.IsLeftShiftUp;
 
-        protected void SpendEnergy()
+        protected void SpendEnergy(float speed)
         {
             if (EnergyFillAmount >= 0 && Data.Input.sqrMagnitude > Mathf.Epsilon)
             {
-                EnergyFillAmount -= Time.deltaTime * SpiderStaticData.EnergyFillSpeed /
+                EnergyFillAmount -= Time.deltaTime * speed /
                                     SpiderStaticData.EnergyFillAmount;
 
                 Spider.EnergyUI.SetEnergyValue(EnergyFillAmount);
             }
         }
 
-        protected void RestoreEnergy()
+        protected void RestoreEnergy(float speed)
         {
             if (EnergyFillAmount < 1)
             {
-                EnergyFillAmount += Time.deltaTime * SpiderStaticData.EnergyFillSpeed /
+                EnergyFillAmount += Time.deltaTime * speed /
                                     SpiderStaticData.EnergyFillAmount;
 
                 Spider.EnergyUI.SetEnergyValue(EnergyFillAmount);
             }
         }
+
 
         private void MoveBodySpider()
         {
             Vector3 forwardMovement = Spider.transform.forward * (Data.Velocity.z * Time.fixedDeltaTime);
             //Vector3 verticalMovement = new Vector3(0, Data.YVelocity, 0) * Time.fixedDeltaTime;
             Vector3 verticalMovement = Spider.transform.up * (Data.YVelocity * Time.fixedDeltaTime);
+            Vector3 jerkMovement = Spider.transform.forward * (Data.XVelocity * Time.fixedDeltaTime);
 
-            Vector3 newPosition = Spider.Rigidbody.position + forwardMovement + verticalMovement;
+            Vector3 newPosition = Spider.Rigidbody.position + forwardMovement + verticalMovement + jerkMovement;
 
             Rigidbody.MovePosition(newPosition);
         }
@@ -145,6 +149,7 @@ namespace SpiderController.StateMachine.States
                     legData.Leg.MoveTo(legData.Raycast.Position);
             }
         }
+
 
         private bool CanMove(int legIndex)
         {

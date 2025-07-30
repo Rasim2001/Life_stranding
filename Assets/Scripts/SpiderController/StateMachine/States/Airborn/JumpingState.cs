@@ -30,7 +30,7 @@ namespace SpiderController.StateMachine.States.Airborn
             if (EnergyFillAmount <= 0)
                 StateMachine.SwitchState<FallingWithoutEnergyState>();
 
-            if (Data.YVelocity < 0 || _spiderGroundChecker.IsTouchesWithLegs)
+            if (Data.YVelocity < 0 || _spiderGroundChecker.IsTouchingGround)
                 StateMachine.SwitchState<FallingState>();
         }
     }

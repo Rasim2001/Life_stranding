@@ -9,9 +9,11 @@ namespace SpiderController.SpiderMove
         [SerializeField] private int _offsetRayCount = 3;
 
         private RaycastHit _hit;
+        private RaycastHit _airbonHit;
         public Vector3 Position => _hit.point;
         public Vector3 Normal => _hit.normal;
         public bool IsGrounded => _hit.collider != null;
+        public Vector3 AirbornPosition => _airbonHit.point;
 
         private float _rayDistance = 5;
 
@@ -28,6 +30,9 @@ namespace SpiderController.SpiderMove
 
             Ray mainRay = new Ray(origin, baseDirection);
             bool hitFound = Physics.Raycast(mainRay, out _hit, _rayDistance, _layerMask);
+
+            Physics.Raycast(mainRay, out _airbonHit, 25, _layerMask);
+            Debug.DrawRay(mainRay.origin, mainRay.direction * 25, Color.magenta);
 
             Debug.DrawRay(mainRay.origin, mainRay.direction * _rayDistance, Color.blue);
 

@@ -1,12 +1,15 @@
 using Infastructure.Services.Input;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
+using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Ground
 {
-    public class FastRunningState : GroundedState
+    public class JerkState : GroundedState
     {
-        public FastRunningState(ISpiderStateMachine stateMachine, IInputService inputService,
+        private float _dashTimer;
+
+        public JerkState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
             LegDataStruct[] legs) : base(stateMachine, inputService, staticDataService, spider, stateMachineData, legs)
         {
@@ -16,9 +19,9 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Enter();
 
-            Data.Speed = SpiderStaticData.FastSpeed;
+            ApplyJerkSpeed();
 
-            ApplyFastRunning();
+            _dashTimer = SpiderStaticData.JerkDuration;
         }
 
         public override void Exit()
@@ -30,12 +33,28 @@ namespace SpiderController.StateMachine.States.Ground
 
         public override void Update()
         {
-            base.Update();
+            SpendEnergy(SpiderStaticData.EnergySpendJerkingSpeed);
+            UpdateDashTime();
+            UpdateJerpVelocity();
 
-            SpendEnergy(SpiderStaticData.EnergySpendFastRunningSpeed);
+            if (_dashTimer <= 0 || EnergyFillAmount <= 0)
+                SwitchState();
+        }
 
-            if (!IsFastRunUp() && EnergyFillAmount > 0)
-                return;
+        private void UpdateDashTime() =>
+            _dashTimer -= Time.deltaTime;
+
+        private void UpdateJerpVelocity()
+        {
+            float dashProgress = 1f - _dashTimer / SpiderStaticData.JerkDuration;
+            float currentDashSpeed = SpiderStaticData.JerkSpeed * SpiderStaticData.JerkCurve.Evaluate(dashProgress);
+
+            Data.XVelocity = currentDashSpeed;
+        }
+
+        private void SwitchState()
+        {
+            Data.XVelocity = 0;
 
             if (IsInputZero())
                 StateMachine.SwitchState<IdlingState>();
@@ -43,9 +62,9 @@ namespace SpiderController.StateMachine.States.Ground
                 StateMachine.SwitchState<RunningState>();
         }
 
-        private void ApplyFastRunning()
+        private void ApplyJerkSpeed()
         {
-            float multiplier = SpiderStaticData.FastSpeed / SpiderStaticData.Speed;
+            float multiplier = SpiderStaticData.JerkSpeed / SpiderStaticData.Speed;
             foreach (LegDataStruct legData in Legs)
                 legData.Leg.SetAcceleration(multiplier);
         }

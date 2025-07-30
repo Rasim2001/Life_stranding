@@ -33,7 +33,7 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Update();
 
-            RestoreEnergy();
+            RestoreEnergy(SpiderStaticData.EnergyFillSpeed);
 
             if (IsInputZero())
                 StateMachine.SwitchState<IdlingState>();

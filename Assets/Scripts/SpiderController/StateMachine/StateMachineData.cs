@@ -10,6 +10,8 @@ namespace SpiderController.StateMachine
         public float Speed;
 
         public float YVelocity;
+        public float XVelocity;
+
         public float AirbornSpeed;
     }
 }

@@ -14,6 +14,9 @@ namespace Infastructure.StaticData.Spider
         public float DistanceFromGround = 0.5f;
         public float LerpSpeedFromGround = 10;
         public float FastSpeed = 6;
+        public float JerkSpeed = 5;
+        public AnimationCurve JerkCurve;
+        public float JerkDuration = 1;
 
         [Header("RotationPlane")]
         public float MouseSensitivity = 2f;
@@ -39,5 +42,8 @@ namespace Infastructure.StaticData.Spider
         [Header("UI")]
         public float EnergyFillAmount;
         public float EnergyFillSpeed;
+        public float EnergySpendAirbornSpeed;
+        public float EnergySpendFastRunningSpeed;
+        public float EnergySpendJerkingSpeed;
     }
 }

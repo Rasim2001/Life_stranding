@@ -20,7 +20,7 @@ namespace SpiderController.StateMachine.States.Ground
         public override void Enter()
         {
             base.Enter();
-           
+
             _groundChecker.SetGroundLegState();
         }
 
@@ -34,6 +34,9 @@ namespace SpiderController.StateMachine.States.Ground
 
             if (InputService.JumpPressed)
                 StateMachine.SwitchState<JumpingState>();
+
+            if (InputService.JerkPressed)
+                StateMachine.SwitchState<JerkState>();
         }
     }
 }

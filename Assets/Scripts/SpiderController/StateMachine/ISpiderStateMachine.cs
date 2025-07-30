@@ -5,5 +5,6 @@ namespace SpiderController.StateMachine
         void SwitchState<T>() where T : ISpiderState;
         void HandleInput();
         void Update();
+        void LateUpdate();
     }
 }

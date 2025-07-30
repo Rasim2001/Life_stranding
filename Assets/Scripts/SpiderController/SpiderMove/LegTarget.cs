@@ -8,12 +8,12 @@ namespace SpiderController.SpiderMove
         [SerializeField] private float _stepSpeed = 5f;
         [SerializeField] private AnimationCurve _stepCurve;
 
+        public bool IsAirbornState;
         public Vector3 Position => _position;
         public bool IsMoving => _movement.IsMoving;
 
-        [SerializeField] private Movement _movement;
-
-        [SerializeField] private Vector3 _position;
+        private Movement _movement;
+        private Vector3 _position;
         private float _stepSpeedDefault;
 
 
@@ -34,7 +34,7 @@ namespace SpiderController.SpiderMove
                     _movement.IsMoving = false;
             }
 
-            transform.position = _position;
+            transform.position = IsAirbornState ? GetSmoothAirbornPosition() : _position;
         }
 
 
@@ -57,6 +57,10 @@ namespace SpiderController.SpiderMove
 
             _movement.IsMoving = true;
         }
+
+        private Vector3 GetSmoothAirbornPosition() =>
+            Vector3.Lerp(transform.position, _movement.ToPosition,
+                Time.deltaTime * 10);
 
         [Serializable]
         private class Movement

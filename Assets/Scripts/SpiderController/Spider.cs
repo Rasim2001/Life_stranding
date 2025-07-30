@@ -1,3 +1,4 @@
+using System;
 using _2;
 using Infastructure.Services.Input;
 using Infastructure.StaticData.StaticDataService;
@@ -60,6 +61,14 @@ namespace SpiderController
 
             _stateMachine.FixedUpdate();
             _spiderPlane.FixedUpdate();
+        }
+
+        private void LateUpdate()
+        {
+            if (_stateMachine == null)
+                return;
+
+            _stateMachine.LateUpdate();
         }
     }
 }

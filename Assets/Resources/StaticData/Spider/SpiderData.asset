@@ -19,8 +19,43 @@ MonoBehaviour:
   Speed: 3
   LerpForwardSpeed: 60
   DistanceFromGround: 0.5
-  LerpSpeedFromGround: 10
+  LerpSpeedFromGround: 8
   FastSpeed: 6
+  JerkSpeed: 25
+  JerkCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.7301671
+      value: 1
+      inSlope: -0
+      outSlope: -1.8529986
+      tangentMode: 5
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -3.7059972
+      outSlope: -3.7059972
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  JerkDuration: 0.3
   MouseSensitivity: 2
   MaxAngle: 45
   RotationSpeed: 2
@@ -34,3 +69,6 @@ MonoBehaviour:
   TimeToReachMaxHeight: 2
   EnergyFillAmount: 5
   EnergyFillSpeed: 1
+  EnergySpendAirbornSpeed: 1
+  EnergySpendFastRunningSpeed: 1
+  EnergySpendJerkingSpeed: 10
