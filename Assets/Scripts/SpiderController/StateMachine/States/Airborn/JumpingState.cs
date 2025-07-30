@@ -19,12 +19,16 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Enter();
 
+            Data.AirbornSpeed = SpiderStaticData.FallSpeed;
             Data.YVelocity = SpiderStaticData.StartYVelocity;
         }
 
         public override void Update()
         {
             base.Update();
+
+            if (EnergyFillAmount <= 0)
+                StateMachine.SwitchState<FallingWithoutEnergyState>();
 
             if (Data.YVelocity < 0 || _spiderGroundChecker.IsTouchesWithLegs)
                 StateMachine.SwitchState<FallingState>();

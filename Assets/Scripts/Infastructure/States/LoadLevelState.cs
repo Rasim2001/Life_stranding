@@ -15,16 +15,11 @@ namespace Infastructure.States
             _sceneLoader = sceneLoader;
         }
 
-        public void Enter()
-        {
-            Debug.Log("EnterLoadLevelState");
-
+        public void Enter() => 
             _sceneLoader.Load(AssetsPath.GameScene, OnLoaded);
-        }
 
         private void OnLoaded()
         {
-            Debug.Log("LoadLevelState OnLoaded");
         }
 
         public void Exit()

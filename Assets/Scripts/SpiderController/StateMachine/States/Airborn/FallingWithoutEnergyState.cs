@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Airborn
 {
-    public class FallingState : AirbornState
+    public class FallingWithoutEnergyState : AirbornState
     {
         private readonly GroundChecker _spiderGroundChecker;
 
-        public FallingState(ISpiderStateMachine stateMachine, IInputService inputService,
+        public FallingWithoutEnergyState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
             LegDataStruct[] legs) : base(stateMachine, inputService, staticDataService, spider, stateMachineData, legs)
         {
@@ -21,15 +21,12 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Enter();
 
-            Data.AirbornSpeed = SpiderStaticData.FallSpeed;
+            Data.AirbornSpeed = SpiderStaticData.FallWithoutEnergySpeed;
         }
 
         public override void Update()
         {
             base.Update();
-
-            if (EnergyFillAmount <= 0)
-                StateMachine.SwitchState<FallingWithoutEnergyState>();
 
             if (_spiderGroundChecker.IsTouchingGround)
                 Spider.transform.localEulerAngles = Vector3.zero;

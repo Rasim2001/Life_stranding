@@ -32,7 +32,9 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Update();
 
-            if (!IsFastRunUp())
+            SpendEnergy();
+
+            if (!IsFastRunUp() && EnergyFillAmount > 0)
                 return;
 
             if (IsInputZero())

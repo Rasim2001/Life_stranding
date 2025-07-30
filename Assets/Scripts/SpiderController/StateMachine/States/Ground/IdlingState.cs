@@ -28,6 +28,8 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Update();
 
+            RestoreEnergy();
+
             if (IsInputZero())
                 return;
 

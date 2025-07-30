@@ -20,9 +20,9 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Enter();
 
-            _groundChecker.SetAirbornLegState();
+            Data.Speed = SpiderStaticData.Speed;
 
-            Data.Speed = SpiderStaticData.JumpSpeed;
+            _groundChecker.SetAirbornLegState();
         }
 
 
@@ -30,7 +30,31 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Update();
 
-            Data.YVelocity -= SpiderStaticData.BaseGravity * Time.deltaTime;
+            SpendEnergy();
+
+            Data.YVelocity -= SpiderStaticData.BaseGravity * Data.AirbornSpeed * Time.deltaTime;
+        }
+
+        public override void FixedUpdate()
+        {
+            base.FixedUpdate();
+
+            AlignRotationInFlight();
+        }
+
+
+        private void AlignRotationInFlight()
+        {
+            Vector3 currentEuler = Rigidbody.rotation.eulerAngles;
+
+            float deltaX = Mathf.DeltaAngle(0, currentEuler.x);
+            float deltaZ = Mathf.DeltaAngle(0, currentEuler.z);
+
+            float alignX = -deltaX * Time.fixedDeltaTime;
+            float alignZ = -deltaZ * Time.fixedDeltaTime;
+
+            Quaternion deltaRotation = Quaternion.Euler(alignX, 0, alignZ);
+            Rigidbody.MoveRotation(Rigidbody.rotation * deltaRotation);
         }
     }
 }

@@ -17,8 +17,11 @@ namespace SpiderController.StateMachine.States
         protected IInputService InputService => _inputService;
         protected SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
 
+        protected float EnergyFillAmount;
+
         private readonly IStaticDataService _staticDataService;
         private readonly IInputService _inputService;
+
 
         protected MovementState(
             ISpiderStateMachine stateMachine,
@@ -39,9 +42,8 @@ namespace SpiderController.StateMachine.States
         }
 
 
-        public virtual void Enter()
-        {
-        }
+        public virtual void Enter() =>
+            EnergyFillAmount = Spider.EnergyUI.FillAmount;
 
         public virtual void Exit()
         {
@@ -53,10 +55,12 @@ namespace SpiderController.StateMachine.States
             Data.Velocity = Data.Input * Data.Speed;
         }
 
-        public virtual void Update() =>
+        public virtual void Update()
+        {
             TryMoveLegs();
+        }
 
-        public void FixedUpdate()
+        public virtual void FixedUpdate()
         {
             MoveBodySpider();
             RotateTowardsMoveDirection();
@@ -77,10 +81,33 @@ namespace SpiderController.StateMachine.States
         protected bool IsFastRunUp() =>
             _inputService.IsLeftShiftUp;
 
+        protected void SpendEnergy()
+        {
+            if (EnergyFillAmount >= 0 && Data.Input.sqrMagnitude > Mathf.Epsilon)
+            {
+                EnergyFillAmount -= Time.deltaTime * SpiderStaticData.EnergyFillSpeed /
+                                    SpiderStaticData.EnergyFillAmount;
+
+                Spider.EnergyUI.SetEnergyValue(EnergyFillAmount);
+            }
+        }
+
+        protected void RestoreEnergy()
+        {
+            if (EnergyFillAmount < 1)
+            {
+                EnergyFillAmount += Time.deltaTime * SpiderStaticData.EnergyFillSpeed /
+                                    SpiderStaticData.EnergyFillAmount;
+
+                Spider.EnergyUI.SetEnergyValue(EnergyFillAmount);
+            }
+        }
+
         private void MoveBodySpider()
         {
             Vector3 forwardMovement = Spider.transform.forward * (Data.Velocity.z * Time.fixedDeltaTime);
-            Vector3 verticalMovement = new Vector3(0, Data.YVelocity, 0) * Time.fixedDeltaTime;
+            //Vector3 verticalMovement = new Vector3(0, Data.YVelocity, 0) * Time.fixedDeltaTime;
+            Vector3 verticalMovement = Spider.transform.up * (Data.YVelocity * Time.fixedDeltaTime);
 
             Vector3 newPosition = Spider.Rigidbody.position + forwardMovement + verticalMovement;
 

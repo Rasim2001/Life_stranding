@@ -1,6 +1,7 @@
 using Infastructure.Services.Input;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
+using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Ground
 {
@@ -31,6 +32,8 @@ namespace SpiderController.StateMachine.States.Ground
         public override void Update()
         {
             base.Update();
+
+            RestoreEnergy();
 
             if (IsInputZero())
                 StateMachine.SwitchState<IdlingState>();

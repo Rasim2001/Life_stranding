@@ -20,7 +20,7 @@ namespace SpiderController.StateMachine.States.Ground
         public override void Enter()
         {
             base.Enter();
-
+           
             _groundChecker.SetGroundLegState();
         }
 

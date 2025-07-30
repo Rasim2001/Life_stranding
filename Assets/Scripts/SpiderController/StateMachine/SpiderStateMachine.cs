@@ -31,7 +31,8 @@ namespace SpiderController.StateMachine
                 new RunningState(this, inputService, staticDataService, spider, stateMachineData, legs),
                 new FastRunningState(this, inputService, staticDataService, spider, stateMachineData, legs),
                 new JumpingState(this, inputService, staticDataService, spider, stateMachineData, legs),
-                new FallingState(this, inputService, staticDataService, spider, stateMachineData, legs)
+                new FallingState(this, inputService, staticDataService, spider, stateMachineData, legs),
+                new FallingWithoutEnergyState(this, inputService, staticDataService, spider, stateMachineData, legs)
             };
 
             _currentState = _states[0];
