@@ -13,16 +13,21 @@ namespace SpiderController.StateMachine.States
         protected readonly StateMachineData Data;
         protected readonly Spider Spider;
         protected readonly LegDataStruct[] Legs;
-        private readonly Flower _flower;
-        protected Rigidbody Rigidbody => Spider.Rigidbody;
+
         protected IInputService InputService => _inputService;
+        protected Rigidbody Rigidbody => Spider.Rigidbody;
         protected SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
 
+        private SpiderHealth SpiderHealth => Spider.SpiderUI.SpiderHealth;
+        private EnergyBarUI EnergyBar => Spider.SpiderUI.EnergyBar;
+
+        private readonly Flower _flower;
         private readonly IStaticDataService _staticDataService;
         private readonly IInputService _inputService;
 
 
-        protected MovementState(ISpiderStateMachine stateMachine,
+        protected MovementState(
+            ISpiderStateMachine stateMachine,
             IInputService inputService,
             IStaticDataService staticDataService,
             Spider spider,
@@ -59,6 +64,7 @@ namespace SpiderController.StateMachine.States
         {
             InputHandler();
             TryMoveLegs();
+            CheckFlowerAndReduceHp();
         }
 
         private void InputHandler()
@@ -114,7 +120,7 @@ namespace SpiderController.StateMachine.States
                 Data.EnergyFillAmount -= Time.deltaTime * speed /
                                          SpiderStaticData.EnergyFillAmount;
 
-                Spider.EnergyUI.SetEnergyValue(Data.EnergyFillAmount);
+                EnergyBar.SetEnergyValue(Data.EnergyFillAmount);
             }
         }
 
@@ -125,7 +131,7 @@ namespace SpiderController.StateMachine.States
                 Data.EnergyFillAmount += Time.deltaTime * speed /
                                          SpiderStaticData.EnergyFillAmount;
 
-                Spider.EnergyUI.SetEnergyValue(Data.EnergyFillAmount);
+                EnergyBar.SetEnergyValue(Data.EnergyFillAmount);
             }
         }
 
@@ -148,10 +154,15 @@ namespace SpiderController.StateMachine.States
             }
         }
 
+        private void CheckFlowerAndReduceHp()
+        {
+            if (_flower.IsOnPlatform == false)
+                SpiderHealth.TakeDamage(SpiderStaticData.DamageAmount);
+        }
+
         private void MoveBodySpider()
         {
             Vector3 forwardMovement = Spider.transform.forward * (Data.Velocity.z * Time.fixedDeltaTime);
-            //Vector3 verticalMovement = new Vector3(0, Data.YVelocity, 0) * Time.fixedDeltaTime;
             Vector3 verticalMovement = Spider.transform.up * (Data.YVelocity * Time.fixedDeltaTime);
             Vector3 jerkMovement = Spider.transform.forward * (Data.XVelocity * Time.fixedDeltaTime);
 

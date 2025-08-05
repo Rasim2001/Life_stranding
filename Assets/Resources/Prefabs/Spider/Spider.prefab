@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2623072651501471413}
   - component: {fileID: 1741264766782985763}
   - component: {fileID: 8128688778843925474}
+  - component: {fileID: 156444511540666881}
   m_Layer: 7
   m_Name: LifeBar
   m_TagString: Untagged
@@ -76,6 +77,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &156444511540666881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 75056682228173966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a620beaac8c464cb9eb5c082a200b2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _healthBar: {fileID: 7380043496544837019}
 --- !u!1 &565509741019193313
 GameObject:
   m_ObjectHideFlags: 0
@@ -1210,6 +1224,7 @@ GameObject:
   - component: {fileID: 2275426233272131973}
   - component: {fileID: 295585402350225161}
   - component: {fileID: 8931618066616089597}
+  - component: {fileID: 5158507486029452123}
   m_Layer: 7
   m_Name: Canvas
   m_TagString: Untagged
@@ -1297,6 +1312,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _image: {fileID: 5574755399481061223}
+--- !u!114 &5158507486029452123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5668242714333718099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6add5f18a7a14b9d8b47a68abf44b90a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rotationSpeed: 10
 --- !u!1 &5833497818880094424
 GameObject:
   m_ObjectHideFlags: 0
@@ -1969,6 +1997,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 05326d264ead81a438996b2110f7983f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5419926587655080346}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 05326d264ead81a438996b2110f7983f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6551946587942082740}
     - targetCorrespondingSourceObject: {fileID: -8248170891816283504, guid: 05326d264ead81a438996b2110f7983f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6875779703664386008}
@@ -2076,9 +2107,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46f7fb9d34aa401496b478489aceed67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _spiderUI: {fileID: 6551946587942082740}
   _flowerChecker: {fileID: 3877133752795317131}
   _flower: {fileID: 5557803544097822687}
-  _energyUI: {fileID: 5387250329619428152}
   _planeIndicator: {fileID: 8931618066616089597}
   _rotationPlaneTransform: {fileID: 5895152827964624774}
   _legs:
@@ -2091,6 +2122,20 @@ MonoBehaviour:
   - Leg: {fileID: 6062356870736479998}
     Raycast: {fileID: 6395569757360196741}
   _groundChecker: {fileID: 4291320528094871361}
+--- !u!114 &6551946587942082740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 315364214423788202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f5e89c45052464d86ff7f641d205235, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _healthBarUI: {fileID: 156444511540666881}
+  _energyBarUI: {fileID: 5387250329619428152}
 --- !u!1 &371990633625580907 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8248170891816283504, guid: 05326d264ead81a438996b2110f7983f, type: 3}

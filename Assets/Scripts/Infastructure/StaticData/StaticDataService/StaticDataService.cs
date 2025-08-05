@@ -8,7 +8,7 @@ namespace Infastructure.StaticData.StaticDataService
     {
         public SpiderStaticData SpiderStaticData { get; private set; }
 
-        public void LoadStaticData() =>
+        public void LoadStaticData() => 
             SpiderStaticData = Resources.Load<SpiderStaticData>(AssetsPath.SpiderDataPath);
     }
 }

@@ -6,6 +6,5 @@ namespace Infastructure.Factories.GameFactories
     {
         GameObject CreateSpider();
         void CreateCameraSystem(Transform spider);
-        void CreateFlowerFollower(Transform spiderTransform);
     }
 }

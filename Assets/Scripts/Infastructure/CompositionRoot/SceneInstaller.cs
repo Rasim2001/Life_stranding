@@ -26,7 +26,7 @@ namespace Infastructure.CompositionRoot
 
 
         private void BindBuildLevelState() =>
-            Container.BindInterfacesAndSelfTo<BuildLevelState>().AsSingle();
+            Container.BindInterfacesAndSelfTo<BuildLevelState>().AsSingle().NonLazy();
 
         private void BindUIFactory() =>
             Container.BindInterfacesAndSelfTo<GameUIFactory>().AsSingle();

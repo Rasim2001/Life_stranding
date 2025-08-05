@@ -1,3 +1,4 @@
+using Common;
 using UnityEngine;
 
 namespace Infastructure.Common
@@ -5,16 +6,15 @@ namespace Infastructure.Common
     public class PickupDisplayer : MonoBehaviour, IPickupDisplayer
     {
         [SerializeField] GameObject _pickupDisplayer;
-        public Transform SpiderTransform { get; set; }
 
         private Transform _pickUpTarget;
-        private Transform _cameraTransform;
+        private RotateToCamera _rotateToCamera;
+
+        private void Start() =>
+            _rotateToCamera = new RotateToCamera(Camera.main);
 
         public void Show(Transform pickupTarget)
         {
-            if (_cameraTransform == null)
-                _cameraTransform = Camera.main.transform;
-
             _pickUpTarget = pickupTarget;
             transform.position = _pickUpTarget.position + Vector3.up;
 
@@ -32,11 +32,7 @@ namespace Infastructure.Common
             if (_pickUpTarget == null)
                 return;
 
-            Vector3 lookDir = transform.position - _cameraTransform.position;
-            lookDir.y = 0f;
-
-            if (lookDir != Vector3.zero)
-                transform.rotation = Quaternion.LookRotation(lookDir);
+            _rotateToCamera.UpdateRotation(transform);
         }
     }
 }

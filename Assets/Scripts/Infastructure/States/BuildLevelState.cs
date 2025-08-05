@@ -1,6 +1,7 @@
 using System;
 using CameraFollow;
 using DG.Tweening;
+using Infastructure.Common;
 using Infastructure.Factories.GameFactories;
 using Infastructure.Services.PlayerProgressService;
 using Infastructure.StaticData.StaticDataService;
@@ -16,22 +17,30 @@ namespace Infastructure.States
         private readonly IStaticDataService _staticData;
         private readonly IGameUIFactory _uiFactory;
         private readonly IPersistentProgressService _progressService;
+        private readonly ISceneLoader _sceneLoader;
 
         public BuildLevelState(
             IGameFactory gameFactory,
             IStaticDataService staticData,
             IGameUIFactory uiFactory,
-            IPersistentProgressService progressService
+            IPersistentProgressService progressService,
+            ISceneLoader sceneLoader
         )
         {
             _gameFactory = gameFactory;
             _staticData = staticData;
             _uiFactory = uiFactory;
             _progressService = progressService;
+            _sceneLoader = sceneLoader;
         }
 
-        public void Initialize() =>
+        public void Initialize()
+        {
+            if (!_sceneLoader.IsGameScene())
+                return;
+
             InitGameWorld();
+        }
 
 
         public void Dispose()
@@ -44,11 +53,8 @@ namespace Infastructure.States
             GameObject spider = InitSpider();
 
             InitCameraSystem(spider.transform);
-            InitFlowerFollower(spider.transform);
         }
 
-        private void InitFlowerFollower(Transform spiderTransform) =>
-            _gameFactory.CreateFlowerFollower(spiderTransform);
 
         private GameObject InitSpider() =>
             _gameFactory.CreateSpider();

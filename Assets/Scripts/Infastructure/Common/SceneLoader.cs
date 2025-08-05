@@ -8,6 +8,7 @@ namespace Infastructure.Common
     public interface ISceneLoader
     {
         void Load(string name, Action onLoaded = null);
+        bool IsGameScene();
     }
 
     public class SceneLoader : ISceneLoader
@@ -19,6 +20,9 @@ namespace Infastructure.Common
 
         public void Load(string name, Action onLoaded = null) =>
             coroutineRunner.StartCoroutine(LoadScene(name, onLoaded));
+
+        public bool IsGameScene() =>
+            SceneManager.GetActiveScene().name == AssetsPath.GameScene;
 
         private IEnumerator LoadScene(string nextScene, Action onLoaded = null)
         {

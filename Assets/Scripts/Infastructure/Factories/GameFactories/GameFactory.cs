@@ -19,6 +19,9 @@ namespace Infastructure.Factories.GameFactories
             Spider spider = _diContainer.InstantiatePrefabResourceForComponent<Spider>(AssetsPath.SpiderPath);
             spider.Initialize();
 
+            SpiderUI spiderUI = spider.GetComponent<SpiderUI>();
+            spiderUI.Initialize();
+
             return spider.gameObject;
         }
 
@@ -27,14 +30,6 @@ namespace Infastructure.Factories.GameFactories
             CameraSystem cameraSystem =
                 _diContainer.InstantiatePrefabResourceForComponent<CameraSystem>(AssetsPath.CameraSystemPath);
             cameraSystem.Initialize(spiderTransform);
-        }
-
-        public void CreateFlowerFollower(Transform spiderTransform)
-        {
-            FlowerFollower flowerFollower =
-                _diContainer.InstantiatePrefabResourceForComponent<FlowerFollower>(AssetsPath.FlowerFollower);
-
-            flowerFollower.SetTarget(spiderTransform);
         }
     }
 }
