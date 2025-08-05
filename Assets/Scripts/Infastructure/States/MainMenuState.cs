@@ -1,3 +1,4 @@
+using Infastructure.Common;
 using Zenject;
 
 namespace Infastructure.States

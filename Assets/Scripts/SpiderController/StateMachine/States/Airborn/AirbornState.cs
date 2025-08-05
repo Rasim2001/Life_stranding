@@ -11,7 +11,8 @@ namespace SpiderController.StateMachine.States.Airborn
 
         protected AirbornState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
-            LegDataStruct[] legs) : base(stateMachine, inputService, staticDataService, spider, stateMachineData, legs)
+            LegDataStruct[] legs, Flower flower) : base(stateMachine, inputService, staticDataService, spider,
+            stateMachineData, legs, flower)
         {
             _groundChecker = spider.GroundChecker;
         }
@@ -36,11 +37,20 @@ namespace SpiderController.StateMachine.States.Airborn
 
         public override void Update()
         {
+            base.Update();
+
             SpendEnergy(SpiderStaticData.EnergySpendAirbornSpeed);
 
             Data.YVelocity -= SpiderStaticData.BaseGravity * Data.AirbornSpeed * Time.deltaTime;
+        }
 
-            TryMoveLegsAirborn();
+        protected override void TryMoveLegs()
+        {
+            for (int index = 0; index < Legs.Length; index++)
+            {
+                ref LegDataStruct legData = ref Legs[index];
+                legData.Leg.MoveTo(legData.Raycast.AirbornPosition);
+            }
         }
 
 
@@ -64,15 +74,6 @@ namespace SpiderController.StateMachine.States.Airborn
 
             Quaternion deltaRotation = Quaternion.Euler(alignX, 0, alignZ);
             Rigidbody.MoveRotation(Rigidbody.rotation * deltaRotation);
-        }
-
-        private void TryMoveLegsAirborn()
-        {
-            for (int index = 0; index < Legs.Length; index++)
-            {
-                ref LegDataStruct legData = ref Legs[index];
-                legData.Leg.MoveTo(legData.Raycast.AirbornPosition);
-            }
         }
 
 

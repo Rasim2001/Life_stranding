@@ -16,5 +16,8 @@ namespace Infastructure.Services.Input
         bool JumpPressed { get; }
         float MouseYAxis { get; }
         bool JerkPressed { get; }
+        bool PickupPressed { get; }
+        bool CenterMousePressed { get; }
+        bool CenterMouseUp { get; }
     }
 }

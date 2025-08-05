@@ -15,6 +15,9 @@ namespace Infastructure.Services.Input
 
         public bool RightMousePressed => UnityEngine.Input.GetMouseButtonDown(1);
         public bool RightMouseUp => UnityEngine.Input.GetMouseButtonUp(1);
+        public bool CenterMousePressed => UnityEngine.Input.GetMouseButtonDown(2);
+        public bool CenterMouseUp => UnityEngine.Input.GetMouseButtonUp(2);
+
         public float ScrollWheelAxis => UnityEngine.Input.GetAxis("Mouse ScrollWheel");
         public float MouseXAxis => UnityEngine.Input.GetAxis("Mouse X");
         public float MouseYAxis => UnityEngine.Input.GetAxis("Mouse Y");
@@ -24,5 +27,6 @@ namespace Infastructure.Services.Input
 
         public bool JumpPressed => UnityEngine.Input.GetKeyDown(KeyCode.Space);
         public bool JerkPressed => UnityEngine.Input.GetKeyDown(KeyCode.LeftAlt);
+        public bool PickupPressed => UnityEngine.Input.GetKeyDown(KeyCode.E);
     }
 }

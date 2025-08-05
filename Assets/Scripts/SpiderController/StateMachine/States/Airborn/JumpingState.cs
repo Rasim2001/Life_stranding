@@ -10,7 +10,8 @@ namespace SpiderController.StateMachine.States.Airborn
 
         public JumpingState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
-            LegDataStruct[] legs) : base(stateMachine, inputService, staticDataService, spider, stateMachineData, legs)
+            LegDataStruct[] legs, Flower flower) : base(stateMachine, inputService, staticDataService, spider,
+            stateMachineData, legs, flower)
         {
             _spiderGroundChecker = spider.GroundChecker;
         }
@@ -27,7 +28,7 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Update();
 
-            if (EnergyFillAmount <= 0)
+            if (Data.EnergyFillAmount <= 0)
                 StateMachine.SwitchState<FallingWithoutEnergyState>();
 
             if (Data.YVelocity < 0 || _spiderGroundChecker.IsTouchingGround)

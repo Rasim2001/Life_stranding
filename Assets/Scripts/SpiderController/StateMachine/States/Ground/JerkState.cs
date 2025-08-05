@@ -11,7 +11,8 @@ namespace SpiderController.StateMachine.States.Ground
 
         public JerkState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
-            LegDataStruct[] legs) : base(stateMachine, inputService, staticDataService, spider, stateMachineData, legs)
+            LegDataStruct[] legs, Flower flower) : base(stateMachine, inputService, staticDataService, spider,
+            stateMachineData, legs, flower)
         {
         }
 
@@ -37,7 +38,7 @@ namespace SpiderController.StateMachine.States.Ground
             UpdateDashTime();
             UpdateJerpVelocity();
 
-            if (_dashTimer <= 0 || EnergyFillAmount <= 0)
+            if (_dashTimer <= 0 || Data.EnergyFillAmount <= 0)
                 SwitchState();
         }
 

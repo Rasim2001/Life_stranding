@@ -9,7 +9,8 @@ namespace SpiderController.StateMachine.States.Ground
     {
         public IdlingState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
-            LegDataStruct[] legs) : base(stateMachine, inputService, staticDataService, spider, stateMachineData, legs)
+            LegDataStruct[] legs, Flower flower) : base(stateMachine, inputService, staticDataService, spider,
+            stateMachineData, legs, flower)
         {
         }
 
@@ -28,7 +29,8 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Update();
 
-            RestoreEnergy(SpiderStaticData.EnergyFillSpeed);
+            if (!Data.IsCenterMouseHolding)
+                RestoreEnergy(SpiderStaticData.EnergyFillSpeed);
 
             if (IsInputZero())
                 return;

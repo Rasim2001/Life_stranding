@@ -1,3 +1,4 @@
+using Infastructure.Common;
 using Infastructure.Factories.ProjectFactories;
 using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.SaveLoadService;
@@ -29,6 +30,8 @@ namespace Infastructure.CompositionRoot
             BindPersistentProgressService();
 
             BindSaveLoadService();
+
+            BindPickupDisplayer();
         }
 
 
@@ -60,6 +63,15 @@ namespace Infastructure.CompositionRoot
                 .Bind<ICoroutineRunner>()
                 .To<CoroutineRunner>()
                 .FromComponentInNewPrefabResource(AssetsPath.CoroutineRunnerPath)
+                .AsSingle();
+        }
+
+        private void BindPickupDisplayer()
+        {
+            Container
+                .Bind<IPickupDisplayer>()
+                .To<PickupDisplayer>()
+                .FromComponentInNewPrefabResource(AssetsPath.PickupDisplayerPath)
                 .AsSingle();
         }
 

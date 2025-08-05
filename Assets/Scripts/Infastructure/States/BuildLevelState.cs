@@ -41,22 +41,19 @@ namespace Infastructure.States
 
         private void InitGameWorld()
         {
-            Spider spider = InitSpider();
-            InitCameraSystem(spider);
+            GameObject spider = InitSpider();
+
+            InitCameraSystem(spider.transform);
+            InitFlowerFollower(spider.transform);
         }
 
-        private Spider InitSpider()
-        {
-            Spider spider = _gameFactory.CreateSpider().GetComponent<Spider>();
-            spider.Initialize();
+        private void InitFlowerFollower(Transform spiderTransform) =>
+            _gameFactory.CreateFlowerFollower(spiderTransform);
 
-            return spider;
-        }
+        private GameObject InitSpider() =>
+            _gameFactory.CreateSpider();
 
-        private void InitCameraSystem(Spider spider)
-        {
-            CameraSystem cameraSystem = _gameFactory.CreateCameraSystem().GetComponent<CameraSystem>();
-            cameraSystem.Initialize(spider.transform);
-        }
+        private void InitCameraSystem(Transform spiderTransform) =>
+            _gameFactory.CreateCameraSystem(spiderTransform);
     }
 }

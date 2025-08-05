@@ -12,7 +12,8 @@ namespace SpiderController.StateMachine.States.Ground
 
         protected GroundedState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
-            LegDataStruct[] legs) : base(stateMachine, inputService, staticDataService, spider, stateMachineData, legs)
+            LegDataStruct[] legs, Flower flower) : base(stateMachine, inputService, staticDataService, spider,
+            stateMachineData, legs, flower)
         {
             _groundChecker = spider.GroundChecker;
         }

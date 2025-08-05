@@ -45,5 +45,6 @@ namespace Infastructure.StaticData.Spider
         public float EnergySpendAirbornSpeed;
         public float EnergySpendFastRunningSpeed;
         public float EnergySpendJerkingSpeed;
+        public float EnergySpendFreezingFlowerSpeed;
     }
 }

@@ -2,7 +2,7 @@ using Infastructure.States;
 using UnityEngine;
 using Zenject;
 
-namespace Infastructure
+namespace Infastructure.Common
 {
     public class GameBootstrapper : MonoBehaviour
     {

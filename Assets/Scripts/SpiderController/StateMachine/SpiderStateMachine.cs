@@ -5,6 +5,7 @@ using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Airborn;
 using SpiderController.StateMachine.States.Ground;
+using UnityEngine;
 
 namespace SpiderController.StateMachine
 {
@@ -18,19 +19,21 @@ namespace SpiderController.StateMachine
             Spider spider,
             IInputService inputService,
             IStaticDataService staticDataService,
-            LegDataStruct[] legs)
+            LegDataStruct[] legs,
+            Flower flower)
         {
             StateMachineData stateMachineData = new StateMachineData();
 
             _states = new List<ISpiderState>()
             {
-                new IdlingState(this, inputService, staticDataService, spider, stateMachineData, legs),
-                new RunningState(this, inputService, staticDataService, spider, stateMachineData, legs),
-                new FastRunningState(this, inputService, staticDataService, spider, stateMachineData, legs),
-                new JumpingState(this, inputService, staticDataService, spider, stateMachineData, legs),
-                new FallingState(this, inputService, staticDataService, spider, stateMachineData, legs),
-                new FallingWithoutEnergyState(this, inputService, staticDataService, spider, stateMachineData, legs),
-                new JerkState(this, inputService, staticDataService, spider, stateMachineData, legs)
+                new IdlingState(this, inputService, staticDataService, spider, stateMachineData, legs, flower),
+                new RunningState(this, inputService, staticDataService, spider, stateMachineData, legs, flower),
+                new FastRunningState(this, inputService, staticDataService, spider, stateMachineData, legs, flower),
+                new JumpingState(this, inputService, staticDataService, spider, stateMachineData, legs, flower),
+                new FallingState(this, inputService, staticDataService, spider, stateMachineData, legs, flower),
+                new FallingWithoutEnergyState(this, inputService, staticDataService, spider, stateMachineData, legs,
+                    flower),
+                new JerkState(this, inputService, staticDataService, spider, stateMachineData, legs, flower)
             };
 
             _currentState = _states[0];
@@ -40,8 +43,6 @@ namespace SpiderController.StateMachine
         public void SwitchState<T>() where T : ISpiderState
         {
             ISpiderState newState = _states.FirstOrDefault(state => state is T);
-
-            //Debug.Log($"OldState : {_currentState.GetType().Name} and newState : {newState.GetType().Name}");
 
             _currentState.Exit();
             _currentState = newState;

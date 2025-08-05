@@ -8,7 +8,8 @@ namespace SpiderController.StateMachine.States.Ground
     {
         public FastRunningState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
-            LegDataStruct[] legs) : base(stateMachine, inputService, staticDataService, spider, stateMachineData, legs)
+            LegDataStruct[] legs, Flower flower) : base(stateMachine, inputService, staticDataService, spider,
+            stateMachineData, legs, flower)
         {
         }
 
@@ -34,7 +35,7 @@ namespace SpiderController.StateMachine.States.Ground
 
             SpendEnergy(SpiderStaticData.EnergySpendFastRunningSpeed);
 
-            if (!IsFastRunUp() && EnergyFillAmount > 0)
+            if (!IsFastRunUp() && Data.EnergyFillAmount > 0)
                 return;
 
             if (IsInputZero())

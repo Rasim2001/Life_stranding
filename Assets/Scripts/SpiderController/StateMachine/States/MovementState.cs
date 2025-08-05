@@ -13,27 +13,26 @@ namespace SpiderController.StateMachine.States
         protected readonly StateMachineData Data;
         protected readonly Spider Spider;
         protected readonly LegDataStruct[] Legs;
+        private readonly Flower _flower;
         protected Rigidbody Rigidbody => Spider.Rigidbody;
         protected IInputService InputService => _inputService;
         protected SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
-
-        protected float EnergyFillAmount;
 
         private readonly IStaticDataService _staticDataService;
         private readonly IInputService _inputService;
 
 
-        protected MovementState(
-            ISpiderStateMachine stateMachine,
+        protected MovementState(ISpiderStateMachine stateMachine,
             IInputService inputService,
             IStaticDataService staticDataService,
             Spider spider,
             StateMachineData stateMachineData,
-            LegDataStruct[] legs
-        )
+            LegDataStruct[] legs,
+            Flower flower)
         {
             _inputService = inputService;
             _staticDataService = staticDataService;
+            _flower = flower;
 
             StateMachine = stateMachine;
             Spider = spider;
@@ -42,8 +41,9 @@ namespace SpiderController.StateMachine.States
         }
 
 
-        public virtual void Enter() =>
-            EnergyFillAmount = Spider.EnergyUI.FillAmount;
+        public virtual void Enter()
+        {
+        }
 
         public virtual void Exit()
         {
@@ -55,8 +55,32 @@ namespace SpiderController.StateMachine.States
             Data.Velocity = Data.Input * Data.Speed;
         }
 
-        public virtual void Update() => 
+        public virtual void Update()
+        {
+            InputHandler();
             TryMoveLegs();
+        }
+
+        private void InputHandler()
+        {
+            if (_inputService.CenterMousePressed)
+            {
+                _flower.IsFreezingOnPlatform = true;
+                Data.IsCenterMouseHolding = true;
+            }
+
+            else if (_inputService.CenterMouseUp)
+            {
+                _flower.IsFreezingOnPlatform = false;
+                Data.IsCenterMouseHolding = false;
+            }
+
+            if (Data.IsCenterMouseHolding)
+                SpendEnergy(SpiderStaticData.EnergySpendFreezingFlowerSpeed);
+
+            if (Data.EnergyFillAmount <= 0 && _flower.IsFreezingOnPlatform)
+                _flower.IsFreezingOnPlatform = false;
+        }
 
         public virtual void LateUpdate()
         {
@@ -85,26 +109,44 @@ namespace SpiderController.StateMachine.States
 
         protected void SpendEnergy(float speed)
         {
-            if (EnergyFillAmount >= 0 && Data.Input.sqrMagnitude > Mathf.Epsilon)
+            if (Data.EnergyFillAmount >= 0)
             {
-                EnergyFillAmount -= Time.deltaTime * speed /
-                                    SpiderStaticData.EnergyFillAmount;
+                Data.EnergyFillAmount -= Time.deltaTime * speed /
+                                         SpiderStaticData.EnergyFillAmount;
 
-                Spider.EnergyUI.SetEnergyValue(EnergyFillAmount);
+                Spider.EnergyUI.SetEnergyValue(Data.EnergyFillAmount);
             }
         }
 
         protected void RestoreEnergy(float speed)
         {
-            if (EnergyFillAmount < 1)
+            if (Data.EnergyFillAmount < 1)
             {
-                EnergyFillAmount += Time.deltaTime * speed /
-                                    SpiderStaticData.EnergyFillAmount;
+                Data.EnergyFillAmount += Time.deltaTime * speed /
+                                         SpiderStaticData.EnergyFillAmount;
 
-                Spider.EnergyUI.SetEnergyValue(EnergyFillAmount);
+                Spider.EnergyUI.SetEnergyValue(Data.EnergyFillAmount);
             }
         }
 
+
+        protected virtual void TryMoveLegs()
+        {
+            for (int index = 0; index < Legs.Length; index++)
+            {
+                ref LegDataStruct legData = ref Legs[index];
+
+                if (!CanMove(index))
+                    continue;
+
+                if (!legData.Leg.IsMoving &&
+                    Vector3.Distance(legData.Leg.Position, legData.Raycast.Position) < SpiderStaticData.StepLength)
+                    continue;
+
+                if (legData.Raycast.IsGrounded)
+                    legData.Leg.MoveTo(legData.Raycast.Position);
+            }
+        }
 
         private void MoveBodySpider()
         {
@@ -129,24 +171,6 @@ namespace SpiderController.StateMachine.States
                 Quaternion newRotation = Rigidbody.rotation * deltaRotation;
 
                 Rigidbody.MoveRotation(newRotation);
-            }
-        }
-
-        private void TryMoveLegs()
-        {
-            for (int index = 0; index < Legs.Length; index++)
-            {
-                ref LegDataStruct legData = ref Legs[index];
-
-                if (!CanMove(index))
-                    continue;
-
-                if (!legData.Leg.IsMoving &&
-                    Vector3.Distance(legData.Leg.Position, legData.Raycast.Position) < SpiderStaticData.StepLength)
-                    continue;
-
-                if (legData.Raycast.IsGrounded)
-                    legData.Leg.MoveTo(legData.Raycast.Position);
             }
         }
 
@@ -210,9 +234,6 @@ namespace SpiderController.StateMachine.States
                 Vector3 v1 = legPositions[i2] - legPositions[i1];
                 Vector3 v2 = legPositions[i3] - legPositions[i1];
                 Vector3 normal = Vector3.Cross(v1, v2).normalized;
-
-                /*if (normal.y < 0)
-                    normal = -normal;*/
 
                 normalSum -= normal;
                 count++;

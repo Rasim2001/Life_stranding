@@ -7,18 +7,18 @@ namespace SpiderController.StateMachine.States.Ground
 {
     public class RunningState : GroundedState
     {
-        public RunningState(
-            ISpiderStateMachine stateMachine,
+        public RunningState(ISpiderStateMachine stateMachine,
             IInputService inputService,
             IStaticDataService staticDataService,
             Spider spider,
             StateMachineData stateMachineData,
-            LegDataStruct[] legs) : base(stateMachine,
+            LegDataStruct[] legs, Flower flower) : base(stateMachine,
             inputService,
             staticDataService,
             spider,
             stateMachineData,
-            legs)
+            legs,
+            flower)
         {
         }
 
@@ -33,7 +33,8 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Update();
 
-            RestoreEnergy(SpiderStaticData.EnergyFillSpeed);
+            if (!Data.IsCenterMouseHolding)
+                RestoreEnergy(SpiderStaticData.EnergyFillSpeed);
 
             if (IsInputZero())
                 StateMachine.SwitchState<IdlingState>();

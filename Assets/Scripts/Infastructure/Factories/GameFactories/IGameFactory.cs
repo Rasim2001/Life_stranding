@@ -5,6 +5,7 @@ namespace Infastructure.Factories.GameFactories
     public interface IGameFactory
     {
         GameObject CreateSpider();
-        GameObject CreateCameraSystem();
+        void CreateCameraSystem(Transform spider);
+        void CreateFlowerFollower(Transform spiderTransform);
     }
 }

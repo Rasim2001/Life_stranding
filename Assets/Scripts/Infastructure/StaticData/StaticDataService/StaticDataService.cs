@@ -1,4 +1,5 @@
-﻿using Infastructure.StaticData.Spider;
+﻿using Infastructure.Common;
+using Infastructure.StaticData.Spider;
 using UnityEngine;
 
 namespace Infastructure.StaticData.StaticDataService
