@@ -14,7 +14,7 @@ namespace SpiderController.StateMachine
 
         public float AirbornSpeed;
 
-        public bool IsCenterMouseHolding;
+        public bool IsMouseHolding;
         public float EnergyFillAmount = 1;
     }
 }

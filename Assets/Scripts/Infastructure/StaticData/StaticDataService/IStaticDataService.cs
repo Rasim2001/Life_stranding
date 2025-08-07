@@ -1,4 +1,5 @@
-﻿using Infastructure.StaticData.Spider;
+﻿using Infastructure.StaticData.HUD;
+using Infastructure.StaticData.Spider;
 
 namespace Infastructure.StaticData.StaticDataService
 {
@@ -6,5 +7,7 @@ namespace Infastructure.StaticData.StaticDataService
     {
         void LoadStaticData();
         SpiderStaticData SpiderStaticData { get; }
+        HudStaticData HudStaticData { get; }
+        GameStaticData GameStaticData { get; }
     }
 }

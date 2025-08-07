@@ -33,7 +33,7 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Update();
 
-            if (!Data.IsCenterMouseHolding)
+            if (!Data.IsMouseHolding)
                 RestoreEnergy(SpiderStaticData.EnergyFillSpeed);
 
             if (IsInputZero())

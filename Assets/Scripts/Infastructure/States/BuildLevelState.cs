@@ -53,6 +53,7 @@ namespace Infastructure.States
             GameObject spider = InitSpider();
 
             InitCameraSystem(spider.transform);
+            InitHUD();
         }
 
 
@@ -61,5 +62,8 @@ namespace Infastructure.States
 
         private void InitCameraSystem(Transform spiderTransform) =>
             _gameFactory.CreateCameraSystem(spiderTransform);
+
+        private void InitHUD() =>
+            _gameFactory.CreateHUD();
     }
 }

@@ -23,6 +23,17 @@ namespace SpiderController.StateMachine.States.Airborn
             base.Enter();
 
             Data.AirbornSpeed = SpiderStaticData.FallWithoutEnergySpeed;
+
+            foreach (LegDataStruct legData in Legs)
+                legData.Raycast.RotateFallingLegs();
+        }
+
+        public override void Exit()
+        {
+            base.Exit();
+
+            foreach (LegDataStruct legData in Legs)
+                legData.Raycast.SetDefaultRotationLegs();
         }
 
         public override void Update()

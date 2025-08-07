@@ -11,8 +11,10 @@ namespace Infastructure.Common
 
         public const string SpiderPath = "Prefabs/Spider/Spider";
         public const string CameraSystemPath = "Prefabs/CameraSystem/CameraSystem";
-        public const string FlowerFollower = "Prefabs/Flower/FlowerFollower";
+        public const string HUDPath = "Prefabs/HUD/HUD";
 
         public const string SpiderDataPath = "StaticData/Spider/SpiderData";
+        public const string HudDataPath = "StaticData/HUD/HudData";
+        public const string GameDataPath = "StaticData/GameData/GameData";
     }
 }

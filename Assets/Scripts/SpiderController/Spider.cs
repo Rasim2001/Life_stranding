@@ -15,8 +15,7 @@ namespace SpiderController
         [SerializeField] private SpiderUI _spiderUI;
         [SerializeField] private FlowerChecker _flowerChecker;
         [SerializeField] private Flower _flower;
-       
-        [SerializeField] private PlaneIndicator _planeIndicator;
+
         [SerializeField] private Transform _rotationPlaneTransform;
         [SerializeField] private LegDataStruct[] _legs;
         [SerializeField] private GroundChecker _groundChecker;
@@ -47,7 +46,8 @@ namespace SpiderController
 
         public void Initialize()
         {
-            _spiderPlane = new SpiderPlane(_planeIndicator, _rotationPlaneTransform, _inputService, _staticDataService);
+            _spiderPlane = new SpiderPlane(_spiderUI.PlaneIndicatorUI, _rotationPlaneTransform, _inputService,
+                _staticDataService);
             _stateMachine = new SpiderStateMachine(this, _inputService, _staticDataService, _legs, _flower);
             _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _flowerChecker, _flower);
         }

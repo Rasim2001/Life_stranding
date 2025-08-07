@@ -69,19 +69,23 @@ namespace SpiderController.StateMachine.States
 
         private void InputHandler()
         {
-            if (_inputService.CenterMousePressed)
+            if (_inputService.RightMousePressed)
             {
+                Spider.SpiderUI.MagnetIndicatorUI.Show();
+
                 _flower.IsFreezingOnPlatform = true;
-                Data.IsCenterMouseHolding = true;
+                Data.IsMouseHolding = true;
             }
 
-            else if (_inputService.CenterMouseUp)
+            else if (_inputService.RightMouseUp)
             {
+                Spider.SpiderUI.MagnetIndicatorUI.Hide();
+
                 _flower.IsFreezingOnPlatform = false;
-                Data.IsCenterMouseHolding = false;
+                Data.IsMouseHolding = false;
             }
 
-            if (Data.IsCenterMouseHolding)
+            if (Data.IsMouseHolding)
                 SpendEnergy(SpiderStaticData.EnergySpendFreezingFlowerSpeed);
 
             if (Data.EnergyFillAmount <= 0 && _flower.IsFreezingOnPlatform)

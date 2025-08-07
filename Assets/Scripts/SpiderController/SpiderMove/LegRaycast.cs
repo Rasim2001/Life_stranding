@@ -1,4 +1,9 @@
+using System;
+using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace SpiderController.SpiderMove
 {
@@ -11,17 +16,43 @@ namespace SpiderController.SpiderMove
         private RaycastHit _hit;
         private RaycastHit _airbonHit;
         public Vector3 Position => _hit.point;
-        public Vector3 Normal => _hit.normal;
         public bool IsGrounded => _hit.collider != null;
         public Vector3 AirbornPosition => _airbonHit.point;
 
         private float _rayDistance = 5;
+
+        private float _airbornRayDistance = 100;
+
+        private Vector3 _defaultRotation;
+        private Tween _randomRotationTween;
+        private Tween _defaultRotationTween;
+
+        private void Awake() =>
+            _defaultRotation = transform.localEulerAngles;
 
         public void SetGroundState() =>
             _rayDistance = 5;
 
         public void SetAirbornState() =>
             _rayDistance = 2;
+
+        public void RotateFallingLegs()
+        {
+            float randomAngleX = Random.Range(-50f, 50f);
+            float randomAngleY = Random.Range(-50f, 50f);
+            float randomAngleZ = Random.Range(-50f, 50f);
+
+            Vector3 randomRotation = new Vector3(randomAngleX, randomAngleY, randomAngleZ);
+
+            _defaultRotationTween?.Kill();
+            _randomRotationTween = transform.DOLocalRotate(randomRotation, 0.5f);
+        }
+
+        public void SetDefaultRotationLegs()
+        {
+            _randomRotationTween?.Kill();
+            _defaultRotationTween = transform.DOLocalRotate(_defaultRotation, 0.5f);
+        }
 
         private void Update()
         {
@@ -31,8 +62,8 @@ namespace SpiderController.SpiderMove
             Ray mainRay = new Ray(origin, baseDirection);
             bool hitFound = Physics.Raycast(mainRay, out _hit, _rayDistance, _layerMask);
 
-            Physics.Raycast(mainRay, out _airbonHit, 25, _layerMask);
-            Debug.DrawRay(mainRay.origin, mainRay.direction * 25, Color.magenta);
+            Physics.Raycast(mainRay, out _airbonHit, _airbornRayDistance, _layerMask);
+            Debug.DrawRay(mainRay.origin, mainRay.direction * _airbornRayDistance, Color.magenta);
 
             Debug.DrawRay(mainRay.origin, mainRay.direction * _rayDistance, Color.blue);
 

@@ -11,9 +11,13 @@ namespace SpiderController
     {
         [SerializeField] private HealthBarUI _healthBarUI;
         [SerializeField] private EnergyBarUI _energyBarUI;
+        [SerializeField] private PressedMouseButtonIndicatorUI _planeIndicatorUI;
+        [SerializeField] private PressedMouseButtonIndicatorUI _magnetIndicatorUI;
         public SpiderHealth SpiderHealth => _spiderHealth;
         public EnergyBarUI EnergyBar => _energyBarUI;
-        
+        public PressedMouseButtonIndicatorUI PlaneIndicatorUI => _planeIndicatorUI;
+        public PressedMouseButtonIndicatorUI MagnetIndicatorUI => _magnetIndicatorUI;
+
         private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
 
         private SpiderHealth _spiderHealth;

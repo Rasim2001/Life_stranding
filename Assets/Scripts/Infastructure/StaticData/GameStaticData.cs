@@ -5,5 +5,6 @@ namespace Infastructure.StaticData
     [CreateAssetMenu(fileName = "GameData", menuName = "StaticData/GameData")]
     public class GameStaticData : ScriptableObject
     {
+        public Vector3 FinishTargetPosition;
     }
 }

@@ -10,7 +10,7 @@ namespace SpiderController
     {
         private readonly IInputService _inputService;
         private readonly IStaticDataService _staticDataService;
-        private readonly PlaneIndicator _planeIndicator;
+        private readonly PressedMouseButtonIndicatorUI _pressedMouseButtonIndicatorUI;
         private readonly Transform _rotationPlaneTransform;
         private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
 
@@ -20,14 +20,14 @@ namespace SpiderController
 
 
         public SpiderPlane(
-            PlaneIndicator planeIndicator,
+            PressedMouseButtonIndicatorUI pressedMouseButtonIndicatorUI,
             Transform rotationPlaneTransform,
             IInputService inputService,
             IStaticDataService staticDataService)
         {
             _inputService = inputService;
             _staticDataService = staticDataService;
-            _planeIndicator = planeIndicator;
+            _pressedMouseButtonIndicatorUI = pressedMouseButtonIndicatorUI;
             _rotationPlaneTransform = rotationPlaneTransform;
         }
 
@@ -39,13 +39,13 @@ namespace SpiderController
 
             if (_inputService.LeftMousePressed)
             {
-                _planeIndicator.Show();
+                _pressedMouseButtonIndicatorUI.Show();
                 _isMouseHeld = true;
                 _initialMousePosition = Input.mousePosition;
             }
             else if (_inputService.LeftMouseUp)
             {
-                _planeIndicator.Hide();
+                _pressedMouseButtonIndicatorUI.Hide();
                 _isMouseHeld = false;
                 _mouseInput = Vector2.zero;
             }

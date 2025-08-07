@@ -1,3 +1,4 @@
+using System;
 using Infastructure.Services.Input;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
@@ -25,6 +26,9 @@ namespace CameraFollow
 
         private CinemachineBrain _cinemachineBrain;
 
+        private void Awake() =>
+            _cinemachineBrain = Camera.main.GetComponent<CinemachineBrain>();
+
 
         [Inject]
         public void Construct(IInputService inputService, IStaticDataService staticDataService)
@@ -33,13 +37,8 @@ namespace CameraFollow
             _inputService = inputService;
         }
 
-        public void SetTarget(Transform spiderTransform)
-        {
+        public void SetTarget(Transform spiderTransform) =>
             _target = spiderTransform;
-
-            /*if (_cinemachineBrain != null)
-                _cinemachineBrain.WorldUpOverride = transform;*/
-        }
 
         private void LateUpdate()
         {
@@ -76,10 +75,10 @@ namespace CameraFollow
 
         private void HandleMouse()
         {
-            if (_inputService.RightMousePressed)
+            if (_inputService.CenterMousePressed)
                 _isMouseRotating = true;
 
-            if (_inputService.RightMouseUp)
+            if (_inputService.CenterMouseUp)
                 _isMouseRotating = false;
 
             if (_isMouseRotating)
@@ -96,7 +95,7 @@ namespace CameraFollow
         {
             Vector3 targetPosition = _target.position + _offsetMovePosition;
 
-            transform.position = Vector3.SmoothDamp(
+            transform.localPosition = Vector3.SmoothDamp(
                 transform.position,
                 targetPosition,
                 ref _velocity,
