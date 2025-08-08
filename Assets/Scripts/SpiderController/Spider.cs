@@ -1,3 +1,4 @@
+using System;
 using _2;
 using Infastructure.Common;
 using Infastructure.Services.Input;
@@ -46,9 +47,14 @@ namespace SpiderController
 
         public void Initialize()
         {
+            StateMachineData stateMachineData = new StateMachineData();
+
             _spiderPlane = new SpiderPlane(_spiderUI.PlaneIndicatorUI, _rotationPlaneTransform, _inputService,
-                _staticDataService);
-            _stateMachine = new SpiderStateMachine(this, _inputService, _staticDataService, _legs, _flower);
+                _staticDataService, stateMachineData);
+            _spiderPlane.Initialize();
+
+            _stateMachine = new SpiderStateMachine(this, stateMachineData, _inputService, _staticDataService, _legs,
+                _flower);
             _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _flowerChecker, _flower);
         }
 
@@ -79,5 +85,8 @@ namespace SpiderController
 
             _stateMachine.LateUpdate();
         }
+
+        private void OnDestroy() =>
+            _spiderPlane.Destroy();
     }
 }

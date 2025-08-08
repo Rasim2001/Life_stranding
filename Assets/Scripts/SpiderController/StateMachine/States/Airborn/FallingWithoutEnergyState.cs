@@ -1,3 +1,5 @@
+using System;
+using Cysharp.Threading.Tasks;
 using Infastructure.Services.Input;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
@@ -23,6 +25,7 @@ namespace SpiderController.StateMachine.States.Airborn
             base.Enter();
 
             Data.AirbornSpeed = SpiderStaticData.FallWithoutEnergySpeed;
+            Data.IsFallingDownWithoutEnergyState = true;
 
             foreach (LegDataStruct legData in Legs)
                 legData.Raycast.RotateFallingLegs();
@@ -32,9 +35,9 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Exit();
 
-            foreach (LegDataStruct legData in Legs)
-                legData.Raycast.SetDefaultRotationLegs();
+            Data.IsFallingDownWithoutEnergyState = false;
         }
+
 
         public override void Update()
         {
@@ -44,14 +47,32 @@ namespace SpiderController.StateMachine.States.Airborn
                 Spider.transform.localEulerAngles = Vector3.zero;
 
             if (_spiderGroundChecker.IsTouchesWithLegs || _spiderGroundChecker.IsTouchingGround)
-            {
-                Data.YVelocity = 0;
+                StandUpAsync().Forget();
+        }
 
-                if (IsInputZero())
-                    StateMachine.SwitchState<IdlingState>();
-                else
-                    StateMachine.SwitchState<RunningState>();
+        private async UniTask StandUpAsync()
+        {
+            Data.YVelocity = 0;
+            Data.IsStandingUpAfterFalling = true;
+
+            foreach (LegDataStruct legData in Legs)
+            {
+                legData.Leg.SetAcceleration(0.5f);
+                legData.Raycast.SetDefaultRotationLegs();
+                legData.Raycast.SetGroundState();
             }
+
+            if (IsInputZero())
+                StateMachine.SwitchState<IdlingState>();
+            else
+                StateMachine.SwitchState<RunningState>();
+
+            await UniTask.Delay(TimeSpan.FromSeconds(2f));
+
+            foreach (LegDataStruct legData in Legs)
+                legData.Leg.SetDefaultSpeed();
+
+            Data.IsStandingUpAfterFalling = false;
         }
     }
 }

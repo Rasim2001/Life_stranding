@@ -17,13 +17,12 @@ namespace SpiderController.StateMachine
 
         public SpiderStateMachine(
             Spider spider,
+            StateMachineData stateMachineData,
             IInputService inputService,
             IStaticDataService staticDataService,
             LegDataStruct[] legs,
             Flower flower)
         {
-            StateMachineData stateMachineData = new StateMachineData();
-
             _states = new List<ISpiderState>()
             {
                 new IdlingState(this, inputService, staticDataService, spider, stateMachineData, legs, flower),

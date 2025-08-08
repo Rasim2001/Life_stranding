@@ -11,7 +11,7 @@ namespace SpiderController.SpiderMove
     {
         [SerializeField] private LayerMask _layerMask;
         [SerializeField] private float _offsetDistance = 15f;
-        [SerializeField] private int _offsetRayCount = 3;
+        [SerializeField] private int _offsetRayCount = 5;
 
         private RaycastHit _hit;
         private RaycastHit _airbonHit;
@@ -30,7 +30,7 @@ namespace SpiderController.SpiderMove
         private void Awake() =>
             _defaultRotation = transform.localEulerAngles;
 
-        public void SetGroundState() =>
+        public void SetGroundState() => 
             _rayDistance = 5;
 
         public void SetAirbornState() =>
@@ -51,7 +51,7 @@ namespace SpiderController.SpiderMove
         public void SetDefaultRotationLegs()
         {
             _randomRotationTween?.Kill();
-            _defaultRotationTween = transform.DOLocalRotate(_defaultRotation, 0.5f);
+            _defaultRotationTween = transform.DOLocalRotate(_defaultRotation, 2);
         }
 
         private void Update()

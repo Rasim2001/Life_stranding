@@ -98,8 +98,11 @@ namespace SpiderController.StateMachine.States
 
         public virtual void FixedUpdate()
         {
-            MoveBodySpider();
-            RotateTowardsMoveDirection();
+            if (!Data.IsStandingUpAfterFalling)
+            {
+                MoveBodySpider();
+                RotateTowardsMoveDirection();
+            }
 
             if (!Mathf.Approximately(Data.YVelocity, 0))
                 return;

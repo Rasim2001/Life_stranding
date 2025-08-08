@@ -2,7 +2,9 @@ using _2;
 using Infastructure.Services.Input;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
+using SpiderController.StateMachine;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace SpiderController
 {
@@ -10,6 +12,7 @@ namespace SpiderController
     {
         private readonly IInputService _inputService;
         private readonly IStaticDataService _staticDataService;
+        private readonly StateMachineData _stateMachineData;
         private readonly PressedMouseButtonIndicatorUI _pressedMouseButtonIndicatorUI;
         private readonly Transform _rotationPlaneTransform;
         private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
@@ -18,23 +21,32 @@ namespace SpiderController
         private Vector2 _initialMousePosition;
         private bool _isMouseHeld;
 
+        private Quaternion _targetLocalRotationInFallingDownState;
+
 
         public SpiderPlane(
             PressedMouseButtonIndicatorUI pressedMouseButtonIndicatorUI,
             Transform rotationPlaneTransform,
             IInputService inputService,
-            IStaticDataService staticDataService)
+            IStaticDataService staticDataService,
+            StateMachineData stateMachineData)
         {
             _inputService = inputService;
             _staticDataService = staticDataService;
             _pressedMouseButtonIndicatorUI = pressedMouseButtonIndicatorUI;
             _rotationPlaneTransform = rotationPlaneTransform;
+            _stateMachineData = stateMachineData;
         }
 
+        public void Initialize() =>
+            _stateMachineData.OnFallingDownStateChanged += OnFallingDownStateEnter;
+
+        public void Destroy() =>
+            _stateMachineData.OnFallingDownStateChanged -= OnFallingDownStateEnter;
 
         public void Update()
         {
-            if (SpiderStaticData == null)
+            if (_stateMachineData.IsFallingDownWithoutEnergyState)
                 return;
 
             if (_inputService.LeftMousePressed)
@@ -54,12 +66,23 @@ namespace SpiderController
                 HandleMousePosition();
         }
 
+        private void OnFallingDownStateEnter()
+        {
+            int randomSign = Random.value < 0.5f ? -1 : 1;
+
+            float randomAngleX = Random.Range(30, 40f) * randomSign;
+            float randomAngleY = Random.Range(30, 40f) * randomSign;
+            float randomAngleZ = Random.Range(30, 40f) * randomSign;
+
+            _targetLocalRotationInFallingDownState = Quaternion.Euler(randomAngleX, randomAngleY, randomAngleZ);
+        }
+
         public void FixedUpdate()
         {
-            if (SpiderStaticData == null)
-                return;
-
-            ApplyRotation();
+            if (_stateMachineData.IsFallingDownWithoutEnergyState)
+                RotateTo(_targetLocalRotationInFallingDownState);
+            else
+                ApplyRotation();
         }
 
         private void HandleMousePosition()
@@ -87,6 +110,12 @@ namespace SpiderController
 
             Quaternion targetLocalRotation = Quaternion.Euler(targetAngleX, 0f, targetAngleZ);
 
+            RotateTo(targetLocalRotation);
+        }
+
+
+        private void RotateTo(Quaternion targetLocalRotation)
+        {
             _rotationPlaneTransform.localRotation = Quaternion.Slerp(
                 _rotationPlaneTransform.localRotation,
                 targetLocalRotation,
