@@ -25,6 +25,9 @@ namespace Infastructure.Services.Input
         public bool IsLeftShiftPressed => UnityEngine.Input.GetKeyDown(KeyCode.LeftShift);
         public bool IsLeftShiftUp => UnityEngine.Input.GetKeyUp(KeyCode.LeftShift);
 
+        public bool CtrlPressed => UnityEngine.Input.GetKeyDown(KeyCode.LeftControl);
+        public bool CtrlUp => UnityEngine.Input.GetKeyUp(KeyCode.LeftControl);
+
         public bool JumpPressed => UnityEngine.Input.GetKeyDown(KeyCode.Space);
         public bool JerkPressed => UnityEngine.Input.GetKeyDown(KeyCode.LeftAlt);
         public bool PickupPressed => UnityEngine.Input.GetKeyDown(KeyCode.E);

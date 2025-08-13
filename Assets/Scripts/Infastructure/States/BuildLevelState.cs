@@ -39,6 +39,9 @@ namespace Infastructure.States
             if (!_sceneLoader.IsGameScene())
                 return;
 
+            /*Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.None;*/
+
             InitGameWorld();
         }
 

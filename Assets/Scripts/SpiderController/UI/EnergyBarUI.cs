@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace _2
+namespace SpiderController.UI
 {
     public class EnergyBarUI : MonoBehaviour
     {

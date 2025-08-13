@@ -1,8 +1,8 @@
-using _2;
 using Infastructure.Services.Input;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.StateMachine;
+using SpiderController.UI;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -22,6 +22,8 @@ namespace SpiderController
         private bool _isMouseHeld;
 
         private Quaternion _targetLocalRotationInFallingDownState;
+
+        public float _offsetX = -90;
 
 
         public SpiderPlane(
@@ -98,7 +100,7 @@ namespace SpiderController
             _mouseInput.x = -_mouseInput.x;
             _mouseInput.y = -_mouseInput.y;
 
-            _mouseInput *= SpiderStaticData.MouseSensitivity;
+            _mouseInput *= SpiderStaticData.PlaneSensitivity;
         }
 
         private void ApplyRotation()
@@ -119,7 +121,7 @@ namespace SpiderController
             _rotationPlaneTransform.localRotation = Quaternion.Slerp(
                 _rotationPlaneTransform.localRotation,
                 targetLocalRotation,
-                Time.fixedDeltaTime * SpiderStaticData.RotationSpeed);
+                Time.fixedDeltaTime * SpiderStaticData.PlaneRotationSpeed);
         }
     }
 }

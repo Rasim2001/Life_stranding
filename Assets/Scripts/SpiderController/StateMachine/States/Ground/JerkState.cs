@@ -20,6 +20,7 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Enter();
 
+            Data.DistanceFromGround = SpiderStaticData.DistanceFromGround;
             ApplyJerkSpeed();
 
             _dashTimer = SpiderStaticData.JerkDuration;

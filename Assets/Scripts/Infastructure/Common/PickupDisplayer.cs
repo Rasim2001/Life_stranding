@@ -11,7 +11,7 @@ namespace Infastructure.Common
         private RotateToCamera _rotateToCamera;
 
         private void Start() =>
-            _rotateToCamera = new RotateToCamera(Camera.main);
+            _rotateToCamera = new RotateToCamera();
 
         public void Show(Transform pickupTarget)
         {
@@ -32,7 +32,7 @@ namespace Infastructure.Common
             if (_pickUpTarget == null)
                 return;
 
-            _rotateToCamera.UpdateRotation(transform);
+            _rotateToCamera.UpdateRotationPickUp(transform);
         }
     }
 }

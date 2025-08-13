@@ -16,12 +16,15 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   StepLength: 0.85
-  Speed: 3
+  Speed: 6
   LerpForwardSpeed: 60
   DistanceFromGround: 0.5
+  SlowdownDistanceFromGround: 0.25
   LerpSpeedFromGround: 8
-  FastSpeed: 6
+  SlowdownSpeed: 2
+  FastSpeed: 12
   JerkSpeed: 25
+  JerkDuration: 0.3
   JerkCurve:
     serializedVersion: 2
     m_Curve:
@@ -55,14 +58,15 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  JerkDuration: 0.3
-  MouseSensitivity: 2
+  PlaneSensitivity: 2
   MaxAngle: 45
-  RotationSpeed: 3
+  PlaneRotationSpeed: 3
   SmoothTime: 0.3
-  MouseRotationSpeed: 6
-  MouseSpeed: 400
+  CameraRotationSpeed: 6
+  MouseRotationSpeedX: 6
+  MouseRotationSpeedY: 400
   ScrollSensitivity: 15
+  WorldUpSmoothRotation: 2
   FallSpeed: 1
   FallWithoutEnergySpeed: 10
   MaxHeight: 5

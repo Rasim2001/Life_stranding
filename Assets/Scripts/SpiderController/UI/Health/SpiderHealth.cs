@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace SpiderController
+namespace SpiderController.UI.Health
 {
     public class SpiderHealth
     {

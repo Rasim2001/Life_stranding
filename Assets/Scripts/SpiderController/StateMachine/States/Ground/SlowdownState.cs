@@ -1,13 +1,12 @@
 using Infastructure.Services.Input;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
-using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Ground
 {
-    public class IdlingState : GroundedState
+    public class SlowdownState : GroundedState
     {
-        public IdlingState(ISpiderStateMachine stateMachine, IInputService inputService,
+        public SlowdownState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
             LegDataStruct[] legs, Flower flower) : base(stateMachine, inputService, staticDataService, spider,
             stateMachineData, legs, flower)
@@ -18,13 +17,9 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Enter();
 
-            Rigidbody.linearVelocity = Vector3.zero;
-            Rigidbody.angularVelocity = Vector3.zero;
-
-            Data.Speed = 0;
-            Data.DistanceFromGround = SpiderStaticData.DistanceFromGround;
+            Data.DistanceFromGround = SpiderStaticData.SlowdownDistanceFromGround;
+            Data.Speed = SpiderStaticData.SlowdownSpeed;
         }
-
 
         public override void Update()
         {
@@ -33,13 +28,15 @@ namespace SpiderController.StateMachine.States.Ground
             if (!Data.IsMouseHolding)
                 RestoreEnergy(SpiderStaticData.EnergyFillSpeed);
 
-            if (SlowdownPressed())
-                StateMachine.SwitchState<SlowdownState>();
-
-            if (IsInputZero())
+            if (!SlowdownUp())
                 return;
 
-            StateMachine.SwitchState<RunningState>();
+            if (IsInputZero())
+                StateMachine.SwitchState<IdlingState>();
+            else if (IsFastRunPressed())
+                StateMachine.SwitchState<FastRunningState>();
+            else
+                StateMachine.SwitchState<RunningState>();
         }
     }
 }

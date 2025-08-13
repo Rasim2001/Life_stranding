@@ -22,6 +22,15 @@ namespace SpiderController.StateMachine.States.Airborn
 
             Data.AirbornSpeed = SpiderStaticData.FallSpeed;
             Data.YVelocity = SpiderStaticData.StartYVelocity;
+
+            Flower.IsFreezingOnPlatform = true;
+        }
+
+        public override void Exit()
+        {
+            base.Exit();
+
+            Flower.IsFreezingOnPlatform = false;
         }
 
         public override void Update()

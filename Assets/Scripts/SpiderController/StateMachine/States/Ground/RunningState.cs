@@ -26,6 +26,7 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Enter();
 
+            Data.DistanceFromGround = SpiderStaticData.DistanceFromGround;
             Data.Speed = SpiderStaticData.Speed;
         }
 
@@ -36,7 +37,9 @@ namespace SpiderController.StateMachine.States.Ground
             if (!Data.IsMouseHolding)
                 RestoreEnergy(SpiderStaticData.EnergyFillSpeed);
 
-            if (IsInputZero())
+            if (SlowdownPressed())
+                StateMachine.SwitchState<SlowdownState>();
+            else if (IsInputZero())
                 StateMachine.SwitchState<IdlingState>();
             else if (IsFastRunPressed())
                 StateMachine.SwitchState<FastRunningState>();

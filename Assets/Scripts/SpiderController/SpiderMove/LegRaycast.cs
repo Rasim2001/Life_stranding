@@ -15,7 +15,7 @@ namespace SpiderController.SpiderMove
 
         private RaycastHit _hit;
         private RaycastHit _airbonHit;
-        public Vector3 Position => _hit.point;
+        public Vector3 Position => _smoothedPoint;
         public bool IsGrounded => _hit.collider != null;
         public Vector3 AirbornPosition => _airbonHit.point;
 
@@ -27,10 +27,15 @@ namespace SpiderController.SpiderMove
         private Tween _randomRotationTween;
         private Tween _defaultRotationTween;
 
+
+        private float _smoothHit = 0.2f;
+        private Vector3 _smoothedPoint;
+        private float _positionSmoothSpeed = 20f;
+
         private void Awake() =>
             _defaultRotation = transform.localEulerAngles;
 
-        public void SetGroundState() => 
+        public void SetGroundState() =>
             _rayDistance = 5;
 
         public void SetAirbornState() =>
@@ -130,6 +135,15 @@ namespace SpiderController.SpiderMove
                     }
                 }
             }
+
+            Vector3 targetPoint = IsGrounded
+                ? _hit.point
+                : _airbonHit.collider != null
+                    ? _airbonHit.point
+                    : origin + baseDirection * _rayDistance;
+
+            _smoothedPoint = Vector3.Lerp(_smoothedPoint, targetPoint,
+                1f - Mathf.Exp(-_positionSmoothSpeed * Time.deltaTime));
 
             if (hitFound && _hit.collider != null)
                 Debug.DrawRay(mainRay.origin, mainRay.direction * _rayDistance, Color.green);

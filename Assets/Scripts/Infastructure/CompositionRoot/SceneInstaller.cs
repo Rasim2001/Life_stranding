@@ -1,3 +1,4 @@
+using Infastructure.Common;
 using Infastructure.Factories.GameFactories;
 using Infastructure.Services.Input;
 using Infastructure.Services.Window.GameWindowService;
@@ -19,6 +20,17 @@ namespace Infastructure.CompositionRoot
             BindUIFactory();
 
             BindInputService();
+
+            BindStableWorldUp();
+        }
+
+        private void BindStableWorldUp()
+        {
+            Container
+                .Bind<IStableWorldUp>()
+                .To<StableWorldUp>()
+                .FromComponentInNewPrefabResource(AssetsPath.StableWorldUpPath)
+                .AsSingle();
         }
 
         private void BindInputService() =>

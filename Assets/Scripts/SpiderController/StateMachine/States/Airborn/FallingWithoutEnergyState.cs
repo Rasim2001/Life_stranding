@@ -4,12 +4,15 @@ using Infastructure.Services.Input;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
+using SpiderController.UI.Stickers;
 using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Airborn
 {
     public class FallingWithoutEnergyState : AirbornState
     {
+        private StickerUI StickerUI => Spider.SpiderUI.StickerUI;
+
         private readonly GroundChecker _spiderGroundChecker;
 
         public FallingWithoutEnergyState(ISpiderStateMachine stateMachine, IInputService inputService,
@@ -35,6 +38,7 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Exit();
 
+            StickerUI.PlaySticker(StickerEnum.FallingDown);
             Data.IsFallingDownWithoutEnergyState = false;
         }
 
@@ -43,8 +47,8 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Update();
 
-            if (_spiderGroundChecker.IsTouchingGround)
-                Spider.transform.localEulerAngles = Vector3.zero;
+            /*if (_spiderGroundChecker.IsTouchingGround && _spiderGroundChecker.IsTouchesWithLegs == false)
+                Spider.transform.localEulerAngles = Vector3.zero;*/
 
             if (_spiderGroundChecker.IsTouchesWithLegs || _spiderGroundChecker.IsTouchingGround)
                 StandUpAsync().Forget();

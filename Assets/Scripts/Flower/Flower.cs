@@ -16,11 +16,13 @@ namespace SpiderController
         private bool _isOnPlatform = true;
         private Rigidbody _rigidbody;
         private Vector3 _startPosition;
+        private Quaternion _startRotation; // Добавляем сохранение начального поворота
 
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody>();
             _startPosition = transform.localPosition;
+            _startRotation = transform.localRotation;
         }
 
         private void Update()
@@ -41,12 +43,11 @@ namespace SpiderController
         {
             transform.SetParent(_platform);
             transform.localPosition = _startPosition;
-            transform.localRotation = Quaternion.Euler(0, 0, 0);
+            transform.localRotation = _startRotation;
 
             _rigidbody.isKinematic = true;
             _isOnPlatform = true;
         }
-
 
         private void SimulateRotation()
         {
@@ -58,11 +59,13 @@ namespace SpiderController
             Vector3 gravityForce = new Vector3(
                 -Mathf.Sin(angleZ),
                 0f,
-                Mathf.Sin(angleX)
+                -Mathf.Sin(angleX)
             );
 
             Vector3 movementVector = gravityForce * (Time.deltaTime * _speed);
-            transform.Translate(movementVector);
+            movementVector = _startRotation * movementVector;
+
+            transform.Translate(movementVector, Space.Self);
         }
 
         private void SimulatePhysics()
@@ -71,17 +74,6 @@ namespace SpiderController
 
             _isOnPlatform = false;
             _rigidbody.isKinematic = false;
-        }
-
-
-        private void OnDrawGizmosSelected()
-        {
-            if (_platform != null)
-            {
-                Gizmos.color = Color.yellow;
-                Gizmos.matrix = _platform.localToWorldMatrix;
-                Gizmos.DrawWireCube(_platformBounds.center, _platformBounds.size);
-            }
         }
     }
 }

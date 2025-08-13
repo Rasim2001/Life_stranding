@@ -3,6 +3,7 @@ using HUD;
 using Infastructure.Common;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController;
+using SpiderController.UI.Health;
 using UnityEngine;
 using Zenject;
 
@@ -34,7 +35,7 @@ namespace Infastructure.Factories.GameFactories
         {
             CameraSystem cameraSystem =
                 _diContainer.InstantiatePrefabResourceForComponent<CameraSystem>(AssetsPath.CameraSystemPath);
-            cameraSystem.Initialize(spiderTransform);
+            cameraSystem.SetTarget(spiderTransform);
         }
 
         public void CreateHUD()

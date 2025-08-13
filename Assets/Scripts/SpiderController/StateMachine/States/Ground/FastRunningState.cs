@@ -18,6 +18,7 @@ namespace SpiderController.StateMachine.States.Ground
             base.Enter();
 
             Data.Speed = SpiderStaticData.FastSpeed;
+            Data.DistanceFromGround = SpiderStaticData.DistanceFromGround;
 
             ApplyFastRunning();
         }

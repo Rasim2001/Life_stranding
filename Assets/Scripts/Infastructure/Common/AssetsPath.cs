@@ -8,6 +8,7 @@ namespace Infastructure.Common
         public const string GameBootstrapperPath = "Prefabs/GameBootstrapper";
         public const string CoroutineRunnerPath = "Prefabs/CoroutineRunner";
         public const string PickupDisplayerPath = "Prefabs/UI/PickupDisplayerRoot";
+        public const string StableWorldUpPath = "Prefabs/CameraSystem/StableWorldUp";
 
         public const string SpiderPath = "Prefabs/Spider/Spider";
         public const string CameraSystemPath = "Prefabs/CameraSystem/CameraSystem";

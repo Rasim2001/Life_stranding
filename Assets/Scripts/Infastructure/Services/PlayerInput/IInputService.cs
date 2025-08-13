@@ -19,5 +19,7 @@ namespace Infastructure.Services.Input
         bool PickupPressed { get; }
         bool CenterMousePressed { get; }
         bool CenterMouseUp { get; }
+        bool CtrlPressed { get; }
+        bool CtrlUp { get; }
     }
 }

@@ -7,22 +7,31 @@ namespace HUD
         private readonly Vector3 _finishTargetPosition;
         private readonly RectTransform _arrowUI;
         private readonly RectTransform _canvasRect;
+        private readonly LayerMask _layerMask;
+
+        private readonly int _spiderLayer = LayerMask.NameToLayer("Spider");
+        private readonly int _spiderColliderLayer = LayerMask.NameToLayer("SpiderCollider");
+        private readonly int _flowerLayer = LayerMask.NameToLayer("Flower");
 
         private readonly float _borderOffsetX = 50;
         private readonly float _borderOffsetY = 100f;
 
         private readonly Camera _mainCamera;
-
         private bool _arrowShowing;
 
-        public FinishIndicator(Vector3 finishTargetPosition, RectTransform arrowUI, RectTransform canvasRect)
+        public FinishIndicator(Vector3 finishTargetPosition, RectTransform arrowUI, RectTransform canvasRect,
+            LayerMask layerMask)
         {
             _finishTargetPosition = finishTargetPosition;
             _arrowUI = arrowUI;
             _canvasRect = canvasRect;
 
+            _layerMask = layerMask;
+            _layerMask &= ~(1 << _spiderLayer) | (1 << _spiderColliderLayer) | (1 << _flowerLayer);
+
             _mainCamera = Camera.main;
         }
+
 
         public void Update()
         {
@@ -43,7 +52,8 @@ namespace HUD
                 _canvasRect, screenPoint, null, out Vector2 localPoint);
 
             bool isOnScreen = screenPos.x > 0 && screenPos.x < Screen.width &&
-                              screenPos.y > 0 && screenPos.y < Screen.height && !isBehind;
+                              screenPos.y > 0 && screenPos.y < Screen.height &&
+                              !isBehind && IsTargetVisible(_finishTargetPosition);
 
             Show(!isOnScreen);
 
@@ -67,6 +77,19 @@ namespace HUD
             float t = Mathf.Min(t1, t2);
 
             return direction * t;
+        }
+
+        private bool IsTargetVisible(Vector3 targetWorldPosition)
+        {
+            Vector3 cameraPos = _mainCamera.transform.position;
+            Vector3 direction = targetWorldPosition - cameraPos;
+            float distance = direction.magnitude;
+
+
+            if (Physics.Raycast(cameraPos, direction.normalized, out RaycastHit hit, distance, _layerMask))
+                return hit.collider.GetComponent<FinishTargetMarker>();
+
+            return true;
         }
 
         private void Show(bool value)

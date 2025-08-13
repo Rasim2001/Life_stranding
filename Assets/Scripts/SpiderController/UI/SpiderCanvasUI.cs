@@ -2,14 +2,14 @@ using Common;
 using Unity.Cinemachine;
 using UnityEngine;
 
-namespace _2
+namespace SpiderController.UI
 {
     public class SpiderCanvasUI : MonoBehaviour
     {
         private RotateToCamera _rotateToCamera;
 
         private void Awake() =>
-            _rotateToCamera = new RotateToCamera(Camera.main);
+            _rotateToCamera = new RotateToCamera();
 
         private void Start() =>
             CinemachineCore.CameraUpdatedEvent.AddListener(UpdateRotation);

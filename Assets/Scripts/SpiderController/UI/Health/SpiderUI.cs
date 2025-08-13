@@ -1,14 +1,14 @@
-using System;
-using _2;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
+using SpiderController.UI.Stickers;
 using UnityEngine;
 using Zenject;
 
-namespace SpiderController
+namespace SpiderController.UI.Health
 {
     public class SpiderUI : MonoBehaviour
     {
+        [SerializeField] private StickerUI _stickerUI;
         [SerializeField] private HealthBarUI _healthBarUI;
         [SerializeField] private EnergyBarUI _energyBarUI;
         [SerializeField] private PressedMouseButtonIndicatorUI _planeIndicatorUI;
@@ -17,7 +17,7 @@ namespace SpiderController
         public EnergyBarUI EnergyBar => _energyBarUI;
         public PressedMouseButtonIndicatorUI PlaneIndicatorUI => _planeIndicatorUI;
         public PressedMouseButtonIndicatorUI MagnetIndicatorUI => _magnetIndicatorUI;
-
+        public StickerUI StickerUI => _stickerUI;
         private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
 
         private SpiderHealth _spiderHealth;

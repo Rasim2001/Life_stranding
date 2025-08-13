@@ -1,10 +1,11 @@
-using System;
-using _2;
 using Infastructure.Common;
 using Infastructure.Services.Input;
+using Infastructure.States;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine;
+using SpiderController.UI.Health;
+using SpiderController.UI.Stickers;
 using UnityEngine;
 using Zenject;
 
@@ -32,11 +33,13 @@ namespace SpiderController
         private IInputService _inputService;
         private IStaticDataService _staticDataService;
         private IPickupDisplayer _pickupDisplayer;
+        private IStateMachine _stateMachine1;
 
         [Inject]
         public void Construct(IInputService inputService, IStaticDataService staticDataService,
-            IPickupDisplayer pickupDisplayer)
+            IPickupDisplayer pickupDisplayer, IStateMachine stateMachine)
         {
+            _stateMachine1 = stateMachine;
             _pickupDisplayer = pickupDisplayer;
             _staticDataService = staticDataService;
             _inputService = inputService;
@@ -56,12 +59,17 @@ namespace SpiderController
             _stateMachine = new SpiderStateMachine(this, stateMachineData, _inputService, _staticDataService, _legs,
                 _flower);
             _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _flowerChecker, _flower);
+
+            _spiderUI.StickerUI.PlaySticker(StickerEnum.StartGame);
         }
 
         private void Update()
         {
             if (_stateMachine == null)
                 return;
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+                _stateMachine1.Enter<LoadLevelState>();
 
             _stateMachine.HandleInput();
             _stateMachine.Update();

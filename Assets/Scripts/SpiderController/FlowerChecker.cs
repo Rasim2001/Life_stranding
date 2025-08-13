@@ -11,11 +11,5 @@ namespace SpiderController
 
         private void Update() =>
             IsTouching = Physics.CheckSphere(transform.position, _radius, _flowerLayer);
-
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = IsTouching ? Color.green : Color.red;
-            Gizmos.DrawWireSphere(transform.position, _radius);
-        }
     }
 }

@@ -12,22 +12,26 @@ namespace Infastructure.StaticData.Spider
         public float Speed = 3;
         public float LerpForwardSpeed = 60;
         public float DistanceFromGround = 0.5f;
+        public float SlowdownDistanceFromGround = 0.25f;
         public float LerpSpeedFromGround = 10;
+        public float SlowdownSpeed = 2;
         public float FastSpeed = 6;
         public float JerkSpeed = 5;
-        public AnimationCurve JerkCurve;
         public float JerkDuration = 1;
+        public AnimationCurve JerkCurve;
 
         [Header("RotationPlane")]
-        public float MouseSensitivity = 2f;
+        public float PlaneSensitivity = 2f;
         public float MaxAngle = 45f;
-        public float RotationSpeed;
+        public float PlaneRotationSpeed;
 
         [Header("MouseLookZoom")]
         public float SmoothTime = 0.3f;
-        public float MouseRotationSpeed = 6f;
-        public float MouseSpeed = 400f;
+        public float CameraRotationSpeed = 6f;
+        public float MouseRotationSpeedX = 6;
+        public float MouseRotationSpeedY = 400f;
         public float ScrollSensitivity = 15f;
+        public float WorldUpSmoothRotation = 2;
 
         [Header("AirbornState")]
         public float FallSpeed;

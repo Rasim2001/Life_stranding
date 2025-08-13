@@ -24,19 +24,16 @@ namespace SpiderController.StateMachine
         public Vector3 Input;
         public Vector3 Velocity;
 
+        public float DistanceFromGround = 0.5f;
         public float Speed;
-
         public float YVelocity;
         public float XVelocity;
-
         public float AirbornSpeed;
-
-        public bool IsMouseHolding;
         public float EnergyFillAmount = 1;
 
+
+        public bool IsMouseHolding;
         public bool IsStandingUpAfterFalling;
-
-
         private bool _IsFallingDownWithoutEnergyState;
     }
 }

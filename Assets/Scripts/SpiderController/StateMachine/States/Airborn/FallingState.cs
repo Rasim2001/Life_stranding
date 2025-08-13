@@ -2,12 +2,15 @@ using Infastructure.Services.Input;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
+using SpiderController.UI.Stickers;
 using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Airborn
 {
     public class FallingState : AirbornState
     {
+        
+
         private readonly GroundChecker _spiderGroundChecker;
 
         public FallingState(ISpiderStateMachine stateMachine, IInputService inputService,
@@ -23,6 +26,14 @@ namespace SpiderController.StateMachine.States.Airborn
             base.Enter();
 
             Data.AirbornSpeed = SpiderStaticData.FallSpeed;
+            Flower.IsFreezingOnPlatform = true;
+        }
+
+        public override void Exit()
+        {
+            base.Exit();
+
+            Flower.IsFreezingOnPlatform = false;
         }
 
 

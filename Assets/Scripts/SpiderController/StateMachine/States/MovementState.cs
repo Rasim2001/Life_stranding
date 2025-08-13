@@ -1,8 +1,9 @@
-using _2;
 using Infastructure.Services.Input;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
+using SpiderController.UI;
+using SpiderController.UI.Health;
 using UnityEngine;
 
 namespace SpiderController.StateMachine.States
@@ -13,6 +14,7 @@ namespace SpiderController.StateMachine.States
         protected readonly StateMachineData Data;
         protected readonly Spider Spider;
         protected readonly LegDataStruct[] Legs;
+        protected readonly Flower Flower;
 
         protected IInputService InputService => _inputService;
         protected Rigidbody Rigidbody => Spider.Rigidbody;
@@ -21,9 +23,9 @@ namespace SpiderController.StateMachine.States
         private SpiderHealth SpiderHealth => Spider.SpiderUI.SpiderHealth;
         private EnergyBarUI EnergyBar => Spider.SpiderUI.EnergyBar;
 
-        private readonly Flower _flower;
         private readonly IStaticDataService _staticDataService;
         private readonly IInputService _inputService;
+        private readonly float _legMoveDeadzone = 0.04f;
 
 
         protected MovementState(
@@ -37,7 +39,7 @@ namespace SpiderController.StateMachine.States
         {
             _inputService = inputService;
             _staticDataService = staticDataService;
-            _flower = flower;
+            Flower = flower;
 
             StateMachine = stateMachine;
             Spider = spider;
@@ -67,35 +69,6 @@ namespace SpiderController.StateMachine.States
             CheckFlowerAndReduceHp();
         }
 
-        private void InputHandler()
-        {
-            if (_inputService.RightMousePressed)
-            {
-                Spider.SpiderUI.MagnetIndicatorUI.Show();
-
-                _flower.IsFreezingOnPlatform = true;
-                Data.IsMouseHolding = true;
-            }
-
-            else if (_inputService.RightMouseUp)
-            {
-                Spider.SpiderUI.MagnetIndicatorUI.Hide();
-
-                _flower.IsFreezingOnPlatform = false;
-                Data.IsMouseHolding = false;
-            }
-
-            if (Data.IsMouseHolding)
-                SpendEnergy(SpiderStaticData.EnergySpendFreezingFlowerSpeed);
-
-            if (Data.EnergyFillAmount <= 0 && _flower.IsFreezingOnPlatform)
-                _flower.IsFreezingOnPlatform = false;
-        }
-
-        public virtual void LateUpdate()
-        {
-        }
-
         public virtual void FixedUpdate()
         {
             if (!Data.IsStandingUpAfterFalling)
@@ -111,6 +84,36 @@ namespace SpiderController.StateMachine.States
             AdjustBodyOrientation();
         }
 
+        public virtual void LateUpdate()
+        {
+        }
+
+        private void InputHandler()
+        {
+            if (_inputService.RightMousePressed)
+            {
+                Spider.SpiderUI.MagnetIndicatorUI.Show();
+
+                Flower.IsFreezingOnPlatform = true;
+                Data.IsMouseHolding = true;
+            }
+
+            else if (_inputService.RightMouseUp)
+            {
+                Spider.SpiderUI.MagnetIndicatorUI.Hide();
+
+                Flower.IsFreezingOnPlatform = false;
+                Data.IsMouseHolding = false;
+            }
+
+            if (Data.IsMouseHolding)
+                SpendEnergy(SpiderStaticData.EnergySpendFreezingFlowerSpeed);
+
+            if (Data.EnergyFillAmount <= 0 && Flower.IsFreezingOnPlatform)
+                Flower.IsFreezingOnPlatform = false;
+        }
+
+
         protected bool IsInputZero() =>
             Mathf.Abs(Data.Input.z) < Mathf.Epsilon;
 
@@ -119,6 +122,12 @@ namespace SpiderController.StateMachine.States
 
         protected bool IsFastRunUp() =>
             _inputService.IsLeftShiftUp;
+
+        protected bool SlowdownPressed() =>
+            _inputService.CtrlPressed;
+
+        protected bool SlowdownUp() =>
+            _inputService.CtrlUp;
 
         protected void SpendEnergy(float speed)
         {
@@ -152,8 +161,9 @@ namespace SpiderController.StateMachine.States
                 if (!CanMove(index))
                     continue;
 
-                if (!legData.Leg.IsMoving &&
-                    Vector3.Distance(legData.Leg.Position, legData.Raycast.Position) < SpiderStaticData.StepLength)
+                float dist = Vector3.Distance(legData.Leg.Position, legData.Raycast.Position);
+
+                if (!legData.Leg.IsMoving && dist < SpiderStaticData.StepLength + _legMoveDeadzone)
                     continue;
 
                 if (legData.Raycast.IsGrounded)
@@ -163,7 +173,7 @@ namespace SpiderController.StateMachine.States
 
         private void CheckFlowerAndReduceHp()
         {
-            if (_flower.IsOnPlatform == false)
+            if (Flower.IsOnPlatform == false)
                 SpiderHealth.TakeDamage(SpiderStaticData.DamageAmount);
         }
 
@@ -223,7 +233,7 @@ namespace SpiderController.StateMachine.States
             avgLegPos /= count;
 
             Vector3 localAvgLegPos = Spider.transform.InverseTransformPoint(avgLegPos);
-            float targetY = localAvgLegPos.y + SpiderStaticData.DistanceFromGround;
+            float targetY = localAvgLegPos.y + Data.DistanceFromGround;
 
             Vector3 localPos = Spider.transform.InverseTransformPoint(Rigidbody.position);
             localPos.y = Mathf.Lerp(localPos.y, targetY, Time.fixedDeltaTime * SpiderStaticData.LerpSpeedFromGround);

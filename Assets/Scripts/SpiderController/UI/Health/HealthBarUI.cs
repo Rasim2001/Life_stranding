@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace SpiderController
+namespace SpiderController.UI.Health
 {
     public class HealthBarUI : MonoBehaviour
     {
