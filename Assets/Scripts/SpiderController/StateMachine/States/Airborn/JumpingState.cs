@@ -1,12 +1,15 @@
 using Infastructure.Services.Input;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
+using SpiderController.StateMachine.States.Ground;
+using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Airborn
 {
     public class JumpingState : AirbornState
     {
         private readonly GroundChecker _spiderGroundChecker;
+        private float _offsetJumpingTime;
 
         public JumpingState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
@@ -24,7 +27,10 @@ namespace SpiderController.StateMachine.States.Airborn
             Data.YVelocity = SpiderStaticData.StartYVelocity;
 
             Flower.IsFreezingOnPlatform = true;
+
+            _offsetJumpingTime = 0.5f;
         }
+
 
         public override void Exit()
         {
@@ -42,6 +48,23 @@ namespace SpiderController.StateMachine.States.Airborn
 
             if (Data.YVelocity < 0 || _spiderGroundChecker.IsTouchingGround)
                 StateMachine.SwitchState<FallingState>();
+
+            if (_offsetJumpingTime > 0)
+                _offsetJumpingTime -= Time.deltaTime;
+
+            if (_offsetJumpingTime <= 0)
+            {
+                if (!_spiderGroundChecker.IsTouchesWithLegs &&
+                    !_spiderGroundChecker.IsTouchingGround)
+                    return;
+
+                Data.YVelocity = 0;
+
+                if (IsInputZero())
+                    StateMachine.SwitchState<IdlingState>();
+                else
+                    StateMachine.SwitchState<RunningState>();
+            }
         }
     }
 }

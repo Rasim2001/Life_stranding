@@ -15,7 +15,7 @@ namespace Editor
             GameStaticData gameData = (GameStaticData)target;
 
             if (GUILayout.Button("Collect"))
-                gameData.FinishTargetPosition = FindObjectOfType<FinishTargetMarker>().transform.position;
+                gameData.FinishTargetPosition = FindObjectOfType<TargetPointIndicatorMarker>().transform.position;
 
             EditorUtility.SetDirty(gameData);
         }

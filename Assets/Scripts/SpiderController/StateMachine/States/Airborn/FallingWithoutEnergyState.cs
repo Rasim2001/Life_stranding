@@ -47,8 +47,8 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Update();
 
-            /*if (_spiderGroundChecker.IsTouchingGround && _spiderGroundChecker.IsTouchesWithLegs == false)
-                Spider.transform.localEulerAngles = Vector3.zero;*/
+            if (_spiderGroundChecker.IsTouchingGround)
+                Spider.transform.localEulerAngles = Vector3.zero;
 
             if (_spiderGroundChecker.IsTouchesWithLegs || _spiderGroundChecker.IsTouchingGround)
                 StandUpAsync().Forget();
@@ -71,7 +71,8 @@ namespace SpiderController.StateMachine.States.Airborn
             else
                 StateMachine.SwitchState<RunningState>();
 
-            await UniTask.Delay(TimeSpan.FromSeconds(2f));
+
+            await UniTask.Delay(TimeSpan.FromSeconds(2.1f));
 
             foreach (LegDataStruct legData in Legs)
                 legData.Leg.SetDefaultSpeed();

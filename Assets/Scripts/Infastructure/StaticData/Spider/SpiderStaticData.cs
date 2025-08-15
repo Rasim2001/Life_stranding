@@ -5,8 +5,6 @@ namespace Infastructure.StaticData.Spider
     [CreateAssetMenu(fileName = "SpiderData", menuName = "StaticData/SpiderData")]
     public class SpiderStaticData : ScriptableObject
     {
-        public LayerMask LayerMask;
-
         [Header("SpiderMove")]
         public float StepLength = 0.85f;
         public float Speed = 3;

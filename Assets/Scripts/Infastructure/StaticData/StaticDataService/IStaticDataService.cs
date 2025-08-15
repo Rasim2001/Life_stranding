@@ -1,4 +1,5 @@
 ﻿using Infastructure.StaticData.HUD;
+using Infastructure.StaticData.Materials;
 using Infastructure.StaticData.Spider;
 
 namespace Infastructure.StaticData.StaticDataService
@@ -9,5 +10,6 @@ namespace Infastructure.StaticData.StaticDataService
         SpiderStaticData SpiderStaticData { get; }
         HudStaticData HudStaticData { get; }
         GameStaticData GameStaticData { get; }
+        MaterialsStaticData MaterialsStaticData { get; }
     }
 }

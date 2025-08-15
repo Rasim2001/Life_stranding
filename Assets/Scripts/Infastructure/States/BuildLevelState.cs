@@ -1,6 +1,7 @@
 using System;
 using CameraFollow;
 using DG.Tweening;
+using HUD;
 using Infastructure.Common;
 using Infastructure.Factories.GameFactories;
 using Infastructure.Services.PlayerProgressService;
@@ -53,20 +54,20 @@ namespace Infastructure.States
 
         private void InitGameWorld()
         {
-            GameObject spider = InitSpider();
+            HudUI hudUI = InitHUD();
+            Spider spider = InitSpider(hudUI);
 
-            InitCameraSystem(spider.transform);
-            InitHUD();
+            InitCameraSystem(spider);
         }
 
 
-        private GameObject InitSpider() =>
-            _gameFactory.CreateSpider();
+        private Spider InitSpider(HudUI hudUI) =>
+            _gameFactory.CreateSpider(hudUI);
 
-        private void InitCameraSystem(Transform spiderTransform) =>
+        private void InitCameraSystem(Spider spiderTransform) =>
             _gameFactory.CreateCameraSystem(spiderTransform);
 
-        private void InitHUD() =>
+        private HudUI InitHUD() =>
             _gameFactory.CreateHUD();
     }
 }

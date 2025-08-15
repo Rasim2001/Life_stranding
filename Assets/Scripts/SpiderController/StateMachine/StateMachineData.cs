@@ -5,7 +5,7 @@ namespace SpiderController.StateMachine
 {
     public class StateMachineData
     {
-        public event Action OnFallingDownStateChanged;
+        public event Action<bool> OnFallingDownStateChanged;
 
         public bool IsFallingDownWithoutEnergyState
         {
@@ -14,7 +14,7 @@ namespace SpiderController.StateMachine
             {
                 if (_IsFallingDownWithoutEnergyState != value)
                 {
-                    OnFallingDownStateChanged?.Invoke();
+                    OnFallingDownStateChanged?.Invoke(value);
 
                     _IsFallingDownWithoutEnergyState = value;
                 }
@@ -24,6 +24,8 @@ namespace SpiderController.StateMachine
         public Vector3 Input;
         public Vector3 Velocity;
 
+        public float RotationAmount;
+
         public float DistanceFromGround = 0.5f;
         public float Speed;
         public float YVelocity;
@@ -31,9 +33,9 @@ namespace SpiderController.StateMachine
         public float AirbornSpeed;
         public float EnergyFillAmount = 1;
 
-
         public bool IsMouseHolding;
         public bool IsStandingUpAfterFalling;
+
         private bool _IsFallingDownWithoutEnergyState;
     }
 }

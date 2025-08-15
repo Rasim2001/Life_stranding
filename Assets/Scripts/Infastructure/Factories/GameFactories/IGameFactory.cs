@@ -1,11 +1,13 @@
+using HUD;
+using SpiderController;
 using UnityEngine;
 
 namespace Infastructure.Factories.GameFactories
 {
     public interface IGameFactory
     {
-        GameObject CreateSpider();
-        void CreateCameraSystem(Transform spider);
-        void CreateHUD();
+        Spider CreateSpider(HudUI hudUI);
+        void CreateCameraSystem(Spider spider);
+        HudUI CreateHUD();
     }
 }

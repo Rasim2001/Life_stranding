@@ -17,5 +17,6 @@ namespace Infastructure.Common
         public const string SpiderDataPath = "StaticData/Spider/SpiderData";
         public const string HudDataPath = "StaticData/HUD/HudData";
         public const string GameDataPath = "StaticData/GameData/GameData";
+        public const string MaterialsDataPath = "StaticData/Materials/MaterialsData";
     }
 }

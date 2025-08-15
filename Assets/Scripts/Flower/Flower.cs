@@ -1,4 +1,8 @@
+using System;
+using HUD;
+using Infastructure.StaticData.StaticDataService;
 using UnityEngine;
+using Zenject;
 
 namespace SpiderController
 {
@@ -6,8 +10,10 @@ namespace SpiderController
     public class Flower : MonoBehaviour
     {
         [SerializeField] private Transform _platform;
+        [SerializeField] private MeshRenderer _meshRenderer;
         [SerializeField] private Bounds _platformBounds;
         [SerializeField] private float _speed = 1;
+        [SerializeField] private float _colorLerpSpeed = 5;
         public Rigidbody Rigidbody => _rigidbody;
         public bool IsOnPlatform => _isOnPlatform;
 
@@ -16,7 +22,18 @@ namespace SpiderController
         private bool _isOnPlatform = true;
         private Rigidbody _rigidbody;
         private Vector3 _startPosition;
-        private Quaternion _startRotation; // Добавляем сохранение начального поворота
+        private Quaternion _startRotation;
+        private FlowerPointIndicator _flowerPointIndicator;
+
+        private Material _robotPlaneMaterial;
+
+
+        [Inject]
+        public void Construct(IStaticDataService staticDataService)
+        {
+            _robotPlaneMaterial = new Material(staticDataService.MaterialsStaticData.RobotPlaneMaterial);
+            _meshRenderer.material = _robotPlaneMaterial;
+        }
 
         private void Awake()
         {
@@ -24,6 +41,9 @@ namespace SpiderController
             _startPosition = transform.localPosition;
             _startRotation = transform.localRotation;
         }
+
+        public void Initialize(FlowerPointIndicator flowerPointIndicator) =>
+            _flowerPointIndicator = flowerPointIndicator;
 
         private void Update()
         {
@@ -33,20 +53,31 @@ namespace SpiderController
             Vector3 localPos = transform.localPosition;
             _isOnPlatform = _platformBounds.Contains(localPos);
 
+            ChangeRobotPlaneColor(localPos);
+
             if (_isOnPlatform)
                 SimulateRotation();
             else
                 SimulatePhysics();
         }
 
-        public void ResetSimulate()
+        private void ChangeRobotPlaneColor(Vector3 localPos)
         {
-            transform.SetParent(_platform);
-            transform.localPosition = _startPosition;
-            transform.localRotation = _startRotation;
+            Vector3 center = _platformBounds.center;
+            Vector3 extents = _platformBounds.extents;
 
-            _rigidbody.isKinematic = true;
-            _isOnPlatform = true;
+            float normalizedX = Mathf.Abs(localPos.x - center.x) / extents.x;
+            float normalizedZ = Mathf.Abs(localPos.z - center.z) / extents.z;
+
+            float distanceFactor = Mathf.Clamp01(Mathf.Max(normalizedX, normalizedZ));
+
+            Color targetColor = Color.Lerp(Color.blue, Color.red, distanceFactor);
+
+            _robotPlaneMaterial.color = Color.Lerp(
+                _robotPlaneMaterial.color,
+                targetColor,
+                Time.deltaTime * _colorLerpSpeed
+            );
         }
 
         private void SimulateRotation()
@@ -68,12 +99,26 @@ namespace SpiderController
             transform.Translate(movementVector, Space.Self);
         }
 
+        public void ResetSimulate()
+        {
+            transform.SetParent(_platform);
+            transform.localPosition = _startPosition;
+            transform.localRotation = _startRotation;
+
+            _rigidbody.isKinematic = true;
+            _isOnPlatform = true;
+
+            _flowerPointIndicator.HideTargetPoint();
+        }
+
         private void SimulatePhysics()
         {
             transform.SetParent(null);
 
             _isOnPlatform = false;
             _rigidbody.isKinematic = false;
+
+            _flowerPointIndicator.ShowTargetPoint();
         }
     }
 }

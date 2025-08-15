@@ -12,9 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 821015bc1a5e47199956187f9a6afeb1, type: 3}
   m_Name: SpiderData
   m_EditorClassIdentifier: 
-  LayerMask:
-    serializedVersion: 2
-    m_Bits: 1
   StepLength: 0.85
   Speed: 6
   LerpForwardSpeed: 60
@@ -62,9 +59,9 @@ MonoBehaviour:
   MaxAngle: 45
   PlaneRotationSpeed: 3
   SmoothTime: 0.3
-  CameraRotationSpeed: 6
-  MouseRotationSpeedX: 6
-  MouseRotationSpeedY: 400
+  CameraRotationSpeed: 10
+  MouseRotationSpeedX: 1
+  MouseRotationSpeedY: 1
   ScrollSensitivity: 15
   WorldUpSmoothRotation: 2
   FallSpeed: 1

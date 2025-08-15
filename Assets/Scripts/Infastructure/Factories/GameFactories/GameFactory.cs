@@ -20,33 +20,32 @@ namespace Infastructure.Factories.GameFactories
             _staticDataService = staticDataService;
         }
 
-        public GameObject CreateSpider()
+        public Spider CreateSpider(HudUI hudUI)
         {
             Spider spider = _diContainer.InstantiatePrefabResourceForComponent<Spider>(AssetsPath.SpiderPath);
-            spider.Initialize();
+            spider.Initialize(hudUI);
 
             SpiderUI spiderUI = spider.GetComponent<SpiderUI>();
             spiderUI.Initialize();
 
-            return spider.gameObject;
+            return spider;
         }
 
-        public void CreateCameraSystem(Transform spiderTransform)
+        public void CreateCameraSystem(Spider spiderTransform)
         {
             CameraSystem cameraSystem =
                 _diContainer.InstantiatePrefabResourceForComponent<CameraSystem>(AssetsPath.CameraSystemPath);
-            cameraSystem.SetTarget(spiderTransform);
+            cameraSystem.Initialize(spiderTransform);
         }
 
-        public void CreateHUD()
+        public HudUI CreateHUD()
         {
-            Vector3 finishTargetPosition = _staticDataService.GameStaticData.FinishTargetPosition;
             RectTransform arrowUIPrefab = _staticDataService.HudStaticData.ArrowUIPrefab;
 
             HudUI hud = _diContainer.InstantiatePrefabResourceForComponent<HudUI>(AssetsPath.HUDPath);
-            RectTransform arrowUI = Object.Instantiate(arrowUIPrefab, hud.transform);
+            hud.Initialize(hud.transform, arrowUIPrefab);
 
-            hud.Initialize(finishTargetPosition, arrowUI);
+            return hud;
         }
     }
 }

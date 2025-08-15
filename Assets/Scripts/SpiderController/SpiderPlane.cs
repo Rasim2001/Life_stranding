@@ -68,8 +68,11 @@ namespace SpiderController
                 HandleMousePosition();
         }
 
-        private void OnFallingDownStateEnter()
+        private void OnFallingDownStateEnter(bool isTrue)
         {
+            if (!isTrue)
+                return;
+
             int randomSign = Random.value < 0.5f ? -1 : 1;
 
             float randomAngleX = Random.Range(30, 40f) * randomSign;

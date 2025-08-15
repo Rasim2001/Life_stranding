@@ -1,4 +1,3 @@
-using System;
 using Infastructure.Common;
 using Infastructure.Services.Input;
 using Infastructure.StaticData.Spider;
@@ -24,6 +23,13 @@ namespace CameraFollow
         private float _mouseSensitivity;
         private CinemachineInputAxisController _axisController;
         private CameraSystem _cameraSystem;
+
+        private float _yRotation;
+        private float _xRotation;
+        private float _cameraRotationSpeedX;
+        private float _cameraRotationSpeedY;
+
+        private float _cameraRotationSpeed;
 
 
         [Inject]
@@ -61,6 +67,9 @@ namespace CameraFollow
                 return;
 
             MoveToTarget();
+
+            if (!_isMouseRotating)
+                RotateToTarget();
         }
 
         private void Update()
@@ -68,7 +77,7 @@ namespace CameraFollow
             if (_target == null)
                 return;
 
-            HandleScrollWheel();
+            HandleMouse();
         }
 
         private void UpdateAfterCinemachine(CinemachineBrain _)
@@ -76,9 +85,11 @@ namespace CameraFollow
             if (_target == null)
                 return;
 
+            HandleScrollWheel();
             HandleMouse();
             WorldUpRotate();
         }
+
 
         private void HandleScrollWheel()
         {
@@ -90,10 +101,13 @@ namespace CameraFollow
                 _mouseSensitivity = Mathf.Clamp(_mouseSensitivity, 2, 7);
             }
 
-            float smoothSensitivityY = Mathf.Lerp(_cameraSystem.OrbitalFollow.TargetOffset.y, _mouseSensitivity,
+            float smoothSensitivityY = Mathf.Lerp(_cameraSystem.ThirdPersonFollow.ShoulderOffset.y, _mouseSensitivity,
                 Time.deltaTime * 5);
 
-            _cameraSystem.OrbitalFollow.TargetOffset = new Vector3(0, smoothSensitivityY, 0);
+            _cameraSystem.ThirdPersonFollow.ShoulderOffset = new Vector3(
+                _cameraSystem.ThirdPersonFollow.ShoulderOffset.x,
+                smoothSensitivityY,
+                _cameraSystem.ThirdPersonFollow.ShoulderOffset.z);
         }
 
         private void HandleMouse()
@@ -101,30 +115,55 @@ namespace CameraFollow
             if (_inputService.CenterMousePressed)
             {
                 _isMouseRotating = true;
-                _cameraSystem.CinemachineInputAxisController.enabled = true;
+
+                _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed;
             }
 
 
             if (_inputService.CenterMouseUp)
             {
+                _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed / 3;
+
+                _yRotation = 0;
+                _xRotation = 0;
+
                 _isMouseRotating = false;
-                _cameraSystem.CinemachineInputAxisController.enabled = false;
             }
 
 
             if (_isMouseRotating)
             {
+                float mouseXAxis = _inputService.MouseXAxis;
+                float mouseYAxis = _inputService.MouseYAxis;
+
+                _yRotation += mouseYAxis * SpiderStaticData.MouseRotationSpeedY * Time.deltaTime;
+                _xRotation += mouseXAxis * SpiderStaticData.MouseRotationSpeedX * Time.deltaTime;
             }
+
+            Vector2 rotationVector = new Vector2(-_xRotation, _yRotation);
+
+            _cameraSystem.RotationComposer.Composition.ScreenPosition =
+                Vector2.Lerp(_cameraSystem.RotationComposer.Composition.ScreenPosition, rotationVector,
+                    _cameraRotationSpeed * Time.deltaTime);
         }
 
 
         private void MoveToTarget()
         {
-            transform.localPosition = Vector3.SmoothDamp(
+            transform.position = Vector3.SmoothDamp(
                 transform.position,
                 _target.position,
                 ref _velocity,
                 SpiderStaticData.SmoothTime
+            );
+        }
+
+        private void RotateToTarget()
+        {
+            transform.rotation = Quaternion.Lerp(
+                transform.rotation,
+                _target.rotation,
+                Time.fixedDeltaTime * SpiderStaticData.CameraRotationSpeed
             );
         }
     }

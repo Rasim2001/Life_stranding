@@ -60,6 +60,8 @@ namespace SpiderController.StateMachine.States
         {
             Data.Input = _inputService.InputVector;
             Data.Velocity = Data.Input * Data.Speed;
+
+            Data.RotationAmount = Data.Input.x * SpiderStaticData.LerpForwardSpeed;
         }
 
         public virtual void Update()
@@ -84,7 +86,7 @@ namespace SpiderController.StateMachine.States
             AdjustBodyOrientation();
         }
 
-        public virtual void LateUpdate()
+        public void LateUpdate()
         {
         }
 
@@ -188,20 +190,6 @@ namespace SpiderController.StateMachine.States
             Rigidbody.MovePosition(newPosition);
         }
 
-        private void RotateTowardsMoveDirection()
-        {
-            if (Mathf.Abs(Data.Input.x) > Mathf.Epsilon)
-            {
-                float rotationAmount = Data.Input.x * SpiderStaticData.LerpForwardSpeed * Time.fixedDeltaTime;
-                float totalRotation = Data.Input.z >= 0 ? rotationAmount : -rotationAmount;
-
-                Quaternion deltaRotation = Quaternion.Euler(0, totalRotation, 0);
-                Quaternion newRotation = Rigidbody.rotation * deltaRotation;
-
-                Rigidbody.MoveRotation(newRotation);
-            }
-        }
-
 
         private bool CanMove(int legIndex)
         {
@@ -240,6 +228,16 @@ namespace SpiderController.StateMachine.States
 
             Vector3 worldPos = Spider.transform.TransformPoint(localPos);
             Rigidbody.MovePosition(worldPos);
+        }
+
+        private void RotateTowardsMoveDirection()
+        {
+            float totalRotationZ = Data.Input.z >= 0 ? Data.RotationAmount : -Data.RotationAmount;
+
+            Quaternion deltaRotation = Quaternion.Euler(0, totalRotationZ * Time.fixedDeltaTime, 0);
+            Quaternion newRotation = Rigidbody.rotation * deltaRotation;
+
+            Rigidbody.MoveRotation(newRotation);
         }
 
         private void AdjustBodyOrientation()
