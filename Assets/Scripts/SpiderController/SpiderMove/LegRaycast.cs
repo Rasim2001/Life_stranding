@@ -1,7 +1,6 @@
 using System;
 using DG.Tweening;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
+using SpiderController.StateMachine;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -13,18 +12,19 @@ namespace SpiderController.SpiderMove
         [SerializeField] private float _offsetDistance = 15f;
         [SerializeField] private int _offsetRayCount = 5;
 
-
         public Vector3 Position => _smoothedPoint;
         public bool IsGrounded => _hit.collider != null;
         public Vector3 AirbornPosition => _airbornHit.point;
+        public Vector3 FallingDownPosition => _airbornHit.point;
 
         private readonly float _positionSmoothSpeed = 20f;
+        private readonly float _airbornRayDistance = 100;
 
         private RaycastHit _hit;
+        private RaycastHit _airbornHit;
+
         private float _rayDistance = 5;
 
-        private RaycastHit _airbornHit;
-        private float _airbornRayDistance = 100;
 
         private Vector3 _defaultRotation;
         private Tween _randomRotationTween;
@@ -47,10 +47,10 @@ namespace SpiderController.SpiderMove
             float randomAngleY = Random.Range(-50f, 50f);
             float randomAngleZ = Random.Range(-50f, 50f);
 
-            Vector3 randomRotation = new Vector3(randomAngleX, randomAngleY, randomAngleZ);
+            Vector3 targetRandomRotation = new Vector3(randomAngleX, randomAngleY, randomAngleZ);
 
             _defaultRotationTween?.Kill();
-            _randomRotationTween = transform.DOLocalRotate(randomRotation, 0.5f);
+            _randomRotationTween = transform.DOLocalRotate(targetRandomRotation, 0.5f);
         }
 
         public void SetDefaultRotationLegs()

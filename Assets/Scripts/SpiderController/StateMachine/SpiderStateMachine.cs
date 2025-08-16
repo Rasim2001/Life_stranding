@@ -44,6 +44,8 @@ namespace SpiderController.StateMachine
         {
             ISpiderState newState = _states.FirstOrDefault(state => state is T);
 
+            //Debug.Log($"NewState : {newState.GetType().Name}");
+
             _currentState.Exit();
             _currentState = newState;
             _currentState.Enter();

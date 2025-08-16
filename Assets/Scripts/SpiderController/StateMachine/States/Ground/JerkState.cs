@@ -20,15 +20,17 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Enter();
 
-            Data.DistanceFromGround = SpiderStaticData.DistanceFromGround;
             ApplyJerkSpeed();
 
+            Data.DistanceFromGround = SpiderStaticData.DistanceFromGround;
             _dashTimer = SpiderStaticData.JerkDuration;
         }
 
         public override void Exit()
         {
             base.Exit();
+
+            Data.XVelocity = 0;
 
             ApplyDefaultSpeed();
         }
@@ -37,7 +39,7 @@ namespace SpiderController.StateMachine.States.Ground
         {
             SpendEnergy(SpiderStaticData.EnergySpendJerkingSpeed);
             UpdateDashTime();
-            UpdateJerpVelocity();
+            UpdateJerkVelocity();
 
             if (_dashTimer <= 0 || Data.EnergyFillAmount <= 0)
                 SwitchState();
@@ -46,7 +48,7 @@ namespace SpiderController.StateMachine.States.Ground
         private void UpdateDashTime() =>
             _dashTimer -= Time.deltaTime;
 
-        private void UpdateJerpVelocity()
+        private void UpdateJerkVelocity()
         {
             float dashProgress = 1f - _dashTimer / SpiderStaticData.JerkDuration;
             float currentDashSpeed = SpiderStaticData.JerkSpeed * SpiderStaticData.JerkCurve.Evaluate(dashProgress);
@@ -56,8 +58,6 @@ namespace SpiderController.StateMachine.States.Ground
 
         private void SwitchState()
         {
-            Data.XVelocity = 0;
-
             if (IsInputZero())
                 StateMachine.SwitchState<IdlingState>();
             else

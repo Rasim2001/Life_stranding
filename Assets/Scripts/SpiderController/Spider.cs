@@ -27,7 +27,6 @@ namespace SpiderController
         public GroundChecker GroundChecker => _groundChecker;
         public SpiderUI SpiderUI => _spiderUI;
 
-
         private Rigidbody _rigidbody;
         private SpiderStateMachine _stateMachine;
         private SpiderPlane _spiderPlane;

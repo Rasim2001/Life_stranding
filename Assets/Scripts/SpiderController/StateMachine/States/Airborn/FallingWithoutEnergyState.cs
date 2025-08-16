@@ -30,8 +30,8 @@ namespace SpiderController.StateMachine.States.Airborn
             Data.AirbornSpeed = SpiderStaticData.FallWithoutEnergySpeed;
             Data.IsFallingDownWithoutEnergyState = true;
 
-            foreach (LegDataStruct legData in Legs)
-                legData.Raycast.RotateFallingLegs();
+            /*foreach (LegDataStruct legData in Legs)
+                legData.Raycast.RotateFallingLegs();*/
         }
 
         public override void Exit()
@@ -40,6 +40,15 @@ namespace SpiderController.StateMachine.States.Airborn
 
             StickerUI.PlaySticker(StickerEnum.FallingDown);
             Data.IsFallingDownWithoutEnergyState = false;
+        }
+
+        protected override void TryMoveLegs()
+        {
+            for (int index = 0; index < Legs.Length; index++)
+            {
+                ref LegDataStruct legData = ref Legs[index];
+                legData.Leg.MoveTo(legData.Raycast.AirbornPosition);
+            }
         }
 
 
@@ -54,25 +63,25 @@ namespace SpiderController.StateMachine.States.Airborn
                 StandUpAsync().Forget();
         }
 
+
         private async UniTask StandUpAsync()
         {
-            Data.YVelocity = 0;
             Data.IsStandingUpAfterFalling = true;
-
-            foreach (LegDataStruct legData in Legs)
-            {
-                legData.Leg.SetAcceleration(0.5f);
-                legData.Raycast.SetDefaultRotationLegs();
-                legData.Raycast.SetGroundState();
-            }
 
             if (IsInputZero())
                 StateMachine.SwitchState<IdlingState>();
             else
                 StateMachine.SwitchState<RunningState>();
 
+            Data.YVelocity = 0;
 
-            await UniTask.Delay(TimeSpan.FromSeconds(2.1f));
+            foreach (LegDataStruct legData in Legs)
+            {
+                //legData.Raycast.SetDefaultRotationLegs();
+                legData.Leg.SetAcceleration(0.5f);
+            }
+
+            await UniTask.Delay(TimeSpan.FromSeconds(2));
 
             foreach (LegDataStruct legData in Legs)
                 legData.Leg.SetDefaultSpeed();

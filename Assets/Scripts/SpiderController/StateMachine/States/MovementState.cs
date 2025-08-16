@@ -73,11 +73,8 @@ namespace SpiderController.StateMachine.States
 
         public virtual void FixedUpdate()
         {
-            if (!Data.IsStandingUpAfterFalling)
-            {
-                MoveBodySpider();
-                RotateTowardsMoveDirection();
-            }
+            MoveBodySpider();
+            RotateTowardsMoveDirection();
 
             if (!Mathf.Approximately(Data.YVelocity, 0))
                 return;
@@ -131,6 +128,7 @@ namespace SpiderController.StateMachine.States
         protected bool SlowdownUp() =>
             _inputService.CtrlUp;
 
+
         protected void SpendEnergy(float speed)
         {
             if (Data.EnergyFillAmount >= 0)
@@ -181,13 +179,13 @@ namespace SpiderController.StateMachine.States
 
         private void MoveBodySpider()
         {
-            Vector3 forwardMovement = Spider.transform.forward * (Data.Velocity.z * Time.fixedDeltaTime);
-            Vector3 verticalMovement = Spider.transform.up * (Data.YVelocity * Time.fixedDeltaTime);
-            Vector3 jerkMovement = Spider.transform.forward * (Data.XVelocity * Time.fixedDeltaTime);
+            Vector3 forwardMovement = Spider.transform.forward * Data.Velocity.z;
+            Vector3 verticalMovement = Spider.transform.up * Data.YVelocity;
+            Vector3 jerkMovement = Spider.transform.forward * Data.XVelocity;
 
-            Vector3 newPosition = Spider.Rigidbody.position + forwardMovement + verticalMovement + jerkMovement;
+            Vector3 newVelocity = forwardMovement + verticalMovement + jerkMovement;
 
-            Rigidbody.MovePosition(newPosition);
+            Rigidbody.linearVelocity = Data.IsStandingUpAfterFalling ? Vector3.zero : newVelocity;
         }
 
 
@@ -203,14 +201,13 @@ namespace SpiderController.StateMachine.States
         private void AdjustBodyHeight()
         {
             Vector3 avgLegPos = Vector3.zero;
-
             int count = 0;
 
             for (int i = 0; i < Legs.Length; i++)
             {
                 if (Legs[i].Raycast.IsGrounded)
                 {
-                    avgLegPos += Legs[i].Raycast.Position;
+                    avgLegPos += Spider.transform.InverseTransformPoint(Legs[i].Raycast.Position);
                     count++;
                 }
             }
@@ -220,32 +217,39 @@ namespace SpiderController.StateMachine.States
 
             avgLegPos /= count;
 
-            Vector3 localAvgLegPos = Spider.transform.InverseTransformPoint(avgLegPos);
-            float targetY = localAvgLegPos.y + Data.DistanceFromGround;
+            float targetY = avgLegPos.y + Data.DistanceFromGround;
 
             Vector3 localPos = Spider.transform.InverseTransformPoint(Rigidbody.position);
-            localPos.y = Mathf.Lerp(localPos.y, targetY, Time.fixedDeltaTime * SpiderStaticData.LerpSpeedFromGround);
 
-            Vector3 worldPos = Spider.transform.TransformPoint(localPos);
-            Rigidbody.MovePosition(worldPos);
+            float newLocalY = Mathf.Lerp(localPos.y, targetY,
+                Time.fixedDeltaTime * SpiderStaticData.LerpSpeedFromGround);
+
+            float deltaY = newLocalY - localPos.y;
+            float localVerticalVelocity = deltaY / Time.fixedDeltaTime;
+
+            Vector3 localVelocity = Spider.transform.InverseTransformDirection(Rigidbody.linearVelocity);
+            localVelocity.y = localVerticalVelocity;
+
+            Rigidbody.linearVelocity = Spider.transform.TransformDirection(localVelocity);
         }
+
 
         private void RotateTowardsMoveDirection()
         {
             float totalRotationZ = Data.Input.z >= 0 ? Data.RotationAmount : -Data.RotationAmount;
 
-            Quaternion deltaRotation = Quaternion.Euler(0, totalRotationZ * Time.fixedDeltaTime, 0);
-            Quaternion newRotation = Rigidbody.rotation * deltaRotation;
+            Vector3 rotationAxis = Spider.transform.up;
+            float rotationSpeedRad = totalRotationZ * Mathf.Deg2Rad;
 
-            Rigidbody.MoveRotation(newRotation);
+            Rigidbody.angularVelocity = rotationAxis * rotationSpeedRad;
         }
 
         private void AdjustBodyOrientation()
         {
             Vector3[] legPositions = new Vector3[Legs.Length];
-            for (int i = 0; i < Legs.Length; i++)
+            for (int i = 0; i < Legs.Length; i++) 
                 legPositions[i] = Legs[i].Raycast.Position;
-
+               
             Vector3 normalSum = Vector3.zero;
             int count = 0;
             for (int i = 0; i < Legs.Length; i++)
@@ -265,8 +269,10 @@ namespace SpiderController.StateMachine.States
                 count++;
             }
 
-            Vector3 averageNormal = normalSum / count;
-            averageNormal.Normalize();
+            if (count == 0)
+                return;
+
+            Vector3 averageNormal = (normalSum / count).normalized;
 
             Quaternion targetRotation =
                 Quaternion.FromToRotation(Spider.transform.up, averageNormal) * Rigidbody.rotation;
@@ -274,7 +280,16 @@ namespace SpiderController.StateMachine.States
             Quaternion smoothedRotation = Quaternion.Slerp(Rigidbody.rotation, targetRotation,
                 Time.fixedDeltaTime * SpiderStaticData.LerpSpeedFromGround);
 
-            Rigidbody.MoveRotation(smoothedRotation);
+            Quaternion deltaRotation = smoothedRotation * Quaternion.Inverse(Rigidbody.rotation);
+
+            deltaRotation.ToAngleAxis(out float angleDeg, out Vector3 axis);
+            if (angleDeg > 180f)
+                angleDeg -= 360f;
+
+            float angleRad = angleDeg * Mathf.Deg2Rad;
+            Vector3 angularVel = axis.normalized * (angleRad / Time.fixedDeltaTime);
+
+            Rigidbody.angularVelocity += angularVel;
         }
     }
 }
