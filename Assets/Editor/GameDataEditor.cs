@@ -1,3 +1,4 @@
+using System.Linq;
 using HUD;
 using Infastructure.StaticData;
 using UnityEditor;
@@ -15,7 +16,10 @@ namespace Editor
             GameStaticData gameData = (GameStaticData)target;
 
             if (GUILayout.Button("Collect"))
-                gameData.FinishTargetPosition = FindObjectOfType<TargetPointIndicatorMarker>().transform.position;
+                gameData.CheckPoints = FindObjectsOfType<CheckPointMarker>()
+                    .OrderBy(x => x.transform.GetSiblingIndex())
+                    .Select(x => x.transform.position)
+                    .ToList();
 
             EditorUtility.SetDirty(gameData);
         }

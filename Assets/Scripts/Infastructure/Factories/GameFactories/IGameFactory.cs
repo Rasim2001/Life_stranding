@@ -9,5 +9,6 @@ namespace Infastructure.Factories.GameFactories
         Spider CreateSpider(HudUI hudUI);
         void CreateCameraSystem(Spider spider);
         HudUI CreateHUD();
+        void CreateCheckPointIndicator();
     }
 }

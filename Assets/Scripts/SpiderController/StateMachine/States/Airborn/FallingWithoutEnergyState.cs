@@ -29,9 +29,6 @@ namespace SpiderController.StateMachine.States.Airborn
 
             Data.AirbornSpeed = SpiderStaticData.FallWithoutEnergySpeed;
             Data.IsFallingDownWithoutEnergyState = true;
-
-            /*foreach (LegDataStruct legData in Legs)
-                legData.Raycast.RotateFallingLegs();*/
         }
 
         public override void Exit()
@@ -56,10 +53,7 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Update();
 
-            if (_spiderGroundChecker.IsTouchingGround)
-                Spider.transform.localEulerAngles = Vector3.zero;
-
-            if (_spiderGroundChecker.IsTouchesWithLegs || _spiderGroundChecker.IsTouchingGround)
+            if (_spiderGroundChecker.IsTouchesWithLegs)
                 StandUpAsync().Forget();
         }
 
@@ -76,10 +70,7 @@ namespace SpiderController.StateMachine.States.Airborn
             Data.YVelocity = 0;
 
             foreach (LegDataStruct legData in Legs)
-            {
-                //legData.Raycast.SetDefaultRotationLegs();
                 legData.Leg.SetAcceleration(0.5f);
-            }
 
             await UniTask.Delay(TimeSpan.FromSeconds(2));
 

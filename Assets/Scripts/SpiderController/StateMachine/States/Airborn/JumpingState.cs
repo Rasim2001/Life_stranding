@@ -46,18 +46,14 @@ namespace SpiderController.StateMachine.States.Airborn
             if (Data.EnergyFillAmount <= 0)
                 StateMachine.SwitchState<FallingWithoutEnergyState>();
 
-            if (Data.YVelocity < 0 || _spiderGroundChecker.IsTouchingGround)
+            if (Data.YVelocity < 0)
                 StateMachine.SwitchState<FallingState>();
 
             if (_offsetJumpingTime > 0)
                 _offsetJumpingTime -= Time.deltaTime;
 
-            if (_offsetJumpingTime <= 0)
+            if (_offsetJumpingTime <= 0 && _spiderGroundChecker.IsTouchesWithLegs)
             {
-                if (!_spiderGroundChecker.IsTouchesWithLegs &&
-                    !_spiderGroundChecker.IsTouchingGround)
-                    return;
-
                 Data.YVelocity = 0;
 
                 if (IsInputZero())

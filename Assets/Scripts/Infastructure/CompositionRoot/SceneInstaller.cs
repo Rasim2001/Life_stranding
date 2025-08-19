@@ -1,5 +1,6 @@
 using Infastructure.Common;
 using Infastructure.Factories.GameFactories;
+using Infastructure.Services.CheckPoint;
 using Infastructure.Services.Input;
 using Infastructure.Services.Window.GameWindowService;
 using Infastructure.States;
@@ -22,7 +23,12 @@ namespace Infastructure.CompositionRoot
             BindInputService();
 
             BindStableWorldUp();
+
+            BindCheckPointInstaller();
         }
+
+        private void BindCheckPointInstaller() =>
+            Container.BindInterfacesAndSelfTo<CheckPointService>().AsSingle();
 
         private void BindStableWorldUp()
         {

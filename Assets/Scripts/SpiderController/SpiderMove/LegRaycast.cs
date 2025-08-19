@@ -1,6 +1,4 @@
-using System;
 using DG.Tweening;
-using SpiderController.StateMachine;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -15,7 +13,6 @@ namespace SpiderController.SpiderMove
         public Vector3 Position => _smoothedPoint;
         public bool IsGrounded => _hit.collider != null;
         public Vector3 AirbornPosition => _airbornHit.point;
-        public Vector3 FallingDownPosition => _airbornHit.point;
 
         private readonly float _positionSmoothSpeed = 20f;
         private readonly float _airbornRayDistance = 100;
@@ -25,22 +22,30 @@ namespace SpiderController.SpiderMove
 
         private float _rayDistance = 5;
 
-
-        private Vector3 _defaultRotation;
         private Tween _randomRotationTween;
         private Tween _defaultRotationTween;
 
         private Vector3 _smoothedPoint;
+        private Vector3 _defaultPosition;
 
         private void Awake() =>
-            _defaultRotation = transform.localEulerAngles;
+            _defaultPosition = transform.localPosition;
 
-        public void SetGroundState() =>
+        public void SetGroundState()
+        {
             _rayDistance = 5;
 
-        public void SetAirbornState() =>
+            ReturnBodyToDefault();
+        }
+
+        public void SetAirbornState()
+        {
             _rayDistance = 2;
 
+            GroupBody();
+        }
+
+        /*
         public void RotateFallingLegs()
         {
             float randomAngleX = Random.Range(-50f, 50f);
@@ -53,11 +58,13 @@ namespace SpiderController.SpiderMove
             _randomRotationTween = transform.DOLocalRotate(targetRandomRotation, 0.5f);
         }
 
+
         public void SetDefaultRotationLegs()
         {
             _randomRotationTween?.Kill();
             _defaultRotationTween = transform.DOLocalRotate(_defaultRotation, 2);
         }
+        */
 
         private void Update()
         {
@@ -91,11 +98,10 @@ namespace SpiderController.SpiderMove
                 }
             }
 
+
             Vector3 targetPoint = IsGrounded
                 ? _hit.point
-                : _airbornHit.collider != null
-                    ? _airbornHit.point
-                    : origin + baseDirection * _rayDistance;
+                : origin + baseDirection * _rayDistance;
 
             _smoothedPoint = Vector3.Lerp(_smoothedPoint, targetPoint,
                 1f - Mathf.Exp(-_positionSmoothSpeed * Time.deltaTime));
@@ -106,13 +112,22 @@ namespace SpiderController.SpiderMove
                 Debug.DrawRay(mainRay.origin, mainRay.direction * _rayDistance, Color.red);
         }
 
+        private void GroupBody()
+        {
+            int sign = transform.localPosition.x > 0 ? 1 : -1;
+            transform.localPosition = new Vector3(sign, transform.localPosition.y, transform.localPosition.z);
+        }
+
+        private void ReturnBodyToDefault() =>
+            transform.localPosition = _defaultPosition;
+
         private bool FindPlaceZ(Vector3 baseDirection, Vector3 origin)
         {
             bool hitFound = false;
 
             for (int z = 0; z <= _offsetRayCount - 1; z++)
             {
-                float angleOffset = _offsetDistance * z;
+                float angleOffset = 10 * z;
 
                 Vector3 rightDirection = Quaternion.AngleAxis(angleOffset, transform.forward) * baseDirection;
                 Ray rightRay = new Ray(origin, rightDirection);

@@ -1,6 +1,7 @@
 using CameraFollow;
 using HUD;
 using Infastructure.Common;
+using Infastructure.Services.CheckPoint;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController;
 using SpiderController.UI.Health;
@@ -13,11 +14,14 @@ namespace Infastructure.Factories.GameFactories
     {
         private readonly DiContainer _diContainer;
         private readonly IStaticDataService _staticDataService;
+        private readonly ICheckPointService _checkPointService;
 
-        public GameFactory(DiContainer diContainer, IStaticDataService staticDataService)
+        public GameFactory(DiContainer diContainer, IStaticDataService staticDataService,
+            ICheckPointService checkPointService)
         {
             _diContainer = diContainer;
             _staticDataService = staticDataService;
+            _checkPointService = checkPointService;
         }
 
         public Spider CreateSpider(HudUI hudUI)
@@ -46,6 +50,15 @@ namespace Infastructure.Factories.GameFactories
             hud.Initialize(hud.transform, arrowUIPrefab);
 
             return hud;
+        }
+
+        public void CreateCheckPointIndicator()
+        {
+            TargetPointIndicatorMarker indicatorMarker =
+                _diContainer.InstantiatePrefabResourceForComponent<TargetPointIndicatorMarker>(
+                    AssetsPath.PointIndicatorPath);
+
+            _checkPointService.PointIndicator = indicatorMarker.transform;
         }
     }
 }

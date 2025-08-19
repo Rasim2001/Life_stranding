@@ -4,11 +4,20 @@ namespace HUD
 {
     public class FinishPointIndicator : TargetPointIndicator
     {
+        private readonly Transform _finishPoint;
+
         public FinishPointIndicator(RectTransform arrowUI, RectTransform canvasRect, LayerMask layerMask,
-            Vector3 finishPosition) : base(
+            Transform finishPoint) : base(
             arrowUI, canvasRect, layerMask)
         {
-            FinishTargetPosition = finishPosition;
+            _finishPoint = finishPoint;
+        }
+
+        public override void Update()
+        {
+            FinishTargetPosition = _finishPoint.position;
+
+            base.Update();
         }
     }
 }

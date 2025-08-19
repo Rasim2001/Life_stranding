@@ -1,6 +1,6 @@
-using System;
 using HUD;
 using Infastructure.Common;
+using Infastructure.Services.CheckPoint;
 using Infastructure.Services.Input;
 using Infastructure.States;
 using Infastructure.StaticData.StaticDataService;
@@ -31,18 +31,23 @@ namespace SpiderController
         private SpiderStateMachine _stateMachine;
         private SpiderPlane _spiderPlane;
         private FlowerPickup _flowerPickup;
+        private CheckPointChanger _checkPointChanger;
+
         private HudUI _hudUI;
+
 
         private IInputService _inputService;
         private IStaticDataService _staticDataService;
         private IPickupDisplayer _pickupDisplayer;
         private IStateMachine _stateMachine1;
+        private ICheckPointService _checkPointService;
 
 
         [Inject]
         public void Construct(IInputService inputService, IStaticDataService staticDataService,
-            IPickupDisplayer pickupDisplayer, IStateMachine stateMachine)
+            IPickupDisplayer pickupDisplayer, IStateMachine stateMachine, ICheckPointService checkPointService)
         {
+            _checkPointService = checkPointService;
             _stateMachine1 = stateMachine;
             _pickupDisplayer = pickupDisplayer;
             _staticDataService = staticDataService;
@@ -59,6 +64,7 @@ namespace SpiderController
         {
             StateMachineData stateMachineData = new StateMachineData();
 
+            _checkPointChanger = new CheckPointChanger(transform, _checkPointService);
             _spiderPlane = new SpiderPlane(_spiderUI.PlaneIndicatorUI, _rotationPlaneTransform, _inputService,
                 _staticDataService, stateMachineData);
             _spiderPlane.Initialize();
@@ -68,9 +74,8 @@ namespace SpiderController
             _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _flowerChecker, _flower);
             _spiderUI.StickerUI.PlaySticker(StickerEnum.StartGame);
 
-            Vector3 finishTargetPosition = _staticDataService.GameStaticData.FinishTargetPosition;
             hudUI.RegisterFlowerPoint(_flower.transform);
-            hudUI.RegisterFinishTarget(finishTargetPosition);
+            hudUI.RegisterFinishTarget(_checkPointService.PointIndicator);
 
             _flower.Initialize(hudUI.FlowerPointIndicator);
         }
@@ -88,6 +93,7 @@ namespace SpiderController
             _stateMachine.Update();
             _spiderPlane.Update();
             _flowerPickup.Update();
+            _checkPointChanger.Update();
         }
 
         private void FixedUpdate()

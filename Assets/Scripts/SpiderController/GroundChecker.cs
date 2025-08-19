@@ -9,7 +9,6 @@ namespace SpiderController
         [SerializeField] private LayerMask _groundLayer;
         [SerializeField] private LegRaycast[] _legRaycasts;
         public bool IsTouchesWithLegs { get; private set; }
-        public bool IsTouchingGround { get; private set; }
 
         public void SetGroundLegState()
         {
@@ -27,7 +26,7 @@ namespace SpiderController
         {
             IsTouchesWithLegs = _legRaycasts.Any(x => x.IsGrounded);
 
-            IsTouchingGround = Physics.CheckSphere(transform.position, 0.3f, _groundLayer);
+            //IsTouchingGround = Physics.CheckSphere(transform.position, 0.3f, _groundLayer);
         }
     }
 }

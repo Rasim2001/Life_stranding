@@ -9,8 +9,6 @@ namespace SpiderController.StateMachine.States.Airborn
 {
     public class FallingState : AirbornState
     {
-        
-
         private readonly GroundChecker _spiderGroundChecker;
 
         public FallingState(ISpiderStateMachine stateMachine, IInputService inputService,
@@ -44,10 +42,7 @@ namespace SpiderController.StateMachine.States.Airborn
             if (Data.EnergyFillAmount <= 0)
                 StateMachine.SwitchState<FallingWithoutEnergyState>();
 
-            if (_spiderGroundChecker.IsTouchingGround)
-                Spider.transform.localEulerAngles = Vector3.zero;
-
-            if (_spiderGroundChecker.IsTouchesWithLegs || _spiderGroundChecker.IsTouchingGround)
+            if (_spiderGroundChecker.IsTouchesWithLegs)
             {
                 Data.YVelocity = 0;
 

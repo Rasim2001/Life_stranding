@@ -24,12 +24,12 @@ namespace HUD
             _hudTransform = hudTransform;
         }
 
-        public void RegisterFinishTarget(Vector3 finishTargetPosition)
+        public void RegisterFinishTarget(Transform finishTargetTransform)
         {
             RectTransform arrowUI = Instantiate(_arrowUIPrefab, _hudTransform);
 
             _finishPointIndicator = new
-                FinishPointIndicator(arrowUI, _canvasRectTransform, _finishPointLayer, finishTargetPosition);
+                FinishPointIndicator(arrowUI, _canvasRectTransform, _finishPointLayer, finishTargetTransform);
         }
 
         public void RegisterFlowerPoint(Transform flowerTransform)

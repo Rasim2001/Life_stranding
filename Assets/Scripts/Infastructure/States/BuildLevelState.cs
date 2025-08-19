@@ -4,6 +4,7 @@ using DG.Tweening;
 using HUD;
 using Infastructure.Common;
 using Infastructure.Factories.GameFactories;
+using Infastructure.Services.CheckPoint;
 using Infastructure.Services.PlayerProgressService;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController;
@@ -19,13 +20,15 @@ namespace Infastructure.States
         private readonly IGameUIFactory _uiFactory;
         private readonly IPersistentProgressService _progressService;
         private readonly ISceneLoader _sceneLoader;
+        private readonly ICheckPointService _checkPointService;
 
         public BuildLevelState(
             IGameFactory gameFactory,
             IStaticDataService staticData,
             IGameUIFactory uiFactory,
             IPersistentProgressService progressService,
-            ISceneLoader sceneLoader
+            ISceneLoader sceneLoader,
+            ICheckPointService checkPointService
         )
         {
             _gameFactory = gameFactory;
@@ -33,6 +36,7 @@ namespace Infastructure.States
             _uiFactory = uiFactory;
             _progressService = progressService;
             _sceneLoader = sceneLoader;
+            _checkPointService = checkPointService;
         }
 
         public void Initialize()
@@ -44,6 +48,7 @@ namespace Infastructure.States
             Cursor.lockState = CursorLockMode.None;*/
 
             InitGameWorld();
+            GoToCheckPoints();
         }
 
 
@@ -54,11 +59,16 @@ namespace Infastructure.States
 
         private void InitGameWorld()
         {
+            InitCheckPoints();
+
             HudUI hudUI = InitHUD();
             Spider spider = InitSpider(hudUI);
 
             InitCameraSystem(spider);
         }
+
+        private void InitCheckPoints() =>
+            _gameFactory.CreateCheckPointIndicator();
 
 
         private Spider InitSpider(HudUI hudUI) =>
@@ -69,5 +79,8 @@ namespace Infastructure.States
 
         private HudUI InitHUD() =>
             _gameFactory.CreateHUD();
+
+        private void GoToCheckPoints() =>
+            _checkPointService.GoToNextPoint();
     }
 }

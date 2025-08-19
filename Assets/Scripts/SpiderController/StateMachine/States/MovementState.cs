@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Infastructure.Services.Input;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
@@ -27,6 +29,8 @@ namespace SpiderController.StateMachine.States
         private readonly IInputService _inputService;
         private readonly float _legMoveDeadzone = 0.04f;
 
+        private readonly List<BackLegRaycast> _backLegs;
+
 
         protected MovementState(
             ISpiderStateMachine stateMachine,
@@ -45,6 +49,11 @@ namespace SpiderController.StateMachine.States
             Spider = spider;
             Data = stateMachineData;
             Legs = legs;
+
+            _backLegs = Legs
+                .Select(x => x.Raycast.GetComponent<BackLegRaycast>())
+                .Where(x => x != null)
+                .ToList();
         }
 
 
@@ -69,6 +78,7 @@ namespace SpiderController.StateMachine.States
             InputHandler();
             TryMoveLegs();
             CheckFlowerAndReduceHp();
+            BackLegHandle();
         }
 
         public virtual void FixedUpdate()
@@ -177,6 +187,23 @@ namespace SpiderController.StateMachine.States
                 SpiderHealth.TakeDamage(SpiderStaticData.DamageAmount);
         }
 
+        private void BackLegHandle()
+        {
+            if (_backLegs == null)
+                return;
+
+            if (Data.Input.z > 0)
+            {
+                foreach (BackLegRaycast backLeg in _backLegs)
+                    backLeg.SetForwardStateLeg();
+            }
+            else if (Data.Input.z < 0)
+            {
+                foreach (BackLegRaycast backLeg in _backLegs)
+                    backLeg.SetBackStateLeg();
+            }
+        }
+
         private void MoveBodySpider()
         {
             Vector3 forwardMovement = Spider.transform.forward * Data.Velocity.z;
@@ -203,23 +230,19 @@ namespace SpiderController.StateMachine.States
             Vector3 avgLegPos = Vector3.zero;
             int count = 0;
 
+            Transform spiderTransform = Spider.transform;
             for (int i = 0; i < Legs.Length; i++)
             {
-                if (Legs[i].Raycast.IsGrounded)
-                {
-                    avgLegPos += Spider.transform.InverseTransformPoint(Legs[i].Raycast.Position);
-                    count++;
-                }
+                avgLegPos += Legs[i].Raycast.Position;
+                count++;
             }
 
             if (count == 0)
                 return;
 
-            avgLegPos /= count;
-
+            avgLegPos = spiderTransform.InverseTransformPoint(avgLegPos / count);
             float targetY = avgLegPos.y + Data.DistanceFromGround;
-
-            Vector3 localPos = Spider.transform.InverseTransformPoint(Rigidbody.position);
+            Vector3 localPos = spiderTransform.InverseTransformPoint(Rigidbody.position);
 
             float newLocalY = Mathf.Lerp(localPos.y, targetY,
                 Time.fixedDeltaTime * SpiderStaticData.LerpSpeedFromGround);
@@ -227,10 +250,10 @@ namespace SpiderController.StateMachine.States
             float deltaY = newLocalY - localPos.y;
             float localVerticalVelocity = deltaY / Time.fixedDeltaTime;
 
-            Vector3 localVelocity = Spider.transform.InverseTransformDirection(Rigidbody.linearVelocity);
+            Vector3 localVelocity = spiderTransform.InverseTransformDirection(Rigidbody.linearVelocity);
             localVelocity.y = localVerticalVelocity;
 
-            Rigidbody.linearVelocity = Spider.transform.TransformDirection(localVelocity);
+            Rigidbody.linearVelocity = spiderTransform.TransformDirection(localVelocity);
         }
 
 
@@ -247,9 +270,9 @@ namespace SpiderController.StateMachine.States
         private void AdjustBodyOrientation()
         {
             Vector3[] legPositions = new Vector3[Legs.Length];
-            for (int i = 0; i < Legs.Length; i++) 
+            for (int i = 0; i < Legs.Length; i++)
                 legPositions[i] = Legs[i].Raycast.Position;
-               
+
             Vector3 normalSum = Vector3.zero;
             int count = 0;
             for (int i = 0; i < Legs.Length; i++)

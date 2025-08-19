@@ -71,7 +71,13 @@ namespace SpiderController
 
             float distanceFactor = Mathf.Clamp01(Mathf.Max(normalizedX, normalizedZ));
 
-            Color targetColor = Color.Lerp(Color.blue, Color.red, distanceFactor);
+            Color targetColor;
+            if (distanceFactor < 0.33f)
+                targetColor = Color.blue;
+            else if (distanceFactor < 0.66f)
+                targetColor = new Color(0.5f, 0f, 0.5f);
+            else
+                targetColor = Color.red;
 
             _robotPlaneMaterial.color = Color.Lerp(
                 _robotPlaneMaterial.color,

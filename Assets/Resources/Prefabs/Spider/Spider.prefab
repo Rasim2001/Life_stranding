@@ -559,6 +559,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6562933287002958290}
   - component: {fileID: 8687743643175502748}
+  - component: {fileID: 4925048751352680204}
   m_Layer: 6
   m_Name: LegL2
   m_TagString: Untagged
@@ -598,6 +599,20 @@ MonoBehaviour:
     m_Bits: 1
   _offsetDistance: 15
   _offsetRayCount: 4
+--- !u!114 &4925048751352680204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2586299893691199646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08395b8eaf134f94a03bdce2a6d84948, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _forwardRotation: {x: 0, y: 0, z: 0}
+  _backRotation: {x: 15, y: 0, z: 0}
 --- !u!1 &2611304340422644356
 GameObject:
   m_ObjectHideFlags: 0
@@ -657,6 +672,7 @@ GameObject:
   m_Component:
   - component: {fileID: 729331492389689180}
   - component: {fileID: 4957002421866192317}
+  - component: {fileID: 4940838145471676880}
   m_Layer: 6
   m_Name: LegR2
   m_TagString: Untagged
@@ -673,7 +689,7 @@ Transform:
   m_GameObject: {fileID: 3279962089593541439}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.5, y: 1.5, z: -1}
+  m_LocalPosition: {x: 1.5, y: 1.35, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -696,6 +712,20 @@ MonoBehaviour:
     m_Bits: 1
   _offsetDistance: 15
   _offsetRayCount: 4
+--- !u!114 &4940838145471676880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3279962089593541439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08395b8eaf134f94a03bdce2a6d84948, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _forwardRotation: {x: 0, y: 0, z: 0}
+  _backRotation: {x: 15, y: 0, z: 0}
 --- !u!1 &3306469546981090165
 GameObject:
   m_ObjectHideFlags: 0
@@ -2233,7 +2263,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 05326d264ead81a438996b2110f7983f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.993004
+      value: -170
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 05326d264ead81a438996b2110f7983f, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2241,7 +2271,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 05326d264ead81a438996b2110f7983f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -27
+      value: -140
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 05326d264ead81a438996b2110f7983f, type: 3}
       propertyPath: m_LocalRotation.w
