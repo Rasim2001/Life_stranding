@@ -1,7 +1,7 @@
 using HUD;
 using Infastructure.Common;
 using Infastructure.Services.CheckPoint;
-using Infastructure.Services.Input;
+using Infastructure.Services.PlayerInput;
 using Infastructure.States;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
@@ -28,7 +28,7 @@ namespace SpiderController
         public SpiderUI SpiderUI => _spiderUI;
 
         private Rigidbody _rigidbody;
-        private SpiderStateMachine _stateMachine;
+        private SpiderStateMachine _spiderStateMachine;
         private SpiderPlane _spiderPlane;
         private FlowerPickup _flowerPickup;
         private CheckPointChanger _checkPointChanger;
@@ -69,7 +69,8 @@ namespace SpiderController
                 _staticDataService, stateMachineData);
             _spiderPlane.Initialize();
 
-            _stateMachine = new SpiderStateMachine(this, stateMachineData, _inputService, _staticDataService, _legs,
+            _spiderStateMachine = new SpiderStateMachine(this, stateMachineData, _inputService, _staticDataService,
+                _legs,
                 _flower);
             _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _flowerChecker, _flower);
             _spiderUI.StickerUI.PlaySticker(StickerEnum.StartGame);
@@ -83,14 +84,14 @@ namespace SpiderController
 
         private void Update()
         {
-            if (_stateMachine == null)
+            if (_spiderStateMachine == null)
                 return;
 
             if (Input.GetKeyDown(KeyCode.Escape))
                 _stateMachine1.Enter<LoadLevelState>(); //TODO:
 
-            _stateMachine.HandleInput();
-            _stateMachine.Update();
+            _spiderStateMachine.HandleInput();
+            _spiderStateMachine.Update();
             _spiderPlane.Update();
             _flowerPickup.Update();
             _checkPointChanger.Update();
@@ -98,19 +99,19 @@ namespace SpiderController
 
         private void FixedUpdate()
         {
-            if (_stateMachine == null)
+            if (_spiderStateMachine == null)
                 return;
 
-            _stateMachine.FixedUpdate();
+            _spiderStateMachine.FixedUpdate();
             _spiderPlane.FixedUpdate();
         }
 
         private void LateUpdate()
         {
-            if (_stateMachine == null)
+            if (_spiderStateMachine == null)
                 return;
 
-            _stateMachine.LateUpdate();
+            _spiderStateMachine.LateUpdate();
         }
     }
 }

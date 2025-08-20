@@ -1,7 +1,7 @@
 using Infastructure.Common;
 using Infastructure.Factories.GameFactories;
 using Infastructure.Services.CheckPoint;
-using Infastructure.Services.Input;
+using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Window.GameWindowService;
 using Infastructure.States;
 using Zenject;

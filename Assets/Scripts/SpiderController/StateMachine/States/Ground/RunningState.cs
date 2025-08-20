@@ -1,4 +1,4 @@
-using Infastructure.Services.Input;
+using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
 using UnityEngine;

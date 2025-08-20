@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Infastructure.Services.Input;
+using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
@@ -21,7 +21,7 @@ namespace SpiderController.StateMachine.States
         protected IInputService InputService => _inputService;
         protected Rigidbody Rigidbody => Spider.Rigidbody;
         protected SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
-
+        
         private SpiderHealth SpiderHealth => Spider.SpiderUI.SpiderHealth;
         private EnergyBarUI EnergyBar => Spider.SpiderUI.EnergyBar;
 

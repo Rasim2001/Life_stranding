@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Infastructure.Services.Input;
+using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Airborn;

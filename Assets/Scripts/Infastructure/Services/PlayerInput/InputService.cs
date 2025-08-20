@@ -1,35 +1,40 @@
 using UnityEngine;
+using Zenject;
 
-namespace Infastructure.Services.Input
+namespace Infastructure.Services.PlayerInput
 {
-    public class InputService : IInputService
+    public class InputService : IInputService, IInitializable
     {
-        private const string Horizontal = "Horizontal";
-        private const string Vertical = "Vertical";
+        private IInputSource _inputSource;
 
-        public Vector3 InputVector =>
-            new Vector3(UnityEngine.Input.GetAxis(Horizontal), 0, UnityEngine.Input.GetAxis(Vertical));
+        public void Initialize() =>
+            _inputSource = new PlayerInputSource();
 
-        public bool LeftMousePressed => UnityEngine.Input.GetMouseButtonDown(0);
-        public bool LeftMouseUp => UnityEngine.Input.GetMouseButtonUp(0);
+        public void SetInputSource(IInputSource inputSource) =>
+            _inputSource = inputSource;
 
-        public bool RightMousePressed => UnityEngine.Input.GetMouseButtonDown(1);
-        public bool RightMouseUp => UnityEngine.Input.GetMouseButtonUp(1);
-        public bool CenterMousePressed => UnityEngine.Input.GetMouseButtonDown(2);
-        public bool CenterMouseUp => UnityEngine.Input.GetMouseButtonUp(2);
+        public Vector3 InputVector => _inputSource.InputVector;
 
-        public float ScrollWheelAxis => UnityEngine.Input.GetAxis("Mouse ScrollWheel");
-        public float MouseXAxis => UnityEngine.Input.GetAxis("Mouse X");
-        public float MouseYAxis => UnityEngine.Input.GetAxis("Mouse Y");
+        public bool LeftMousePressed => _inputSource.LeftMousePressed;
+        public bool LeftMouseUp => _inputSource.LeftMouseUp;
 
-        public bool IsLeftShiftPressed => UnityEngine.Input.GetKeyDown(KeyCode.LeftShift);
-        public bool IsLeftShiftUp => UnityEngine.Input.GetKeyUp(KeyCode.LeftShift);
+        public bool RightMousePressed => _inputSource.RightMousePressed;
+        public bool RightMouseUp => _inputSource.RightMouseUp;
+        public bool CenterMousePressed => _inputSource.CenterMousePressed;
+        public bool CenterMouseUp => _inputSource.CenterMouseUp;
 
-        public bool CtrlPressed => UnityEngine.Input.GetKeyDown(KeyCode.LeftControl);
-        public bool CtrlUp => UnityEngine.Input.GetKeyUp(KeyCode.LeftControl);
+        public float ScrollWheelAxis => _inputSource.ScrollWheelAxis;
+        public float MouseXAxis => _inputSource.MouseXAxis;
+        public float MouseYAxis => _inputSource.MouseYAxis;
 
-        public bool JumpPressed => UnityEngine.Input.GetKeyDown(KeyCode.Space);
-        public bool JerkPressed => UnityEngine.Input.GetKeyDown(KeyCode.LeftAlt);
-        public bool PickupPressed => UnityEngine.Input.GetKeyDown(KeyCode.E);
+        public bool IsLeftShiftPressed => _inputSource.IsLeftShiftPressed;
+        public bool IsLeftShiftUp => _inputSource.IsLeftShiftUp;
+
+        public bool CtrlPressed => _inputSource.CtrlPressed;
+        public bool CtrlUp => _inputSource.CtrlUp;
+
+        public bool JumpPressed => _inputSource.JumpPressed;
+        public bool JerkPressed => _inputSource.JerkPressed;
+        public bool PickupPressed => _inputSource.PickupPressed;
     }
 }

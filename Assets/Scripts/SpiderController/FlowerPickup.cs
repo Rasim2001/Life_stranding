@@ -1,5 +1,5 @@
 using Infastructure.Common;
-using Infastructure.Services.Input;
+using Infastructure.Services.PlayerInput;
 using UnityEngine;
 
 namespace SpiderController
