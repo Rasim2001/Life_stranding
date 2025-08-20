@@ -17,7 +17,8 @@ namespace Infastructure.CutScene
         private void Awake()
         {
             _cutSceneInputSource = new CutSceneInputSource();
-            _inputService.SetInputSource(_cutSceneInputSource);
+            //_inputService.SetInputSource(_cutSceneInputSource);
+            _inputService.SetInputSource(new PlayerInputSource());
         }
 
         public void MoveTowardSignal() =>
@@ -32,12 +33,8 @@ namespace Infastructure.CutScene
         public void TurnLeftSignal() =>
             _cutSceneInputSource.InputVector += Vector3.left;
 
-        public void JumpSignal()
-        {
-            Debug.Log("JumpSignal");
-
+        public void JumpSignal() =>
             JumpAsync().Forget();
-        }
 
         private async UniTask JumpAsync()
         {

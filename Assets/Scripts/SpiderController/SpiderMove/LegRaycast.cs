@@ -35,36 +35,15 @@ namespace SpiderController.SpiderMove
         {
             _rayDistance = 5;
 
-            //ReturnBodyToDefault();
+            ReturnBodyToDefault();
         }
 
         public void SetAirbornState()
         {
             _rayDistance = 2;
 
-            //GroupBody();
+            GroupBody();
         }
-
-        /*
-        public void RotateFallingLegs()
-        {
-            float randomAngleX = Random.Range(-50f, 50f);
-            float randomAngleY = Random.Range(-50f, 50f);
-            float randomAngleZ = Random.Range(-50f, 50f);
-
-            Vector3 targetRandomRotation = new Vector3(randomAngleX, randomAngleY, randomAngleZ);
-
-            _defaultRotationTween?.Kill();
-            _randomRotationTween = transform.DOLocalRotate(targetRandomRotation, 0.5f);
-        }
-
-
-        public void SetDefaultRotationLegs()
-        {
-            _randomRotationTween?.Kill();
-            _defaultRotationTween = transform.DOLocalRotate(_defaultRotation, 2);
-        }
-        */
 
         private void Update()
         {

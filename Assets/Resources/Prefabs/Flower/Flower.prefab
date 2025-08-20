@@ -9,12 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3677265063123173030}
-  - component: {fileID: 7686039714304185852}
-  - component: {fileID: 1385357947253173194}
-  - component: {fileID: 177542979243479506}
   - component: {fileID: 5276023462868003143}
   - component: {fileID: 6336385553014131599}
   - component: {fileID: 3730952842935115637}
+  - component: {fileID: 5569387348333919000}
   m_Layer: 9
   m_Name: Flower
   m_TagString: Untagged
@@ -37,80 +35,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
---- !u!33 &7686039714304185852
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 448772362914990534}
-  m_Mesh: {fileID: -951608786083511892, guid: a31582e31717363418cb7686a92a5d08, type: 3}
---- !u!23 &1385357947253173194
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 448772362914990534}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &177542979243479506
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 448772362914990534}
-  m_Material: {fileID: 13400000, guid: 51e57d932e0a61346b54e6a9d697a980, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 64
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.030000003, y: 0.030000001, z: 0.07}
-  m_Center: {x: 0, y: 1.8228668e-16, z: 0.032431103}
 --- !u!54 &5276023462868003143
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -151,10 +75,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _platform: {fileID: 0}
+  _meshRenderer: {fileID: 0}
   _platformBounds:
     m_Center: {x: 0, y: 0.003, z: 0}
     m_Extent: {x: 0.01, y: 0.005, z: 0.01}
   _speed: 1
+  _colorLerpSpeed: 5
   IsFreezingOnPlatform: 0
 --- !u!114 &3730952842935115637
 MonoBehaviour:
@@ -168,3 +94,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a7253add04b4d1cbc8e0065f78ac40c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &5569387348333919000
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 448772362914990534}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.021731952, y: 0.021731952, z: 0.032288156}
+  m_Center: {x: -1.1419459e-16, y: -1.0725569e-16, z: 0.016071465}
