@@ -14,6 +14,7 @@ namespace Infastructure.Common
         public const string CameraSystemPath = "Prefabs/CameraSystem/CameraSystem";
         public const string HUDPath = "Prefabs/HUD/HUD";
         public const string PointIndicatorPath = "Prefabs/Scene/PointIndicator";
+        public const string StartGameCutSceneTimelinePath = "Prefabs/Timeline/StartGameTimeline";
 
         public const string SpiderDataPath = "StaticData/Spider/SpiderData";
         public const string HudDataPath = "StaticData/HUD/HudData";

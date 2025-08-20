@@ -19,8 +19,6 @@ namespace Infastructure.Services.CheckPoint
 
         public void GoToNextPoint()
         {
-            Debug.Log(_count);
-
             if (_count >= GameStaticData.CheckPoints.Count)
                 return;
 

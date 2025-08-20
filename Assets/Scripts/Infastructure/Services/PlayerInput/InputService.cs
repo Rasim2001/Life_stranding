@@ -3,12 +3,9 @@ using Zenject;
 
 namespace Infastructure.Services.PlayerInput
 {
-    public class InputService : IInputService, IInitializable
+    public class InputService : IInputService
     {
         private IInputSource _inputSource;
-
-        public void Initialize() =>
-            _inputSource = new PlayerInputSource();
 
         public void SetInputSource(IInputSource inputSource) =>
             _inputSource = inputSource;

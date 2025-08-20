@@ -22,11 +22,7 @@ namespace SpiderController
                 legRaycast.SetAirbornState();
         }
 
-        private void Update()
-        {
+        private void Update() => 
             IsTouchesWithLegs = _legRaycasts.Any(x => x.IsGrounded);
-
-            //IsTouchingGround = Physics.CheckSphere(transform.position, 0.3f, _groundLayer);
-        }
     }
 }

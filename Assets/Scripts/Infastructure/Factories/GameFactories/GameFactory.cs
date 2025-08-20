@@ -60,5 +60,8 @@ namespace Infastructure.Factories.GameFactories
 
             _checkPointService.PointIndicator = indicatorMarker.transform;
         }
+
+        public void CreateStartGameCutSceneTimeline() =>
+            _diContainer.InstantiatePrefabResource(AssetsPath.StartGameCutSceneTimelinePath);
     }
 }

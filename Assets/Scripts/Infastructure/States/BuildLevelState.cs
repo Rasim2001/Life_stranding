@@ -65,6 +65,7 @@ namespace Infastructure.States
             Spider spider = InitSpider(hudUI);
 
             InitCameraSystem(spider);
+            InitStartGameScene();
         }
 
         private void InitCheckPoints() =>
@@ -79,6 +80,9 @@ namespace Infastructure.States
 
         private HudUI InitHUD() =>
             _gameFactory.CreateHUD();
+
+        private void InitStartGameScene() =>
+            _gameFactory.CreateStartGameCutSceneTimeline();
 
         private void GoToCheckPoints() =>
             _checkPointService.GoToNextPoint();

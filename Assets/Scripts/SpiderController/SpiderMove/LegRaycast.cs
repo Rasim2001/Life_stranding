@@ -35,14 +35,14 @@ namespace SpiderController.SpiderMove
         {
             _rayDistance = 5;
 
-            ReturnBodyToDefault();
+            //ReturnBodyToDefault();
         }
 
         public void SetAirbornState()
         {
             _rayDistance = 2;
 
-            GroupBody();
+            //GroupBody();
         }
 
         /*

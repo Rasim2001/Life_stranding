@@ -27,8 +27,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2191355076106598035}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0080337785, y: 0.000091457354, z: -0.011382997, w: 0.99990296}
-  m_LocalPosition: {x: 0, y: 0.7194627, z: 22.136932}
+  m_LocalRotation: {x: -0.007264658, y: 0, z: 0, w: 0.99997365}
+  m_LocalPosition: {x: 216.6, y: 0.61, z: -7.596176}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -91,7 +91,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SplineSettings:
     Spline: {fileID: 6061600274857060241}
-    Position: 0.91
+    Position: 0
     Units: 1
   SplineOffset: {x: 0, y: 0, z: 0}
   CameraRotation: 1
@@ -155,7 +155,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6299641759454592445
 Transform:
   m_ObjectHideFlags: 0
@@ -184,6 +184,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2620043295113101136}
   - component: {fileID: 9152773421384534950}
+  - component: {fileID: 2433183852874562214}
+  - component: {fileID: 5003769145155392686}
   m_Layer: 0
   m_Name: StartGameTimeline
   m_TagString: Untagged
@@ -221,9 +223,102 @@ PlayableDirector:
   m_WrapMode: 2
   m_DirectorUpdateMode: 1
   m_InitialTime: 0
-  m_SceneBindings: []
+  m_SceneBindings:
+  - key: {fileID: 7602929057077508224, guid: 932884a40556a3544ad24e128ad2223a, type: 2}
+    value: {fileID: 5003769145155392686}
   m_ExposedReferences:
     m_References: []
+--- !u!114 &2433183852874562214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3814781391213979840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed430c674614455d8b7e4b4a35a69be7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5003769145155392686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3814781391213979840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: 9245dfc74005eb5458cce00f77d3b273, type: 2}
+    - {fileID: 11400000, guid: 48ba1d010397d9e49a9c70db77138463, type: 2}
+    - {fileID: 11400000, guid: e528e0ccf9d1ce0418239069b8f7c765, type: 2}
+    - {fileID: 11400000, guid: 0f61ef5a7d143d74aab91267af30dfe3, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2433183852874562214}
+          m_TargetAssemblyTypeName: Infastructure.CutScene.StartGameCutSceneRunner,
+            Assembly-CSharp
+          m_MethodName: MoveTowardSignal
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2433183852874562214}
+          m_TargetAssemblyTypeName: Infastructure.CutScene.StartGameCutSceneRunner,
+            Assembly-CSharp
+          m_MethodName: TurnRightSignal
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2433183852874562214}
+          m_TargetAssemblyTypeName: Infastructure.CutScene.StartGameCutSceneRunner,
+            Assembly-CSharp
+          m_MethodName: StopMoveSignal
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2433183852874562214}
+          m_TargetAssemblyTypeName: Infastructure.CutScene.StartGameCutSceneRunner,
+            Assembly-CSharp
+          m_MethodName: JumpSignal
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &6361232783174969461
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,11 +344,10 @@ Transform:
   m_GameObject: {fileID: 6361232783174969461}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 16.96}
+  m_LocalPosition: {x: 207.15, y: 0, z: 23.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 4507327500970558231}
+  m_Children: []
   m_Father: {fileID: 6299641759454592445}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8085503169824670994
@@ -283,7 +377,7 @@ Transform:
   m_GameObject: {fileID: 8085503169824670994}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 216.6, y: 0, z: -7.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -402,69 +496,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AutoSmooth: 1
---- !u!1001 &3577697323626185479
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 2524395820341801263}
-    m_Modifications:
-    - target: {fileID: 315364214423788202, guid: 4931671649f06ed41adeb455251d1f8c, type: 3}
-      propertyPath: m_Name
-      value: Spider
-      objectReference: {fileID: 0}
-    - target: {fileID: 315364214423788202, guid: 4931671649f06ed41adeb455251d1f8c, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1093168242889441296, guid: 4931671649f06ed41adeb455251d1f8c, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1093168242889441296, guid: 4931671649f06ed41adeb455251d1f8c, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1093168242889441296, guid: 4931671649f06ed41adeb455251d1f8c, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1093168242889441296, guid: 4931671649f06ed41adeb455251d1f8c, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1093168242889441296, guid: 4931671649f06ed41adeb455251d1f8c, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1093168242889441296, guid: 4931671649f06ed41adeb455251d1f8c, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1093168242889441296, guid: 4931671649f06ed41adeb455251d1f8c, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1093168242889441296, guid: 4931671649f06ed41adeb455251d1f8c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1093168242889441296, guid: 4931671649f06ed41adeb455251d1f8c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1093168242889441296, guid: 4931671649f06ed41adeb455251d1f8c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 4931671649f06ed41adeb455251d1f8c, type: 3}
---- !u!4 &4507327500970558231 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1093168242889441296, guid: 4931671649f06ed41adeb455251d1f8c, type: 3}
-  m_PrefabInstance: {fileID: 3577697323626185479}
-  m_PrefabAsset: {fileID: 0}
