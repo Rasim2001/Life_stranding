@@ -29,6 +29,7 @@ namespace Infastructure.Services.PlayerInput
         public bool CtrlUp => Input.GetKeyUp(KeyCode.LeftControl);
 
         public bool JumpPressed => Input.GetKeyDown(KeyCode.Space);
+        public bool JumpUp => Input.GetKeyUp(KeyCode.Space);
         public bool JerkPressed => Input.GetKeyDown(KeyCode.LeftAlt);
         public bool PickupPressed => Input.GetKeyDown(KeyCode.E);
     }

@@ -8,13 +8,30 @@ namespace SpiderController.SpiderMove
         [SerializeField] private float _stepSpeed = 5f;
         [SerializeField] private AnimationCurve _stepCurve;
 
-        public bool IsAirbornState;
+        public bool IsAirbornState
+        {
+            get => _isAirbornState;
+            set
+            {
+                if (_isAirbornState && !value)
+                {
+                    _position = transform.position;
+
+                    _movement.Progress = 0;
+                    _movement.FromPosition = _position;
+                }
+
+
+                _isAirbornState = value;
+            }
+        }
         public Vector3 Position => _position;
         public bool IsMoving => _movement.IsMoving;
 
         private Movement _movement;
         private Vector3 _position;
         private float _stepSpeedDefault;
+        private bool _isAirbornState;
 
 
         private void Awake()

@@ -43,6 +43,11 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Update();
 
+            SpendEnergy(SpiderStaticData.EnergySpendAirbornSpeed);
+
+            if (InputService.JumpUp)
+                StateMachine.SwitchState<FallingWithControlState>();
+
             if (Data.EnergyFillAmount <= 0)
                 StateMachine.SwitchState<FallingWithoutEnergyState>();
 

@@ -3,15 +3,16 @@ using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
 using SpiderController.UI.Stickers;
-using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Airborn
 {
-    public class FallingState : AirbornState
+    public class FallingWithControlState : AirbornState
     {
+        private StickerUI StickerUI => Spider.SpiderUI.StickerUI;
+
         private readonly GroundChecker _spiderGroundChecker;
 
-        public FallingState(ISpiderStateMachine stateMachine, IInputService inputService,
+        public FallingWithControlState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
             LegDataStruct[] legs, Flower flower) : base(stateMachine, inputService, staticDataService, spider,
             stateMachineData, legs, flower)
@@ -23,15 +24,7 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Enter();
 
-            Data.AirbornSpeed = SpiderStaticData.FallSpeed;
-            Flower.IsFreezingOnPlatform = true;
-        }
-
-        public override void Exit()
-        {
-            base.Exit();
-
-            Flower.IsFreezingOnPlatform = false;
+            Data.AirbornSpeed = SpiderStaticData.FallWithoutEnergySpeed;
         }
 
 
@@ -39,17 +32,13 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Update();
 
-            SpendEnergy(SpiderStaticData.EnergySpendAirbornSpeed);
-
-            if (InputService.JumpUp)
-                StateMachine.SwitchState<FallingWithControlState>();
-
-            if (Data.EnergyFillAmount <= 0)
-                StateMachine.SwitchState<FallingWithoutEnergyState>();
+            if (InputService.JumpPressed)
+                StateMachine.SwitchState<FallingState>();
 
             if (_spiderGroundChecker.IsTouchesWithLegs)
             {
                 Data.YVelocity = 0;
+                StickerUI.PlaySticker(StickerEnum.FallingDown);
 
                 if (IsInputZero())
                     StateMachine.SwitchState<IdlingState>();

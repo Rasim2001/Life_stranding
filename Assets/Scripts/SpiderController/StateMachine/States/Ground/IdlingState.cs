@@ -1,7 +1,6 @@
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
-using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Ground
 {
@@ -18,8 +17,8 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Enter();
 
-            Rigidbody.linearVelocity = Vector3.zero;
-            Rigidbody.angularVelocity = Vector3.zero;
+            /*Rigidbody.linearVelocity = Vector3.zero;
+            Rigidbody.angularVelocity = Vector3.zero;*/
 
             Data.Speed = 0;
             Data.DistanceFromGround = SpiderStaticData.DistanceFromGround;

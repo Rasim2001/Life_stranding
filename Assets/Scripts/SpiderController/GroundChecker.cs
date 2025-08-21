@@ -10,19 +10,7 @@ namespace SpiderController
         [SerializeField] private LegRaycast[] _legRaycasts;
         public bool IsTouchesWithLegs { get; private set; }
 
-        public void SetGroundLegState()
-        {
-            foreach (LegRaycast legRaycast in _legRaycasts)
-                legRaycast.SetGroundState();
-        }
-
-        public void SetAirbornLegState()
-        {
-            foreach (LegRaycast legRaycast in _legRaycasts)
-                legRaycast.SetAirbornState();
-        }
-
-        private void Update() => 
+        private void Update() =>
             IsTouchesWithLegs = _legRaycasts.Any(x => x.IsGrounded);
     }
 }

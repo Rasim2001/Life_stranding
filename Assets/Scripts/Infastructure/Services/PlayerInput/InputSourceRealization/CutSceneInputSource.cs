@@ -19,6 +19,7 @@ namespace Infastructure.Services.PlayerInput
         public bool CtrlPressed { get; }
         public bool CtrlUp { get; }
         public bool JumpPressed { get; set; }
+        public bool JumpUp { get; set; }
         public bool JerkPressed { get; }
         public bool PickupPressed { get; }
     }

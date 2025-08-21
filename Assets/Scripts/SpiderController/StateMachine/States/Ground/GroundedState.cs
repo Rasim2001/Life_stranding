@@ -2,7 +2,6 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Airborn;
-using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Ground
 {
@@ -16,13 +15,6 @@ namespace SpiderController.StateMachine.States.Ground
             stateMachineData, legs, flower)
         {
             _groundChecker = spider.GroundChecker;
-        }
-
-        public override void Enter()
-        {
-            base.Enter();
-
-            _groundChecker.SetGroundLegState();
         }
 
 

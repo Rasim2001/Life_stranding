@@ -33,7 +33,8 @@ namespace SpiderController.StateMachine
                 new FallingWithoutEnergyState(this, inputService, staticDataService, spider, stateMachineData, legs,
                     flower),
                 new JerkState(this, inputService, staticDataService, spider, stateMachineData, legs, flower),
-                new SlowdownState(this, inputService, staticDataService, spider, stateMachineData, legs, flower)
+                new SlowdownState(this, inputService, staticDataService, spider, stateMachineData, legs, flower),
+                new FallingWithControlState(this, inputService, staticDataService, spider, stateMachineData, legs, flower),
             };
 
             _currentState = _states[0];
@@ -44,7 +45,7 @@ namespace SpiderController.StateMachine
         {
             ISpiderState newState = _states.FirstOrDefault(state => state is T);
 
-            //Debug.Log($"NewState : {newState.GetType().Name}");
+            Debug.Log($"NewState : {newState.GetType().Name}");
 
             _currentState.Exit();
             _currentState = newState;

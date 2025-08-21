@@ -7,14 +7,11 @@ namespace SpiderController.StateMachine.States.Airborn
 {
     public class AirbornState : MovementState
     {
-        private readonly GroundChecker _groundChecker;
-
         protected AirbornState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
             LegDataStruct[] legs, Flower flower) : base(stateMachine, inputService, staticDataService, spider,
             stateMachineData, legs, flower)
         {
-            _groundChecker = spider.GroundChecker;
         }
 
         public override void Enter()
@@ -22,9 +19,8 @@ namespace SpiderController.StateMachine.States.Airborn
             base.Enter();
 
             SetAirbornLegs();
-            Data.Speed = SpiderStaticData.Speed;
 
-            _groundChecker.SetAirbornLegState();
+            Data.Speed = SpiderStaticData.Speed;
         }
 
         public override void Exit()
@@ -38,8 +34,6 @@ namespace SpiderController.StateMachine.States.Airborn
         public override void Update()
         {
             base.Update();
-
-            SpendEnergy(SpiderStaticData.EnergySpendAirbornSpeed);
 
             Data.YVelocity -= SpiderStaticData.BaseGravity * Data.AirbornSpeed * Time.deltaTime;
         }
@@ -83,6 +77,7 @@ namespace SpiderController.StateMachine.States.Airborn
             {
                 ref LegDataStruct legData = ref Legs[index];
                 legData.Leg.IsAirbornState = true;
+                legData.Raycast.SetAirbornState();
             }
         }
 
@@ -91,7 +86,10 @@ namespace SpiderController.StateMachine.States.Airborn
             for (int index = 0; index < Legs.Length; index++)
             {
                 ref LegDataStruct legData = ref Legs[index];
-                legData.Leg.IsAirbornState = false;
+                {
+                    legData.Leg.IsAirbornState = false;
+                    legData.Raycast.SetGroundState();
+                }
             }
         }
     }

@@ -39,19 +39,12 @@ namespace SpiderController.StateMachine.States.Airborn
             Data.IsFallingDownWithoutEnergyState = false;
         }
 
-        protected override void TryMoveLegs()
-        {
-            for (int index = 0; index < Legs.Length; index++)
-            {
-                ref LegDataStruct legData = ref Legs[index];
-                legData.Leg.MoveTo(legData.Raycast.AirbornPosition);
-            }
-        }
-
 
         public override void Update()
         {
             base.Update();
+
+            SpendEnergy(SpiderStaticData.EnergySpendAirbornSpeed);
 
             if (_spiderGroundChecker.IsTouchesWithLegs)
                 StandUpAsync().Forget();

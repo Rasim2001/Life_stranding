@@ -29,8 +29,8 @@ namespace Infastructure.Services.PlayerInput
 
         public bool CtrlPressed => _inputSource.CtrlPressed;
         public bool CtrlUp => _inputSource.CtrlUp;
-
         public bool JumpPressed => _inputSource.JumpPressed;
+        public bool JumpUp => _inputSource.JumpUp;
         public bool JerkPressed => _inputSource.JerkPressed;
         public bool PickupPressed => _inputSource.PickupPressed;
     }
