@@ -129,23 +129,18 @@ namespace SpiderController
 
         private void OnDrawGizmosSelected()
         {
-            if (_platform == null) return;
+            if (_platform == null)
+                return;
 
-            // Сохраняем текущую матрицу трансформации Gizmos
             Matrix4x4 oldMatrix = Gizmos.matrix;
-
-            // Устанавливаем матрицу трансформации платформы
             Gizmos.matrix = _platform.localToWorldMatrix;
 
-            // Рисуем bounds в локальных координатах платформы
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireCube(_platformBounds.center, _platformBounds.size);
 
-            // Дополнительно можно нарисовать центр bounds
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(_platformBounds.center, 0.1f);
 
-            // Восстанавливаем исходную матрицу
             Gizmos.matrix = oldMatrix;
         }
     }
