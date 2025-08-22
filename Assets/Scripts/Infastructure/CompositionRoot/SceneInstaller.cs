@@ -1,15 +1,19 @@
 using Infastructure.Common;
 using Infastructure.Factories.GameFactories;
 using Infastructure.Services.CheckPoint;
+using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Window.GameWindowService;
 using Infastructure.States;
+using UnityEngine.Rendering;
 using Zenject;
 
 namespace Infastructure.CompositionRoot
 {
     public class SceneInstaller : MonoInstaller
     {
+        public Volume GlobalVolume;
+
         public override void InstallBindings()
         {
             BindBuildLevelState();
@@ -25,7 +29,17 @@ namespace Infastructure.CompositionRoot
             BindStableWorldUp();
 
             BindCheckPointInstaller();
+
+            BindCutSceneService();
+
+            BindGlobalVolume();
         }
+
+        private void BindGlobalVolume() =>
+            Container.Bind<Volume>().FromInstance(GlobalVolume).AsSingle();
+
+        private void BindCutSceneService() =>
+            Container.BindInterfacesAndSelfTo<CutSceneService>().AsSingle();
 
         private void BindCheckPointInstaller() =>
             Container.BindInterfacesAndSelfTo<CheckPointService>().AsSingle();

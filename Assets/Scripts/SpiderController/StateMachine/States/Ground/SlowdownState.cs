@@ -8,8 +8,9 @@ namespace SpiderController.StateMachine.States.Ground
     {
         public SlowdownState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
-            LegDataStruct[] legs, Flower flower) : base(stateMachine, inputService, staticDataService, spider,
-            stateMachineData, legs, flower)
+            LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(stateMachine, inputService,
+            staticDataService, spider,
+            stateMachineData, legs, flower, energySystem)
         {
         }
 
@@ -26,7 +27,7 @@ namespace SpiderController.StateMachine.States.Ground
             base.Update();
 
             if (!Data.IsMouseHolding)
-                RestoreEnergy(SpiderStaticData.EnergyFillSpeed);
+                EnergySystem.RestoreEnergy(SpiderStaticData.EnergyFillSpeed);
 
             if (!SlowdownUp())
                 return;

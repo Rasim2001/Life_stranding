@@ -13,8 +13,9 @@ namespace SpiderController.StateMachine.States.Airborn
 
         public FallingState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
-            LegDataStruct[] legs, Flower flower) : base(stateMachine, inputService, staticDataService, spider,
-            stateMachineData, legs, flower)
+            LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(stateMachine, inputService,
+            staticDataService, spider,
+            stateMachineData, legs, flower, energySystem)
         {
             _spiderGroundChecker = spider.GroundChecker;
         }
@@ -39,7 +40,7 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Update();
 
-            SpendEnergy(SpiderStaticData.EnergySpendAirbornSpeed);
+            EnergySystem.SpendEnergy(SpiderStaticData.EnergySpendAirbornSpeed);
 
             if (InputService.JumpUp)
                 StateMachine.SwitchState<FallingWithControlState>();

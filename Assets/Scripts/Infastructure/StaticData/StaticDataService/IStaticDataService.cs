@@ -1,6 +1,7 @@
 ﻿using Infastructure.StaticData.HUD;
 using Infastructure.StaticData.Materials;
 using Infastructure.StaticData.Spider;
+using Infastructure.StaticData.VolumeProfiles;
 
 namespace Infastructure.StaticData.StaticDataService
 {
@@ -11,5 +12,6 @@ namespace Infastructure.StaticData.StaticDataService
         HudStaticData HudStaticData { get; }
         GameStaticData GameStaticData { get; }
         MaterialsStaticData MaterialsStaticData { get; }
+        VolumeProfilesStaticData VolumeProfilesStaticData { get; }
     }
 }

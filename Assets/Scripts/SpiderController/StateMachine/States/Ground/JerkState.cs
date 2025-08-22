@@ -11,8 +11,9 @@ namespace SpiderController.StateMachine.States.Ground
 
         public JerkState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
-            LegDataStruct[] legs, Flower flower) : base(stateMachine, inputService, staticDataService, spider,
-            stateMachineData, legs, flower)
+            LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(stateMachine, inputService,
+            staticDataService, spider,
+            stateMachineData, legs, flower, energySystem)
         {
         }
 
@@ -37,7 +38,8 @@ namespace SpiderController.StateMachine.States.Ground
 
         public override void Update()
         {
-            SpendEnergy(SpiderStaticData.EnergySpendJerkingSpeed);
+            EnergySystem.SpendEnergy(SpiderStaticData.EnergySpendJerkingSpeed);
+
             UpdateDashTime();
             UpdateJerkVelocity();
 

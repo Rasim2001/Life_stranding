@@ -10,6 +10,6 @@ namespace Infastructure.Factories.GameFactories
         void CreateCameraSystem(Spider spider);
         HudUI CreateHUD();
         void CreateCheckPointIndicator();
-        void CreateStartGameCutSceneTimeline();
+        void CreateStartGameCutSceneTimeline(Spider spiderTransform);
     }
 }

@@ -5,7 +5,6 @@ using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
 using SpiderController.UI.Stickers;
-using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Airborn
 {
@@ -17,8 +16,9 @@ namespace SpiderController.StateMachine.States.Airborn
 
         public FallingWithoutEnergyState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
-            LegDataStruct[] legs, Flower flower) : base(stateMachine, inputService, staticDataService, spider,
-            stateMachineData, legs, flower)
+            LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(stateMachine, inputService,
+            staticDataService, spider,
+            stateMachineData, legs, flower, energySystem)
         {
             _spiderGroundChecker = spider.GroundChecker;
         }
@@ -44,7 +44,7 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Update();
 
-            SpendEnergy(SpiderStaticData.EnergySpendAirbornSpeed);
+            EnergySystem.SpendEnergy(SpiderStaticData.EnergySpendAirbornSpeed);
 
             if (_spiderGroundChecker.IsTouchesWithLegs)
                 StandUpAsync().Forget();

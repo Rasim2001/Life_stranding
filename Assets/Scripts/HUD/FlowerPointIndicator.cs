@@ -20,10 +20,6 @@ namespace HUD
             base.Update();
         }
 
-        public void HideTargetPoint() =>
-            Show(false);
-
-        public void ShowTargetPoint() =>
-            Show(true);
+        
     }
 }

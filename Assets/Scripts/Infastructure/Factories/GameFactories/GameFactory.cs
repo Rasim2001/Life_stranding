@@ -1,6 +1,7 @@
 using CameraFollow;
 using HUD;
 using Infastructure.Common;
+using Infastructure.CutScene;
 using Infastructure.Services.CheckPoint;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController;
@@ -62,7 +63,11 @@ namespace Infastructure.Factories.GameFactories
             _checkPointService.PointIndicator = indicatorMarker.transform;
         }
 
-        public void CreateStartGameCutSceneTimeline() =>
-            _diContainer.InstantiatePrefabResource(AssetsPath.StartGameCutSceneTimelinePath);
+        public void CreateStartGameCutSceneTimeline(Spider spiderTransform)
+        {
+            GameObject cutScene = _diContainer.InstantiatePrefabResource(AssetsPath.StartGameCutSceneTimelinePath);
+            StartGameCutSceneRunner startGameCutSceneRunner = cutScene.GetComponent<StartGameCutSceneRunner>();
+            startGameCutSceneRunner.Initialize(spiderTransform.transform);
+        }
     }
 }

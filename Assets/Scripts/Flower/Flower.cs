@@ -138,8 +138,8 @@ namespace SpiderController
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireCube(_platformBounds.center, _platformBounds.size);
 
-            Gizmos.color = Color.red;
-            Gizmos.DrawSphere(_platformBounds.center, 0.1f);
+            /*Gizmos.color = Color.red;
+            Gizmos.DrawSphere(_platformBounds.center, 0.1f);*/
 
             Gizmos.matrix = oldMatrix;
         }

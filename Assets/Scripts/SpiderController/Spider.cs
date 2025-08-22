@@ -1,6 +1,7 @@
 using HUD;
 using Infastructure.Common;
 using Infastructure.Services.CheckPoint;
+using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.States;
 using Infastructure.StaticData.StaticDataService;
@@ -41,12 +42,15 @@ namespace SpiderController
         private IPickupDisplayer _pickupDisplayer;
         private IStateMachine _stateMachine1;
         private ICheckPointService _checkPointService;
+        private ICutSceneService _cutSceneService;
 
 
         [Inject]
         public void Construct(IInputService inputService, IStaticDataService staticDataService,
-            IPickupDisplayer pickupDisplayer, IStateMachine stateMachine, ICheckPointService checkPointService)
+            IPickupDisplayer pickupDisplayer, IStateMachine stateMachine, ICheckPointService checkPointService,
+            ICutSceneService cutSceneService)
         {
+            _cutSceneService = cutSceneService;
             _checkPointService = checkPointService;
             _stateMachine1 = stateMachine;
             _pickupDisplayer = pickupDisplayer;
@@ -63,17 +67,25 @@ namespace SpiderController
         public void Initialize(HudUI hudUI)
         {
             StateMachineData stateMachineData = new StateMachineData();
+            EnergySystem energySystem = new EnergySystem(stateMachineData, _spiderUI.EnergyBar, _staticDataService,
+                _cutSceneService);
 
             _checkPointChanger = new CheckPointChanger(transform, _checkPointService);
             _spiderPlane = new SpiderPlane(_spiderUI.PlaneIndicatorUI, _rotationPlaneTransform, _inputService,
                 _staticDataService, stateMachineData);
             _spiderPlane.Initialize();
 
-            _spiderStateMachine = new SpiderStateMachine(this, stateMachineData, _inputService, _staticDataService,
-                _legs,
-                _flower);
             _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _flowerChecker, _flower);
             _spiderUI.StickerUI.PlaySticker(StickerEnum.StartGame);
+
+            _spiderStateMachine =
+                new SpiderStateMachine(this,
+                    stateMachineData,
+                    _inputService,
+                    _staticDataService,
+                    _legs,
+                    _flower,
+                    energySystem);
 
             hudUI.RegisterFlowerPoint(_flower.transform);
             hudUI.RegisterFinishTarget(_checkPointService.PointIndicator);

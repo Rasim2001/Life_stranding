@@ -17,6 +17,7 @@ namespace SpiderController.StateMachine.States
         protected readonly Spider Spider;
         protected readonly LegDataStruct[] Legs;
         protected readonly Flower Flower;
+        protected readonly EnergySystem EnergySystem;
 
         protected IInputService InputService => _inputService;
         protected Rigidbody Rigidbody => Spider.Rigidbody;
@@ -39,11 +40,13 @@ namespace SpiderController.StateMachine.States
             Spider spider,
             StateMachineData stateMachineData,
             LegDataStruct[] legs,
-            Flower flower)
+            Flower flower,
+            EnergySystem energySystem)
         {
             _inputService = inputService;
             _staticDataService = staticDataService;
             Flower = flower;
+            EnergySystem = energySystem;
 
             StateMachine = stateMachine;
             Spider = spider;
@@ -116,7 +119,7 @@ namespace SpiderController.StateMachine.States
             }
 
             if (Data.IsMouseHolding)
-                SpendEnergy(SpiderStaticData.EnergySpendFreezingFlowerSpeed);
+                EnergySystem.SpendEnergy(SpiderStaticData.EnergySpendFreezingFlowerSpeed);
 
             if (Data.EnergyFillAmount <= 0 && Flower.IsFreezingOnPlatform)
                 Flower.IsFreezingOnPlatform = false;
@@ -139,7 +142,7 @@ namespace SpiderController.StateMachine.States
             _inputService.CtrlUp;
 
 
-        protected void SpendEnergy(float speed)
+        /*protected void SpendEnergy(float speed)
         {
             if (Data.EnergyFillAmount >= 0)
             {
@@ -159,7 +162,7 @@ namespace SpiderController.StateMachine.States
 
                 EnergyBar.SetEnergyValue(Data.EnergyFillAmount);
             }
-        }
+        }*/
 
 
         protected virtual void TryMoveLegs()

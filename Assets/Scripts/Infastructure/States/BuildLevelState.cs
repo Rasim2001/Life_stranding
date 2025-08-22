@@ -47,6 +47,8 @@ namespace Infastructure.States
             /*Cursor.visible = false;
             Cursor.lockState = CursorLockMode.None;*/
 
+            Debug.Log("BuildLevelState");
+
             InitGameWorld();
             GoToCheckPoints();
         }
@@ -65,7 +67,7 @@ namespace Infastructure.States
             Spider spider = InitSpider(hudUI);
 
             InitCameraSystem(spider);
-            InitStartGameScene();
+            InitStartGameScene(spider);
         }
 
         private void InitCheckPoints() =>
@@ -81,8 +83,8 @@ namespace Infastructure.States
         private HudUI InitHUD() =>
             _gameFactory.CreateHUD();
 
-        private void InitStartGameScene() =>
-            _gameFactory.CreateStartGameCutSceneTimeline();
+        private void InitStartGameScene(Spider spider) =>
+            _gameFactory.CreateStartGameCutSceneTimeline(spider);
 
         private void GoToCheckPoints() =>
             _checkPointService.GoToNextPoint();

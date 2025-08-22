@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +13,7 @@ namespace SpiderController.UI.Stickers
         [SerializeField] private Image _stickerImage;
 
         private Coroutine _coroutine;
+        private Tween _tweenScale;
         private readonly float _timeShow = 1;
 
         private void Start() =>
@@ -48,9 +52,12 @@ namespace SpiderController.UI.Stickers
 
 
         private void Show() =>
-            _stickerImage.transform.DOScale(Vector3.one, _timeShow);
+            _tweenScale = _stickerImage.transform.DOScale(Vector3.one, _timeShow);
 
         private void Hide() =>
-            _stickerImage.transform.DOScale(Vector3.zero, _timeShow);
+            _tweenScale = _stickerImage.transform.DOScale(Vector3.zero, _timeShow);
+
+        private void OnDestroy() =>
+            _tweenScale.Kill();
     }
 }

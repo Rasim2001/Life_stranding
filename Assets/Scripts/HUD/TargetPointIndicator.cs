@@ -25,6 +25,12 @@ namespace HUD
             _mainCamera = Camera.main;
         }
 
+        public void HideTargetPoint() =>
+            Show(false);
+
+        public void ShowTargetPoint() =>
+            Show(true);
+
 
         public virtual void Update()
         {
@@ -92,7 +98,7 @@ namespace HUD
             return false;
         }
 
-        protected void Show(bool value)
+        private void Show(bool value)
         {
             if (_arrowShowing == value)
                 return;
