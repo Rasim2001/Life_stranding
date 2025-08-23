@@ -65,9 +65,9 @@ namespace Infastructure.Factories.GameFactories
 
         public void CreateStartGameCutSceneTimeline(Spider spiderTransform)
         {
-            GameObject cutScene = _diContainer.InstantiatePrefabResource(AssetsPath.StartGameCutSceneTimelinePath);
+            /*GameObject cutScene = _diContainer.InstantiatePrefabResource(AssetsPath.StartGameCutSceneTimelinePath);
             StartGameCutSceneRunner startGameCutSceneRunner = cutScene.GetComponent<StartGameCutSceneRunner>();
-            startGameCutSceneRunner.Initialize(spiderTransform.transform);
+            startGameCutSceneRunner.Initialize(spiderTransform.transform);*/
         }
     }
 }

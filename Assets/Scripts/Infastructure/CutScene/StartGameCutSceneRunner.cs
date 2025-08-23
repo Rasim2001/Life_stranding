@@ -45,9 +45,9 @@ namespace Infastructure.CutScene
         private void Awake()
         {
             _cutSceneInputSource = new CutSceneInputSource();
-            _inputService.SetInputSource(_cutSceneInputSource);
+            //_inputService.SetInputSource(_cutSceneInputSource);
 
-            //_inputService.SetInputSource(new PlayerInputSource());
+            _inputService.SetInputSource(new PlayerInputSource());
         }
 
 
