@@ -2,6 +2,7 @@ using Infastructure.Common;
 using Infastructure.Factories.GameFactories;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
+using Infastructure.Services.Explosion;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Window.GameWindowService;
 using Infastructure.States;
@@ -33,7 +34,12 @@ namespace Infastructure.CompositionRoot
             BindCutSceneService();
 
             BindGlobalVolume();
+
+            BindExplosionService();
         }
+
+        private void BindExplosionService() =>
+            Container.BindInterfacesAndSelfTo<ExplosionService>().AsSingle();
 
         private void BindGlobalVolume() =>
             Container.Bind<Volume>().FromInstance(GlobalVolume).AsSingle();

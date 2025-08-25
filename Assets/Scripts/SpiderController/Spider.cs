@@ -27,12 +27,14 @@ namespace SpiderController
         public Rigidbody Rigidbody => _rigidbody;
         public GroundChecker GroundChecker => _groundChecker;
         public SpiderUI SpiderUI => _spiderUI;
+        public SpiderImpactReceiver SpiderImpactReceiver => _spiderImpactReceiver;
 
         private Rigidbody _rigidbody;
         private SpiderStateMachine _spiderStateMachine;
         private SpiderPlane _spiderPlane;
         private FlowerPickup _flowerPickup;
         private CheckPointChanger _checkPointChanger;
+        private SpiderImpactReceiver _spiderImpactReceiver;
 
         private HudUI _hudUI;
 
@@ -69,6 +71,8 @@ namespace SpiderController
             StateMachineData stateMachineData = new StateMachineData();
             EnergySystem energySystem = new EnergySystem(stateMachineData, _spiderUI.EnergyBar, _staticDataService,
                 _cutSceneService);
+
+            _spiderImpactReceiver = new SpiderImpactReceiver(stateMachineData, transform);
 
             _checkPointChanger = new CheckPointChanger(transform, _checkPointService);
             _spiderPlane = new SpiderPlane(_spiderUI.PlaneIndicatorUI, _rotationPlaneTransform, _inputService,
@@ -107,6 +111,7 @@ namespace SpiderController
             _spiderPlane.Update();
             _flowerPickup.Update();
             _checkPointChanger.Update();
+            _spiderImpactReceiver.Update();
         }
 
         private void FixedUpdate()

@@ -24,6 +24,7 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Enter();
 
+            Data.YVelocity = 0;
             Data.AirbornSpeed = SpiderStaticData.FallSpeed;
             Flower.IsFreezingOnPlatform = true;
         }
