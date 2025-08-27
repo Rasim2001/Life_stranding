@@ -20,14 +20,14 @@ namespace Infastructure.Services.Explosion
         {
             if (_inputService.LeftMousePressed)
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                /*Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
                 if (Physics.Raycast(ray, out RaycastHit hit, 100f, _groundMask))
                 {
                     Vector3 explosionPosition = hit.point;
 
                     Explode(explosionPosition, 20, 10);
-                }
+                }*/
             }
         }
 

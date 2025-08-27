@@ -15,7 +15,7 @@ namespace SpiderController.SpiderMove
         public Vector3 AirbornPosition => _airbornHit.point;
 
         private readonly float _positionSmoothSpeed = 20f;
-        private readonly float _airbornRayDistance = 100;
+        private readonly float _airbornRayDistance = Mathf.Infinity;
 
         private RaycastHit _hit;
         private RaycastHit _airbornHit;

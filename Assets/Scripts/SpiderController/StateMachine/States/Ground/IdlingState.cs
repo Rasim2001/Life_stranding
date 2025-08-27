@@ -17,10 +17,7 @@ namespace SpiderController.StateMachine.States.Ground
         public override void Enter()
         {
             base.Enter();
-
-            /*Rigidbody.linearVelocity = Vector3.zero;
-            Rigidbody.angularVelocity = Vector3.zero;*/
-
+            
             Data.Speed = 0;
             Data.DistanceFromGround = SpiderStaticData.DistanceFromGround;
         }
