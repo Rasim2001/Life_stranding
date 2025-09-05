@@ -1,6 +1,7 @@
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
+using SpiderController.UI;
 using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Ground
@@ -25,6 +26,8 @@ namespace SpiderController.StateMachine.States.Ground
 
             Data.DistanceFromGround = SpiderStaticData.DistanceFromGround;
             _dashTimer = SpiderStaticData.JerkDuration;
+
+            EnergyBarUI.ShowHologram();
         }
 
         public override void Exit()

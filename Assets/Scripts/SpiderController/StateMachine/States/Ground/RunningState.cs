@@ -1,7 +1,6 @@
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
-using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Ground
 {
@@ -29,6 +28,8 @@ namespace SpiderController.StateMachine.States.Ground
 
             Data.DistanceFromGround = SpiderStaticData.DistanceFromGround;
             Data.Speed = SpiderStaticData.Speed;
+
+            EnergyBarUI.PlayFadeHologramEffect();
         }
 
         public override void Update()

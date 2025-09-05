@@ -26,11 +26,16 @@ namespace SpiderController.UI
         }
 
         [Button]
-        public void PlayHologramEffect() =>
-            _holoCoroutine = StartCoroutine(StartHologramEffectCoroutine());
+        public void PlayFadeHologramEffect()
+        {
+            if (_holoCoroutine != null)
+                return;
+
+            _holoCoroutine = StartCoroutine(StartFadeHologramEffectCoroutine());
+        }
 
         [Button]
-        public void StopHologramEffect()
+        public void ShowHologram()
         {
             if (_holoCoroutine == null)
                 return;
@@ -51,8 +56,10 @@ namespace SpiderController.UI
             }
         }
 
-        private IEnumerator StartHologramEffectCoroutine()
+        private IEnumerator StartFadeHologramEffectCoroutine()
         {
+            yield return new WaitForSeconds(2f);
+
             for (int i = 0; i < SegmentCount; i++)
             {
                 DisableFirstPiece(i);

@@ -2,6 +2,7 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
+using SpiderController.UI;
 using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Airborn
@@ -30,6 +31,8 @@ namespace SpiderController.StateMachine.States.Airborn
             Flower.IsFreezingOnPlatform = true;
 
             _offsetJumpingTime = 0.5f;
+
+            EnergyBarUI.ShowHologram();
         }
 
 

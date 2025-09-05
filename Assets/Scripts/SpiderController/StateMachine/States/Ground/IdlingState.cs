@@ -17,9 +17,11 @@ namespace SpiderController.StateMachine.States.Ground
         public override void Enter()
         {
             base.Enter();
-            
+
             Data.Speed = 0;
             Data.DistanceFromGround = SpiderStaticData.DistanceFromGround;
+
+            EnergyBarUI.PlayFadeHologramEffect();
         }
 
 

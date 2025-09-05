@@ -2,6 +2,7 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
+using SpiderController.UI;
 using SpiderController.UI.Stickers;
 using UnityEngine;
 
@@ -27,6 +28,8 @@ namespace SpiderController.StateMachine.States.Airborn
             Data.YVelocity = 0;
             Data.AirbornSpeed = SpiderStaticData.FallSpeed;
             Flower.IsFreezingOnPlatform = true;
+
+            EnergyBarUI.ShowHologram();
         }
 
         public override void Exit()

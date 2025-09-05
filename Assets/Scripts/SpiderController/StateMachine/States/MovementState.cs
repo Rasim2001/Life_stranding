@@ -4,6 +4,7 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.SpiderMove;
+using SpiderController.UI;
 using SpiderController.UI.Health;
 using UnityEngine;
 
@@ -21,7 +22,10 @@ namespace SpiderController.StateMachine.States
         protected IInputService InputService => _inputService;
         protected Rigidbody Rigidbody => Spider.Rigidbody;
         protected SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
+        protected EnergyBarUI EnergyBarUI => Spider.SpiderUI.EnergyBar;
+
         private SpiderHealth SpiderHealth => Spider.SpiderUI.SpiderHealth;
+
 
         private readonly IStaticDataService _staticDataService;
         private readonly IInputService _inputService;
@@ -105,6 +109,8 @@ namespace SpiderController.StateMachine.States
 
                 Flower.IsFreezingOnPlatform = true;
                 Data.IsMouseHolding = true;
+
+                EnergyBarUI.ShowHologram();
             }
 
             else if (_inputService.RightMouseUp)
@@ -113,6 +119,8 @@ namespace SpiderController.StateMachine.States
 
                 Flower.IsFreezingOnPlatform = false;
                 Data.IsMouseHolding = false;
+
+                EnergyBarUI.PlayFadeHologramEffect();
             }
 
             if (Data.IsMouseHolding)
