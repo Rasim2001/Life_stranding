@@ -1,5 +1,6 @@
-using Infastructure.Common;
+using Infastructure.Common.Pickup;
 using Infastructure.Services.PlayerInput;
+using PickupObjects;
 using UnityEngine;
 
 namespace SpiderController
@@ -11,8 +12,6 @@ namespace SpiderController
 
         private readonly FlowerChecker _flowerChecker;
         private readonly Flower _flower;
-
-        private bool _isShowed;
 
         public FlowerPickup(
             IInputService inputService,
@@ -31,33 +30,14 @@ namespace SpiderController
             bool canDisplay = CanDisplay();
 
             if (canDisplay && _inputService.PickupPressed)
-                _flower.ResetSimulate();
+                _flower.StopSimulatePhysics();
 
             if (canDisplay)
-                Show();
+                _pickupDisplayer.Show(_flower.transform);
             else
-                Hide();
+                _pickupDisplayer.Hide(_flower.transform);
         }
 
-        private void Hide()
-        {
-            if (!_isShowed)
-                return;
-
-            _pickupDisplayer.Hide();
-
-            _isShowed = false;
-        }
-
-        private void Show()
-        {
-            if (_isShowed)
-                return;
-
-            _pickupDisplayer.Show(_flower.transform);
-
-            _isShowed = true;
-        }
 
         private bool CanDisplay() =>
             _flowerChecker.IsTouching && _flower.Rigidbody.IsSleeping() && !_flower.IsOnPlatform;

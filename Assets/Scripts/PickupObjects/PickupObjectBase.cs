@@ -1,65 +1,93 @@
-using System;
-using HUD;
+using Infastructure.Services.Magnet;
 using Infastructure.StaticData.StaticDataService;
 using UnityEngine;
 using Zenject;
 
-namespace SpiderController
+namespace PickupObjects
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class Flower : MonoBehaviour
+    public class PickupObjectBase : MonoBehaviour
     {
-        [SerializeField] private Transform _platform;
-        [SerializeField] private MeshRenderer _meshRenderer;
         [SerializeField] private Bounds _platformBounds;
         [SerializeField] private float _speed = 1;
         [SerializeField] private float _colorLerpSpeed = 5;
-        public Rigidbody Rigidbody => _rigidbody;
-        public bool IsOnPlatform => _isOnPlatform;
+
+        private readonly Vector3 _startPosition = new Vector3(0, 0.00305f, 0);
+        private readonly Quaternion _startRotation = Quaternion.Euler(-90, 0, 0);
+        private Vector3 _customPositionOffset = Vector3.zero;
+
+        public bool IsOnPlatform { get; private set; }
+        public Rigidbody Rigidbody { get; private set; }
 
         public bool IsFreezingOnPlatform;
 
-        private bool _isOnPlatform = true;
-        private Rigidbody _rigidbody;
-        private Vector3 _startPosition;
-        private Quaternion _startRotation;
-        private FlowerPointIndicator _flowerPointIndicator;
-
         private Material _robotPlaneMaterial;
 
+        private Transform _platform;
+        private MeshRenderer _meshRenderer;
+        private IMagnetFreezingService _magnetFreezingService;
 
         [Inject]
-        public void Construct(IStaticDataService staticDataService)
+        public void Construct(IStaticDataService staticDataService, IMagnetFreezingService magnetFreezingService)
         {
+            _magnetFreezingService = magnetFreezingService;
             _robotPlaneMaterial = new Material(staticDataService.MaterialsStaticData.RobotPlaneMaterial);
+        }
+
+        public void Initialize(Transform platformTransform, MeshRenderer meshRenderer)
+        {
+            _platform = platformTransform;
+            _meshRenderer = meshRenderer;
+
             _meshRenderer.material = _robotPlaneMaterial;
         }
 
-        private void Awake()
-        {
-            _rigidbody = GetComponent<Rigidbody>();
-            _startPosition = transform.localPosition;
-            _startRotation = transform.localRotation;
-        }
-
-        public void Initialize(FlowerPointIndicator flowerPointIndicator) =>
-            _flowerPointIndicator = flowerPointIndicator;
+        private void Awake() =>
+            Rigidbody = GetComponent<Rigidbody>();
 
         private void Update()
         {
-            if (!_isOnPlatform || IsFreezingOnPlatform)
+            if (!IsOnPlatform || IsFreezingOnPlatform)
                 return;
 
             Vector3 localPos = transform.localPosition;
-            _isOnPlatform = _platformBounds.Contains(localPos);
+            IsOnPlatform = _platformBounds.Contains(localPos);
 
             ChangeRobotPlaneColor(localPos);
 
-            if (_isOnPlatform)
+            if (IsOnPlatform)
                 SimulateRotation();
             else
-                SimulatePhysics();
+                StartSimulatePhysics();
         }
+
+        public void SetCustomOffsetPosition(Vector3 position) =>
+            _customPositionOffset = position;
+
+
+        protected virtual void StartSimulatePhysics()
+        {
+            _magnetFreezingService.Remove(this);
+
+            Rigidbody.isKinematic = false;
+            IsOnPlatform = false;
+
+            transform.SetParent(null);
+        }
+
+        public virtual void StopSimulatePhysics()
+        {
+            _magnetFreezingService.Add(this);
+
+            Rigidbody.isKinematic = true;
+            IsOnPlatform = true;
+
+            transform.SetParent(_platform);
+
+            transform.localPosition = _startPosition + _customPositionOffset;
+            transform.localRotation = _startRotation;
+        }
+
 
         private void ChangeRobotPlaneColor(Vector3 localPos)
         {
@@ -105,28 +133,6 @@ namespace SpiderController
             transform.Translate(movementVector, Space.Self);
         }
 
-        public void ResetSimulate()
-        {
-            transform.SetParent(_platform);
-            transform.localPosition = _startPosition;
-            transform.localRotation = _startRotation;
-
-            _rigidbody.isKinematic = true;
-            _isOnPlatform = true;
-
-            _flowerPointIndicator.HideTargetPoint();
-        }
-
-        private void SimulatePhysics()
-        {
-            transform.SetParent(null);
-
-            _isOnPlatform = false;
-            _rigidbody.isKinematic = false;
-
-            _flowerPointIndicator.ShowTargetPoint();
-        }
-
         private void OnDrawGizmosSelected()
         {
             if (_platform == null)
@@ -137,9 +143,6 @@ namespace SpiderController
 
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireCube(_platformBounds.center, _platformBounds.size);
-
-            /*Gizmos.color = Color.red;
-            Gizmos.DrawSphere(_platformBounds.center, 0.1f);*/
 
             Gizmos.matrix = oldMatrix;
         }

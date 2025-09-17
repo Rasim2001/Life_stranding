@@ -1,4 +1,5 @@
 using Infastructure.Common;
+using Infastructure.Common.Pickup;
 using Infastructure.Factories.ProjectFactories;
 using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.SaveLoadService;
@@ -30,8 +31,6 @@ namespace Infastructure.CompositionRoot
             BindPersistentProgressService();
 
             BindSaveLoadService();
-
-            BindPickupDisplayer();
         }
 
 
@@ -66,14 +65,7 @@ namespace Infastructure.CompositionRoot
                 .AsSingle();
         }
 
-        private void BindPickupDisplayer()
-        {
-            Container
-                .Bind<IPickupDisplayer>()
-                .To<PickupDisplayer>()
-                .FromComponentInNewPrefabResource(AssetsPath.PickupDisplayerPath)
-                .AsSingle();
-        }
+       
 
         private void BindSceneLoader() =>
             Container.BindInterfacesAndSelfTo<SceneLoader>().AsSingle();

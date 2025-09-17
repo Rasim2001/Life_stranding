@@ -94,7 +94,6 @@ namespace HUD
 
             Debug.DrawRay(cameraPos, direction.normalized * distance, Color.red, 0f);
 
-
             return false;
         }
 

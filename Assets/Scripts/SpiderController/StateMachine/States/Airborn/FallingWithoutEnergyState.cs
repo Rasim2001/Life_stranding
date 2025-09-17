@@ -2,6 +2,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
+using PickupObjects;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
 using SpiderController.UI;

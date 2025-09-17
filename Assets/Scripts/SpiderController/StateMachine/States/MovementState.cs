@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using Infastructure.Services.Magnet;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
+using PickupObjects;
 using SpiderController.SpiderMove;
 using SpiderController.UI;
 using SpiderController.UI.Health;
@@ -25,7 +27,6 @@ namespace SpiderController.StateMachine.States
         protected EnergyBarUI EnergyBarUI => Spider.SpiderUI.EnergyBar;
 
         private SpiderHealth SpiderHealth => Spider.SpiderUI.SpiderHealth;
-
 
         private readonly IStaticDataService _staticDataService;
         private readonly IInputService _inputService;
@@ -106,8 +107,8 @@ namespace SpiderController.StateMachine.States
             if (_inputService.RightMousePressed)
             {
                 Spider.SpiderUI.MagnetIndicatorUI.Show();
+                Spider.MagnetFreezingService.Freeze();
 
-                Flower.IsFreezingOnPlatform = true;
                 Data.IsMouseHolding = true;
 
                 EnergyBarUI.ShowHologram();
@@ -116,8 +117,8 @@ namespace SpiderController.StateMachine.States
             else if (_inputService.RightMouseUp)
             {
                 Spider.SpiderUI.MagnetIndicatorUI.Hide();
+                Spider.MagnetFreezingService.Unfreeze();
 
-                Flower.IsFreezingOnPlatform = false;
                 Data.IsMouseHolding = false;
 
                 EnergyBarUI.PlayFadeHologramEffect();
@@ -126,8 +127,8 @@ namespace SpiderController.StateMachine.States
             if (Data.IsMouseHolding)
                 EnergySystem.SpendEnergy(SpiderStaticData.EnergySpendFreezingFlowerSpeed);
 
-            if (Data.EnergyFillAmount <= 0 && Flower.IsFreezingOnPlatform)
-                Flower.IsFreezingOnPlatform = false;
+            if (Data.EnergyFillAmount <= 0)
+                Spider.MagnetFreezingService.Unfreeze();
         }
 
 

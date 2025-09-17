@@ -4,6 +4,7 @@ using Infastructure.Common;
 using Infastructure.CutScene;
 using Infastructure.Services.CheckPoint;
 using Infastructure.StaticData.StaticDataService;
+using PickupObjects;
 using SpiderController;
 using SpiderController.UI.Health;
 using UnityEngine;
@@ -26,10 +27,10 @@ namespace Infastructure.Factories.GameFactories
             _checkPointService = checkPointService;
         }
 
-        public Spider CreateSpider(HudUI hudUI)
+        public Spider CreateSpider(Flower flower)
         {
             Spider spider = _diContainer.InstantiatePrefabResourceForComponent<Spider>(AssetsPath.SpiderPath);
-            spider.Initialize(hudUI);
+            spider.Initialize(flower);
 
             SpiderUI spiderUI = spider.GetComponent<SpiderUI>();
             spiderUI.Initialize();
@@ -44,12 +45,19 @@ namespace Infastructure.Factories.GameFactories
             cameraSystem.Initialize(spiderTransform);
         }
 
-        public HudUI CreateHUD()
+        public HudUI CreateHUD(Flower flower, Spider spider)
         {
             RectTransform arrowUIPrefab = _staticDataService.HudStaticData.ArrowUIPrefab;
 
             HudUI hud = _diContainer.InstantiatePrefabResourceForComponent<HudUI>(AssetsPath.HUDPath);
             hud.Initialize(hud.transform, arrowUIPrefab);
+
+            hud.RegisterFlowerPoint(flower.transform);
+            hud.RegisterFinishTarget(_checkPointService.PointIndicator);
+
+            flower.Initialize(hud.FlowerPointIndicator);
+            flower.Initialize(spider.RotationPlaneTransform, spider.BoundPlaneMeshRender);
+            flower.StopSimulatePhysics();
 
             return hud;
         }
@@ -62,6 +70,23 @@ namespace Infastructure.Factories.GameFactories
 
             _checkPointService.PointIndicator = indicatorMarker.transform;
         }
+
+        public Flower CreateFlower() =>
+            _diContainer.InstantiatePrefabResourceForComponent<Flower>(AssetsPath.FlowerPath);
+
+        public void CreateAllBatteryProducts(Spider spider)
+        {
+            foreach (Vector3 position in _staticDataService.GameStaticData.BatteriesPoints)
+            {
+                BatteryProduct batteryProduct = _diContainer.InstantiatePrefabResourceForComponent<BatteryProduct>(
+                    AssetsPath.BatteryProductPath,
+                    position, Quaternion.identity,
+                    null);
+
+                batteryProduct.Initialize(spider.RotationPlaneTransform, spider.BoundPlaneMeshRender);
+            }
+        }
+
 
         public void CreateStartGameCutSceneTimeline(Spider spiderTransform)
         {

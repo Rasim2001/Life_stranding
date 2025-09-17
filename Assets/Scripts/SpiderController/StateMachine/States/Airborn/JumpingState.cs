@@ -1,5 +1,6 @@
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
+using PickupObjects;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
 using SpiderController.UI;
@@ -28,7 +29,7 @@ namespace SpiderController.StateMachine.States.Airborn
             Data.AirbornSpeed = SpiderStaticData.FallSpeed;
             Data.YVelocity = SpiderStaticData.StartYVelocity;
 
-            Flower.IsFreezingOnPlatform = true;
+            Spider.MagnetFreezingService.Freeze();
 
             _offsetJumpingTime = 0.5f;
 
@@ -40,7 +41,7 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Exit();
 
-            Flower.IsFreezingOnPlatform = false;
+            Spider.MagnetFreezingService.Unfreeze();
         }
 
         public override void Update()
