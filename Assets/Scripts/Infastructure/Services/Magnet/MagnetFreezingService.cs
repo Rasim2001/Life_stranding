@@ -1,27 +1,25 @@
-using System.Collections.Generic;
+using Infastructure.Services.PlatformObjects;
 using PickupObjects;
 
 namespace Infastructure.Services.Magnet
 {
     public class MagnetFreezingService : IMagnetFreezingService
     {
-        private readonly List<PickupObjectBase> _pickupObjects = new List<PickupObjectBase>();
+        private readonly IPlatformObjectsService _platformObjectsService;
 
-        public void Add(PickupObjectBase pickupObject) =>
-            _pickupObjects.Add(pickupObject);
+        public MagnetFreezingService(IPlatformObjectsService platformObjectsService) =>
+            _platformObjectsService = platformObjectsService;
 
-        public void Remove(PickupObjectBase pickupObject) =>
-            _pickupObjects.Remove(pickupObject);
 
         public void Freeze()
         {
-            foreach (PickupObjectBase pickupObject in _pickupObjects)
+            foreach (PickupObjectBase pickupObject in _platformObjectsService.PickupObjects)
                 pickupObject.IsFreezingOnPlatform = true;
         }
 
         public void Unfreeze()
         {
-            foreach (PickupObjectBase pickupObject in _pickupObjects)
+            foreach (PickupObjectBase pickupObject in _platformObjectsService.PickupObjects)
                 pickupObject.IsFreezingOnPlatform = false;
         }
     }

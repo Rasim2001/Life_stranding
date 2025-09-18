@@ -1,4 +1,5 @@
 using Infastructure.Common.Pickup;
+using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using PickupObjects;
 using UnityEngine;
@@ -9,6 +10,7 @@ namespace SpiderController
     {
         private readonly IInputService _inputService;
         private readonly IPickupDisplayer _pickupDisplayer;
+        private readonly IPlatformObjectsService _platformObjectsService;
 
         private readonly FlowerChecker _flowerChecker;
         private readonly Flower _flower;
@@ -16,11 +18,13 @@ namespace SpiderController
         public FlowerPickup(
             IInputService inputService,
             IPickupDisplayer pickupDisplayer,
+            IPlatformObjectsService platformObjectsService,
             FlowerChecker flowerChecker,
             Flower flower)
         {
             _inputService = inputService;
             _pickupDisplayer = pickupDisplayer;
+            _platformObjectsService = platformObjectsService;
             _flowerChecker = flowerChecker;
             _flower = flower;
         }
@@ -29,7 +33,7 @@ namespace SpiderController
         {
             bool canDisplay = CanDisplay();
 
-            if (canDisplay && _inputService.PickupPressed)
+            if (canDisplay && _inputService.PickupPressed && !_platformObjectsService.HasAny<BatteryProduct>())
                 _flower.StopSimulatePhysics();
 
             if (canDisplay)

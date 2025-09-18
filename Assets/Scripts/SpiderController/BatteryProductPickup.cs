@@ -1,4 +1,5 @@
 using Infastructure.Common.Pickup;
+using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using PickupObjects;
 using UnityEngine;
@@ -10,17 +11,23 @@ namespace SpiderController
         private readonly IInputService _inputService;
         private readonly IPickupDisplayer _pickupDisplayer;
         private readonly BatteryProductChecker _batteryProductChecker;
+        private readonly FlowerChecker _flowerChecker;
 
         private bool _isShowed;
+        private IPlatformObjectsService _platformObjectsService;
 
         public BatteryProductPickup(
             IInputService inputService,
             IPickupDisplayer pickupDisplayer,
-            BatteryProductChecker batteryProductChecker)
+            IPlatformObjectsService platformObjectsService,
+            BatteryProductChecker batteryProductChecker,
+            FlowerChecker flowerChecker)
         {
+            _platformObjectsService = platformObjectsService;
             _inputService = inputService;
             _pickupDisplayer = pickupDisplayer;
             _batteryProductChecker = batteryProductChecker;
+            _flowerChecker = flowerChecker;
         }
 
         public void Initialize() =>
@@ -31,7 +38,7 @@ namespace SpiderController
 
         public void Update()
         {
-            if (_inputService.PickupPressed)
+            if (_inputService.PickupPressed && !_platformObjectsService.HasAny<Flower>() && !_flowerChecker.IsTouching)
                 PickBatteries();
 
             TryShow();

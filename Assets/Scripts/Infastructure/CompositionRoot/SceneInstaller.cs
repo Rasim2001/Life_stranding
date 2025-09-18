@@ -5,6 +5,7 @@ using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Explosion;
 using Infastructure.Services.Magnet;
+using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Window.GameWindowService;
 using Infastructure.States;
@@ -42,7 +43,12 @@ namespace Infastructure.CompositionRoot
             BindPickupDisplayer();
 
             BindMagnetService();
+
+            BindPlatformObjectsService();
         }
+
+        private void BindPlatformObjectsService() =>
+            Container.BindInterfacesAndSelfTo<PlatformObjectsService>().AsSingle();
 
         private void BindMagnetService() =>
             Container.BindInterfacesAndSelfTo<MagnetFreezingService>().AsSingle();

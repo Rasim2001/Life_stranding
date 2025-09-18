@@ -3,6 +3,7 @@ using Infastructure.Common.Pickup;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Magnet;
+using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.States;
 using Infastructure.StaticData.StaticDataService;
@@ -53,13 +54,16 @@ namespace SpiderController
         private ICheckPointService _checkPointService;
         private ICutSceneService _cutSceneService;
         private IMagnetFreezingService _magnetFreezingService;
+        private IPlatformObjectsService _platformObjectsService;
 
 
         [Inject]
         public void Construct(IInputService inputService, IStaticDataService staticDataService,
             IPickupDisplayer pickupDisplayer, IStateMachine stateMachine, ICheckPointService checkPointService,
-            ICutSceneService cutSceneService, IMagnetFreezingService magnetFreezingService)
+            ICutSceneService cutSceneService, IMagnetFreezingService magnetFreezingService,
+            IPlatformObjectsService platformObjectsService)
         {
+            _platformObjectsService = platformObjectsService;
             _magnetFreezingService = magnetFreezingService;
             _cutSceneService = cutSceneService;
             _checkPointService = checkPointService;
@@ -91,8 +95,10 @@ namespace SpiderController
                 _staticDataService, stateMachineData);
             _spiderPlane.Initialize();
 
-            _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _flowerChecker, flower);
-            _batteryProductPickup = new BatteryProductPickup(_inputService, _pickupDisplayer, _batteryChecker);
+            _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _platformObjectsService, _flowerChecker,
+                flower);
+            _batteryProductPickup = new BatteryProductPickup(_inputService, _pickupDisplayer, _platformObjectsService,
+                _batteryChecker, _flowerChecker);
             _batteryProductPickup.Initialize();
 
             _spiderUI.StickerUI.PlaySticker(StickerEnum.StartGame);

@@ -1,4 +1,4 @@
-using Infastructure.Services.Magnet;
+using Infastructure.Services.PlatformObjects;
 using Infastructure.StaticData.StaticDataService;
 using UnityEngine;
 using Zenject;
@@ -25,12 +25,12 @@ namespace PickupObjects
 
         private Transform _platform;
         private MeshRenderer _meshRenderer;
-        private IMagnetFreezingService _magnetFreezingService;
+        private IPlatformObjectsService _platformObjectsService;
 
         [Inject]
-        public void Construct(IStaticDataService staticDataService, IMagnetFreezingService magnetFreezingService)
+        public void Construct(IStaticDataService staticDataService, IPlatformObjectsService platformObjectsService)
         {
-            _magnetFreezingService = magnetFreezingService;
+            _platformObjectsService = platformObjectsService;
             _robotPlaneMaterial = new Material(staticDataService.MaterialsStaticData.RobotPlaneMaterial);
         }
 
@@ -67,7 +67,7 @@ namespace PickupObjects
 
         protected virtual void StartSimulatePhysics()
         {
-            _magnetFreezingService.Remove(this);
+            _platformObjectsService.PickupObjects.Remove(this);
 
             Rigidbody.isKinematic = false;
             IsOnPlatform = false;
@@ -77,7 +77,8 @@ namespace PickupObjects
 
         public virtual void StopSimulatePhysics()
         {
-            _magnetFreezingService.Add(this);
+            if (!_platformObjectsService.PickupObjects.Contains(this))
+                _platformObjectsService.PickupObjects.Add(this);
 
             Rigidbody.isKinematic = true;
             IsOnPlatform = true;

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Infastructure.Services.Magnet;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
