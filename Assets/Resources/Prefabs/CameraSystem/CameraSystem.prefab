@@ -336,6 +336,7 @@ GameObject:
   - component: {fileID: 8251630939384945481}
   - component: {fileID: 4561231729578116344}
   - component: {fileID: 8636421224016774457}
+  - component: {fileID: 9135903543993957339}
   m_Layer: 0
   m_Name: ThirdPersonFollow
   m_TagString: Untagged
@@ -384,7 +385,7 @@ MonoBehaviour:
   Lens:
     FieldOfView: 89.4
     OrthographicSize: 5
-    NearClipPlane: 0.3
+    NearClipPlane: 0.1
     FarClipPlane: 1000
     Dutch: 0
     ModeOverride: 0
@@ -456,3 +457,42 @@ MonoBehaviour:
     Time: 0
     Smoothing: 0
     IgnoreY: 0
+--- !u!114 &9135903543993957339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6879631944178656443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbe43d662878a7c43bcd44d43c9e2094, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollideAgainst:
+    serializedVersion: 2
+    m_Bits: 1
+  IgnoreTag: 
+  TransparentLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  MinimumDistanceFromTarget: 0.2
+  AvoidObstacles:
+    Enabled: 1
+    DistanceLimit: 0
+    MinimumOcclusionTime: 0
+    CameraRadius: 1
+    UseFollowTarget:
+      Enabled: 1
+      YOffset: 5
+    Strategy: 0
+    MaximumEffort: 1
+    SmoothingTime: 0.05
+    Damping: 7
+    DampingWhenOccluded: 0.5
+  ShotQualityEvaluation:
+    Enabled: 0
+    OptimalDistance: 10
+    NearLimit: 5
+    FarLimit: 30
+    MaxQualityBoost: 0.2

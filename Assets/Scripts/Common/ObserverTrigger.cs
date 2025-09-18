@@ -7,18 +7,17 @@ namespace Common
     {
         [SerializeField] private LayerMask _layerMask;
 
-        public Action OnTriggerEnterHappened;
-        public Action OnTriggerExitHappened;
+        public Action<Collider> OnTriggerEnterHappened;
+        public Action<Collider> OnTriggerExitHappened;
 
-        public Collider Collider { get; private set; }
 
         private void OnTriggerEnter(Collider other)
         {
             if (_layerMask != (_layerMask | (1 << other.gameObject.layer)))
                 return;
 
-            Collider = other;
-            OnTriggerEnterHappened?.Invoke();
+            OnTriggerEnterHappened?.Invoke(other);
+            
         }
 
         private void OnTriggerExit(Collider other)
@@ -26,8 +25,7 @@ namespace Common
             if (_layerMask != (_layerMask | (1 << other.gameObject.layer)))
                 return;
 
-            Collider = other;
-            OnTriggerExitHappened?.Invoke();
+            OnTriggerExitHappened?.Invoke(other);
         }
     }
 }

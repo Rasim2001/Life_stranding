@@ -2,8 +2,10 @@ using System;
 using Cysharp.Threading.Tasks;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
+using PickupObjects;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
+using SpiderController.UI;
 using SpiderController.UI.Stickers;
 
 namespace SpiderController.StateMachine.States.Airborn
@@ -29,6 +31,8 @@ namespace SpiderController.StateMachine.States.Airborn
 
             Data.AirbornSpeed = SpiderStaticData.FallWithoutEnergySpeed;
             Data.IsFallingDownWithoutEnergyState = true;
+
+            EnergyBarUI.ShowHologram();
         }
 
         public override void Exit()

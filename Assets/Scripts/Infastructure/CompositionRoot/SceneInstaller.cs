@@ -1,7 +1,11 @@
 using Infastructure.Common;
+using Infastructure.Common.Pickup;
 using Infastructure.Factories.GameFactories;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
+using Infastructure.Services.Explosion;
+using Infastructure.Services.Magnet;
+using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Window.GameWindowService;
 using Infastructure.States;
@@ -33,7 +37,24 @@ namespace Infastructure.CompositionRoot
             BindCutSceneService();
 
             BindGlobalVolume();
+
+            BindExplosionService();
+
+            BindPickupDisplayer();
+
+            BindMagnetService();
+
+            BindPlatformObjectsService();
         }
+
+        private void BindPlatformObjectsService() =>
+            Container.BindInterfacesAndSelfTo<PlatformObjectsService>().AsSingle();
+
+        private void BindMagnetService() =>
+            Container.BindInterfacesAndSelfTo<MagnetFreezingService>().AsSingle();
+
+        private void BindExplosionService() =>
+            Container.BindInterfacesAndSelfTo<ExplosionService>().AsSingle();
 
         private void BindGlobalVolume() =>
             Container.Bind<Volume>().FromInstance(GlobalVolume).AsSingle();
@@ -63,6 +84,14 @@ namespace Infastructure.CompositionRoot
         private void BindUIFactory() =>
             Container.BindInterfacesAndSelfTo<GameUIFactory>().AsSingle();
 
+        private void BindPickupDisplayer()
+        {
+            Container
+                .Bind<IPickupDisplayer>()
+                .To<PickupDisplayer>()
+                .FromComponentInNewPrefabResource(AssetsPath.PickupDisplayerPath)
+                .AsSingle();
+        }
 
         private void BindGameFactory() =>
             Container.BindInterfacesAndSelfTo<GameFactory>().AsSingle();

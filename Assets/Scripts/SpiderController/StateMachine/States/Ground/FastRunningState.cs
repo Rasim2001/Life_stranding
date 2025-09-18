@@ -1,6 +1,8 @@
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
+using PickupObjects;
 using SpiderController.SpiderMove;
+using SpiderController.UI;
 
 namespace SpiderController.StateMachine.States.Ground
 {
@@ -22,6 +24,8 @@ namespace SpiderController.StateMachine.States.Ground
             Data.DistanceFromGround = SpiderStaticData.DistanceFromGround;
 
             ApplyFastRunning();
+
+            EnergyBarUI.ShowHologram();
         }
 
         public override void Exit()

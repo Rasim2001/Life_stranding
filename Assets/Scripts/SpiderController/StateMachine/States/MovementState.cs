@@ -3,6 +3,7 @@ using System.Linq;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
+using PickupObjects;
 using SpiderController.SpiderMove;
 using SpiderController.UI;
 using SpiderController.UI.Health;
@@ -22,9 +23,9 @@ namespace SpiderController.StateMachine.States
         protected IInputService InputService => _inputService;
         protected Rigidbody Rigidbody => Spider.Rigidbody;
         protected SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
+        protected EnergyBarUI EnergyBarUI => Spider.SpiderUI.EnergyBar;
 
         private SpiderHealth SpiderHealth => Spider.SpiderUI.SpiderHealth;
-        private EnergyBarUI EnergyBar => Spider.SpiderUI.EnergyBar;
 
         private readonly IStaticDataService _staticDataService;
         private readonly IInputService _inputService;
@@ -105,24 +106,28 @@ namespace SpiderController.StateMachine.States
             if (_inputService.RightMousePressed)
             {
                 Spider.SpiderUI.MagnetIndicatorUI.Show();
+                Spider.MagnetFreezingService.Freeze();
 
-                Flower.IsFreezingOnPlatform = true;
                 Data.IsMouseHolding = true;
+
+                EnergyBarUI.ShowHologram();
             }
 
             else if (_inputService.RightMouseUp)
             {
                 Spider.SpiderUI.MagnetIndicatorUI.Hide();
+                Spider.MagnetFreezingService.Unfreeze();
 
-                Flower.IsFreezingOnPlatform = false;
                 Data.IsMouseHolding = false;
+
+                EnergyBarUI.PlayFadeHologramEffect();
             }
 
             if (Data.IsMouseHolding)
                 EnergySystem.SpendEnergy(SpiderStaticData.EnergySpendFreezingFlowerSpeed);
 
-            if (Data.EnergyFillAmount <= 0 && Flower.IsFreezingOnPlatform)
-                Flower.IsFreezingOnPlatform = false;
+            if (Data.EnergyFillAmount <= 0)
+                Spider.MagnetFreezingService.Unfreeze();
         }
 
 
@@ -140,29 +145,6 @@ namespace SpiderController.StateMachine.States
 
         protected bool SlowdownUp() =>
             _inputService.CtrlUp;
-
-
-        /*protected void SpendEnergy(float speed)
-        {
-            if (Data.EnergyFillAmount >= 0)
-            {
-                Data.EnergyFillAmount -= Time.deltaTime * speed /
-                                         SpiderStaticData.EnergyFillAmount;
-
-                EnergyBar.SetEnergyValue(Data.EnergyFillAmount);
-            }
-        }
-
-        protected void RestoreEnergy(float speed)
-        {
-            if (Data.EnergyFillAmount < 1)
-            {
-                Data.EnergyFillAmount += Time.deltaTime * speed /
-                                         SpiderStaticData.EnergyFillAmount;
-
-                EnergyBar.SetEnergyValue(Data.EnergyFillAmount);
-            }
-        }*/
 
 
         protected virtual void TryMoveLegs()
@@ -212,8 +194,9 @@ namespace SpiderController.StateMachine.States
             Vector3 forwardMovement = Spider.transform.forward * Data.Velocity.z;
             Vector3 verticalMovement = Spider.transform.up * Data.YVelocity;
             Vector3 jerkMovement = Spider.transform.forward * Data.XVelocity;
+            Vector3 explosionVector = Data.ExplosionVector;
 
-            Vector3 newVelocity = forwardMovement + verticalMovement + jerkMovement;
+            Vector3 newVelocity = forwardMovement + verticalMovement + jerkMovement + explosionVector;
 
             Rigidbody.linearVelocity = Data.IsStandingUpAfterFalling ? Vector3.zero : newVelocity;
         }
@@ -314,8 +297,9 @@ namespace SpiderController.StateMachine.States
 
             float angleRad = angleDeg * Mathf.Deg2Rad;
             Vector3 angularVel = axis.normalized * (angleRad / Time.fixedDeltaTime);
+            Vector3 angularExplosionVector = Data.ExplosionAngularVector;
 
-            Rigidbody.angularVelocity += angularVel;
+            Rigidbody.angularVelocity += angularVel + angularExplosionVector;
         }
     }
 }

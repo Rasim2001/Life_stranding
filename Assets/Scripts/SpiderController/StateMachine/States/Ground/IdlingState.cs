@@ -1,5 +1,6 @@
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
+using PickupObjects;
 using SpiderController.SpiderMove;
 
 namespace SpiderController.StateMachine.States.Ground
@@ -18,11 +19,10 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Enter();
 
-            /*Rigidbody.linearVelocity = Vector3.zero;
-            Rigidbody.angularVelocity = Vector3.zero;*/
-
             Data.Speed = 0;
             Data.DistanceFromGround = SpiderStaticData.DistanceFromGround;
+
+            EnergyBarUI.PlayFadeHologramEffect();
         }
 
 

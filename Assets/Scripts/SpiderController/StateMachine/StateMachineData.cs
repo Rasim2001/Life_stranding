@@ -23,6 +23,8 @@ namespace SpiderController.StateMachine
 
         public Vector3 Input;
         public Vector3 Velocity;
+        public Vector3 ExplosionVector;
+        public Vector3 ExplosionAngularVector;
 
         public float RotationAmount;
 

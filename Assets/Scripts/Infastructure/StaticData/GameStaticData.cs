@@ -7,5 +7,6 @@ namespace Infastructure.StaticData
     public class GameStaticData : ScriptableObject
     {
         public List<Vector3> CheckPoints;
+        public List<Vector3> BatteriesPoints;
     }
 }

@@ -1,5 +1,7 @@
-using Infastructure.Common;
+using Infastructure.Common.Pickup;
+using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
+using PickupObjects;
 using UnityEngine;
 
 namespace SpiderController
@@ -8,20 +10,21 @@ namespace SpiderController
     {
         private readonly IInputService _inputService;
         private readonly IPickupDisplayer _pickupDisplayer;
+        private readonly IPlatformObjectsService _platformObjectsService;
 
         private readonly FlowerChecker _flowerChecker;
         private readonly Flower _flower;
 
-        private bool _isShowed;
-
         public FlowerPickup(
             IInputService inputService,
             IPickupDisplayer pickupDisplayer,
+            IPlatformObjectsService platformObjectsService,
             FlowerChecker flowerChecker,
             Flower flower)
         {
             _inputService = inputService;
             _pickupDisplayer = pickupDisplayer;
+            _platformObjectsService = platformObjectsService;
             _flowerChecker = flowerChecker;
             _flower = flower;
         }
@@ -30,34 +33,15 @@ namespace SpiderController
         {
             bool canDisplay = CanDisplay();
 
-            if (canDisplay && _inputService.PickupPressed)
-                _flower.ResetSimulate();
+            if (canDisplay && _inputService.PickupPressed && !_platformObjectsService.HasAny<BatteryProduct>())
+                _flower.StopSimulatePhysics();
 
             if (canDisplay)
-                Show();
+                _pickupDisplayer.Show(_flower.transform);
             else
-                Hide();
+                _pickupDisplayer.Hide(_flower.transform);
         }
 
-        private void Hide()
-        {
-            if (!_isShowed)
-                return;
-
-            _pickupDisplayer.Hide();
-
-            _isShowed = false;
-        }
-
-        private void Show()
-        {
-            if (_isShowed)
-                return;
-
-            _pickupDisplayer.Show(_flower.transform);
-
-            _isShowed = true;
-        }
 
         private bool CanDisplay() =>
             _flowerChecker.IsTouching && _flower.Rigidbody.IsSleeping() && !_flower.IsOnPlatform;
