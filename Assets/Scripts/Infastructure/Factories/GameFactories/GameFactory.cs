@@ -8,6 +8,7 @@ using PickupObjects;
 using SpiderController;
 using SpiderController.UI.Health;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Zenject;
 
 
@@ -18,6 +19,8 @@ namespace Infastructure.Factories.GameFactories
         private readonly DiContainer _diContainer;
         private readonly IStaticDataService _staticDataService;
         private readonly ICheckPointService _checkPointService;
+        
+        private string ActiveSceneName => SceneManager.GetActiveScene().name;
 
         public GameFactory(DiContainer diContainer, IStaticDataService staticDataService,
             ICheckPointService checkPointService)
@@ -29,7 +32,10 @@ namespace Infastructure.Factories.GameFactories
 
         public Spider CreateSpider(Flower flower)
         {
-            Spider spider = _diContainer.InstantiatePrefabResourceForComponent<Spider>(AssetsPath.SpiderPath);
+            Vector3 spiderSpawnPosition =
+                _staticDataService.GameStaticData.GameDatas[ActiveSceneName].SpiderSpawnPosition;
+            Spider spider = _diContainer.InstantiatePrefabResourceForComponent<Spider>(AssetsPath.SpiderPath,
+                spiderSpawnPosition, Quaternion.identity, null);
             spider.Initialize(flower);
 
             SpiderUI spiderUI = spider.GetComponent<SpiderUI>();
@@ -76,7 +82,7 @@ namespace Infastructure.Factories.GameFactories
 
         public void CreateAllBatteryProducts(Spider spider)
         {
-            foreach (Vector3 position in _staticDataService.GameStaticData.BatteriesPoints)
+            foreach (Vector3 position in _staticDataService.GameStaticData.GameDatas[ActiveSceneName].BatteriesPoints)
             {
                 BatteryProduct batteryProduct = _diContainer.InstantiatePrefabResourceForComponent<BatteryProduct>(
                     AssetsPath.BatteryProductPath,
