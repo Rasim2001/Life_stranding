@@ -12,12 +12,194 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a24e5299b10445ad8c39ccf76f43cf6d, type: 3}
   m_Name: GameData
   m_EditorClassIdentifier: 
-  CheckPoints:
-  - {x: -20.45, y: 24.3, z: -141.34}
-  - {x: -17.316795, y: 53.53, z: -304.1166}
-  - {x: 121.38029, y: 149.4917, z: -332.2}
-  BatteriesPoints:
-  - {x: -173.87, y: 8.8, z: -201.03}
-  - {x: -138.82, y: 8.8, z: -201.03}
-  - {x: -173.87, y: 8.8, z: -246.01}
-  - {x: -138.82, y: 8.8, z: -246.01}
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: GameDatas
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[Infastructure.StaticData.GameData,
+        Assembly-CSharp]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
+        mscorlib]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Test
+    - Name: $v
+      Entry: 7
+      Data: 2|Infastructure.StaticData.GameData, Assembly-CSharp
+    - Name: SpiderSpawnPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0.33
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: CheckPoints
+      Entry: 7
+      Data: 3|System.Collections.Generic.List`1[[UnityEngine.Vector3, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 3
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -20.45
+    - Name: 
+      Entry: 4
+      Data: 24.3
+    - Name: 
+      Entry: 4
+      Data: -141.34
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -17.3167953
+    - Name: 
+      Entry: 4
+      Data: 53.53
+    - Name: 
+      Entry: 4
+      Data: -304.1166
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 121.380287
+    - Name: 
+      Entry: 4
+      Data: 149.4917
+    - Name: 
+      Entry: 4
+      Data: -332.2
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: BatteriesPoints
+      Entry: 7
+      Data: 4|System.Collections.Generic.List`1[[UnityEngine.Vector3, UnityEngine.CoreModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 4
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -173.87
+    - Name: 
+      Entry: 4
+      Data: 8.8
+    - Name: 
+      Entry: 4
+      Data: -201.03
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -138.82
+    - Name: 
+      Entry: 4
+      Data: 8.8
+    - Name: 
+      Entry: 4
+      Data: -201.03
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -173.87
+    - Name: 
+      Entry: 4
+      Data: 8.8
+    - Name: 
+      Entry: 4
+      Data: -246.01
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -138.82
+    - Name: 
+      Entry: 4
+      Data: 8.8
+    - Name: 
+      Entry: 4
+      Data: -246.01
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+  LoadScene: Test

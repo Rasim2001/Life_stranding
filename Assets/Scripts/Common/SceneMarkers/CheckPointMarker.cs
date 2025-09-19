@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace HUD
+namespace Common.SceneMarkers
 {
     public class CheckPointMarker : MonoBehaviour
     {

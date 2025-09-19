@@ -38,8 +38,8 @@ namespace Infastructure.States
 
         public void Initialize()
         {
-            if (!_sceneLoader.IsGameScene())
-                return;
+            /*if (!_sceneLoader.IsGameScene())
+                return;*/
 
             /*Cursor.visible = false;
             Cursor.lockState = CursorLockMode.None;*/

@@ -1,14 +1,15 @@
 using System.Linq;
-using HUD;
+using Common.SceneMarkers;
 using Infastructure.StaticData;
-using PickupObjects;
+using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Editor
 {
     [CustomEditor(typeof(GameStaticData))]
-    public class GameDataEditor : UnityEditor.Editor
+    public class GameDataEditor : OdinEditor
     {
         public override void OnInspectorGUI()
         {
@@ -18,15 +19,23 @@ namespace Editor
 
             if (GUILayout.Button("Collect"))
             {
-                gameData.CheckPoints = FindObjectsOfType<CheckPointMarker>()
+                string nameScene = SceneManager.GetActiveScene().name;
+
+                if (!gameData.GameDatas.ContainsKey(nameScene))
+                    gameData.GameDatas[nameScene] = new GameData();
+
+                gameData.GameDatas[nameScene].CheckPoints = FindObjectsOfType<CheckPointMarker>()
                     .OrderBy(x => x.transform.GetSiblingIndex())
                     .Select(x => x.transform.position)
                     .ToList();
 
-                gameData.BatteriesPoints = FindObjectsOfType<BatteryMarkerPoint>()
+                gameData.GameDatas[nameScene].BatteriesPoints = FindObjectsOfType<BatteryPointMarker>()
                     .OrderBy(x => x.transform.GetSiblingIndex())
                     .Select(x => x.transform.position)
                     .ToList();
+
+                gameData.GameDatas[nameScene].SpiderSpawnPosition =
+                    FindObjectOfType<SpiderSpawnPointMarker>().transform.position;
             }
 
 
