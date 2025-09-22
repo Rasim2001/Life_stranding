@@ -7,6 +7,9 @@ namespace Infastructure.StaticData.Spider
     {
         [Header("SpiderMove")]
         public float StepLength = 0.85f;
+        public float GroundStateRayDistance = 3;
+        public float AirbornStateRayDistance = 1;
+
         public float Speed = 3;
         public float LerpForwardSpeed = 60;
         public float DistanceFromGround = 0.5f;
