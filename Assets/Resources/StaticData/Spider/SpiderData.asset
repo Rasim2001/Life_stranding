@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 821015bc1a5e47199956187f9a6afeb1, type: 3}
   m_Name: SpiderData
   m_EditorClassIdentifier: 
-  StepLength: 0.85
-  Speed: 6
+  StepLength: 0.4
+  GroundStateRayDistance: 3
+  AirbornStateRayDistance: 1
+  Speed: 3
   LerpForwardSpeed: 60
   DistanceFromGround: 0.5
   SlowdownDistanceFromGround: 0.25

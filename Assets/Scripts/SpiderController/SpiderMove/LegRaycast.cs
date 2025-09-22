@@ -1,5 +1,7 @@
 using DG.Tweening;
+using Infastructure.StaticData.StaticDataService;
 using UnityEngine;
+using Zenject;
 using Random = UnityEngine.Random;
 
 namespace SpiderController.SpiderMove
@@ -20,27 +22,35 @@ namespace SpiderController.SpiderMove
         private RaycastHit _hit;
         private RaycastHit _airbornHit;
 
-        private float _rayDistance = 5;
+        private float _rayDistance;
 
         private Tween _randomRotationTween;
         private Tween _defaultRotationTween;
 
         private Vector3 _smoothedPoint;
         private Vector3 _defaultPosition;
+        private IStaticDataService _staticDataService;
 
-        private void Awake() =>
+        [Inject]
+        public void Construct(IStaticDataService staticDataService) =>
+            _staticDataService = staticDataService;
+
+        private void Awake()
+        {
+            _rayDistance = _staticDataService.SpiderStaticData.GroundStateRayDistance;
             _defaultPosition = transform.localPosition;
+        }
 
         public void SetGroundState()
         {
-            _rayDistance = 5;
+            _rayDistance = _staticDataService.SpiderStaticData.GroundStateRayDistance;
 
             ReturnBodyToDefault();
         }
 
         public void SetAirbornState()
         {
-            _rayDistance = 2;
+            _rayDistance = _staticDataService.SpiderStaticData.AirbornStateRayDistance;
 
             GroupBody();
         }
@@ -93,7 +103,7 @@ namespace SpiderController.SpiderMove
 
         private void GroupBody()
         {
-            int sign = transform.localPosition.x > 0 ? 1 : -1;
+            float sign = transform.localPosition.x > 0 ? 0.6f : -0.6f;
             transform.localPosition = new Vector3(sign, transform.localPosition.y, transform.localPosition.z);
         }
 
