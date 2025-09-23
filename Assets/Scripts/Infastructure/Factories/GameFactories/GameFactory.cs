@@ -1,4 +1,5 @@
 using CameraFollow;
+using GameDevBuddies;
 using HUD;
 using Infastructure.Common;
 using Infastructure.CutScene;
@@ -19,7 +20,7 @@ namespace Infastructure.Factories.GameFactories
         private readonly DiContainer _diContainer;
         private readonly IStaticDataService _staticDataService;
         private readonly ICheckPointService _checkPointService;
-        
+
         private string ActiveSceneName => SceneManager.GetActiveScene().name;
 
         public GameFactory(DiContainer diContainer, IStaticDataService staticDataService,
@@ -99,6 +100,21 @@ namespace Infastructure.Factories.GameFactories
             /*GameObject cutScene = _diContainer.InstantiatePrefabResource(AssetsPath.StartGameCutSceneTimelinePath);
             StartGameCutSceneRunner startGameCutSceneRunner = cutScene.GetComponent<StartGameCutSceneRunner>();
             startGameCutSceneRunner.Initialize(spiderTransform.transform);*/
+        }
+
+        public void CreateTerrainScan(Spider spider)
+        {
+            Transform cameraTransform = Camera.main.transform;
+
+            GameObject terrainScanObject = _diContainer.InstantiatePrefabResource(AssetsPath.TerrainScanPath);
+
+            TerrainScanOriginPositioner terrainScanOriginPositioner =
+                terrainScanObject.GetComponentInChildren<TerrainScanOriginPositioner>();
+            terrainScanOriginPositioner.Initialize(cameraTransform, spider.transform);
+
+            TerrainScanIconsRenderer terrainScanIconsRenderer =
+                terrainScanObject.GetComponentInChildren<TerrainScanIconsRenderer>();
+            terrainScanIconsRenderer.Initialize(cameraTransform);
         }
     }
 }

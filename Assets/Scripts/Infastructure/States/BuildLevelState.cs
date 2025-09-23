@@ -62,10 +62,14 @@ namespace Infastructure.States
             Spider spider = InitSpider(flower);
 
             InitHUD(flower, spider);
+            InitTerrainScan(spider);
             InitCameraSystem(spider);
             InitStartGameScene(spider);
             InitBatteryProducts(spider);
         }
+
+        private void InitTerrainScan(Spider spider) =>
+            _gameFactory.CreateTerrainScan(spider);
 
         private void InitBatteryProducts(Spider spider) =>
             _gameFactory.CreateAllBatteryProducts(spider);

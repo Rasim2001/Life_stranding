@@ -14,5 +14,6 @@ namespace Infastructure.Factories.GameFactories
         void CreateStartGameCutSceneTimeline(Spider spiderTransform);
         Flower CreateFlower();
         void CreateAllBatteryProducts(Spider spider);
+        void CreateTerrainScan(Spider spider);
     }
 }
