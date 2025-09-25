@@ -108,8 +108,8 @@ namespace PickupObjects
             else
                 targetColor = Color.red;
 
-            _robotPlaneMaterial.color = Color.Lerp(
-                _robotPlaneMaterial.color,
+            _meshRenderer.material.color = Color.Lerp(
+                _meshRenderer.material.color,
                 targetColor,
                 Time.deltaTime * _colorLerpSpeed
             );

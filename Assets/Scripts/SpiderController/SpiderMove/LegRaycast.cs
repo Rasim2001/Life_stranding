@@ -16,6 +16,8 @@ namespace SpiderController.SpiderMove
         public bool IsGrounded => _hit.collider != null;
         public Vector3 AirbornPosition => _airbornHit.point;
 
+        public bool IsNotMoveableLayer => IsGrounded && _hit.collider.gameObject.layer == _notMoveableLayer;
+
         private readonly float _positionSmoothSpeed = 20f;
         private readonly float _airbornRayDistance = Mathf.Infinity;
 
@@ -23,6 +25,7 @@ namespace SpiderController.SpiderMove
         private RaycastHit _airbornHit;
 
         private float _rayDistance;
+        private int _notMoveableLayer;
 
         private Tween _randomRotationTween;
         private Tween _defaultRotationTween;
@@ -39,6 +42,8 @@ namespace SpiderController.SpiderMove
         {
             _rayDistance = _staticDataService.SpiderStaticData.GroundStateRayDistance;
             _defaultPosition = transform.localPosition;
+
+            _notMoveableLayer = LayerMask.NameToLayer("NotMoveable");
         }
 
         public void SetGroundState()
@@ -74,17 +79,6 @@ namespace SpiderController.SpiderMove
 
                 if (!hitFound)
                     hitFound = FindPlaceZ(baseDirection, origin);
-
-                if (!hitFound)
-                {
-                    Ray downRay = new Ray(origin, Vector3.down);
-
-                    if (Physics.Raycast(downRay, out _hit, _rayDistance, _layerMask))
-                    {
-                        hitFound = true;
-                        Debug.DrawRay(downRay.origin, downRay.direction * _rayDistance, Color.blue);
-                    }
-                }
             }
 
 

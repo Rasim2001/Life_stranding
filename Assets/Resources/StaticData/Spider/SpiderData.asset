@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StepLength: 0.2
   GroundStateRayDistance: 3
-  AirbornStateRayDistance: 1
+  AirbornStateRayDistance: 1.5
   Speed: 3
   LerpForwardSpeed: 60
   DistanceFromGround: 0.5
@@ -60,7 +60,7 @@ MonoBehaviour:
   PlaneSensitivity: 2
   MaxAngle: 45
   PlaneRotationSpeed: 3
-  SmoothTime: 0.3
+  SmoothTime: 0.1
   CameraRotationSpeed: 10
   MouseRotationSpeedX: 3
   MouseRotationSpeedY: 3
