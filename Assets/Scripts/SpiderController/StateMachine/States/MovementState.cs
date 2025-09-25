@@ -166,6 +166,10 @@ namespace SpiderController.StateMachine.States
             }
         }
 
+        protected bool IsNotMoveableLayer() =>
+            Legs.Select(x => x.Raycast).Any(x => x.IsNotMoveableLayer);
+
+
         private void CheckFlowerAndReduceHp()
         {
             if (Flower.IsOnPlatform == false)
@@ -198,7 +202,8 @@ namespace SpiderController.StateMachine.States
 
             Vector3 newVelocity = forwardMovement + verticalMovement + jerkMovement + explosionVector;
 
-            Rigidbody.linearVelocity = Data.IsStandingUpAfterFalling ? Vector3.zero : newVelocity;
+            Rigidbody.linearVelocity =
+                Data.IsStandingUpAfterFalling || IsNotMoveableLayer() ? Vector3.zero : newVelocity;
         }
 
 

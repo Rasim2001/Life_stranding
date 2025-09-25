@@ -465,8 +465,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.4, y: 0.4, z: 0.4}
-  m_Center: {x: 0, y: 1.37, z: 0}
+  m_Size: {x: 0.77126926, y: 0.4000001, z: 0.85192966}
+  m_Center: {x: -0.00787431, y: 1.37, z: 0.030391991}
 --- !u!1 &2244189872677974497
 GameObject:
   m_ObjectHideFlags: 0
@@ -864,7 +864,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _layerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 8193
   _offsetDistance: 15
   _offsetRayCount: 4
 --- !u!114 &4925048751352680204
@@ -927,7 +927,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _layerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 8193
   _offsetDistance: 15
   _offsetRayCount: 4
 --- !u!1 &2879669768173434830
@@ -1052,7 +1052,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _layerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 8193
   _offsetDistance: 15
   _offsetRayCount: 4
 --- !u!114 &4940838145471676880
@@ -2764,7 +2764,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _layerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 8193
   _offsetDistance: 15
   _offsetRayCount: 4
 --- !u!1 &8659348915214335893
@@ -3097,6 +3097,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 05326d264ead81a438996b2110f7983f, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 05326d264ead81a438996b2110f7983f, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 1160272932807521224, guid: 05326d264ead81a438996b2110f7983f, type: 3}
       propertyPath: m_Name

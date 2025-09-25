@@ -44,6 +44,8 @@ namespace SpiderController.StateMachine
                     energySystem),
                 new FallingWithControlState(this, inputService, staticDataService, spider, stateMachineData, legs,
                     flower, energySystem),
+                new RecoveryState(this, inputService, staticDataService, spider, stateMachineData, legs, flower,
+                    energySystem),
             };
 
             _currentState = _states[0];

@@ -19,10 +19,32 @@ namespace SpiderController.StateMachine.States.Ground
             _groundChecker = spider.GroundChecker;
         }
 
+        public override void Enter()
+        {
+            base.Enter();
+
+            if (IsNotMoveableLayer())
+                StateMachine.SwitchState<RecoveryState>();
+        }
+
+        public override void Exit()
+        {
+            base.Exit();
+
+            if (IsNotMoveableLayer() == false)
+            {
+                Data.LastValidGroundPosition = Spider.Rigidbody.position;
+                Data.LastValidGroundRotation = Spider.Rigidbody.rotation;
+            }
+        }
+
 
         public override void Update()
         {
             base.Update();
+
+            if (IsNotMoveableLayer())
+                return;
 
             if (_groundChecker.IsTouchesWithLegs == false)
                 StateMachine.SwitchState<FallingState>();

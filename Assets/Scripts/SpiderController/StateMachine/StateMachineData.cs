@@ -25,6 +25,8 @@ namespace SpiderController.StateMachine
         public Vector3 Velocity;
         public Vector3 ExplosionVector;
         public Vector3 ExplosionAngularVector;
+        public Vector3 LastValidGroundPosition;
+        public Quaternion LastValidGroundRotation;
 
         public float RotationAmount;
 

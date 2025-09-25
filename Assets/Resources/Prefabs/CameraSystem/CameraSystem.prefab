@@ -472,19 +472,19 @@ MonoBehaviour:
   CollideAgainst:
     serializedVersion: 2
     m_Bits: 1
-  IgnoreTag: 
+  IgnoreTag: Player
   TransparentLayers:
     serializedVersion: 2
     m_Bits: 0
-  MinimumDistanceFromTarget: 0.2
+  MinimumDistanceFromTarget: 1
   AvoidObstacles:
     Enabled: 1
     DistanceLimit: 0
-    MinimumOcclusionTime: 0
+    MinimumOcclusionTime: 0.25
     CameraRadius: 1
     UseFollowTarget:
       Enabled: 1
-      YOffset: 5
+      YOffset: 0
     Strategy: 0
     MaximumEffort: 1
     SmoothingTime: 0.05
