@@ -30,6 +30,7 @@ namespace SpiderController.StateMachine.States.Airborn
             Data.YVelocity = SpiderStaticData.StartYVelocity;
 
             Spider.MagnetFreezingService.Freeze();
+            Spider.ThrusterAnimator.Open(true);
 
             _offsetJumpingTime = 0.5f;
 
@@ -41,6 +42,7 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Exit();
 
+            Spider.ThrusterAnimator.Open(false);
             Spider.MagnetFreezingService.Unfreeze();
         }
 

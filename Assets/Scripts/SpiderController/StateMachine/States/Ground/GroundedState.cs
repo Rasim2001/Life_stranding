@@ -1,3 +1,6 @@
+using System;
+using Cysharp.Threading.Tasks;
+using GameDevBuddies;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
@@ -27,6 +30,7 @@ namespace SpiderController.StateMachine.States.Ground
                 StateMachine.SwitchState<RecoveryState>();
         }
 
+
         public override void Exit()
         {
             base.Exit();
@@ -43,6 +47,10 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Update();
 
+            if (InputService.TabPressed)
+                StartTerrainScan().Forget();
+
+
             if (IsNotMoveableLayer())
                 return;
 
@@ -54,6 +62,15 @@ namespace SpiderController.StateMachine.States.Ground
 
             if (InputService.JerkPressed && Data.EnergyFillAmount > 0)
                 StateMachine.SwitchState<JerkState>();
+        }
+
+        private async UniTask StartTerrainScan()
+        {
+            Spider.ScannerAnimator.PlayScanAnimation();
+
+            await UniTask.Delay(TimeSpan.FromSeconds(0.4f));
+
+            TerrainScan.Instance.StartTerrainScan();
         }
     }
 }

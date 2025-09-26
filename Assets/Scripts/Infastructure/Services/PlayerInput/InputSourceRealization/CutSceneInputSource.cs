@@ -59,6 +59,7 @@ namespace Infastructure.Services.PlayerInput
             set => _jumpPressed = value;
         }
         public bool JumpUp { get; set; }
+        public bool TabPressed { get; }
         public bool JerkPressed { get; }
         public bool PickupPressed { get; }
 

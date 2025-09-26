@@ -22,6 +22,7 @@ namespace Infastructure.Services.PlayerInput
         bool CtrlPressed { get; }
         bool CtrlUp { get; }
         bool JumpUp { get; }
+        bool TabPressed { get; }
         void SetInputSource(IInputSource inputSource);
     }
 }

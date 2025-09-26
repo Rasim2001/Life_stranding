@@ -3,9 +3,6 @@ using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
-using SpiderController.UI;
-using SpiderController.UI.Stickers;
-using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Airborn
 {
@@ -28,7 +25,9 @@ namespace SpiderController.StateMachine.States.Airborn
 
             Data.YVelocity = 0;
             Data.AirbornSpeed = SpiderStaticData.FallSpeed;
+
             Spider.MagnetFreezingService.Freeze();
+            Spider.ThrusterAnimator.Open(true);
 
             EnergyBarUI.ShowHologram();
         }
@@ -37,6 +36,7 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Exit();
 
+            Spider.ThrusterAnimator.Open(false);
             Spider.MagnetFreezingService.Unfreeze();
         }
 
