@@ -57,7 +57,7 @@ namespace Infastructure.Factories.GameFactories
             RectTransform arrowUIPrefab = _staticDataService.HudStaticData.ArrowUIPrefab;
 
             HudUI hud = _diContainer.InstantiatePrefabResourceForComponent<HudUI>(AssetsPath.HUDPath);
-            hud.Initialize(hud.transform, arrowUIPrefab);
+            hud.Initialize(arrowUIPrefab);
 
             hud.RegisterFlowerPoint(flower.transform);
             hud.RegisterFinishTarget(_checkPointService.PointIndicator);

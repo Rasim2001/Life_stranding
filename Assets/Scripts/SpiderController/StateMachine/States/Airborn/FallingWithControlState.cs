@@ -27,6 +27,15 @@ namespace SpiderController.StateMachine.States.Airborn
             base.Enter();
 
             Data.AirbornSpeed = SpiderStaticData.FallWithoutEnergySpeed;
+
+            SetCrossLegs();
+        }
+
+        public override void Exit()
+        {
+            base.Exit();
+
+            SetUncrossLegs();
         }
 
 

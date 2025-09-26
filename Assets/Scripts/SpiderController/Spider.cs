@@ -8,8 +8,10 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.States;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
+using SpiderController.Scanner;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine;
+using SpiderController.Thruster;
 using SpiderController.UI.Health;
 using SpiderController.UI.Stickers;
 using UnityEngine;
@@ -24,6 +26,8 @@ namespace SpiderController
         [SerializeField] private FlowerChecker _flowerChecker;
         [SerializeField] private BatteryProductChecker _batteryChecker;
         [SerializeField] private MeshRenderer _boundPlaneMeshRender;
+        [SerializeField] private ThrusterSystem _thrusterSystem;
+        [SerializeField] private ScannerAnimator _scannerAnimator;
 
         [SerializeField] private Transform _rotationPlaneTransform;
         [SerializeField] private LegDataStruct[] _legs;
@@ -35,6 +39,8 @@ namespace SpiderController
         public Transform RotationPlaneTransform => _rotationPlaneTransform;
         public MeshRenderer BoundPlaneMeshRender => _boundPlaneMeshRender;
         public IMagnetFreezingService MagnetFreezingService => _magnetFreezingService;
+        public ThrusterSystem ThrusterSystem => _thrusterSystem;
+        public ScannerAnimator ScannerAnimator => _scannerAnimator;
 
         private Rigidbody _rigidbody;
         private SpiderStateMachine _spiderStateMachine;

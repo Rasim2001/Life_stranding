@@ -1,4 +1,6 @@
 using System;
+using DG.Tweening;
+using GameDevBuddies;
 using Infastructure.Services.CutScene;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -11,13 +13,14 @@ namespace HUD
         [SerializeField] private LayerMask _finishPointLayer;
         [SerializeField] private LayerMask _flowerPointLayer;
         [SerializeField] private RectTransform _canvasRectTransform;
+        [SerializeField] private Transform _arrowContainer;
         public FlowerPointIndicator FlowerPointIndicator => _flowerPointIndicator;
 
         private FinishPointIndicator _finishPointIndicator;
         private FlowerPointIndicator _flowerPointIndicator;
 
-        private Transform _hudTransform;
         private RectTransform _arrowUIPrefab;
+        private CanvasGroup _canvasGroup;
         private ICutSceneService _cutSceneService;
 
         private bool _cutSceneIsActive;
@@ -26,16 +29,16 @@ namespace HUD
         public void Construct(ICutSceneService cutSceneService) =>
             _cutSceneService = cutSceneService;
 
+        private void Awake() =>
+            _canvasGroup = _arrowContainer.GetComponent<CanvasGroup>();
 
-        public void Initialize(Transform hudTransform, RectTransform arrowUIPrefab)
-        {
+
+        public void Initialize(RectTransform arrowUIPrefab) =>
             _arrowUIPrefab = arrowUIPrefab;
-            _hudTransform = hudTransform;
-        }
 
         public void RegisterFinishTarget(Transform finishTargetTransform)
         {
-            RectTransform arrowUI = Instantiate(_arrowUIPrefab, _hudTransform);
+            RectTransform arrowUI = Instantiate(_arrowUIPrefab, _arrowContainer);
 
             _finishPointIndicator = new
                 FinishPointIndicator(arrowUI, _canvasRectTransform, _finishPointLayer, finishTargetTransform);
@@ -43,7 +46,7 @@ namespace HUD
 
         public void RegisterFlowerPoint(Transform flowerTransform)
         {
-            RectTransform arrowUI = Instantiate(_arrowUIPrefab, _hudTransform);
+            RectTransform arrowUI = Instantiate(_arrowUIPrefab, _arrowContainer);
 
             _flowerPointIndicator =
                 new FlowerPointIndicator(arrowUI, _canvasRectTransform, _flowerPointLayer, flowerTransform);
@@ -53,12 +56,16 @@ namespace HUD
         private void Start()
         {
             _cutSceneService.OnCutsceneActiveChanged += CutsceneActiveChanged;
+            TerrainScan.Instance.OnTerrainScanStart += TerrainStartHappened;
+
             CinemachineCore.CameraUpdatedEvent.AddListener(UpdateIndicator);
         }
 
         private void OnDestroy()
         {
             _cutSceneService.OnCutsceneActiveChanged -= CutsceneActiveChanged;
+            TerrainScan.Instance.OnTerrainScanStart -= TerrainStartHappened;
+
             CinemachineCore.CameraUpdatedEvent.RemoveListener(UpdateIndicator);
         }
 
@@ -79,6 +86,13 @@ namespace HUD
                 _finishPointIndicator.HideTargetPoint();
             else
                 _finishPointIndicator.ShowTargetPoint();
+        }
+
+        private void TerrainStartHappened(TerrainScanInfo obj)
+        {
+            _canvasGroup.DOKill();
+            _canvasGroup.alpha = 1;
+            _canvasGroup.DOFade(0, 30);
         }
     }
 }

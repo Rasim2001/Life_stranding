@@ -37,6 +37,7 @@ namespace Infastructure.StaticData.Spider
         [Header("AirbornState")]
         public float FallSpeed;
         public float FallWithoutEnergySpeed;
+        public float CrossLerpSpeed;
 
         public float MaxHeight;
         public float TimeToReachMaxHeight;

@@ -22,5 +22,6 @@ namespace Infastructure.Services.PlayerInput
         bool JerkPressed { get; }
         bool PickupPressed { get; }
         bool JumpUp { get; }
+        bool TabPressed { get; }
     }
 }

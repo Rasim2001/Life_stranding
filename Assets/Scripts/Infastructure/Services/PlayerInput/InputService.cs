@@ -14,6 +14,7 @@ namespace Infastructure.Services.PlayerInput
             _inputSource = inputSource;
 
         public Vector3 InputVector => _inputSource.InputVector;
+        public bool TabPressed => _inputSource.TabPressed;
 
         public bool LeftMousePressed => _inputSource.LeftMousePressed;
 

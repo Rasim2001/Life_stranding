@@ -76,12 +76,6 @@ namespace GameDevBuddies
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                StartTerrainScan();
-                return;
-            }
-
             if (!_terrainScanActive)
             {
                 return;

@@ -57,6 +57,24 @@ namespace SpiderController.StateMachine.States.Airborn
             AlignRotationInFlight();
         }
 
+        protected void SetCrossLegs()
+        {
+            for (int index = 0; index < Legs.Length; index++)
+            {
+                ref LegDataStruct legData = ref Legs[index];
+                legData.Leg.IsCrossingLeg = true;
+            }
+        }
+
+        protected void SetUncrossLegs()
+        {
+            for (int index = 0; index < Legs.Length; index++)
+            {
+                ref LegDataStruct legData = ref Legs[index];
+                legData.Leg.IsCrossingLeg = false;
+            }
+        }
+
 
         private void AlignRotationInFlight()
         {
