@@ -50,7 +50,6 @@ namespace SpiderController.StateMachine.States.Ground
             if (InputService.TabPressed)
                 StartTerrainScan().Forget();
 
-
             if (IsNotMoveableLayer())
                 return;
 

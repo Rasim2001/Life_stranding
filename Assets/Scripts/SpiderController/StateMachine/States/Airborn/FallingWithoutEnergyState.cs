@@ -33,7 +33,10 @@ namespace SpiderController.StateMachine.States.Airborn
             Data.IsFallingDownWithoutEnergyState = true;
 
             EnergyBarUI.ShowHologram();
+
+            SetCrossLegs();
         }
+
 
         public override void Exit()
         {
@@ -41,6 +44,8 @@ namespace SpiderController.StateMachine.States.Airborn
 
             StickerUI.PlaySticker(StickerEnum.FallingDown);
             Data.IsFallingDownWithoutEnergyState = false;
+
+            SetUncrossLegs();
         }
 
 

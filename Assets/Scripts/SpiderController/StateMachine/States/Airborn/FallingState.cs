@@ -27,7 +27,7 @@ namespace SpiderController.StateMachine.States.Airborn
             Data.AirbornSpeed = SpiderStaticData.FallSpeed;
 
             Spider.MagnetFreezingService.Freeze();
-            Spider.ThrusterAnimator.Open(true);
+            Spider.ThrusterSystem.Open(true);
 
             EnergyBarUI.ShowHologram();
         }
@@ -36,7 +36,7 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Exit();
 
-            Spider.ThrusterAnimator.Open(false);
+            Spider.ThrusterSystem.Open(false);
             Spider.MagnetFreezingService.Unfreeze();
         }
 

@@ -17,7 +17,7 @@ MonoBehaviour:
   AirbornStateRayDistance: 1.25
   Speed: 3
   LerpForwardSpeed: 60
-  DistanceFromGround: 0.3
+  DistanceFromGround: 0.35
   SlowdownDistanceFromGround: 0.25
   LerpSpeedFromGround: 8
   SlowdownSpeed: 2
@@ -68,6 +68,7 @@ MonoBehaviour:
   WorldUpSmoothRotation: 2
   FallSpeed: 1
   FallWithoutEnergySpeed: 10
+  CrossLerpSpeed: 20
   MaxHeight: 5
   TimeToReachMaxHeight: 2
   EnergyFillAmount: 5

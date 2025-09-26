@@ -1,5 +1,7 @@
 using System;
+using Infastructure.StaticData.StaticDataService;
 using UnityEngine;
+using Zenject;
 
 namespace SpiderController.SpiderMove
 {
@@ -7,6 +9,9 @@ namespace SpiderController.SpiderMove
     {
         [SerializeField] private float _stepSpeed = 5f;
         [SerializeField] private AnimationCurve _stepCurve;
+        [SerializeField] private Transform _crossLegTransform;
+
+        public bool IsCrossingLeg;
 
         public bool IsAirbornState
         {
@@ -32,6 +37,7 @@ namespace SpiderController.SpiderMove
         private Vector3 _position;
         private float _stepSpeedDefault;
         private bool _isAirbornState;
+        private IStaticDataService _staticDataService;
 
 
         private void Awake()
@@ -40,8 +46,22 @@ namespace SpiderController.SpiderMove
             _stepSpeedDefault = _stepSpeed;
         }
 
+        [Inject]
+        public void Construct(IStaticDataService staticDataService) =>
+            _staticDataService = staticDataService;
+
+
         private void Update()
         {
+            if (IsCrossingLeg)
+            {
+                transform.position = Vector3.Lerp(transform.position, _crossLegTransform.position,
+                    _staticDataService.SpiderStaticData.CrossLerpSpeed * Time.deltaTime);
+
+                return;
+            }
+
+
             if (_movement.IsMoving)
             {
                 _movement.Progress = Mathf.Clamp01(_movement.Progress + Time.deltaTime * _stepSpeed);

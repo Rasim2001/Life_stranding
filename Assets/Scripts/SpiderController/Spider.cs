@@ -26,7 +26,7 @@ namespace SpiderController
         [SerializeField] private FlowerChecker _flowerChecker;
         [SerializeField] private BatteryProductChecker _batteryChecker;
         [SerializeField] private MeshRenderer _boundPlaneMeshRender;
-        [SerializeField] private ThrusterAnimator _thrusterAnimator;
+        [SerializeField] private ThrusterSystem _thrusterSystem;
         [SerializeField] private ScannerAnimator _scannerAnimator;
 
         [SerializeField] private Transform _rotationPlaneTransform;
@@ -39,7 +39,7 @@ namespace SpiderController
         public Transform RotationPlaneTransform => _rotationPlaneTransform;
         public MeshRenderer BoundPlaneMeshRender => _boundPlaneMeshRender;
         public IMagnetFreezingService MagnetFreezingService => _magnetFreezingService;
-        public ThrusterAnimator ThrusterAnimator => _thrusterAnimator;
+        public ThrusterSystem ThrusterSystem => _thrusterSystem;
         public ScannerAnimator ScannerAnimator => _scannerAnimator;
 
         private Rigidbody _rigidbody;
