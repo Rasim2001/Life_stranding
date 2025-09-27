@@ -1,13 +1,16 @@
-using UnityEngine;
-using UnityEngine.UI;
-
 namespace SpiderController.UI.Health
 {
-    public class HealthBarUI : MonoBehaviour
+    public class HealthBarUI : BarBaseUI
     {
-        [SerializeField] private Image _healthBar;
+        private HologramEffect _hologramEffect;
 
-        public void SetValue(float currentHp, float maxHp) =>
-            _healthBar.fillAmount = currentHp / maxHp;
+        private void Awake() =>
+            _hologramEffect = new HologramEffect(GetSegments(), GetContainers());
+
+        public void PlayFadeHologramEffect() =>
+            _hologramEffect.Play();
+
+        public void ShowHologram() =>
+            _hologramEffect.Stop();
     }
 }

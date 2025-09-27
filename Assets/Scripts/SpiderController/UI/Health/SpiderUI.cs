@@ -17,6 +17,7 @@ namespace SpiderController.UI.Health
         [SerializeField] private PressedMouseButtonIndicatorUI _planeIndicatorUI;
         [SerializeField] private PressedMouseButtonIndicatorUI _magnetIndicatorUI;
         public SpiderHealth SpiderHealth => _spiderHealth;
+        public HealthBarUI HealthBar => _healthBarUI;
         public EnergyBarUI EnergyBar => _energyBarUI;
         public PressedMouseButtonIndicatorUI PlaneIndicatorUI => _planeIndicatorUI;
         public PressedMouseButtonIndicatorUI MagnetIndicatorUI => _magnetIndicatorUI;
@@ -50,7 +51,7 @@ namespace SpiderController.UI.Health
         }
 
         private void UpdateHealthBar() =>
-            _healthBarUI.SetValue(_spiderHealth.CurrentHP, _spiderHealth.MaxHp);
+            _healthBarUI.SetValue(_spiderHealth.CurrentHP / _spiderHealth.MaxHp);
 
         private void CutsceneActiveChanged(bool cutSceneIsActive) =>
             _canvasRootUI.SetActive(!cutSceneIsActive);

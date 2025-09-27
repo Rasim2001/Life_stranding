@@ -38,7 +38,7 @@ namespace SpiderController.StateMachine
                 _data.EnergyFillAmount -= Time.deltaTime * speed /
                                           SpiderStaticData.EnergyFillAmount;
 
-                _energyBar.SetEnergyValue(_data.EnergyFillAmount);
+                _energyBar.SetValue(_data.EnergyFillAmount);
             }
         }
 
@@ -49,7 +49,7 @@ namespace SpiderController.StateMachine
                 _data.EnergyFillAmount += Time.deltaTime * speed /
                                           SpiderStaticData.EnergyFillAmount;
 
-                _energyBar.SetEnergyValue(_data.EnergyFillAmount);
+                _energyBar.SetValue(_data.EnergyFillAmount);
             }
         }
     }
