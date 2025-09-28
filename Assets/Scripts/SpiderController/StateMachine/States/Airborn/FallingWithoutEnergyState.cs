@@ -5,7 +5,6 @@ using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
-using SpiderController.UI;
 using SpiderController.UI.Stickers;
 
 namespace SpiderController.StateMachine.States.Airborn

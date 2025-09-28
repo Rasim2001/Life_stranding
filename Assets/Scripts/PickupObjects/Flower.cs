@@ -1,10 +1,14 @@
+using System;
 using HUD;
 
 namespace PickupObjects
 {
     public class Flower : PickupObjectBase
     {
+        public Action OnDroppedFromPlatform;
+
         private FlowerPointIndicator _flowerPointIndicator;
+
 
         public void Initialize(FlowerPointIndicator flowerPointIndicator) =>
             _flowerPointIndicator = flowerPointIndicator;
@@ -21,6 +25,8 @@ namespace PickupObjects
             base.StartSimulatePhysics();
 
             _flowerPointIndicator.ShowTargetPoint();
+
+            OnDroppedFromPlatform?.Invoke();
         }
     }
 }

@@ -1,0 +1,148 @@
+using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace SpiderController.UI
+{
+    public class HologramEffect
+    {
+        private readonly Image[] _segments;
+        private readonly Image[] _containers;
+
+        private CancellationTokenSource _cts;
+
+        public HologramEffect(Image[] segments, Image[] containers)
+        {
+            _segments = segments;
+            _containers = containers;
+        }
+
+        public void Play()
+        {
+            if (_cts != null)
+                return;
+
+            _cts = new CancellationTokenSource();
+
+            RunHologramEffectAsync(_cts.Token).Forget();
+        }
+
+        public void Stop()
+        {
+            if (_cts == null)
+                return;
+
+            _cts.Cancel();
+            _cts.Dispose();
+            _cts = null;
+
+            ResetAlpha();
+        }
+
+        private async UniTaskVoid RunHologramEffectAsync(CancellationToken token)
+        {
+            try
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(2f), cancellationToken: token);
+
+                int count = _segments.Length;
+                for (int i = 0; i < count; i++)
+                {
+                    DisableFirstPiece(_segments, _containers, i);
+                    await UniTask.Delay(TimeSpan.FromSeconds(0.05f), cancellationToken: token);
+
+                    FadeFirstPiece(_segments, _containers, i, 1);
+                    FadeOtherPieces(_segments, _containers, i);
+                    await UniTask.Delay(TimeSpan.FromSeconds(0.03f), cancellationToken: token);
+
+                    FadeAllPieces(_segments, _containers);
+                    await UniTask.Delay(TimeSpan.FromSeconds(0.03f), cancellationToken: token);
+
+                    DisableFirstPiece(_segments, _containers, i);
+                    await UniTask.Delay(TimeSpan.FromSeconds(0.02f), cancellationToken: token);
+
+                    FadeFirstPiece(_segments, _containers, i, 2);
+                    FadeAllPieces(_segments, _containers);
+                    await UniTask.Delay(TimeSpan.FromSeconds(0.01f), cancellationToken: token);
+
+                    FadeAllPieces(_segments, _containers);
+                    DisableFirstPiece(_segments, _containers, i);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+            }
+        }
+
+        private void FadeOtherPieces(Image[] segments, Image[] containers, int i)
+        {
+            for (int y = i + 1; y < segments.Length; y++)
+            {
+                Color seg = segments[i].color;
+                Color con = containers[i].color;
+
+                seg.a -= i * 0.05f;
+                con.a -= i * 0.05f;
+
+                segments[y].color = seg;
+                containers[y].color = con;
+            }
+        }
+
+        private void FadeFirstPiece(Image[] segments, Image[] containers, int i, int iteration)
+        {
+            Color seg = segments[i].color;
+            Color con = containers[i].color;
+
+            seg.a = 0.5f / iteration - i * 0.1f;
+            con.a = 0.5f / iteration - i * 0.1f;
+
+            segments[i].color = seg;
+            containers[i].color = con;
+        }
+
+        private void DisableFirstPiece(Image[] segments, Image[] containers, int i)
+        {
+            Color seg = segments[i].color;
+            Color con = containers[i].color;
+
+            seg.a = 0;
+            con.a = 0;
+
+            segments[i].color = seg;
+            containers[i].color = con;
+        }
+
+        private void FadeAllPieces(Image[] segments, Image[] containers)
+        {
+            for (int x = 0; x < segments.Length; x++)
+            {
+                Color seg = segments[x].color;
+                Color con = containers[x].color;
+
+                seg.a -= 0.1f;
+                con.a -= 0.1f;
+
+                segments[x].color = seg;
+                containers[x].color = con;
+            }
+        }
+
+        private void ResetAlpha()
+        {
+            for (int i = 0; i < _segments.Length; i++)
+            {
+                Color seg = _segments[i].color;
+                Color con = _containers[i].color;
+
+                seg.a = 1;
+                con.a = 1;
+
+                _segments[i].color = seg;
+                _containers[i].color = con;
+            }
+        }
+    }
+}

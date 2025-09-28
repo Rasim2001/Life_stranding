@@ -56,10 +56,10 @@ namespace SpiderController.StateMachine.States.Ground
             if (_groundChecker.IsTouchesWithLegs == false)
                 StateMachine.SwitchState<FallingState>();
 
-            if (InputService.JumpPressed && Data.EnergyFillAmount > 0)
+            if (InputService.JumpPressed && Data.EnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling)
                 StateMachine.SwitchState<JumpingState>();
 
-            if (InputService.JerkPressed && Data.EnergyFillAmount > 0)
+            if (InputService.JerkPressed && Data.EnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling)
                 StateMachine.SwitchState<JerkState>();
         }
 

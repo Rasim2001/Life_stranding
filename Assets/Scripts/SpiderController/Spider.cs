@@ -86,6 +86,7 @@ namespace SpiderController
         {
             _spiderPlane.Destroy();
             _batteryProductPickup.Destroy();
+            _flowerPickup.Destroy();
         }
 
         public void Initialize(Flower flower)
@@ -102,7 +103,9 @@ namespace SpiderController
             _spiderPlane.Initialize();
 
             _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _platformObjectsService, _flowerChecker,
-                flower);
+                flower, _spiderUI.HealthBar);
+            _flowerPickup.Initialize();
+
             _batteryProductPickup = new BatteryProductPickup(_inputService, _pickupDisplayer, _platformObjectsService,
                 _batteryChecker, _flowerChecker);
             _batteryProductPickup.Initialize();
