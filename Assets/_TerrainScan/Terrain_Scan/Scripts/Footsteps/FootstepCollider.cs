@@ -1,4 +1,3 @@
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace GameDevBuddies
@@ -6,7 +5,7 @@ namespace GameDevBuddies
     /// <summary>
     /// Enumeration specifying the type of the footstep.
     /// </summary>
-    public enum FootstepType: byte
+    public enum FootstepType : byte
     {
         Left = 0,
         Right = 1
@@ -57,7 +56,8 @@ namespace GameDevBuddies
 
                 if (_footstepPlacementController == null)
                 {
-                    Debug.LogError("Couldn't report footstep since footstep placement controller reference hasn't been assigned.");
+                    Debug.LogError(
+                        "Couldn't report footstep since footstep placement controller reference hasn't been assigned.");
                     return;
                 }
 

@@ -4,6 +4,9 @@ namespace Infastructure.Services.PlayerInput
 {
     public interface IInputSource
     {
+        void Enable();
+        void Disable();
+
         Vector3 InputVector { get; }
         bool LeftMousePressed { get; }
         bool LeftMouseUp { get; }

@@ -7,6 +7,14 @@ namespace Infastructure.Services.PlayerInput
         private const string Horizontal = "Horizontal";
         private const string Vertical = "Vertical";
 
+        public void Enable()
+        {
+        }
+
+        public void Disable()
+        {
+        }
+
         public Vector3 InputVector =>
             new Vector3(Input.GetAxis(Horizontal), 0, Input.GetAxis(Vertical));
 

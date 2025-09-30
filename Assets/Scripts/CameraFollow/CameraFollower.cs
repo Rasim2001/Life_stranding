@@ -30,6 +30,7 @@ namespace CameraFollow
         private float _cameraRotationSpeedY;
 
         private float _cameraRotationSpeed;
+        private JoystickInputSource _joystickInputSource;
 
 
         [Inject]
@@ -114,14 +115,17 @@ namespace CameraFollow
         {
             if (_inputService.CenterMousePressed)
             {
+                Debug.Log("CenterMousePressed");
+
                 _isMouseRotating = true;
 
                 _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed;
             }
 
-
             if (_inputService.CenterMouseUp)
             {
+                Debug.Log("CenterMousePressedUp");
+
                 _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed / 3;
 
                 _yRotation = 0;

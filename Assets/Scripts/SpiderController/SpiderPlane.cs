@@ -19,11 +19,12 @@ namespace SpiderController
 
         private Vector2 _mouseInput;
         private Vector2 _initialMousePosition;
-        private bool _isMouseHeld;
+        private bool _isMouseHold;
 
         private Quaternion _targetLocalRotationInFallingDownState;
 
         public float _offsetX = -90;
+        private JoystickInputSource _joystickInputSource;
 
 
         public SpiderPlane(
@@ -51,21 +52,29 @@ namespace SpiderController
             if (_stateMachineData.IsFallingDownWithoutEnergyState)
                 return;
 
-            if (_inputService.LeftMousePressed)
-            {
-                _pressedMouseButtonIndicatorUI.Show();
-                _isMouseHeld = true;
-                _initialMousePosition = Input.mousePosition;
-            }
-            else if (_inputService.LeftMouseUp)
-            {
-                _pressedMouseButtonIndicatorUI.Hide();
-                _isMouseHeld = false;
-                _mouseInput = Vector2.zero;
-            }
+            /*if (_joystickInputSource == null)
+                _joystickInputSource = _inputService.GetInputSource<JoystickInputSource>();*/
 
-            if (_isMouseHeld)
-                HandleMousePosition();
+            if (_joystickInputSource != null && _joystickInputSource.IsLeftButtonPressed == false)
+                HandleJoystickPosition();
+            else
+            {
+                if (_inputService.LeftMousePressed)
+                {
+                    _pressedMouseButtonIndicatorUI.Show();
+                    _isMouseHold = true;
+                    _initialMousePosition = Input.mousePosition;
+                }
+                else if (_inputService.LeftMouseUp)
+                {
+                    _pressedMouseButtonIndicatorUI.Hide();
+                    _isMouseHold = false;
+                    _mouseInput = Vector2.zero;
+                }
+
+                if (_isMouseHold)
+                    HandleMousePosition();
+            }
         }
 
         private void OnFallingDownStateEnter(bool isTrue)
@@ -104,6 +113,12 @@ namespace SpiderController
             _mouseInput.y = -_mouseInput.y;
 
             _mouseInput *= SpiderStaticData.PlaneSensitivity;
+        }
+
+        private void HandleJoystickPosition()
+        {
+            _mouseInput = new Vector2(-_inputService.MouseXAxis, -_inputService.MouseYAxis) *
+                          SpiderStaticData.PlaneSensitivity;
         }
 
         private void ApplyRotation()

@@ -1,19 +1,33 @@
+using System;
 using UnityEngine;
 using Zenject;
 
 namespace Infastructure.Services.PlayerInput
 {
-    public class InputService : IInputService, IInitializable
+    public class InputService : IInputService, IInitializable, IDisposable
     {
         private IInputSource _inputSource;
 
         public void Initialize() =>
             SetInputSource(new PlayerInputSource());
 
-        public void SetInputSource(IInputSource inputSource) =>
+        public void Dispose() =>
+            _inputSource.Disable();
+
+        public void SetInputSource(IInputSource inputSource)
+        {
             _inputSource = inputSource;
+            _inputSource.Enable();
+        }
+
+        public T GetInputSource<T>() =>
+            (T)_inputSource;
+
+        public bool IsType<T>() where T : IInputSource =>
+            _inputSource is T;
 
         public Vector3 InputVector => _inputSource.InputVector;
+
         public bool TabPressed => _inputSource.TabPressed;
 
         public bool LeftMousePressed => _inputSource.LeftMousePressed;
