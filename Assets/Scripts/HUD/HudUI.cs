@@ -67,7 +67,9 @@ namespace HUD
         private void OnDestroy()
         {
             _cutSceneService.OnCutsceneActiveChanged -= CutsceneActiveChanged;
-            TerrainScan.Instance.OnTerrainScanStart -= TerrainStartHappened;
+
+            if (TerrainScan.Instance != null)
+                TerrainScan.Instance.OnTerrainScanStart -= TerrainStartHappened;
 
             CinemachineCore.CameraUpdatedEvent.RemoveListener(UpdateIndicator);
         }
