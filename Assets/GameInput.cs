@@ -171,6 +171,24 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Press(pressPoint=0.5)"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShiftMove"",
+                    ""type"": ""Button"",
+                    ""id"": ""2c1bbcef-0a71-49d2-ad28-9bd3fcb975c2"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press(pressPoint=1)"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ScrollCamera"",
+                    ""type"": ""Value"",
+                    ""id"": ""56cbdfe9-6169-4cff-9eb2-4994ccc63aed"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -360,6 +378,50 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""action"": ""LookButton"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b2afdbab-2573-48a1-9f02-2ddf08c3bebf"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad;Joystick"",
+                    ""action"": ""ShiftMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""50522d28-6f65-454f-9af7-cfc49dc32c8d"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ScrollCamera"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""8ebad80a-fc0a-40c0-b17a-beedba47f6e4"",
+                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad;Joystick"",
+                    ""action"": ""ScrollCamera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""94d1e77e-c378-4844-b08c-392ff3c7ead6"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ScrollCamera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -1428,6 +1490,8 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Joystick_Scan = m_Joystick.FindAction("Scan", throwIfNotFound: true);
         m_Joystick_Pickup = m_Joystick.FindAction("Pickup", throwIfNotFound: true);
         m_Joystick_LookButton = m_Joystick.FindAction("LookButton", throwIfNotFound: true);
+        m_Joystick_ShiftMove = m_Joystick.FindAction("ShiftMove", throwIfNotFound: true);
+        m_Joystick_ScrollCamera = m_Joystick.FindAction("ScrollCamera", throwIfNotFound: true);
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
@@ -1542,6 +1606,8 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Joystick_Scan;
     private readonly InputAction m_Joystick_Pickup;
     private readonly InputAction m_Joystick_LookButton;
+    private readonly InputAction m_Joystick_ShiftMove;
+    private readonly InputAction m_Joystick_ScrollCamera;
     /// <summary>
     /// Provides access to input actions defined in input action map "Joystick".
     /// </summary>
@@ -1589,6 +1655,14 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Joystick/LookButton".
         /// </summary>
         public InputAction @LookButton => m_Wrapper.m_Joystick_LookButton;
+        /// <summary>
+        /// Provides access to the underlying input action "Joystick/ShiftMove".
+        /// </summary>
+        public InputAction @ShiftMove => m_Wrapper.m_Joystick_ShiftMove;
+        /// <summary>
+        /// Provides access to the underlying input action "Joystick/ScrollCamera".
+        /// </summary>
+        public InputAction @ScrollCamera => m_Wrapper.m_Joystick_ScrollCamera;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1642,6 +1716,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @LookButton.started += instance.OnLookButton;
             @LookButton.performed += instance.OnLookButton;
             @LookButton.canceled += instance.OnLookButton;
+            @ShiftMove.started += instance.OnShiftMove;
+            @ShiftMove.performed += instance.OnShiftMove;
+            @ShiftMove.canceled += instance.OnShiftMove;
+            @ScrollCamera.started += instance.OnScrollCamera;
+            @ScrollCamera.performed += instance.OnScrollCamera;
+            @ScrollCamera.canceled += instance.OnScrollCamera;
         }
 
         /// <summary>
@@ -1680,6 +1760,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @LookButton.started -= instance.OnLookButton;
             @LookButton.performed -= instance.OnLookButton;
             @LookButton.canceled -= instance.OnLookButton;
+            @ShiftMove.started -= instance.OnShiftMove;
+            @ShiftMove.performed -= instance.OnShiftMove;
+            @ShiftMove.canceled -= instance.OnShiftMove;
+            @ScrollCamera.started -= instance.OnScrollCamera;
+            @ScrollCamera.performed -= instance.OnScrollCamera;
+            @ScrollCamera.canceled -= instance.OnScrollCamera;
         }
 
         /// <summary>
@@ -2227,6 +2313,20 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnLookButton(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ShiftMove" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnShiftMove(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ScrollCamera" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnScrollCamera(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Player" which allows adding and removing callbacks.

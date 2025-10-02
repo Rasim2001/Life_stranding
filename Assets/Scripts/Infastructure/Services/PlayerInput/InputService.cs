@@ -1,18 +1,27 @@
 using System;
+using Infastructure.Services.PlayerInput.InputSourceRealization;
 using UnityEngine;
-using Zenject;
 
 namespace Infastructure.Services.PlayerInput
 {
-    public class InputService : IInputService, IInitializable, IDisposable
+    public class InputService : IInputService, IDisposable
     {
         private IInputSource _inputSource;
+        private IInputSource _joystickInputSource;
 
-        public void Initialize() =>
+        public void Initialize()
+        {
+            _joystickInputSource = new JoystickInputSource();
+            _joystickInputSource.Enable();
+
             SetInputSource(new PlayerInputSource());
+        }
 
-        public void Dispose() =>
+        public void Dispose()
+        {
+            _joystickInputSource.Disable();
             _inputSource.Disable();
+        }
 
         public void SetInputSource(IInputSource inputSource)
         {
@@ -20,48 +29,91 @@ namespace Infastructure.Services.PlayerInput
             _inputSource.Enable();
         }
 
-        public T GetInputSource<T>() =>
-            (T)_inputSource;
+        public T GetInputSource<T>()
+        {
+            if (_inputSource is T)
+                return (T)_inputSource;
 
-        public bool IsType<T>() where T : IInputSource =>
-            _inputSource is T;
+            return (T)_joystickInputSource;
+        }
 
-        public Vector3 InputVector => _inputSource.InputVector;
 
-        public bool TabPressed => _inputSource.TabPressed;
+        public Vector3 InputVector
+        {
+            get
+            {
+                Vector3 keyboardInput = _inputSource.InputVector;
+
+                return keyboardInput.sqrMagnitude > Mathf.Epsilon
+                    ? _inputSource.InputVector
+                    : _joystickInputSource.InputVector;
+            }
+        }
+
+        public bool TabPressed => _inputSource.TabPressed || _joystickInputSource.TabPressed;
 
         public bool LeftMousePressed => _inputSource.LeftMousePressed;
 
         public bool LeftMouseUp => _inputSource.LeftMouseUp;
 
-        public bool RightMousePressed => _inputSource.RightMousePressed;
+        public bool RightMousePressed => _inputSource.RightMousePressed || _joystickInputSource.RightMousePressed;
 
-        public bool RightMouseUp => _inputSource.RightMouseUp;
+        public bool RightMouseUp => _inputSource.RightMouseUp || _joystickInputSource.RightMouseUp;
 
-        public bool CenterMousePressed => _inputSource.CenterMousePressed;
+        public bool CenterMousePressed => _inputSource.CenterMousePressed || _joystickInputSource.CenterMousePressed;
 
-        public bool CenterMouseUp => _inputSource.CenterMouseUp;
+        public bool CenterMouseUp => _inputSource.CenterMouseUp || _joystickInputSource.CenterMouseUp;
 
-        public float ScrollWheelAxis => _inputSource.ScrollWheelAxis;
+        public float ScrollWheelAxis
+        {
+            get
+            {
+                float keyboardInput = Mathf.Abs(_inputSource.ScrollWheelAxis);
 
-        public float MouseXAxis => _inputSource.MouseXAxis;
+                return keyboardInput > 0
+                    ? _inputSource.ScrollWheelAxis
+                    : _joystickInputSource.ScrollWheelAxis;
+            }
+        }
 
-        public float MouseYAxis => _inputSource.MouseYAxis;
+        public float MouseXAxis
+        {
+            get
+            {
+                float keyboardInput = _inputSource.MouseXAxis;
 
-        public bool IsLeftShiftPressed => _inputSource.IsLeftShiftPressed;
+                return keyboardInput > Mathf.Epsilon
+                    ? _inputSource.MouseXAxis
+                    : _joystickInputSource.MouseXAxis;
+            }
+        }
 
-        public bool IsLeftShiftUp => _inputSource.IsLeftShiftUp;
+        public float MouseYAxis
+        {
+            get
+            {
+                float keyboardInput = _inputSource.MouseYAxis;
 
-        public bool CtrlPressed => _inputSource.CtrlPressed;
+                return keyboardInput > Mathf.Epsilon
+                    ? _inputSource.MouseYAxis
+                    : _joystickInputSource.MouseYAxis;
+            }
+        }
 
-        public bool CtrlUp => _inputSource.CtrlUp;
+        public bool IsLeftShiftPressed => _inputSource.IsLeftShiftPressed || _joystickInputSource.IsLeftShiftPressed;
 
-        public bool JumpPressed => _inputSource.JumpPressed;
+        public bool IsLeftShiftUp => _inputSource.IsLeftShiftUp || _joystickInputSource.IsLeftShiftUp;
 
-        public bool JumpUp => _inputSource.JumpUp;
+        public bool CtrlPressed => _inputSource.CtrlPressed || _joystickInputSource.CtrlPressed;
 
-        public bool JerkPressed => _inputSource.JerkPressed;
+        public bool CtrlUp => _inputSource.CtrlUp || _joystickInputSource.CtrlUp;
 
-        public bool PickupPressed => _inputSource.PickupPressed;
+        public bool JumpPressed => _inputSource.JumpPressed || _joystickInputSource.JumpPressed;
+
+        public bool JumpUp => _inputSource.JumpUp || _joystickInputSource.JumpUp;
+
+        public bool JerkPressed => _inputSource.JerkPressed || _joystickInputSource.JerkPressed;
+
+        public bool PickupPressed => _inputSource.PickupPressed || _joystickInputSource.PickupPressed;
     }
 }

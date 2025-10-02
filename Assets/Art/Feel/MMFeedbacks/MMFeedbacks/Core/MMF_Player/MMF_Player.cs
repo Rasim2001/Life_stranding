@@ -233,12 +233,8 @@ namespace MoreMountains.Feedbacks
         /// <summary>
         /// Plays all feedbacks using the MMFeedbacks' position as reference, and no attenuation
         /// </summary>
-        public override void PlayFeedbacks()
-        {
-            Debug.Log("Playing Feedbacks");
-
+        public override void PlayFeedbacks() =>
             PlayFeedbacksInternal(this.transform.position, FeedbacksIntensity);
-        }
 
         /// <summary>
         /// Plays all feedbacks, specifying a position and intensity. The position may be used by each Feedback and taken into account to spark a particle or play a sound for example.

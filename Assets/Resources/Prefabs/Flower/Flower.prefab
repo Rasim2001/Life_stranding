@@ -663,11 +663,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _platformBounds:
-    m_Center: {x: 0, y: 0.0024, z: 0}
+    m_Center: {x: 0, y: 0.006, z: 0}
     m_Extent: {x: 0.016, y: 0.001, z: 0.016}
   _speed: 1
   _colorLerpSpeed: 25
   IsFreezingOnPlatform: 0
+  _platform: {fileID: 0}
   _feedbackPlayer: {fileID: 7096200032643435946}
 --- !u!114 &3442978669235190482
 MonoBehaviour:

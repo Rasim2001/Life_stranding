@@ -29,8 +29,11 @@ namespace HUD
         public void Construct(ICutSceneService cutSceneService) =>
             _cutSceneService = cutSceneService;
 
-        private void Awake() =>
+        private void Awake()
+        {
             _canvasGroup = _arrowContainer.GetComponent<CanvasGroup>();
+            _canvasGroup.alpha = 0;
+        }
 
 
         public void Initialize(RectTransform arrowUIPrefab) =>
@@ -92,7 +95,7 @@ namespace HUD
         {
             _canvasGroup.DOKill();
             _canvasGroup.alpha = 1;
-            _canvasGroup.DOFade(0, 30);
+            _canvasGroup.DOFade(0, 2).SetDelay(20);
         }
     }
 }

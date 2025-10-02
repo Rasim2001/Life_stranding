@@ -1,4 +1,5 @@
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.PlayerInput.InputSourceRealization;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.StateMachine;
@@ -26,6 +27,9 @@ namespace SpiderController
         public float _offsetX = -90;
         private JoystickInputSource _joystickInputSource;
 
+        private bool _joystickInputActive;
+        private float _waitTimeJoystick;
+
 
         public SpiderPlane(
             PressedMouseButtonIndicatorUI pressedMouseButtonIndicatorUI,
@@ -41,8 +45,11 @@ namespace SpiderController
             _stateMachineData = stateMachineData;
         }
 
-        public void Initialize() =>
+        public void Initialize()
+        {
+            _joystickInputSource = _inputService.GetInputSource<JoystickInputSource>();
             _stateMachineData.OnFallingDownStateChanged += OnFallingDownStateEnter;
+        }
 
         public void Destroy() =>
             _stateMachineData.OnFallingDownStateChanged -= OnFallingDownStateEnter;
@@ -52,28 +59,33 @@ namespace SpiderController
             if (_stateMachineData.IsFallingDownWithoutEnergyState)
                 return;
 
-            /*if (_joystickInputSource == null)
-                _joystickInputSource = _inputService.GetInputSource<JoystickInputSource>();*/
+            if (_inputService.LeftMousePressed)
+            {
+                _pressedMouseButtonIndicatorUI.Show();
+                _isMouseHold = true;
+                _initialMousePosition = Input.mousePosition;
+                _waitTimeJoystick = 0;
+            }
+            else if (_inputService.LeftMouseUp)
+            {
+                _pressedMouseButtonIndicatorUI.Hide();
+                _isMouseHold = false;
+                _mouseInput = Vector2.zero;
+            }
 
-            if (_joystickInputSource != null && _joystickInputSource.IsLeftButtonPressed == false)
-                HandleJoystickPosition();
+            if (_isMouseHold)
+                HandleMousePosition();
             else
             {
-                if (_inputService.LeftMousePressed)
-                {
-                    _pressedMouseButtonIndicatorUI.Show();
-                    _isMouseHold = true;
-                    _initialMousePosition = Input.mousePosition;
-                }
-                else if (_inputService.LeftMouseUp)
-                {
-                    _pressedMouseButtonIndicatorUI.Hide();
-                    _isMouseHold = false;
-                    _mouseInput = Vector2.zero;
-                }
+                bool isGamepadActiveNow = _joystickInputSource.IsGamepadActiveNow();
 
-                if (_isMouseHold)
-                    HandleMousePosition();
+                if (isGamepadActiveNow)
+                    _waitTimeJoystick = 2;
+
+                _waitTimeJoystick -= Time.deltaTime;
+
+                if (_joystickInputSource.IsLeftButtonPressed == false && _waitTimeJoystick > 0)
+                    HandleJoystickPosition();
             }
         }
 
@@ -119,6 +131,17 @@ namespace SpiderController
         {
             _mouseInput = new Vector2(-_inputService.MouseXAxis, -_inputService.MouseYAxis) *
                           SpiderStaticData.PlaneSensitivity;
+
+            if (_mouseInput.sqrMagnitude > Mathf.Epsilon && _joystickInputActive == false)
+            {
+                _pressedMouseButtonIndicatorUI.Show();
+                _joystickInputActive = true;
+            }
+            else if (_mouseInput.sqrMagnitude < Mathf.Epsilon && _joystickInputActive)
+            {
+                _pressedMouseButtonIndicatorUI.Hide();
+                _joystickInputActive = false;
+            }
         }
 
         private void ApplyRotation()

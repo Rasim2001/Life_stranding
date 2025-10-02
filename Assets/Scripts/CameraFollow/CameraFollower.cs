@@ -1,5 +1,6 @@
 using Infastructure.Common;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.PlayerInput.InputSourceRealization;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using Unity.Cinemachine;
@@ -115,8 +116,6 @@ namespace CameraFollow
         {
             if (_inputService.CenterMousePressed)
             {
-                Debug.Log("CenterMousePressed");
-
                 _isMouseRotating = true;
 
                 _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed;
@@ -124,8 +123,6 @@ namespace CameraFollow
 
             if (_inputService.CenterMouseUp)
             {
-                Debug.Log("CenterMousePressedUp");
-
                 _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed / 3;
 
                 _yRotation = 0;

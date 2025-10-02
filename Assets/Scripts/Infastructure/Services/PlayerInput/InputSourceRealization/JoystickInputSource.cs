@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Infastructure.Services.PlayerInput
+namespace Infastructure.Services.PlayerInput.InputSourceRealization
 {
     public class JoystickInputSource : IInputSource
     {
@@ -27,6 +27,9 @@ namespace Infastructure.Services.PlayerInput
         private bool _centerMousePressedThisFrame;
         private bool _centerMouseReleasedThisFrame;
 
+        private bool _shiftPressedThisFrame;
+        private bool _shiftMouseReleasedThisFrame;
+
         public void Enable()
         {
             _gameInput = new GameInput();
@@ -45,8 +48,11 @@ namespace Infastructure.Services.PlayerInput
             _gameInput.Joystick.Sitdown.started += OnCtrlDown;
             _gameInput.Joystick.Sitdown.canceled += OnCtrlUp;
 
-            _gameInput.Joystick.LookButton.started += OnLeftMouseDown;
-            _gameInput.Joystick.LookButton.canceled += OnLeftMouseUp;
+            _gameInput.Joystick.LookButton.started += OnCenterMouseDown;
+            _gameInput.Joystick.LookButton.canceled += OnCenterMouseUp;
+
+            _gameInput.Joystick.ShiftMove.started += OnShiftDown;
+            _gameInput.Joystick.ShiftMove.canceled += OnShiftUp;
         }
 
         public void Disable()
@@ -60,13 +66,30 @@ namespace Infastructure.Services.PlayerInput
             _gameInput.Joystick.Jerk.started -= OnJerkDown;
             _gameInput.Joystick.Scan.started += OnScanDown;
 
-            _gameInput.Joystick.Sitdown.started -= OnLeftMouseDown;
+            _gameInput.Joystick.Sitdown.started -= OnCenterMouseDown;
             _gameInput.Joystick.Sitdown.canceled -= OnCtrlUp;
 
-            _gameInput.Joystick.LookButton.started -= OnLeftMouseDown;
-            _gameInput.Joystick.LookButton.canceled -= OnLeftMouseUp;
+            _gameInput.Joystick.LookButton.started -= OnCenterMouseDown;
+            _gameInput.Joystick.LookButton.canceled -= OnCenterMouseUp;
 
             _gameInput.Disable();
+        }
+
+        public bool IsGamepadActiveNow()
+        {
+            Gamepad gp = Gamepad.current;
+            if (gp == null)
+                return false;
+
+            return gp.leftStick.ReadValue().sqrMagnitude > 0.01f
+                   || gp.rightStick.ReadValue().sqrMagnitude > 0.01f
+                   || gp.dpad.ReadValue().sqrMagnitude > 0
+                   || gp.aButton.wasPressedThisFrame
+                   || gp.bButton.wasPressedThisFrame
+                   || gp.xButton.wasPressedThisFrame
+                   || gp.yButton.wasPressedThisFrame
+                   || gp.leftTrigger.wasPressedThisFrame
+                   || gp.rightTrigger.wasPressedThisFrame;
         }
 
         public Vector3 InputVector => new Vector3(GameInputMovement.ReadValue<Vector2>().x, 0,
@@ -118,15 +141,33 @@ namespace Infastructure.Services.PlayerInput
             }
         }
 
-        public float ScrollWheelAxis { get; }
+        public float ScrollWheelAxis => _gameInput.Joystick.ScrollCamera.ReadValue<float>();
 
         public float MouseXAxis => _gameInput.Joystick.PlaneRotation.ReadValue<Vector2>().x;
 
         public float MouseYAxis => _gameInput.Joystick.PlaneRotation.ReadValue<Vector2>().y;
 
-        public bool IsLeftShiftPressed { get; }
+        public bool IsLeftShiftPressed
+        {
+            get
+            {
+                bool v = _shiftPressedThisFrame;
+                _shiftPressedThisFrame = false;
+                _shiftMouseReleasedThisFrame = false;
+                return v;
+            }
+        }
 
-        public bool IsLeftShiftUp { get; }
+        public bool IsLeftShiftUp
+        {
+            get
+            {
+                bool v = _shiftMouseReleasedThisFrame;
+                _shiftMouseReleasedThisFrame = false;
+                _shiftPressedThisFrame = false;
+                return v;
+            }
+        }
 
         public bool CtrlPressed
         {
@@ -220,22 +261,22 @@ namespace Infastructure.Services.PlayerInput
 
         private void OnPickupDown(InputAction.CallbackContext _) => _pickupPressedThisFrame = true;
 
-        private void OnLeftMouseDown(InputAction.CallbackContext obj)
+        private void OnCenterMouseDown(InputAction.CallbackContext obj)
         {
-            Debug.Log("Down");
-
             IsLeftButtonPressed = true;
 
             _centerMousePressedThisFrame = true;
         }
 
-        private void OnLeftMouseUp(InputAction.CallbackContext _)
+        private void OnCenterMouseUp(InputAction.CallbackContext _)
         {
-            Debug.Log("Up");
-
             IsLeftButtonPressed = false;
 
             _centerMouseReleasedThisFrame = true;
         }
+
+        private void OnShiftDown(InputAction.CallbackContext obj) => _shiftPressedThisFrame = true;
+
+        private void OnShiftUp(InputAction.CallbackContext obj) => _shiftMouseReleasedThisFrame = true;
     }
 }

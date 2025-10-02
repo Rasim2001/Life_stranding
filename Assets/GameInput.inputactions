@@ -85,6 +85,24 @@
                     "processors": "",
                     "interactions": "Press(pressPoint=0.5)",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ShiftMove",
+                    "type": "Button",
+                    "id": "2c1bbcef-0a71-49d2-ad28-9bd3fcb975c2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press(pressPoint=1)",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ScrollCamera",
+                    "type": "Value",
+                    "id": "56cbdfe9-6169-4cff-9eb2-4994ccc63aed",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -274,6 +292,50 @@
                     "action": "LookButton",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b2afdbab-2573-48a1-9f02-2ddf08c3bebf",
+                    "path": "<Gamepad>/leftStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad;Joystick",
+                    "action": "ShiftMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "50522d28-6f65-454f-9af7-cfc49dc32c8d",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ScrollCamera",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "8ebad80a-fc0a-40c0-b17a-beedba47f6e4",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad;Joystick",
+                    "action": "ScrollCamera",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "94d1e77e-c378-4844-b08c-392ff3c7ead6",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ScrollCamera",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },
