@@ -1,5 +1,6 @@
 using Infastructure.Common;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.PlayerInput.InputSourceRealization;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using Unity.Cinemachine;
@@ -30,6 +31,7 @@ namespace CameraFollow
         private float _cameraRotationSpeedY;
 
         private float _cameraRotationSpeed;
+        private JoystickInputSource _joystickInputSource;
 
 
         [Inject]
@@ -118,7 +120,6 @@ namespace CameraFollow
 
                 _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed;
             }
-
 
             if (_inputService.CenterMouseUp)
             {

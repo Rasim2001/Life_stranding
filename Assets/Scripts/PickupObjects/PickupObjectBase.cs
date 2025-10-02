@@ -12,7 +12,7 @@ namespace PickupObjects
         [SerializeField] private float _speed = 1;
         [SerializeField] private float _colorLerpSpeed = 5;
 
-        private readonly Vector3 _startPosition = new Vector3(0, 0.00305f, 0);
+        private readonly Vector3 _startPosition = new Vector3(0, 0.006f, 0);
         private readonly Quaternion _startRotation = Quaternion.Euler(-90, 0, 0);
         private Vector3 _customPositionOffset = Vector3.zero;
 
@@ -23,7 +23,7 @@ namespace PickupObjects
 
         private Material _robotPlaneMaterial;
 
-        private Transform _platform;
+        [SerializeField] private Transform _platform;
         private MeshRenderer _meshRenderer;
         private IPlatformObjectsService _platformObjectsService;
 
@@ -69,7 +69,8 @@ namespace PickupObjects
         {
             _platformObjectsService.PickupObjects.Remove(this);
 
-            Rigidbody.isKinematic = false;
+            Rigidbody.useGravity = true;
+            //Rigidbody.isKinematic = false;
             IsOnPlatform = false;
 
             transform.SetParent(null);
@@ -80,7 +81,8 @@ namespace PickupObjects
             if (!_platformObjectsService.PickupObjects.Contains(this))
                 _platformObjectsService.PickupObjects.Add(this);
 
-            Rigidbody.isKinematic = true;
+            //Rigidbody.isKinematic = true;
+            Rigidbody.useGravity = false;
             IsOnPlatform = true;
 
             transform.SetParent(_platform);
@@ -132,9 +134,10 @@ namespace PickupObjects
             movementVector = _startRotation * movementVector;
 
             transform.Translate(movementVector, Space.Self);
+            Rigidbody.linearVelocity = Vector3.zero;
         }
 
-        private void OnDrawGizmosSelected()
+        public void OnDrawGizmosSelected()
         {
             if (_platform == null)
                 return;

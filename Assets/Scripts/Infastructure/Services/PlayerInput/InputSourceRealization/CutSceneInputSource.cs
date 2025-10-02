@@ -4,6 +4,14 @@ namespace Infastructure.Services.PlayerInput
 {
     public class CutSceneInputSource : IInputSource
     {
+        public void Enable()
+        {
+        }
+
+        public void Disable()
+        {
+        }
+
         public Vector3 InputVector { get; set; }
         public bool LeftMousePressed { get; }
         public bool LeftMouseUp { get; }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using HighlightPlus;
 using Infastructure.Services.Pool;
 using UnityEngine;
 using Zenject;
@@ -28,6 +29,9 @@ namespace Infastructure.Common.Pickup
             pickupView.transform.SetParent(transform);
             pickupView.transform.position = pickupTarget.position + Vector3.up;
 
+            HighlightEffect highlightEffect = pickupTarget.GetComponent<HighlightEffect>();
+            highlightEffect?.SetHighlighted(true);
+
             _pickups.Add(id, pickupView);
         }
 
@@ -37,6 +41,9 @@ namespace Infastructure.Common.Pickup
 
             if (!_pickups.TryGetValue(id, out PickupView pickupView))
                 return;
+
+            HighlightEffect highlightEffect = pickupTarget.GetComponent<HighlightEffect>();
+            highlightEffect?.SetHighlighted(false);
 
             _poolObjects.ReturnObjectToPool(pickupView);
             _pickups.Remove(id);

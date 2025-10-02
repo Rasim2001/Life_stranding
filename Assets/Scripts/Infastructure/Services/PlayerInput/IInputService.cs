@@ -24,5 +24,7 @@ namespace Infastructure.Services.PlayerInput
         bool JumpUp { get; }
         bool TabPressed { get; }
         void SetInputSource(IInputSource inputSource);
+        T GetInputSource<T>();
+        void Initialize();
     }
 }

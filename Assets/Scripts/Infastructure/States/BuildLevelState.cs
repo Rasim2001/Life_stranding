@@ -2,6 +2,7 @@ using System;
 using Infastructure.Common;
 using Infastructure.Factories.GameFactories;
 using Infastructure.Services.CheckPoint;
+using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerProgressService;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
@@ -18,6 +19,7 @@ namespace Infastructure.States
         private readonly IPersistentProgressService _progressService;
         private readonly ISceneLoader _sceneLoader;
         private readonly ICheckPointService _checkPointService;
+        private readonly IInputService _inputService;
 
         public BuildLevelState(
             IGameFactory gameFactory,
@@ -25,7 +27,8 @@ namespace Infastructure.States
             IGameUIFactory uiFactory,
             IPersistentProgressService progressService,
             ISceneLoader sceneLoader,
-            ICheckPointService checkPointService
+            ICheckPointService checkPointService,
+            IInputService inputService
         )
         {
             _gameFactory = gameFactory;
@@ -34,15 +37,12 @@ namespace Infastructure.States
             _progressService = progressService;
             _sceneLoader = sceneLoader;
             _checkPointService = checkPointService;
+            _inputService = inputService;
         }
 
         public void Initialize()
         {
-            /*if (!_sceneLoader.IsGameScene())
-                return;*/
-
-            /*Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.None;*/
+            _inputService.Initialize();
 
             InitGameWorld();
             GoToCheckPoints();

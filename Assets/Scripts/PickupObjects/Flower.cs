@@ -1,10 +1,14 @@
 using System;
 using HUD;
+using MoreMountains.Feedbacks;
+using UnityEngine;
 
 namespace PickupObjects
 {
     public class Flower : PickupObjectBase
     {
+        [SerializeField] private MMF_Player _feedbackPlayer;
+        
         public Action OnDroppedFromPlatform;
 
         private FlowerPointIndicator _flowerPointIndicator;
@@ -23,7 +27,8 @@ namespace PickupObjects
         protected override void StartSimulatePhysics()
         {
             base.StartSimulatePhysics();
-
+            
+            _feedbackPlayer.PlayFeedbacks();
             _flowerPointIndicator.ShowTargetPoint();
 
             OnDroppedFromPlatform?.Invoke();
