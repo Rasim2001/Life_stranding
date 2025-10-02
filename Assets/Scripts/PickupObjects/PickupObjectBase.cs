@@ -69,7 +69,8 @@ namespace PickupObjects
         {
             _platformObjectsService.PickupObjects.Remove(this);
 
-            Rigidbody.isKinematic = false;
+            Rigidbody.useGravity = true;
+            //Rigidbody.isKinematic = false;
             IsOnPlatform = false;
 
             transform.SetParent(null);
@@ -80,7 +81,8 @@ namespace PickupObjects
             if (!_platformObjectsService.PickupObjects.Contains(this))
                 _platformObjectsService.PickupObjects.Add(this);
 
-            Rigidbody.isKinematic = true;
+            //Rigidbody.isKinematic = true;
+            Rigidbody.useGravity = false;
             IsOnPlatform = true;
 
             transform.SetParent(_platform);
@@ -132,6 +134,7 @@ namespace PickupObjects
             movementVector = _startRotation * movementVector;
 
             transform.Translate(movementVector, Space.Self);
+            Rigidbody.linearVelocity = Vector3.zero;
         }
 
         public void OnDrawGizmosSelected()
