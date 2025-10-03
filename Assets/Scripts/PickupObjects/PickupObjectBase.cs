@@ -69,8 +69,7 @@ namespace PickupObjects
         {
             _platformObjectsService.PickupObjects.Remove(this);
 
-            Rigidbody.useGravity = true;
-            //Rigidbody.isKinematic = false;
+            Rigidbody.isKinematic = false;
             IsOnPlatform = false;
 
             transform.SetParent(null);
@@ -81,8 +80,7 @@ namespace PickupObjects
             if (!_platformObjectsService.PickupObjects.Contains(this))
                 _platformObjectsService.PickupObjects.Add(this);
 
-            //Rigidbody.isKinematic = true;
-            Rigidbody.useGravity = false;
+            Rigidbody.isKinematic = true;
             IsOnPlatform = true;
 
             transform.SetParent(_platform);

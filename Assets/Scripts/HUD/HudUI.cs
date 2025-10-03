@@ -14,7 +14,9 @@ namespace HUD
         [SerializeField] private LayerMask _flowerPointLayer;
         [SerializeField] private RectTransform _canvasRectTransform;
         [SerializeField] private Transform _arrowContainer;
+        [SerializeField] private Transform _xRayCollectionContainer;
         public FlowerPointIndicator FlowerPointIndicator => _flowerPointIndicator;
+        public Transform XRayCollectionContainer => _xRayCollectionContainer;
 
         private FinishPointIndicator _finishPointIndicator;
         private FlowerPointIndicator _flowerPointIndicator;
@@ -67,7 +69,9 @@ namespace HUD
         private void OnDestroy()
         {
             _cutSceneService.OnCutsceneActiveChanged -= CutsceneActiveChanged;
-            TerrainScan.Instance.OnTerrainScanStart -= TerrainStartHappened;
+
+            if (TerrainScan.Instance != null)
+                TerrainScan.Instance.OnTerrainScanStart -= TerrainStartHappened;
 
             CinemachineCore.CameraUpdatedEvent.RemoveListener(UpdateIndicator);
         }

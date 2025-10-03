@@ -2,6 +2,7 @@
 using Infastructure.StaticData.Materials;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.VolumeProfiles;
+using Infastructure.StaticData.XRay;
 
 namespace Infastructure.StaticData.StaticDataService
 {
@@ -13,5 +14,6 @@ namespace Infastructure.StaticData.StaticDataService
         GameStaticData GameStaticData { get; }
         MaterialsStaticData MaterialsStaticData { get; }
         VolumeProfilesStaticData VolumeProfilesStaticData { get; }
+        XRayCollectionStaticData XRayCollectionStaticData { get; }
     }
 }
