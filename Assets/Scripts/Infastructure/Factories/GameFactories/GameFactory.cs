@@ -2,9 +2,10 @@ using CameraFollow;
 using GameDevBuddies;
 using HUD;
 using Infastructure.Common;
-using Infastructure.CutScene;
 using Infastructure.Services.CheckPoint;
+using Infastructure.Services.XRay;
 using Infastructure.StaticData.StaticDataService;
+using Infastructure.StaticData.XRay;
 using PickupObjects;
 using SpiderController;
 using SpiderController.UI.Health;
@@ -20,15 +21,17 @@ namespace Infastructure.Factories.GameFactories
         private readonly DiContainer _diContainer;
         private readonly IStaticDataService _staticDataService;
         private readonly ICheckPointService _checkPointService;
+        private readonly IXRayService _xRayService;
 
         private string ActiveSceneName => SceneManager.GetActiveScene().name;
 
         public GameFactory(DiContainer diContainer, IStaticDataService staticDataService,
-            ICheckPointService checkPointService)
+            ICheckPointService checkPointService, IXRayService xRayService)
         {
             _diContainer = diContainer;
             _staticDataService = staticDataService;
             _checkPointService = checkPointService;
+            _xRayService = xRayService;
         }
 
         public Spider CreateSpider(Flower flower)
@@ -66,6 +69,8 @@ namespace Infastructure.Factories.GameFactories
             flower.Initialize(spider.RotationPlaneTransform, spider.BoundPlaneMeshRender);
             flower.StopSimulatePhysics();
 
+            _xRayService.Initialize(hud.XRayCollectionContainer);
+
             return hud;
         }
 
@@ -89,6 +94,9 @@ namespace Infastructure.Factories.GameFactories
                     AssetsPath.BatteryProductPath,
                     position, Quaternion.identity,
                     null);
+
+                XRayMarker xRayMarker = batteryProduct.GetComponent<XRayMarker>();
+                _xRayService.Add(xRayMarker);
 
                 batteryProduct.Initialize(spider.RotationPlaneTransform, spider.BoundPlaneMeshRender);
             }

@@ -65,7 +65,6 @@ namespace Infastructure.CompositionRoot
                 .AsSingle();
         }
 
-       
 
         private void BindSceneLoader() =>
             Container.BindInterfacesAndSelfTo<SceneLoader>().AsSingle();

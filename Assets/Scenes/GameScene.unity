@@ -1775,6 +1775,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 86266806}
+  - {fileID: 1831218555}
   m_Father: {fileID: 533301970}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!64 &128334389
@@ -19537,8 +19538,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scriptableObjectInstallers: []
   _monoInstallers:
-  - {fileID: 1590242434}
   - {fileID: 1590242436}
+  - {fileID: 1590242434}
   _installerPrefabs: []
   _autoRun: 1
   OnPreInstall:
@@ -19570,6 +19571,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PickupView: {fileID: 5488940531375383698, guid: a48253a4c0d6c4249b0becf7e0b9cddb, type: 3}
   PickupContainer: {fileID: 86266806}
+  OccluderUI: {fileID: 7810638603464002045, guid: b1a97e982dd09e2418cf34d6da056ceb, type: 3}
+  OccluderContainer: {fileID: 1831218555}
 --- !u!1001 &1590892611
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31940,6 +31943,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2704056845733475482, guid: e930751daa5f3e14c973277bd91c54ec, type: 3}
+--- !u!1 &1831218554
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1831218555}
+  m_Layer: 0
+  m_Name: XRayContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1831218555
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1831218554}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 127051980}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1831249623
 GameObject:
   m_ObjectHideFlags: 0

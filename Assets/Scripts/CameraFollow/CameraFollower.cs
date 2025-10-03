@@ -54,8 +54,12 @@ namespace CameraFollow
         public void SetTarget(Transform spiderTransform) =>
             _target = spiderTransform;
 
-        private void Start() =>
+        private void Start()
+        {
+            _joystickInputSource = _inputService.GetInputSource<JoystickInputSource>();
+
             CinemachineCore.CameraUpdatedEvent.AddListener(UpdateAfterCinemachine);
+        }
 
         private void OnDestroy() =>
             CinemachineCore.CameraUpdatedEvent.RemoveListener(UpdateAfterCinemachine);
@@ -74,14 +78,6 @@ namespace CameraFollow
                 RotateToTarget();
         }
 
-        private void Update()
-        {
-            if (_target == null)
-                return;
-
-            HandleMouse();
-        }
-
         private void UpdateAfterCinemachine(CinemachineBrain _)
         {
             if (_target == null)
@@ -97,10 +93,12 @@ namespace CameraFollow
         {
             float scrollInput = _inputService.ScrollWheelAxis;
 
+            float maxLenght = _joystickInputSource.IsGamepadActiveNow() ? 4 : 7;
+
             if (scrollInput != 0f)
             {
                 _mouseSensitivity -= scrollInput * SpiderStaticData.ScrollSensitivity;
-                _mouseSensitivity = Mathf.Clamp(_mouseSensitivity, 2, 7);
+                _mouseSensitivity = Mathf.Clamp(_mouseSensitivity, 2, maxLenght);
             }
 
             float smoothSensitivityY = Mathf.Lerp(_cameraSystem.ThirdPersonFollow.ShoulderOffset.y, _mouseSensitivity,
