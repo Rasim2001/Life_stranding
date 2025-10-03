@@ -132,8 +132,7 @@ namespace PickupObjects
             movementVector = _startRotation * movementVector;
 
             transform.Translate(movementVector, Space.Self);
-            Rigidbody.linearVelocity = Vector3.zero;
-        }
+                }
 
         public void OnDrawGizmosSelected()
         {

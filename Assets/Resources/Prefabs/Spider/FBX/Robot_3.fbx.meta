@@ -3,7 +3,37 @@ guid: 05326d264ead81a438996b2110f7983f
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Body
+    second: {fileID: 2100000, guid: 96ea99b68a1b6f4479beee8c5f8fd08c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Body_Attributs
+    second: {fileID: 2100000, guid: 3fa25e8287998f4408bac2b0bc0cbf02, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cap
+    second: {fileID: 2100000, guid: ce81ead0811af6f4d8815e8a964b1453, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Leg_01
+    second: {fileID: 2100000, guid: ebee15176490fbf4688e34a527744db5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Leg_02
+    second: {fileID: 2100000, guid: ac20dbbf30e00bb49829dee610253262, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Platform
+    second: {fileID: 2100000, guid: 857de1fe3e062cf43a3a22b3d4b47ef0, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
