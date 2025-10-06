@@ -7,6 +7,8 @@ namespace SpiderController.UI
     {
         [SerializeField] private Image[] _segments;
         [SerializeField] private Image[] _containers;
+        [SerializeField] private Image[] _otherObjects;
+
         private int SegmentCount => _segments.Length;
         private float PerSegment => 1f / SegmentCount;
 
@@ -21,5 +23,6 @@ namespace SpiderController.UI
 
         protected Image[] GetSegments() => _segments;
         protected Image[] GetContainers() => _containers;
+        protected Image[] GetOtherObjects() => _otherObjects;
     }
 }

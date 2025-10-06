@@ -9,9 +9,9 @@ namespace SpiderController.UI
         [SerializeField] private Color _pressedColor;
 
         public void Show() =>
-            _image.color = _pressedColor;
+            _image.color = Color.white;
 
         public void Hide() =>
-            _image.color = Color.white;
+            _image.color = _pressedColor;
     }
 }

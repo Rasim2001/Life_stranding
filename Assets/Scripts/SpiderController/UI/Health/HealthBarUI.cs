@@ -5,7 +5,7 @@ namespace SpiderController.UI.Health
         private HologramEffect _hologramEffect;
 
         private void Awake() =>
-            _hologramEffect = new HologramEffect(GetSegments(), GetContainers());
+            _hologramEffect = new HologramEffect(GetSegments(), GetContainers(), GetOtherObjects());
 
         public void PlayFadeHologramEffect() =>
             _hologramEffect.Play();
