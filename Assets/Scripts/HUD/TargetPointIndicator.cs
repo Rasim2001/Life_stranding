@@ -6,21 +6,28 @@ namespace HUD
     {
         protected Vector3 FinishTargetPosition;
 
-        private readonly RectTransform _arrowUI;
+        private readonly ArrowUI _arrowUI;
+
         private readonly RectTransform _canvasRect;
         private readonly LayerMask _layerMask;
 
-        private readonly float _borderOffsetX = 50;
-        private readonly float _borderOffsetY = 50f;
+        private readonly float _borderOffsetX = 120;
+        private readonly float _borderOffsetY = 120;
 
         private readonly Camera _mainCamera;
         private bool _arrowShowing;
 
-        protected TargetPointIndicator(RectTransform arrowUI, RectTransform canvasRect, LayerMask layerMask)
+        private readonly RectTransform _arrowRectTransform;
+        private readonly RectTransform _arrowCenterRectTransform;
+
+        protected TargetPointIndicator(ArrowUI arrowUI, RectTransform canvasRect, LayerMask layerMask)
         {
             _arrowUI = arrowUI;
             _canvasRect = canvasRect;
             _layerMask = layerMask;
+
+            _arrowRectTransform = _arrowUI.GetComponent<RectTransform>();
+            _arrowCenterRectTransform = _arrowUI.ArrowCenter.GetComponent<RectTransform>();
 
             _mainCamera = Camera.main;
         }
@@ -62,10 +69,10 @@ namespace HUD
             float halfHeight = canvasSize.y / 2f - _borderOffsetY;
 
             Vector2 clampedPos = GetClampedPosition(direction, halfWidth, halfHeight);
-            _arrowUI.anchoredPosition = clampedPos;
+            _arrowRectTransform.anchoredPosition = clampedPos;
 
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            _arrowUI.rotation = Quaternion.Euler(0, 0, angle);
+            _arrowCenterRectTransform.rotation = Quaternion.Euler(0, 0, angle);
         }
 
         private Vector2 GetClampedPosition(Vector2 direction, float halfWidth, float halfHeight)

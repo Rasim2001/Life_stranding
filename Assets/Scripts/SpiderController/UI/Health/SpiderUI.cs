@@ -14,11 +14,13 @@ namespace SpiderController.UI.Health
         [SerializeField] private StickerUI _stickerUI;
         [SerializeField] private HealthBarUI _healthBarUI;
         [SerializeField] private EnergyBarUI _energyBarUI;
+        [SerializeField] private ReloadUI _reloadUI;
         [SerializeField] private PressedMouseButtonIndicatorUI _planeIndicatorUI;
         [SerializeField] private PressedMouseButtonIndicatorUI _magnetIndicatorUI;
         public SpiderHealth SpiderHealth => _spiderHealth;
         public HealthBarUI HealthBar => _healthBarUI;
         public EnergyBarUI EnergyBar => _energyBarUI;
+        public ReloadUI ReloadUI => _reloadUI;
         public PressedMouseButtonIndicatorUI PlaneIndicatorUI => _planeIndicatorUI;
         public PressedMouseButtonIndicatorUI MagnetIndicatorUI => _magnetIndicatorUI;
         public StickerUI StickerUI => _stickerUI;

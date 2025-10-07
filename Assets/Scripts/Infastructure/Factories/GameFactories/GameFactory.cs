@@ -57,7 +57,7 @@ namespace Infastructure.Factories.GameFactories
 
         public HudUI CreateHUD(Flower flower, Spider spider)
         {
-            RectTransform arrowUIPrefab = _staticDataService.HudStaticData.ArrowUIPrefab;
+            ArrowUI arrowUIPrefab = _staticDataService.HudStaticData.ArrowUIPrefab;
 
             HudUI hud = _diContainer.InstantiatePrefabResourceForComponent<HudUI>(AssetsPath.HUDPath);
             hud.Initialize(arrowUIPrefab);

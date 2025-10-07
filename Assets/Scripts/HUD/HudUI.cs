@@ -21,7 +21,7 @@ namespace HUD
         private FinishPointIndicator _finishPointIndicator;
         private FlowerPointIndicator _flowerPointIndicator;
 
-        private RectTransform _arrowUIPrefab;
+        private ArrowUI _arrowUIPrefab;
         private CanvasGroup _canvasGroup;
         private ICutSceneService _cutSceneService;
 
@@ -38,12 +38,12 @@ namespace HUD
         }
 
 
-        public void Initialize(RectTransform arrowUIPrefab) =>
+        public void Initialize(ArrowUI arrowUIPrefab) =>
             _arrowUIPrefab = arrowUIPrefab;
 
         public void RegisterFinishTarget(Transform finishTargetTransform)
         {
-            RectTransform arrowUI = Instantiate(_arrowUIPrefab, _arrowContainer);
+            ArrowUI arrowUI = Instantiate(_arrowUIPrefab, _arrowContainer);
 
             _finishPointIndicator = new
                 FinishPointIndicator(arrowUI, _canvasRectTransform, _finishPointLayer, finishTargetTransform);
@@ -51,7 +51,7 @@ namespace HUD
 
         public void RegisterFlowerPoint(Transform flowerTransform)
         {
-            RectTransform arrowUI = Instantiate(_arrowUIPrefab, _arrowContainer);
+            ArrowUI arrowUI = Instantiate(_arrowUIPrefab, _arrowContainer);
 
             _flowerPointIndicator =
                 new FlowerPointIndicator(arrowUI, _canvasRectTransform, _flowerPointLayer, flowerTransform);
@@ -70,9 +70,7 @@ namespace HUD
         {
             _cutSceneService.OnCutsceneActiveChanged -= CutsceneActiveChanged;
 
-            if (TerrainScan.Instance != null)
-                TerrainScan.Instance.OnTerrainScanStart -= TerrainStartHappened;
-
+            TerrainScan.Instance.OnTerrainScanStart -= TerrainStartHappened;
             CinemachineCore.CameraUpdatedEvent.RemoveListener(UpdateIndicator);
         }
 

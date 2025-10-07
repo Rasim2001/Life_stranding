@@ -40,6 +40,9 @@ namespace SpiderController.StateMachine
         public bool IsMouseHolding;
         public bool IsStandingUpAfterFalling;
 
+        public float TerrainTimer;
+        public float TerrainTimerDefault;
+
         private bool _IsFallingDownWithoutEnergyState;
     }
 }

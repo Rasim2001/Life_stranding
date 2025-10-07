@@ -83,6 +83,7 @@ namespace SpiderController.StateMachine.States
             TryMoveLegs();
             CheckFlowerAndReduceHp();
             BackLegHandle();
+            UpdateTerranTime();
         }
 
         public virtual void FixedUpdate()
@@ -169,6 +170,22 @@ namespace SpiderController.StateMachine.States
         protected bool IsNotMoveableLayer() =>
             Legs.Select(x => x.Raycast).Any(x => x.IsNotMoveableLayer);
 
+
+        private void UpdateTerranTime()
+        {
+            if (Data.TerrainTimer > 0)
+            {
+                Data.TerrainTimer -= Time.deltaTime;
+
+                Spider.SpiderUI.ReloadUI.SetValue(Data.TerrainTimer / Data.TerrainTimerDefault);
+
+                if (Data.TerrainTimer <= 0)
+                {
+                    Spider.SpiderUI.ReloadUI.ShowHologram();
+                    Data.TerrainTimer = Mathf.NegativeInfinity;
+                }
+            }
+        }
 
         private void CheckFlowerAndReduceHp()
         {

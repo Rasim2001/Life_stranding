@@ -161,12 +161,17 @@ namespace SpiderController.UI
             for (int i = 0; i < _segments.Length; i++)
             {
                 Color seg = _segments[i].color;
-                Color con = _containers[i].color;
 
                 seg.a = 1;
-                con.a = 1;
 
                 _segments[i].color = seg;
+            }
+
+            for (int i = 0; i < _containers.Length; i++)
+            {
+                Color con = _containers[i].color;
+                con.a = 1;
+
                 _containers[i].color = con;
             }
         }

@@ -6,7 +6,7 @@ namespace HUD
     {
         private readonly Transform _flowerTransform;
 
-        public FlowerPointIndicator(RectTransform arrowUI, RectTransform canvasRect, LayerMask layerMask, Transform
+        public FlowerPointIndicator(ArrowUI arrowUI, RectTransform canvasRect, LayerMask layerMask, Transform
             flowerTransform) :
             base(arrowUI, canvasRect, layerMask)
         {
@@ -19,7 +19,5 @@ namespace HUD
 
             base.Update();
         }
-
-        
     }
 }

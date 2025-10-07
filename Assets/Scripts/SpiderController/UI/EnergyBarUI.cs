@@ -1,16 +1,41 @@
+using UnityEngine;
+using UnityEngine.UI;
+
 namespace SpiderController.UI
 {
     public class EnergyBarUI : BarBaseUI
     {
-        private HologramEffect _hologramEffect;
+        [SerializeField] Color _firstIncreaseColor;
+        [SerializeField] Color _firstReducedColor;
 
-        private void Awake() =>
-            _hologramEffect = new HologramEffect(GetSegments(), GetContainers(), GetOtherObjects());
+        private HologramEffect _hologramEffect;
+        private Image[] _segmentsOwn;
+
+        private void Awake()
+        {
+            _segmentsOwn = GetSegments();
+
+            _hologramEffect = new HologramEffect(_segmentsOwn, GetContainers(), GetOtherObjects());
+        }
 
         public void PlayFadeHologramEffect() =>
             _hologramEffect.Play();
 
         public void ShowHologram() =>
             _hologramEffect.Stop();
+
+        protected override void UpdateFirstSegmentColorReduced()
+        {
+            base.UpdateFirstSegmentColorReduced();
+
+            _segmentsOwn[0].color = _firstReducedColor;
+        }
+
+        protected override void UpdateFirstSegmentColorIncrease()
+        {
+            base.UpdateFirstSegmentColorIncrease();
+
+            _segmentsOwn[0].color = _firstIncreaseColor;
+        }
     }
 }
