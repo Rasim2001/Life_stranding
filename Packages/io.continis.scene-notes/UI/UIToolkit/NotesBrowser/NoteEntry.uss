@@ -1,0 +1,33 @@
+.main-line {
+}
+
+.screenshot {
+    width: 50px;
+    height: 50px;
+    margin-left: 10px;
+    display: flex;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    -unity-background-scale-mode: scale-and-crop;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-left-color: rgba(123, 123, 123, 0.25);
+    border-right-color: rgba(123, 123, 123, 0.25);
+    border-top-color: rgba(123, 123, 123, 0.25);
+    border-bottom-color: rgba(123, 123, 123, 0.25);
+}
+
+.note-entry {
+    padding-top: 12px;
+    padding-right: 12px;
+    padding-bottom: 12px;
+    padding-left: 4px;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+}

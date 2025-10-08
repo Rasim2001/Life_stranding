@@ -1,0 +1,21 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/io.continis.scene-notes/UI/UIToolkit/NotesBrowser/NoteEntry.uss?fileID=7433441132597879392&amp;guid=6cbe003cbf9ea40c7985feaa1c06f6fe&amp;type=3#NoteEntry" />
+    <Style src="project://database/Packages/io.continis.scene-notes/UI/UIToolkit/SceneNoteStyles.uss?fileID=7433441132597879392&amp;guid=ca3a36e5c37f44db5a4086e1fac8b3a5&amp;type=3#SceneNoteStyles" />
+    <ui:VisualElement class="note-entry" style="flex-grow: 1; padding-left: 12px;">
+        <ui:VisualElement name="FirstLine" style="flex-direction: row; margin-bottom: 8px; overflow: hidden; text-overflow: ellipsis;">
+            <ui:Label tabindex="-1" text="888" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Number" />
+            <ui:Label tabindex="-1" text="|" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Pipe" style="margin-right: 2px; margin-left: 2px;" />
+            <ui:Label tabindex="-1" text="AuthorName" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Author" binding-path="author" style="flex-shrink: 1; text-overflow: ellipsis; flex-grow: 0; overflow: hidden;" />
+            <ui:Label tabindex="-1" text="29 July 2024 - 00:00 (+01:00)" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Date" style="text-overflow: clip; overflow: hidden; flex-shrink: 0; -unity-text-align: upper-right; flex-grow: 1;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="MainLine" class="main-line" style="flex-direction: row; flex-grow: 0;">
+            <ui:VisualElement name="State" style="flex-grow: 0; flex-shrink: 0; width: 4px; margin-right: 5px;" />
+            <ui:VisualElement name="TextContents" style="flex-direction: column; flex-grow: 1; flex-shrink: 1; white-space: normal;">
+                <ui:Label tabindex="-1" text="This is the title" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Title" binding-path="title" style="flex-grow: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; flex-shrink: 0; -unity-font-style: bold;" />
+                <ui:Label tabindex="-1" text="This would represent the contents of the note. It might have to be trimmed if it goes on for too long! Correct?" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Contents" binding-path="contents" style="text-overflow: ellipsis; flex-shrink: 1; white-space: normal; flex-grow: 0; overflow: hidden;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Screenshot" class="screenshot" style="flex-grow: 0; flex-shrink: 0;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="LastLine" style="flex-grow: 0; flex-direction: row;" />
+    </ui:VisualElement>
+</ui:UXML>

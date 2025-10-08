@@ -350,7 +350,8 @@ Shader "Toony Colors Pro 2/Hybrid Shader 2"
 			#pragma shader_feature_local_fragment _ _ALPHAPREMULTIPLY_ON
 
 /*** #define URP_VERSION ***/
-			#include "TCP2 Hybrid 2 Include.cginc"
+			half probeOcclusion = 1.0h;
+#include "TCP2 Hybrid 2 Include.cginc"
 
 			ENDHLSL
 		}
@@ -387,7 +388,8 @@ Shader "Toony Colors Pro 2/Hybrid Shader 2"
 
 			#define SHADOW_CASTER_PASS
 /*** #define URP_VERSION ***/
-			#include "TCP2 Hybrid 2 Include.cginc"
+			half probeOcclusion = 1.0h;
+#include "TCP2 Hybrid 2 Include.cginc"
 
 			float3 _LightDirection;
 			float3 _LightPosition;
@@ -492,7 +494,8 @@ Shader "Toony Colors Pro 2/Hybrid Shader 2"
 			#pragma shader_feature_local_fragment _ALPHATEST_ON
 
 /*** #define URP_VERSION ***/
-			#include "TCP2 Hybrid 2 Include.cginc"
+			half probeOcclusion = 1.0h;
+#include "TCP2 Hybrid 2 Include.cginc"
 
 			struct Attributes_Depth
 			{
@@ -580,7 +583,8 @@ Shader "Toony Colors Pro 2/Hybrid Shader 2"
 
 			#define DEPTH_NORMALS_PASS
 /*** #define URP_VERSION ***/
-			#include "TCP2 Hybrid 2 Include.cginc"
+			half probeOcclusion = 1.0h;
+#include "TCP2 Hybrid 2 Include.cginc"
 
 			struct Attributes_Depth
 			{
@@ -695,7 +699,8 @@ Shader "Toony Colors Pro 2/Hybrid Shader 2"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
 /*** #define URP_VERSION ***/
-			#include "TCP2 Hybrid 2 Include.cginc"
+			half probeOcclusion = 1.0h;
+#include "TCP2 Hybrid 2 Include.cginc"
 
 			ENDHLSL
 		}
@@ -800,7 +805,8 @@ Shader "Toony Colors Pro 2/Hybrid Shader 2"
 				#define UNITY_PASS_FORWARDBASE
 			#endif
 
-			#include "TCP2 Hybrid 2 Include.cginc"
+			half probeOcclusion = 1.0h;
+#include "TCP2 Hybrid 2 Include.cginc"
 
 			ENDCG
 		}
@@ -859,7 +865,8 @@ Shader "Toony Colors Pro 2/Hybrid Shader 2"
 			#include "UnityShaderUtilities.cginc"
 			#include "AutoLight.cginc"
 
-			#include "TCP2 Hybrid 2 Include.cginc"
+			half probeOcclusion = 1.0h;
+#include "TCP2 Hybrid 2 Include.cginc"
 
 			ENDCG
 		}
@@ -882,7 +889,8 @@ Shader "Toony Colors Pro 2/Hybrid Shader 2"
 			#pragma shader_feature_local_fragment _ALPHATEST_ON
 
 			#define SHADOW_CASTER_PASS
-			#include "TCP2 Hybrid 2 Include.cginc"
+			half probeOcclusion = 1.0h;
+#include "TCP2 Hybrid 2 Include.cginc"
 
 			struct Varyings_Shadow
 			{
@@ -953,7 +961,8 @@ Shader "Toony Colors Pro 2/Hybrid Shader 2"
 			#if !defined(UNITY_PASS_META)
 				#define UNITY_PASS_META
 			#endif
-			#include "TCP2 Hybrid 2 Include.cginc"
+			half probeOcclusion = 1.0h;
+#include "TCP2 Hybrid 2 Include.cginc"
 
 			ENDCG
 		}

@@ -1,0 +1,56 @@
+#MainBody {
+    margin-right: 20px;
+    margin-left: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.BigButton {
+    height: 40px;
+    margin-top: 1px;
+    margin-bottom: 3px;
+}
+
+.MediumButton {
+    height: 24px;
+    margin-top: 1px;
+    margin-bottom: 3px;
+}
+
+.Message {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+#Spacer {
+    height: 10px;
+}
+
+#Header {
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 80px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    max-height: 120px;
+    -unity-background-scale-mode: scale-and-crop;
+    margin-bottom: 0;
+    margin-top: 10px;
+    -unity-font-style: bold;
+    margin-right: 10px;
+    margin-left: 10px;
+    background-image: url("project://database/Packages/io.continis.scene-notes/UI/Images/Banner_BG.jpg?fileID=2800000&guid=0f9c999494e9342b4a1c06d223fa0ee6&type=3#Banner_BG");
+}
+
+#Logo {
+    -unity-background-scale-mode: scale-to-fit;
+    flex-grow: 1;
+    flex-shrink: 1;
+    background-image: url("project://database/Packages/io.continis.scene-notes/UI/Images/Banner_Logo.png?fileID=2800000&guid=9f9371feac4c745249a291e2ab7031d0&type=3#Banner_Logo");
+}
