@@ -62,7 +62,7 @@ namespace Infastructure.Factories.GameFactories
             HudUI hud = _diContainer.InstantiatePrefabResourceForComponent<HudUI>(AssetsPath.HUDPath);
             hud.Initialize(arrowUIPrefab);
 
-            hud.RegisterFlowerPoint(flower.transform);
+            hud.RegisterFlowerPoint(flower);
             hud.RegisterFinishTarget(_checkPointService.PointIndicator);
 
             flower.Initialize(hud.FlowerPointIndicator);

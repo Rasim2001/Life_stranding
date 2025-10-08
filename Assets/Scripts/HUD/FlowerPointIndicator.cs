@@ -1,21 +1,25 @@
+using PickupObjects;
 using UnityEngine;
 
 namespace HUD
 {
     public class FlowerPointIndicator : TargetPointIndicator
     {
-        private readonly Transform _flowerTransform;
+        private readonly Flower _flower;
 
-        public FlowerPointIndicator(ArrowUI arrowUI, RectTransform canvasRect, LayerMask layerMask, Transform
-            flowerTransform) :
+        public FlowerPointIndicator(ArrowUI arrowUI, RectTransform canvasRect, LayerMask layerMask, Flower
+            flower) :
             base(arrowUI, canvasRect, layerMask)
         {
-            _flowerTransform = flowerTransform;
+            _flower = flower;
         }
 
         public override void Update()
         {
-            FinishTargetPosition = _flowerTransform.position;
+            if (_flower.IsOnPlatform)
+                return;
+
+            FinishTargetPosition = _flower.transform.position;
 
             base.Update();
         }

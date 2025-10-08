@@ -2,6 +2,7 @@ using System;
 using DG.Tweening;
 using GameDevBuddies;
 using Infastructure.Services.CutScene;
+using PickupObjects;
 using Unity.Cinemachine;
 using UnityEngine;
 using Zenject;
@@ -49,12 +50,12 @@ namespace HUD
                 FinishPointIndicator(arrowUI, _canvasRectTransform, _finishPointLayer, finishTargetTransform);
         }
 
-        public void RegisterFlowerPoint(Transform flowerTransform)
+        public void RegisterFlowerPoint(Flower flower)
         {
             ArrowUI arrowUI = Instantiate(_arrowUIPrefab, _arrowContainer);
 
             _flowerPointIndicator =
-                new FlowerPointIndicator(arrowUI, _canvasRectTransform, _flowerPointLayer, flowerTransform);
+                new FlowerPointIndicator(arrowUI, _canvasRectTransform, _flowerPointLayer, flower);
         }
 
 

@@ -11,8 +11,8 @@ namespace HUD
         private readonly RectTransform _canvasRect;
         private readonly LayerMask _layerMask;
 
-        private readonly float _borderOffsetX = 120;
-        private readonly float _borderOffsetY = 120;
+        private readonly float _borderOffsetX = 75;
+        private readonly float _borderOffsetY = 75;
 
         private readonly Camera _mainCamera;
         private bool _arrowShowing;
@@ -75,22 +75,11 @@ namespace HUD
             _arrowCenterRectTransform.rotation = Quaternion.Euler(0, 0, angle);
         }
 
-        private Vector2 GetClampedPosition(Vector2 direction, float halfWidth, float halfHeight)
-        {
-            float t1 = halfWidth / Mathf.Abs(direction.x);
-            float t2 = halfHeight / Mathf.Abs(direction.y);
-
-            float t = Mathf.Min(t1, t2);
-
-            return direction * t;
-        }
-
         private bool IsTargetVisible()
         {
             Vector3 cameraPos = _mainCamera.transform.position;
             Vector3 direction = FinishTargetPosition - cameraPos;
             float distance = direction.magnitude;
-
 
             if (Physics.Raycast(cameraPos, direction.normalized, out RaycastHit hit, distance, _layerMask))
             {
@@ -103,6 +92,17 @@ namespace HUD
 
             return false;
         }
+
+        private Vector2 GetClampedPosition(Vector2 direction, float halfWidth, float halfHeight)
+        {
+            float t1 = halfWidth / Mathf.Abs(direction.x);
+            float t2 = halfHeight / Mathf.Abs(direction.y);
+
+            float t = Mathf.Min(t1, t2);
+
+            return direction * t;
+        }
+
 
         private void Show(bool value)
         {
