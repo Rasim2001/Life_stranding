@@ -112,7 +112,7 @@ MonoBehaviour:
   - {fileID: -4073068167946373817}
   m_RendererFeatureMap: adc0de57c6d2eee52ba223a080cb1e63ed721b6e04d6a7706739edd8718489a21db6b3fc2454163a47f59acf148e79c7
   m_UseNativeRenderPass: 0
-  xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
+  xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   m_AssetVersion: 2
   m_OpaqueLayerMask:
@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b42e365b61d6c341bfa785efae0a486, type: 3}
   m_Name: SpecialObjectsOutline
   m_EditorClassIdentifier: 
-  m_Active: 0
+  m_Active: 1
   _mainCameraTag: MainCamera
   _specialObjectsOutlinePassSettings:
     NormalsRT: {fileID: 8400000, guid: 627d3c9ff2a61144f94a75486caf6cca, type: 2}
