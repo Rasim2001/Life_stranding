@@ -17,7 +17,7 @@ RenderSettings:
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.01
+  m_FogDensity: 0.019
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -27,7 +27,7 @@ RenderSettings:
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
-  m_HaloStrength: 0.5
+  m_HaloStrength: 0.487
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
   m_HaloTexture: {fileID: 0}
@@ -35,9 +35,9 @@ RenderSettings:
   m_DefaultReflectionMode: 0
   m_DefaultReflectionResolution: 128
   m_ReflectionBounces: 1
-  m_ReflectionIntensity: 1
+  m_ReflectionIntensity: 0.531
   m_CustomReflection: {fileID: 0}
-  m_Sun: {fileID: 0}
+  m_Sun: {fileID: 21145975}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -93,7 +93,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: 58de7ce7d071b624aa262ae2c4587724, type: 2}
+  m_LightingDataAsset: {fileID: 0}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 7d5e8607b5ee2d44eb85c13d5f30c44f, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -160,7 +160,7 @@ Light:
     m_Strength: 1
     m_Bias: 0.05
     m_NormalBias: 0.4
-    m_NearPlane: 0.2
+    m_NearPlane: 0.1
     m_CullingMatrixOverride:
       e00: 1
       e01: 0
@@ -25129,6 +25129,10 @@ PrefabInstance:
       propertyPath: m_ReceiveGI
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1541622284406159230, guid: aa7391561c9cae943a5f23d99b77f067, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 81038ca4e8c3f064fa94e68f1d744440, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -27806,6 +27810,10 @@ PrefabInstance:
       propertyPath: m_ReceiveGI
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1541622284406159230, guid: aa7391561c9cae943a5f23d99b77f067, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 81038ca4e8c3f064fa94e68f1d744440, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -30914,6 +30922,10 @@ PrefabInstance:
       propertyPath: m_ReceiveGI
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1541622284406159230, guid: aa7391561c9cae943a5f23d99b77f067, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 81038ca4e8c3f064fa94e68f1d744440, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -31614,7 +31626,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e1f65b6e9ef43c98fb86a450e9ac0d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalVolume: {fileID: 0}
+  GlobalVolume: {fileID: 416744114}
 --- !u!114 &1421439897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31750,6 +31762,10 @@ PrefabInstance:
       propertyPath: m_ReceiveGI
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1541622284406159230, guid: aa7391561c9cae943a5f23d99b77f067, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 81038ca4e8c3f064fa94e68f1d744440, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -32230,7 +32246,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a83d2f7ae04ab6f4f99b0d85377be998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializedBakingSet: {fileID: 11400000, guid: a65bc305df69438478172cb977e6cd8b, type: 2}
+  serializedBakingSet: {fileID: 0}
   sceneGUID: 61050ebc4d75eca44a83ce8edfc5cc78
   obsoleteAsset: {fileID: 0}
   obsoleteCellSharedDataAsset: {fileID: 0}
@@ -33880,6 +33896,10 @@ PrefabInstance:
       propertyPath: m_ReceiveGI
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1541622284406159230, guid: aa7391561c9cae943a5f23d99b77f067, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 81038ca4e8c3f064fa94e68f1d744440, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -34714,7 +34734,7 @@ GameObject:
   - component: {fileID: 1775979130}
   - component: {fileID: 1775979131}
   m_Layer: 0
-  m_Name: Global Volume
+  m_Name: APV_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34729,7 +34749,7 @@ Transform:
   m_GameObject: {fileID: 1775979129}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.483368, y: 19.998795, z: 69.14915}
+  m_LocalPosition: {x: -17.382858, y: 19.998795, z: 24.378784}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -34748,21 +34768,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mode: 2
-  size: {x: 181.36008, y: 111.51222, z: 258.0373}
+  size: {x: 310.6618, y: 111.51222, z: 378.49274}
   overrideRendererFilters: 0
   minRendererVolumeSize: 0.1
   objectLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  lowestSubdivLevelOverride: 0
+  lowestSubdivLevelOverride: 1
   highestSubdivLevelOverride: 4
   overridesSubdivLevels: 1
-  mightNeedRebaking: 0
+  mightNeedRebaking: 1
   cachedTransform:
     e00: 1
     e01: 0
     e02: 0
-    e03: 2.037125
+    e03: 10.936615
     e10: 0
     e11: 1
     e12: 0
@@ -34770,12 +34790,12 @@ MonoBehaviour:
     e20: 0
     e21: 0
     e22: 1
-    e23: -59.792877
+    e23: -15.022515
     e30: 0
     e31: 0
     e32: 0
     e33: 1
-  cachedHashCode: 1307383159
+  cachedHashCode: -1890898696
   fillEmptySpaces: 0
   version: 2
   globalVolume: 0
@@ -34796,7 +34816,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1795690371
 Transform:
   m_ObjectHideFlags: 0
@@ -35485,6 +35505,10 @@ PrefabInstance:
       propertyPath: m_ReceiveGI
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1541622284406159230, guid: aa7391561c9cae943a5f23d99b77f067, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 81038ca4e8c3f064fa94e68f1d744440, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -35832,6 +35856,10 @@ PrefabInstance:
       propertyPath: m_ReceiveGI
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1541622284406159230, guid: aa7391561c9cae943a5f23d99b77f067, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 81038ca4e8c3f064fa94e68f1d744440, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
