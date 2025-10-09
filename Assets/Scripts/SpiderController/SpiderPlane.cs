@@ -24,7 +24,6 @@ namespace SpiderController
 
         private Quaternion _targetLocalRotationInFallingDownState;
 
-        public float _offsetX = -90;
         private JoystickInputSource _joystickInputSource;
 
         private bool _joystickInputActive;

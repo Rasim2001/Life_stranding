@@ -10,6 +10,7 @@ using PickupObjects;
 using SpiderController;
 using SpiderController.UI.Health;
 using UnityEngine;
+using UnityEngine.ProBuilder.Shapes;
 using UnityEngine.SceneManagement;
 using Zenject;
 
@@ -65,8 +66,10 @@ namespace Infastructure.Factories.GameFactories
             hud.RegisterFlowerPoint(flower);
             hud.RegisterFinishTarget(_checkPointService.PointIndicator);
 
+            SphereCollider sphereCollider = spider.RotationPlaneTransform.GetComponent<SphereCollider>();
+
             flower.Initialize(hud.FlowerPointIndicator);
-            flower.Initialize(spider.RotationPlaneTransform, spider.BoundPlaneMeshRender);
+            flower.Initialize(spider.RotationPlaneTransform, spider.BoundPlaneMeshRender, sphereCollider);
             flower.StopSimulatePhysics();
 
             _xRayService.Initialize(hud.XRayCollectionContainer);
@@ -98,7 +101,9 @@ namespace Infastructure.Factories.GameFactories
                 XRayMarker xRayMarker = batteryProduct.GetComponent<XRayMarker>();
                 _xRayService.Add(xRayMarker);
 
-                batteryProduct.Initialize(spider.RotationPlaneTransform, spider.BoundPlaneMeshRender);
+                SphereCollider sphereCollider = spider.RotationPlaneTransform.GetComponent<SphereCollider>();
+
+                batteryProduct.Initialize(spider.RotationPlaneTransform, spider.BoundPlaneMeshRender, sphereCollider);
             }
         }
 

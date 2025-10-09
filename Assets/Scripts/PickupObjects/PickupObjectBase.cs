@@ -12,7 +12,7 @@ namespace PickupObjects
         [SerializeField] private float _speed = 1;
         [SerializeField] private float _colorLerpSpeed = 5;
 
-        private readonly Vector3 _startPosition = new Vector3(0, 0.006f, 0);
+        private readonly Vector3 _startPosition = new Vector3(0, 0.007330549f, 0);
         private readonly Quaternion _startRotation = Quaternion.Euler(-90, 0, 0);
         private Vector3 _customPositionOffset = Vector3.zero;
 
@@ -26,6 +26,7 @@ namespace PickupObjects
         [SerializeField] private Transform _platform;
         private MeshRenderer _meshRenderer;
         private IPlatformObjectsService _platformObjectsService;
+        private SphereCollider _sphereCollider;
 
         [Inject]
         public void Construct(IStaticDataService staticDataService, IPlatformObjectsService platformObjectsService)
@@ -34,8 +35,9 @@ namespace PickupObjects
             _robotPlaneMaterial = new Material(staticDataService.MaterialsStaticData.RobotPlaneMaterial);
         }
 
-        public void Initialize(Transform platformTransform, MeshRenderer meshRenderer)
+        public void Initialize(Transform platformTransform, MeshRenderer meshRenderer, SphereCollider sphereCollider)
         {
+            _sphereCollider = sphereCollider;
             _platform = platformTransform;
             _meshRenderer = meshRenderer;
 
@@ -51,7 +53,9 @@ namespace PickupObjects
                 return;
 
             Vector3 localPos = transform.localPosition;
-            IsOnPlatform = _platformBounds.Contains(localPos);
+            float maxDistance = Mathf.Max(Mathf.Abs(localPos.x), Mathf.Abs(localPos.z));
+
+            IsOnPlatform = maxDistance < _sphereCollider.radius; //  _platformBounds.Contains(localPos);
 
             ChangeRobotPlaneColor(localPos);
 
@@ -132,7 +136,7 @@ namespace PickupObjects
             movementVector = _startRotation * movementVector;
 
             transform.Translate(movementVector, Space.Self);
-                }
+        }
 
         public void OnDrawGizmosSelected()
         {
