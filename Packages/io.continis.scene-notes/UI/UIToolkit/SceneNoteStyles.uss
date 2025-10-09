@@ -1,0 +1,235 @@
+:root {
+    --subtle-color: rgb(126, 126, 126);
+}
+
+#ColorBar {
+    height: 8px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-right: 4px;
+    margin-left: 4px;
+}
+
+#ActionButtons {
+    flex-direction: row;
+    height: 22px;
+}
+
+.ActionButton {
+    flex-grow: 1;
+    -unity-font-style: bold;
+}
+
+.ActionButtonLeft {
+    margin-right: 0;
+    padding-right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    color: rgb(78, 126, 214);
+}
+
+.ActionButtonCenter {
+    margin-right: 0;
+    margin-left: 0;
+    padding-left: 0;
+    padding-right: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    color: rgb(31, 171, 53);
+}
+
+.ActionButtonRight {
+    padding-left: 0;
+    margin-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.DeleteBtn {
+    height: 20px;
+    flex-grow: 0;
+    width: 24px;
+    background-image: url("project://database/Packages/io.continis.scene-notes/UI/Images/Inspector/t_Trash.png?fileID=2800000&guid=211797335215d4658ad51d947f5ce07e&type=3#t_Trash");
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-slice-left: 1;
+    -unity-slice-top: 1;
+    -unity-slice-right: 1;
+    -unity-slice-bottom: 1;
+    -unity-slice-scale: 4px;
+    -unity-background-image-tint-color: var(--unity-colors-label-text);
+}
+
+.NotStarted_Dark {
+    background-color: rgb(203, 207, 217);
+}
+
+.NotStarted_Light {
+    background-color: rgb(161, 163, 166);
+}
+
+.InProgress {
+    background-color: rgb(61, 104, 183);
+}
+
+.Done {
+    background-color: rgb(66, 193, 86);
+}
+
+#Contents {
+    white-space: pre-wrap;
+}
+
+#Contents TextElement {
+    -unity-text-align: upper-left;
+    padding-bottom: 6px;
+    padding-top: 4px;
+    padding-right: 4px;
+    padding-left: 4px;
+    min-height: 40px;
+}
+
+#Spacer {
+    height: 10px;
+}
+
+#More Label {
+    min-width: 105px;
+}
+
+#CommentsList #unity-list-view__size-field {
+    margin-top: 0;
+    margin-right: 2px;
+    margin-bottom: 1px;
+    margin-left: 1px;
+    flex-direction: column-reverse;
+}
+
+#CommentsList #unity-list-view__foldout-header > Toggle {
+    margin-left: -13px;
+    padding-top: 2px;
+    padding-right: 4px;
+    padding-bottom: 2px;
+    padding-left: 1px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    margin-bottom: 4px;
+    margin-top: 0;
+}
+
+#CommentsList #unity-list-view__foldout-header > Toggle:hover {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.Label-margin {
+    margin-left: 2px;
+    margin-right: 2px;
+    margin-top: 0;
+}
+
+.CommentBox {
+    margin-top: 3px;
+    margin-right: 0;
+    margin-bottom: 5px;
+    margin-left: 0;
+    padding-top: 8px;
+    padding-right: 8px;
+    padding-bottom: 4px;
+    padding-left: 6px;
+    background-color: var(--unity-colors-box-background);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-color: var(--unity-colors-helpbox-border);
+    border-right-color: var(--unity-colors-helpbox-border);
+    border-bottom-color: var(--unity-colors-helpbox-border);
+    border-left-color: var(--unity-colors-helpbox-border);
+}
+
+#AddReplyLabel {
+    margin-top: 3px;
+    margin-right: 3px;
+    margin-bottom: 3px;
+    margin-left: 3px;
+}
+
+.Comment TextInput {
+    background-color: var(--unity-colors-helpbox-background);
+}
+
+.CommentTemplate:hover {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.DetachedButton {
+    margin-top: 2px;
+    margin-right: -4px;
+}
+
+#Separator {
+    background-color: var(--unity-colors-helpbox-border);
+    height: 1px;
+    margin-top: 8px;
+    margin-right: 0;
+    margin-bottom: 4px;
+    margin-left: 0;
+}
+
+#More {
+    margin-top: 2px;
+}
+
+.indented-field {
+    margin-left: 15px;
+}
+
+.hidden-field {
+    transition-duration: 0.3s;
+    transition-timing-function: ease-in;
+    height: 0;
+    transition-property: height;
+}
+
+.visible-field {
+    height: 18px;
+    transition-property: height;
+    transition-duration: 0.3s;
+    transition-timing-function: ease-in;
+}
+
+.header-label {
+    -unity-font-style: bold;
+    margin-top: 13px;
+    padding-left: 1px;
+    padding-right: 2px;
+    -unity-text-align: lower-left;
+    white-space: nowrap;
+    margin-left: 3px;
+    margin-right: -2px;
+}
+
+#UnlinkButton {
+    width: 24px;
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-slice-left: 4;
+    -unity-slice-top: 4;
+    -unity-slice-right: 4;
+    -unity-slice-bottom: 4;
+    margin-right: -2px;
+}
+
+.unlink-btn-icon-dark {
+    background-image: url("project://database/Packages/io.continis.scene-notes/UI/Images/Inspector/d_Unlink.png?fileID=2800000&guid=bf455ab2f7b534255a99d96710f30041&type=3#d_Unlink");
+}
+
+.unlink-btn-icon-light {
+    background-image: url("project://database/Packages/io.continis.scene-notes/UI/Images/Inspector/Unlink.png?fileID=2800000&guid=4ae581d4014e748d29d61aa786a0fa1d&type=3#Unlink");
+}

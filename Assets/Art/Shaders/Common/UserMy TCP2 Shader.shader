@@ -14,9 +14,13 @@ Shader "Toony Colors Pro 2/User/My TCP2 Shader"
 
 		[TCP2Header(Ramp Shading)]
 		
+		[TCP2HeaderHelp(Main Directional Light)]
 		_RampThreshold ("Threshold", Range(0.01,1)) = 0.5
 		_RampSmoothing ("Smoothing", Range(0.001,1)) = 0.5
-		_LightWrapFactor ("Light Wrap Factor", Range(0,2)) = 0.5
+		[TCP2HeaderHelp(Other Lights)]
+		_RampThresholdOtherLights ("Threshold", Range(0.01,1)) = 0.5
+		_RampSmoothingOtherLights ("Smoothing", Range(0.001,1)) = 0.5
+		[Space]
 		[TCP2Separator]
 		
 		[TCP2HeaderHelp(Specular)]
@@ -103,7 +107,6 @@ Shader "Toony Colors Pro 2/User/My TCP2 Shader"
 			// Shader Properties
 			float4 _BaseMap_ST;
 			fixed4 _BaseColor;
-			float _LightWrapFactor;
 			float _RampThreshold;
 			float _RampSmoothing;
 			fixed4 _DiffuseTint;
@@ -114,6 +117,8 @@ Shader "Toony Colors Pro 2/User/My TCP2 Shader"
 			float _SpecularRoughnessPBR;
 			float _SpecularShadowAttenuation;
 			fixed4 _SpecularColor;
+			float _RampThresholdOtherLights;
+			float _RampSmoothingOtherLights;
 			fixed4 _SColor;
 			fixed4 _HColor;
 			float _ReflectionSmoothness;
@@ -343,7 +348,6 @@ Shader "Toony Colors Pro 2/User/My TCP2 Shader"
 				float __alpha = ( __albedo.a * __mainColor.a );
 				float __occlusion = ( __albedo.a );
 				float __ambientIntensity = ( 1.0 );
-				float __lightWrapFactor = ( _LightWrapFactor );
 				float __rampThreshold = ( _RampThreshold );
 				float __rampSmoothing = ( _RampSmoothing );
 				float3 __diffuseTint = ( _DiffuseTint.rgb );
@@ -355,6 +359,8 @@ Shader "Toony Colors Pro 2/User/My TCP2 Shader"
 				float __specularRoughnessPbr = ( _SpecularRoughnessPBR );
 				float __specularShadowAttenuation = ( _SpecularShadowAttenuation );
 				float3 __specularColor = ( _SpecularColor.rgb );
+				float __rampThresholdOtherLights = ( _RampThresholdOtherLights );
+				float __rampSmoothingOtherLights = ( _RampSmoothingOtherLights );
 				float3 __maxLightIntensity = ( float3(1,1,1) );
 				float3 __shadowColor = ( _SColor.rgb );
 				float3 __highlightColor = ( _HColor.rgb );
@@ -465,10 +471,6 @@ Shader "Toony Colors Pro 2/User/My TCP2 Shader"
 				half ndl = dot(normalWS, lightDir);
 				half3 ramp;
 				
-				// Wrapped Lighting
-				half lightWrap = __lightWrapFactor;
-				ndl = (ndl + lightWrap) / (1 + lightWrap);
-				
 				half rampThreshold = __rampThreshold;
 				half rampSmooth = __rampSmoothing * 0.5;
 				ndl = saturate(ndl);
@@ -552,10 +554,8 @@ Shader "Toony Colors Pro 2/User/My TCP2 Shader"
 							half ndl = dot(normalWS, lightDir);
 							half3 ramp;
 							
-							// Wrapped Lighting
-							half lightWrap = __lightWrapFactor;
-							ndl = (ndl + lightWrap) / (1 + lightWrap);
-							
+							half rampThreshold = __rampThresholdOtherLights;
+							half rampSmooth = __rampSmoothingOtherLights * 0.5;
 							ndl = saturate(ndl);
 							ramp = smoothstep(rampThreshold - rampSmooth, rampThreshold + rampSmooth, ndl);
 
@@ -623,10 +623,8 @@ Shader "Toony Colors Pro 2/User/My TCP2 Shader"
 					half ndl = dot(normalWS, lightDir);
 					half3 ramp;
 					
-					// Wrapped Lighting
-					half lightWrap = __lightWrapFactor;
-					ndl = (ndl + lightWrap) / (1 + lightWrap);
-					
+					half rampThreshold = __rampThresholdOtherLights;
+					half rampSmooth = __rampSmoothingOtherLights * 0.5;
 					ndl = saturate(ndl);
 					ramp = smoothstep(rampThreshold - rampSmooth, rampThreshold + rampSmooth, ndl);
 
@@ -967,5 +965,5 @@ Shader "Toony Colors Pro 2/User/My TCP2 Shader"
 	CustomEditor "ToonyColorsPro.ShaderGenerator.MaterialInspector_SG2"
 }
 
-/* TCP_DATA u config(ver:"2.9.19";unity:"6000.0.43f1";tmplt:"SG2_Template_URP";features:list["UNITY_5_4","UNITY_5_5","UNITY_5_6","UNITY_2017_1","UNITY_2018_1","UNITY_2018_2","UNITY_2018_3","UNITY_2019_1","UNITY_2019_2","UNITY_2019_3","UNITY_2019_4","UNITY_2020_1","UNITY_2021_1","UNITY_2021_2","UNITY_2022_2","UNITY_6000_2","ENABLE_DEPTH_NORMALS_PASS","ENABLE_FORWARD_PLUS","TEXTURE_RAMP_2D","BUMP","WRAPPED_LIGHTING_CUSTOM","CLAMP_LIGHTS_INTENSITY","SPECULAR","SPECULAR_NO_ATTEN","SPEC_PBR_BLINNPHONG","GLOSSY_REFLECTIONS","REFLECTION_CUBEMAP","REFL_ROUGH","REFLECTION_FRESNEL","OCCLUSION","DIFFUSE_TINT","SSAO","FOG","ENABLE_LIGHTMAP","ENABLE_LIGHT_LAYERS","ENABLE_RENDERING_LAYERS","ENABLE_APV","RIM","RIM_DIR","RIM_DIR_PERSP_CORRECTION","RIM_LIGHTMASK","TEMPLATE_LWRP","RIM_SHADER_FEATURE"];flags:list[];flags_extra:dict[];keywords:dict[RENDER_TYPE="Opaque",RampTextureDrawer="[NoScaleOffset]",RampTextureLabel="2D Ramp Texture",SHADER_TARGET="3.0",RIM_LABEL="Rim Lighting"];shaderProperties:list[];customTextures:list[];codeInjection:codeInjection(injectedFiles:list[];mark:False);matLayers:list[ml(uid:"d8f133";name:"Material Layer";src:sp(name:"layer_d8f133";imps:list[imp_mp_texture(uto:False;tov:"";tov_lbl:"";gto:False;sbt:False;scr:False;scv:"";scv_lbl:"";gsc:False;roff:False;goff:False;sin_anm:False;sin_anmv:"";sin_anmv_lbl:"";gsin:False;notile:False;triplanar_local:False;def:"white";locked_uv:False;uv:0;cc:1;chan:"R";mip:-1;mipprop:False;ssuv_vert:False;ssuv_obj:False;uv_type:Texcoord;uv_chan:"XZ";tpln_scale:1;uv_shaderproperty:__NULL__;uv_cmp:__NULL__;sep_sampler:__NULL__;prop:"_layer_d8f133";md:"";gbv:False;custom:False;refs:"";pnlock:False;guid:"a14e401e-d0ff-4378-886d-40eae8e14349";op:Multiply;lbl:"Source Texture";gpu_inst:False;dots_inst:False;locked:False;impl_index:-1)];layers:list[];unlocked:list[];layer_blend:dict[];custom_blend:dict[];clones:dict[];isClone:False);use_contrast:False;ctrst:__NULL__;use_noise:False;noise:__NULL__),ml(uid:"a5726a";name:"Material Layer";src:sp(name:"layer_a5726a";imps:list[imp_mp_texture(uto:False;tov:"";tov_lbl:"";gto:False;sbt:False;scr:False;scv:"";scv_lbl:"";gsc:False;roff:False;goff:False;sin_anm:False;sin_anmv:"";sin_anmv_lbl:"";gsin:False;notile:False;triplanar_local:False;def:"white";locked_uv:False;uv:0;cc:1;chan:"R";mip:-1;mipprop:False;ssuv_vert:False;ssuv_obj:False;uv_type:Texcoord;uv_chan:"XZ";tpln_scale:1;uv_shaderproperty:__NULL__;uv_cmp:__NULL__;sep_sampler:__NULL__;prop:"_layer_a5726a";md:"";gbv:False;custom:False;refs:"";pnlock:False;guid:"5095f30c-d9f4-44bf-be12-1a1cbe45c4b1";op:Multiply;lbl:"Source Texture";gpu_inst:False;dots_inst:False;locked:False;impl_index:-1)];layers:list[];unlocked:list[];layer_blend:dict[];custom_blend:dict[];clones:dict[];isClone:False);use_contrast:False;ctrst:__NULL__;use_noise:False;noise:__NULL__)]) */
-/* TCP_HASH a4670ced7d444c1e989fe5017ff83be1 */
+/* TCP_DATA u config(ver:"2.9.19";unity:"6000.0.43f1";tmplt:"SG2_Template_URP";features:list["UNITY_5_4","UNITY_5_5","UNITY_5_6","UNITY_2017_1","UNITY_2018_1","UNITY_2018_2","UNITY_2018_3","UNITY_2019_1","UNITY_2019_2","UNITY_2019_3","UNITY_2019_4","UNITY_2020_1","UNITY_2021_1","UNITY_2021_2","UNITY_2022_2","UNITY_6000_2","ENABLE_DEPTH_NORMALS_PASS","ENABLE_FORWARD_PLUS","TEXTURE_RAMP_2D","BUMP","CLAMP_LIGHTS_INTENSITY","SPECULAR","SPECULAR_NO_ATTEN","SPEC_PBR_BLINNPHONG","GLOSSY_REFLECTIONS","REFLECTION_CUBEMAP","REFL_ROUGH","REFLECTION_FRESNEL","OCCLUSION","DIFFUSE_TINT","SSAO","FOG","ENABLE_LIGHTMAP","ENABLE_LIGHT_LAYERS","ENABLE_RENDERING_LAYERS","ENABLE_APV","RIM","RIM_DIR","RIM_DIR_PERSP_CORRECTION","RIM_LIGHTMASK","RIM_SHADER_FEATURE","TEMPLATE_LWRP","RAMP_MAIN_OTHER","RAMP_SEPARATED"];flags:list[];flags_extra:dict[];keywords:dict[RENDER_TYPE="Opaque",RampTextureDrawer="[NoScaleOffset]",RampTextureLabel="2D Ramp Texture",SHADER_TARGET="3.0",RIM_LABEL="Rim Lighting"];shaderProperties:list[];customTextures:list[];codeInjection:codeInjection(injectedFiles:list[];mark:False);matLayers:list[ml(uid:"d8f133";name:"Material Layer";src:sp(name:"layer_d8f133";imps:list[imp_mp_texture(uto:False;tov:"";tov_lbl:"";gto:False;sbt:False;scr:False;scv:"";scv_lbl:"";gsc:False;roff:False;goff:False;sin_anm:False;sin_anmv:"";sin_anmv_lbl:"";gsin:False;notile:False;triplanar_local:False;def:"white";locked_uv:False;uv:0;cc:1;chan:"R";mip:-1;mipprop:False;ssuv_vert:False;ssuv_obj:False;uv_type:Texcoord;uv_chan:"XZ";tpln_scale:1;uv_shaderproperty:__NULL__;uv_cmp:__NULL__;sep_sampler:__NULL__;prop:"_layer_d8f133";md:"";gbv:False;custom:False;refs:"";pnlock:False;guid:"a14e401e-d0ff-4378-886d-40eae8e14349";op:Multiply;lbl:"Source Texture";gpu_inst:False;dots_inst:False;locked:False;impl_index:-1)];layers:list[];unlocked:list[];layer_blend:dict[];custom_blend:dict[];clones:dict[];isClone:False);use_contrast:False;ctrst:__NULL__;use_noise:False;noise:__NULL__),ml(uid:"a5726a";name:"Material Layer";src:sp(name:"layer_a5726a";imps:list[imp_mp_texture(uto:False;tov:"";tov_lbl:"";gto:False;sbt:False;scr:False;scv:"";scv_lbl:"";gsc:False;roff:False;goff:False;sin_anm:False;sin_anmv:"";sin_anmv_lbl:"";gsin:False;notile:False;triplanar_local:False;def:"white";locked_uv:False;uv:0;cc:1;chan:"R";mip:-1;mipprop:False;ssuv_vert:False;ssuv_obj:False;uv_type:Texcoord;uv_chan:"XZ";tpln_scale:1;uv_shaderproperty:__NULL__;uv_cmp:__NULL__;sep_sampler:__NULL__;prop:"_layer_a5726a";md:"";gbv:False;custom:False;refs:"";pnlock:False;guid:"5095f30c-d9f4-44bf-be12-1a1cbe45c4b1";op:Multiply;lbl:"Source Texture";gpu_inst:False;dots_inst:False;locked:False;impl_index:-1)];layers:list[];unlocked:list[];layer_blend:dict[];custom_blend:dict[];clones:dict[];isClone:False);use_contrast:False;ctrst:__NULL__;use_noise:False;noise:__NULL__)]) */
+/* TCP_HASH 5b2d0b2b0406900a0e3327cd68124064 */

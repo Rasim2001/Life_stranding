@@ -1,0 +1,51 @@
+.unity-overlay {
+    
+}
+
+#overlay-content {
+    flex-grow: 1;
+}
+
+.categories-button {
+    height: 20px;
+    margin: 0px;
+    padding: 2px;
+    padding-left: 6px;
+    padding-right: 6px;
+    border-width: 0px;
+    border-radius: 2px;
+    flex-grow: 1;
+    align-items: center;
+}
+
+.categories-button-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.spacer {
+    min-width: 4px;
+    min-height: 4px;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.legend-category-line {
+    flex-direction: row;
+    flex-shrink: 0;
+    flex-grow: 1;
+    margin-top: 1px;
+    align-items: center;
+}
+
+.legend-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.legend-label {
+    flex-shrink: 0;
+    flex-grow: 0;
+}

@@ -1,0 +1,53 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/io.continis.scene-notes/UI/UIToolkit/SceneNoteStyles.uss?fileID=7433441132597879392&amp;guid=ca3a36e5c37f44db5a4086e1fac8b3a5&amp;type=3#SceneNoteStyles" />
+    <uie:ObjectField label="Note asset" focusable="false" allow-scene-objects="false" type="SceneNotes.SceneNote, SceneNotes.Runtime" name="SceneNoteField" binding-path="note" tooltip="The ScriptableObject that containts the source data for this scene note." />
+    <ui:Button text="Locate in scene" parse-escape-sequences="true" display-tooltip-when-elided="true" name="LocateBtn" tooltip="Find the note in the scene." />
+    <ui:VisualElement name="ColorBar" class="NotStarted_Dark" />
+    <ui:VisualElement name="ActionButtons">
+        <ui:Button text="Start" parse-escape-sequences="true" display-tooltip-when-elided="true" name="StartBtn" tooltip="Mark note as started/to do." class="ActionButton ActionButtonLeft" />
+        <ui:Button text="Complete" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CompleteBtn" tooltip="Mark note as complete." class="ActionButton ActionButtonCenter" />
+        <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="DeleteBtn" tooltip="Delete the note." class="ActionButton ActionButtonRight DeleteBtn" />
+    </ui:VisualElement>
+    <ui:VisualElement name="Spacer" />
+    <ui:TextField picking-mode="Ignore" binding-path="title" name="Title" tooltip="The note&apos;s title. Can be displayed in the scene next to its icon." label="Title" is-delayed="true" />
+    <ui:Label tabindex="-1" text="Contents" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ContentsLabel" class="Label-margin" />
+    <ui:TextField picking-mode="Ignore" binding-path="contents" name="Contents" multiline="true" tooltip="The note&apos;s main message." />
+    <ui:DropdownField label="Category" tooltip="The category this note belongs to." name="CategoriesDropdown" />
+    <ui:Label text="Scene Information" name="SceneInfoLabel" class="header-label" />
+    <uie:ObjectField label="Scene" binding-path="scene" type="UnityEditor.SceneAsset, UnityEditor.CoreModule" name="SceneField" tooltip="The scene this note is associated to." />
+    <ui:Vector3Field binding-path="worldPosition" label="World position" name="PositionField" tooltip="The note&apos;s position in the scene. This is only modifiable when there is no linked GameObject." />
+    <ui:VisualElement style="flex-grow: 1; flex-direction: row; height: 20px;">
+        <uie:ObjectField label="Linked to" name="ConnectedObjectField" type="UnityEngine.Transform, UnityEngine.CoreModule" tooltip="The GameObject this note is linked to. If the linked GameObject is moved or rotated, the note will move with it." style="flex-grow: 1;" />
+        <ui:Button name="UnlinkButton" tooltip="Remove link to the GameObject, making the note only tied to the scene, in world space." />
+    </ui:VisualElement>
+    <ui:Vector3Field label="Local offset" name="LocalOffsetField" binding-path="localOffset" tooltip="The relative offset from the linked GameObject&apos;s pivot. Only applies if the note is linked to a GameObject." class="indented-field" />
+    <ui:VisualElement name="Spacer" style="flex-grow: 1;" />
+    <ui:Foldout text="Screenshots" value="false" name="ScreenshotsFoldout" view-data-key="ScreenshotsFoldout">
+        <ui:Button text="Take Screenshot" parse-escape-sequences="true" display-tooltip-when-elided="true" name="TakeScreenshotBtn" />
+        <ui:ListView name="ScreenshotsList" binding-path="screenshots" show-alternating-row-backgrounds="ContentOnly" show-border="true" show-foldout-header="false" show-add-remove-footer="true" show-bound-collection-size="false" reorder-mode="Animated" reorderable="true" style="margin-top: 6px;" />
+    </ui:Foldout>
+    <ui:Foldout text="More" value="false" name="More" view-data-key="MoreFoldout">
+        <ui:VisualElement name="Author" class="unity-base-field SubtleField">
+            <ui:Label tabindex="-1" text="Author" parse-escape-sequences="true" display-tooltip-when-elided="true" tooltip="When the note was first created." class="unity-base-field__label" />
+            <ui:Label tabindex="-1" text="00:00:00" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Name" class="unity-base-field__label" />
+        </ui:VisualElement>
+        <ui:VisualElement name="CreatedOn" class="unity-base-field SubtleField">
+            <ui:Label tabindex="-1" text="Created" parse-escape-sequences="true" display-tooltip-when-elided="true" tooltip="When the note was first created." class="unity-base-field__label" />
+            <ui:Label tabindex="-1" text="00:00:00" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Date" class="unity-base-field__label" />
+        </ui:VisualElement>
+        <ui:VisualElement name="EditedOn" class="unity-base-field SubtleField">
+            <ui:Label tabindex="-1" text="Last edited" parse-escape-sequences="true" display-tooltip-when-elided="true" tooltip="When the note was last edited." class="unity-base-field__label" />
+            <ui:Label tabindex="-1" text="00:00:00" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Date" class="unity-base-field__label" />
+        </ui:VisualElement>
+    </ui:Foldout>
+    <ui:ListView show-bound-collection-size="true" binding-path="comments" header-title="Comments" selection-type="None" virtualization-method="DynamicHeight" name="CommentsList" reorderable="false" view-data-key="CommentsList" show-foldout-header="true" show-border="false" />
+    <ui:VisualElement name="CommentDraft">
+        <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" text="Add reply" name="AddReplyLabel" style="-unity-font-style: bold;" />
+        <ui:VisualElement name="Box" class="CommentBox" style="flex-grow: 1;">
+            <ui:TextField picking-mode="Ignore" name="Contents" />
+            <ui:VisualElement class="DetachedButton" style="flex-grow: 1; flex-direction: row-reverse;">
+                <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddCommentBtn" text="Add" tooltip="Adds a new comment to this note." />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
