@@ -48,21 +48,5 @@ namespace Infastructure.Common.Pickup
             _poolObjects.ReturnObjectToPool(pickupView);
             _pickups.Remove(id);
         }
-
-        public void HideRemainingObjects(Collider[] allColliders)
-        {
-            IEnumerable<int> allActiveInstanceIds = allColliders
-                .Where(x => x != null)
-                .Select(x => x.GetInstanceID());
-
-            List<int> toHide = _pickups.Keys.Except(allActiveInstanceIds).ToList();
-
-            foreach (int id in toHide)
-            {
-                PickupView pickupView = _pickups[id];
-                _poolObjects.ReturnObjectToPool(pickupView);
-                _pickups.Remove(id);
-            }
-        }
     }
 }

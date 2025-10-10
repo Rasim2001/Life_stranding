@@ -6,6 +6,7 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerProgressService;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using SpiderController;
 using Zenject;
 

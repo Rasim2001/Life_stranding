@@ -1,5 +1,6 @@
 using Infastructure.Services.PlatformObjects;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 
 namespace Infastructure.Services.Magnet
 {

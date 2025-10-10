@@ -3,6 +3,7 @@ using System.Linq;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Airborn;
 using SpiderController.StateMachine.States.Ground;

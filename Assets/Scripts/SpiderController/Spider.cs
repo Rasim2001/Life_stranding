@@ -8,10 +8,13 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.States;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
+using SpiderController.PickUp;
 using SpiderController.Scanner;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine;
 using SpiderController.Thruster;
+using SpiderController.TriggerChecker;
 using SpiderController.UI.Health;
 using SpiderController.UI.Stickers;
 using UnityEngine;
@@ -28,6 +31,7 @@ namespace SpiderController
         [SerializeField] private MeshRenderer _boundPlaneMeshRender;
         [SerializeField] private ThrusterSystem _thrusterSystem;
         [SerializeField] private ScannerAnimator _scannerAnimator;
+        [SerializeField] private EnergyChecker _energyChecker;
 
         [SerializeField] private Transform _rotationPlaneTransform;
         [SerializeField] private LegDataStruct[] _legs;
@@ -45,18 +49,19 @@ namespace SpiderController
         private Rigidbody _rigidbody;
         private SpiderStateMachine _spiderStateMachine;
         private SpiderPlane _spiderPlane;
-        private FlowerPickup _flowerPickup;
-        private BatteryProductPickup _batteryProductPickup;
         private CheckPointChanger _checkPointChanger;
         private SpiderImpactReceiver _spiderImpactReceiver;
 
-        private HudUI _hudUI;
+        private FlowerPickup _flowerPickup;
+        private BatteryProductPickup _batteryProductPickup;
+        private EnergyPickup _energyPickup;
 
+        private HudUI _hudUI;
 
         private IInputService _inputService;
         private IStaticDataService _staticDataService;
         private IPickupDisplayer _pickupDisplayer;
-        private IStateMachine _stateMachine1;
+        private IStateMachine _stateMachine;
         private ICheckPointService _checkPointService;
         private ICutSceneService _cutSceneService;
         private IMagnetFreezingService _magnetFreezingService;
@@ -64,16 +69,21 @@ namespace SpiderController
 
 
         [Inject]
-        public void Construct(IInputService inputService, IStaticDataService staticDataService,
-            IPickupDisplayer pickupDisplayer, IStateMachine stateMachine, ICheckPointService checkPointService,
-            ICutSceneService cutSceneService, IMagnetFreezingService magnetFreezingService,
+        public void Construct(
+            IInputService inputService,
+            IStaticDataService staticDataService,
+            IPickupDisplayer pickupDisplayer,
+            IStateMachine stateMachine,
+            ICheckPointService checkPointService,
+            ICutSceneService cutSceneService,
+            IMagnetFreezingService magnetFreezingService,
             IPlatformObjectsService platformObjectsService)
         {
             _platformObjectsService = platformObjectsService;
             _magnetFreezingService = magnetFreezingService;
             _cutSceneService = cutSceneService;
             _checkPointService = checkPointService;
-            _stateMachine1 = stateMachine;
+            _stateMachine = stateMachine;
             _pickupDisplayer = pickupDisplayer;
             _staticDataService = staticDataService;
             _inputService = inputService;
@@ -87,6 +97,7 @@ namespace SpiderController
             _spiderPlane.Destroy();
             _batteryProductPickup.Destroy();
             _flowerPickup.Destroy();
+            _energyPickup.Destroy();
         }
 
         public void Initialize(Flower flower)
@@ -110,6 +121,9 @@ namespace SpiderController
                 _batteryChecker, _flowerChecker);
             _batteryProductPickup.Initialize();
 
+            _energyPickup = new EnergyPickup(_inputService, _pickupDisplayer, _energyChecker);
+            _energyPickup.Initialize();
+
             _spiderUI.StickerUI.PlaySticker(StickerEnum.StartGame);
 
             _spiderStateMachine =
@@ -129,7 +143,7 @@ namespace SpiderController
                 return;
 
             if (Input.GetKeyDown(KeyCode.Escape))
-                _stateMachine1.Enter<LoadLevelState>(); //TODO:
+                _stateMachine.Enter<LoadLevelState>(); //TODO:
 
             _spiderStateMachine.HandleInput();
             _spiderStateMachine.Update();
@@ -138,6 +152,7 @@ namespace SpiderController
             _batteryProductPickup.Update();
             _checkPointChanger.Update();
             _spiderImpactReceiver.Update();
+            _energyPickup.Update();
         }
 
         private void FixedUpdate()

@@ -2,6 +2,7 @@ using DG.Tweening;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using SpiderController.SpiderMove;
 using UnityEngine;
 

@@ -4,6 +4,7 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using SpiderController.SpiderMove;
 using SpiderController.UI;
 using SpiderController.UI.Health;

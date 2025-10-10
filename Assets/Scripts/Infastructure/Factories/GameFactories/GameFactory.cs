@@ -4,15 +4,18 @@ using HUD;
 using Infastructure.Common;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.XRay;
+using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
 using Infastructure.StaticData.XRay;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using SpiderController;
 using SpiderController.UI.Health;
 using UnityEngine;
 using UnityEngine.ProBuilder.Shapes;
 using UnityEngine.SceneManagement;
 using Zenject;
+using Product = Unity.VisualScripting.Product;
 
 
 namespace Infastructure.Factories.GameFactories
@@ -91,18 +94,22 @@ namespace Infastructure.Factories.GameFactories
 
         public void CreateAllBatteryProducts(Spider spider)
         {
+            ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
+            GameObject prefab = productsStaticData.ProductsDictionary[ProductType.Battery];
+
             foreach (Vector3 position in _staticDataService.GameStaticData.GameDatas[ActiveSceneName].BatteriesPoints)
             {
-                BatteryProduct batteryProduct = _diContainer.InstantiatePrefabResourceForComponent<BatteryProduct>(
-                    AssetsPath.BatteryProductPath,
-                    position, Quaternion.identity,
-                    null);
+                BatteryProduct batteryProduct =
+                    _diContainer.InstantiatePrefabForComponent<BatteryProduct>(prefab, position, Quaternion.identity,
+                        null);
+
+                IProduct product = batteryProduct.GetComponent<IProduct>();
+                product.ProductType = ProductType.Battery;
 
                 XRayMarker xRayMarker = batteryProduct.GetComponent<XRayMarker>();
                 _xRayService.Add(xRayMarker);
 
                 SphereCollider sphereCollider = spider.RotationPlaneTransform.GetComponent<SphereCollider>();
-
                 batteryProduct.Initialize(spider.RotationPlaneTransform, spider.BoundPlaneMeshRender, sphereCollider);
             }
         }

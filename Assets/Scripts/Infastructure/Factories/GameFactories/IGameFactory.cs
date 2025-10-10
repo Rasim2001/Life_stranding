@@ -1,5 +1,6 @@
 using HUD;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using SpiderController;
 using UnityEngine;
 
