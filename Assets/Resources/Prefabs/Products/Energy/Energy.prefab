@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5339995748182780415}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 5939125081045002060}
   - component: {fileID: 7043984288832012303}
   - component: {fileID: 7605449431114450700}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Energy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -142,6 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12e14f94fdd74998aa1d16ce81467240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <ProductType>k__BackingField: 0
 --- !u!1001 &6751686210810021953
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -153,6 +154,10 @@ PrefabInstance:
     - target: {fileID: 1744407837024274, guid: 2f3e352268bf84b45acf0d56b0b89518, type: 3}
       propertyPath: m_Name
       value: SM_Icon_Potion_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 1744407837024274, guid: 2f3e352268bf84b45acf0d56b0b89518, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 4138816275289606, guid: 2f3e352268bf84b45acf0d56b0b89518, type: 3}
       propertyPath: m_LocalPosition.x

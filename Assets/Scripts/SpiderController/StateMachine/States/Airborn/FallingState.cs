@@ -52,7 +52,7 @@ namespace SpiderController.StateMachine.States.Airborn
             if (InputService.JumpUp)
                 StateMachine.SwitchState<FallingWithControlState>();
 
-            if (Data.EnergyFillAmount <= 0)
+            if (Data.CurrentEnergyFillAmount <= 0)
                 StateMachine.SwitchState<FallingWithoutEnergyState>();
 
             if (_spiderGroundChecker.IsTouchesWithLegs)

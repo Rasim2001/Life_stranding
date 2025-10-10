@@ -1,10 +1,11 @@
+using PickupObjects;
 using UnityEngine;
 
 namespace Infastructure.StaticData.XRay
 {
     public class XRayMarker : MonoBehaviour
     {
-        public XRayType Type;
+        public ProductType Type;
 
         public string Id;
     }

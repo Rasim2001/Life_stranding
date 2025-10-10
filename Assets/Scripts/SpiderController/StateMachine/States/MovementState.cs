@@ -128,7 +128,7 @@ namespace SpiderController.StateMachine.States
             if (Data.IsMouseHolding)
                 EnergySystem.SpendEnergy(SpiderStaticData.EnergySpendFreezingFlowerSpeed);
 
-            if (Data.EnergyFillAmount <= 0)
+            if (Data.CurrentEnergyFillAmount <= 0)
                 Spider.MagnetFreezingService.Unfreeze();
         }
 

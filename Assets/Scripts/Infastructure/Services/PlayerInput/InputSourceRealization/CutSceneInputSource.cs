@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Infastructure.Services.PlayerInput
+namespace Infastructure.Services.PlayerInput.InputSourceRealization
 {
     public class CutSceneInputSource : IInputSource
     {

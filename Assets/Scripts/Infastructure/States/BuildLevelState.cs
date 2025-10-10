@@ -66,7 +66,9 @@ namespace Infastructure.States
             InitTerrainScan(spider);
             InitCameraSystem(spider);
             InitStartGameScene(spider);
+
             InitBatteryProducts(spider);
+            InitEnergyProducts();
         }
 
         private void InitTerrainScan(Spider spider) =>
@@ -93,6 +95,9 @@ namespace Infastructure.States
 
         private void InitStartGameScene(Spider spider) =>
             _gameFactory.CreateStartGameCutSceneTimeline(spider);
+
+        private void InitEnergyProducts() =>
+            _gameFactory.CreateEnergyProducts();
 
         private void GoToCheckPoints() =>
             _checkPointService.GoToNextPoint();

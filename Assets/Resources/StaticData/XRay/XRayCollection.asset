@@ -17,7 +17,7 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 21300014, guid: 358b5d9f23bc9413e87c9948acc67ee1, type: 3}
-    - {fileID: -4594720345167028440, guid: fe42c8b526e77e54ab91d0590272d9e8, type: 3}
+    - {fileID: -7933564687622153330, guid: 3da05e9f66c9f254c8875335e7e9179e, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -25,11 +25,11 @@ MonoBehaviour:
     SerializationNodes:
     - Name: XRayObjects
       Entry: 7
-      Data: 0|System.Collections.Generic.Dictionary`2[[Infastructure.StaticData.XRay.XRayType,
+      Data: 0|System.Collections.Generic.Dictionary`2[[PickupObjects.ProductType,
         Assembly-CSharp],[UnityEngine.Sprite, UnityEngine.CoreModule]], mscorlib
     - Name: comparer
       Entry: 7
-      Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[Infastructure.StaticData.XRay.XRayType,
+      Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[PickupObjects.ProductType,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -48,7 +48,7 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 3
-      Data: 0
+      Data: 1
     - Name: $v
       Entry: 10
       Data: 0
@@ -60,7 +60,7 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 3
-      Data: 1
+      Data: 0
     - Name: $v
       Entry: 10
       Data: 1

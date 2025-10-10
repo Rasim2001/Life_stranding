@@ -42,7 +42,7 @@ namespace SpiderController.StateMachine.States.Ground
 
             EnergySystem.SpendEnergy(SpiderStaticData.EnergySpendFastRunningSpeed);
 
-            if (!IsFastRunUp() && Data.EnergyFillAmount > 0)
+            if (!IsFastRunUp() && Data.CurrentEnergyFillAmount > 0)
                 return;
 
             if (IsInputZero())

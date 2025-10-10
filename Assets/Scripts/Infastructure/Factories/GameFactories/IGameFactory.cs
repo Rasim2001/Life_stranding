@@ -16,5 +16,6 @@ namespace Infastructure.Factories.GameFactories
         Flower CreateFlower();
         void CreateAllBatteryProducts(Spider spider);
         void CreateTerrainScan(Spider spider);
+        void CreateEnergyProducts();
     }
 }

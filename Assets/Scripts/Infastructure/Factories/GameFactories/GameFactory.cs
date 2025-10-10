@@ -4,6 +4,7 @@ using HUD;
 using Infastructure.Common;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.XRay;
+using Infastructure.StaticData;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
 using Infastructure.StaticData.XRay;
@@ -94,8 +95,10 @@ namespace Infastructure.Factories.GameFactories
 
         public void CreateAllBatteryProducts(Spider spider)
         {
+            ProductType productType = ProductType.Battery;
+
             ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
-            GameObject prefab = productsStaticData.ProductsDictionary[ProductType.Battery];
+            GameObject prefab = productsStaticData.ProductsDictionary[productType];
 
             foreach (Vector3 position in _staticDataService.GameStaticData.GameDatas[ActiveSceneName].BatteriesPoints)
             {
@@ -104,13 +107,39 @@ namespace Infastructure.Factories.GameFactories
                         null);
 
                 IProduct product = batteryProduct.GetComponent<IProduct>();
-                product.ProductType = ProductType.Battery;
+                product.ProductType = productType;
 
                 XRayMarker xRayMarker = batteryProduct.GetComponent<XRayMarker>();
+                xRayMarker.Type = productType;
+
                 _xRayService.Add(xRayMarker);
 
                 SphereCollider sphereCollider = spider.RotationPlaneTransform.GetComponent<SphereCollider>();
                 batteryProduct.Initialize(spider.RotationPlaneTransform, spider.BoundPlaneMeshRender, sphereCollider);
+            }
+        }
+
+        public void CreateEnergyProducts()
+        {
+            ProductType productType = ProductType.Energy;
+
+            ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
+            GameObject prefab = productsStaticData.ProductsDictionary[productType];
+
+            foreach (WorldData data in _staticDataService.GameStaticData.GameDatas[ActiveSceneName].EnergyPoints)
+            {
+                EnergyProduct energyProduct =
+                    _diContainer.InstantiatePrefabForComponent<EnergyProduct>(prefab, data.WorldPosition,
+                        data.WorldRotation,
+                        null);
+
+                IProduct product = energyProduct.GetComponent<IProduct>();
+                product.ProductType = productType;
+
+                XRayMarker xRayMarker = energyProduct.GetComponent<XRayMarker>();
+                xRayMarker.Type = productType;
+
+                _xRayService.Add(xRayMarker);
             }
         }
 

@@ -1,11 +1,10 @@
-using System;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using Unity.Cinemachine;
 using UnityEngine;
 using Zenject;
 
-namespace Infastructure.Common
+namespace Infastructure.Common.StableWorlUpManagement
 {
     public class StableWorldUp : MonoBehaviour, IStableWorldUp
     {
