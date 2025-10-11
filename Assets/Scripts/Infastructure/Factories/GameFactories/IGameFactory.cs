@@ -1,5 +1,6 @@
 using HUD;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using SpiderController;
 using UnityEngine;
 
@@ -15,5 +16,6 @@ namespace Infastructure.Factories.GameFactories
         Flower CreateFlower();
         void CreateAllBatteryProducts(Spider spider);
         void CreateTerrainScan(Spider spider);
+        void CreateEnergyProducts();
     }
 }

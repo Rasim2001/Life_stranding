@@ -1,8 +1,10 @@
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
+using SpiderController.TriggerChecker;
 using SpiderController.UI.Stickers;
 
 namespace SpiderController.StateMachine.States.Airborn

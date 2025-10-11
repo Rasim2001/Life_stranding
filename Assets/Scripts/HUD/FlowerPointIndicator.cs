@@ -1,4 +1,5 @@
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using UnityEngine;
 
 namespace HUD

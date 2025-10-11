@@ -3,6 +3,7 @@ using DG.Tweening;
 using GameDevBuddies;
 using Infastructure.Services.CutScene;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using Unity.Cinemachine;
 using UnityEngine;
 using Zenject;

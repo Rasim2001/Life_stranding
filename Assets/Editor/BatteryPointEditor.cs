@@ -14,4 +14,15 @@ namespace Editor
             Gizmos.DrawSphere(spawner.transform.position, 0.5f);
         }
     }
+
+    [CustomEditor(typeof(EnergyPointMarker))]
+    public class EnergyPointEditor : UnityEditor.Editor
+    {
+        [DrawGizmo(GizmoType.Active | GizmoType.Pickable | GizmoType.NonSelected)]
+        public static void RenderCustomGizmo(EnergyPointMarker spawner, GizmoType gizmo)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawSphere(spawner.transform.position, 0.5f);
+        }
+    }
 }

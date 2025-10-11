@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -20,6 +21,7 @@ namespace SpiderController.UI
             _containers = containers;
             _otherObjects = otherObjects;
         }
+
 
         public void Play()
         {
@@ -50,7 +52,8 @@ namespace SpiderController.UI
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(2f), cancellationToken: token);
 
-                int count = _segments.Length;
+                int count = _segments.Count(x => x.gameObject.activeSelf);
+
                 for (int i = 0; i < count; i++)
                 {
                     DisableFirstPiece(_segments, _containers, i);

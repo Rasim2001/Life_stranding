@@ -2,6 +2,7 @@ namespace Infastructure.StaticData.XRay
 {
     public enum XRayType
     {
-        BatteryXRay,
+        Battery = 0,
+        Energy = 1,
     }
 }

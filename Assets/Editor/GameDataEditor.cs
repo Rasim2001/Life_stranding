@@ -30,8 +30,11 @@ namespace Editor
                     .ToList();
 
                 gameData.GameDatas[nameScene].BatteriesPoints = FindObjectsOfType<BatteryPointMarker>()
-                    .OrderBy(x => x.transform.GetSiblingIndex())
                     .Select(x => x.transform.position)
+                    .ToList();
+
+                gameData.GameDatas[nameScene].EnergyPoints = FindObjectsOfType<EnergyPointMarker>()
+                    .Select(x => new WorldData(x.transform.position, x.transform.rotation))
                     .ToList();
 
                 gameData.GameDatas[nameScene].SpiderSpawnPosition =

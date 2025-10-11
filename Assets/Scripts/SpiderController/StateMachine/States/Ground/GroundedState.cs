@@ -4,8 +4,10 @@ using GameDevBuddies;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Airborn;
+using SpiderController.TriggerChecker;
 using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Ground
@@ -57,10 +59,10 @@ namespace SpiderController.StateMachine.States.Ground
             if (_groundChecker.IsTouchesWithLegs == false)
                 StateMachine.SwitchState<FallingState>();
 
-            if (InputService.JumpPressed && Data.EnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling)
+            if (InputService.JumpPressed && Data.CurrentEnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling)
                 StateMachine.SwitchState<JumpingState>();
 
-            if (InputService.JerkPressed && Data.EnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling)
+            if (InputService.JerkPressed && Data.CurrentEnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling)
                 StateMachine.SwitchState<JerkState>();
 
            

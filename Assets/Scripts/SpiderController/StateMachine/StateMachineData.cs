@@ -35,7 +35,8 @@ namespace SpiderController.StateMachine
         public float YVelocity;
         public float XVelocity;
         public float AirbornSpeed;
-        public float EnergyFillAmount = 1;
+        public float CurrentEnergyFillAmount = 1;
+        public float EnergyFillAmount;
 
         public bool IsMouseHolding;
         public bool IsStandingUpAfterFalling;

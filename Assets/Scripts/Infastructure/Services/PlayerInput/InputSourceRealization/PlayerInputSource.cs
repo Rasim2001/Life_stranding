@@ -1,7 +1,6 @@
-using System;
 using UnityEngine;
 
-namespace Infastructure.Services.PlayerInput
+namespace Infastructure.Services.PlayerInput.InputSourceRealization
 {
     public class PlayerInputSource : IInputSource
     {

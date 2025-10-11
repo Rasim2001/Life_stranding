@@ -4,6 +4,7 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using SpiderController.SpiderMove;
 using SpiderController.UI;
 using SpiderController.UI.Health;
@@ -127,7 +128,7 @@ namespace SpiderController.StateMachine.States
             if (Data.IsMouseHolding)
                 EnergySystem.SpendEnergy(SpiderStaticData.EnergySpendFreezingFlowerSpeed);
 
-            if (Data.EnergyFillAmount <= 0)
+            if (Data.CurrentEnergyFillAmount <= 0)
                 Spider.MagnetFreezingService.Unfreeze();
         }
 

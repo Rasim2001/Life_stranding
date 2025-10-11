@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Infastructure.Common
+namespace Infastructure.Common.StableWorlUpManagement
 {
     public interface IStableWorldUp
     {

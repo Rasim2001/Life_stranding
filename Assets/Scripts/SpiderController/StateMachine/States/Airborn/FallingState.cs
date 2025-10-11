@@ -1,8 +1,10 @@
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
+using SpiderController.TriggerChecker;
 
 namespace SpiderController.StateMachine.States.Airborn
 {
@@ -50,7 +52,7 @@ namespace SpiderController.StateMachine.States.Airborn
             if (InputService.JumpUp)
                 StateMachine.SwitchState<FallingWithControlState>();
 
-            if (Data.EnergyFillAmount <= 0)
+            if (Data.CurrentEnergyFillAmount <= 0)
                 StateMachine.SwitchState<FallingWithoutEnergyState>();
 
             if (_spiderGroundChecker.IsTouchesWithLegs)

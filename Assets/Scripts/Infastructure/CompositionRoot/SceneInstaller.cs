@@ -1,5 +1,6 @@
 using Infastructure.Common;
 using Infastructure.Common.Pickup;
+using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Factories.GameFactories;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;

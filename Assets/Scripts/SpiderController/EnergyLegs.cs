@@ -1,0 +1,37 @@
+using System;
+using Cysharp.Threading.Tasks;
+using HighlightPlus;
+using UnityEngine;
+
+namespace SpiderController
+{
+    public class EnergyLegs
+    {
+        private readonly HighlightEffect[] _highlightEffect;
+
+        private int _count = 0;
+
+        public EnergyLegs(HighlightEffect[] highlightEffect) =>
+            _highlightEffect = highlightEffect;
+
+        public void AddEnergyOnLeg()
+        {
+            if (_count < _highlightEffect.Length)
+                AddEnergyOnLegAsync().Forget();
+        }
+
+        private async UniTask AddEnergyOnLegAsync()
+        {
+            _highlightEffect[_count].gameObject.SetActive(true);
+            _highlightEffect[_count].Highlighted = true;
+
+            Debug.Log(_highlightEffect[_count]);
+
+            await UniTask.Delay(TimeSpan.FromSeconds(2));
+
+            _highlightEffect[_count].Highlighted = false;
+
+            _count++;
+        }
+    }
+}

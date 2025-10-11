@@ -25,6 +25,8 @@ namespace Infastructure.Common.Pickup
             if (_pickups.ContainsKey(id))
                 return;
 
+            Debug.Log("Show");
+
             PickupView pickupView = _poolObjects.GetObjectFromPool();
             pickupView.transform.SetParent(transform);
             pickupView.transform.position = pickupTarget.position + Vector3.up;
@@ -42,27 +44,13 @@ namespace Infastructure.Common.Pickup
             if (!_pickups.TryGetValue(id, out PickupView pickupView))
                 return;
 
+            Debug.Log("Hide");
+
             HighlightEffect highlightEffect = pickupTarget.GetComponent<HighlightEffect>();
             highlightEffect?.SetHighlighted(false);
 
             _poolObjects.ReturnObjectToPool(pickupView);
             _pickups.Remove(id);
-        }
-
-        public void HideRemainingObjects(Collider[] allColliders)
-        {
-            IEnumerable<int> allActiveInstanceIds = allColliders
-                .Where(x => x != null)
-                .Select(x => x.GetInstanceID());
-
-            List<int> toHide = _pickups.Keys.Except(allActiveInstanceIds).ToList();
-
-            foreach (int id in toHide)
-            {
-                PickupView pickupView = _pickups[id];
-                _poolObjects.ReturnObjectToPool(pickupView);
-                _pickups.Remove(id);
-            }
         }
     }
 }

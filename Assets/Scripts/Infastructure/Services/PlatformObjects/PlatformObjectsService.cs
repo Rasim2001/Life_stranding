@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 
 namespace Infastructure.Services.PlatformObjects
 {
