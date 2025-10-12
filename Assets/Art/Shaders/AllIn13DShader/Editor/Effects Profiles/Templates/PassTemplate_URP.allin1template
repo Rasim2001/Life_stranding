@@ -1,0 +1,50 @@
+Pass
+{
+	Name "<PASS_NAME>"
+	Tags 
+	{
+		<LIGHT_MODE>
+	}
+	
+	<BLEND_COMMAND>
+	<CULL_COMMAND>
+	<Z_WRITE_COMMAND>
+	<Z_TEST_COMMAND>
+	<COLOR_MASK_COMMAND>
+	
+	<STENCIL_BLOCK>
+	
+	HLSLPROGRAM
+	#pragma vertex <VERTEX_PROGRAM_NAME>
+	#pragma fragment <FRAGMENT_PROGRAM_NAME>
+	
+	#define ALLIN1_SHADER_VARIANT
+	<PIPELINE_PASS_SYMBOL>
+	<THIS_PASS_SYMBOL>
+	
+	<FEATURES_URP_LIBRARY>
+
+	#ifdef ALLIN1_DOTS_INSTANCING_SUPPORT
+		#pragma target 4.5
+	#else
+		#pragma target 3.0
+	#endif
+	
+	//<ALLIN1_EFFECTS>
+	<ALLIN1_FEATURES>
+	//</ALLIN1_EFFECTS>
+
+	#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+	
+	#include_with_pragmas "../ShaderLibrary/AllIn13DShader_Features.hlsl"
+	#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+	#include "../ShaderLibrary/AllIn13DShader_CommonStructs.hlsl"
+	#include "../ShaderLibrary/AllIn13DShader_CommonFunctions.hlsl"
+	<INCLUDE_PIPELINE_HELPER>
+	#include "../ShaderLibrary/AllIn13DShaderLight.hlsl"
+	<INCLUDE_EFFECT_LIBRARIES>
+	#include "../ShaderLibrary/AllIn13DShaderCore.hlsl"
+	<INCLUDE_PASS>
+	
+	ENDHLSL
+}
