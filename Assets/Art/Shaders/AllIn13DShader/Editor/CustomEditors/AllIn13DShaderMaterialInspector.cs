@@ -100,7 +100,12 @@ namespace AllIn13DShader
 
 		private void CreateDrawers()
 		{
-			if (drawers == null)
+			if (propertiesConfigCollection == null || 
+				currentPropertiesConfig == null ||
+				inspectorReferences == null ||
+				drawers == null ||
+				globalPropertiesDrawer == null ||
+				advancedPropertiesDrawer == null)
 			{
 				drawers = new AbstractEffectDrawer[0];
 
@@ -312,7 +317,11 @@ namespace AllIn13DShader
 
 		private void DrawAdvancedProperties()
 		{
-			advancedPropertiesDrawer.Draw();
+			//Security check
+			if (advancedPropertiesDrawer != null)
+			{
+				advancedPropertiesDrawer.Draw();
+			}
 		}
 
 		private void DrawGlobalProperties()
@@ -371,14 +380,23 @@ namespace AllIn13DShader
 
 			if (newPreset.defaultEnabledEffects != null)
 			{
-				for (int i = 0; i < newPreset.defaultEnabledEffects.Length; i++)
+				for (int matIdx = 0; matIdx < inspectorReferences.targetMatInfos.Length; matIdx++)
 				{
-					string effectID = newPreset.defaultEnabledEffects[i];
-					AllIn13DEffectConfig effectConfig = currentPropertiesConfig.FindEffectConfigByID(effectID);
+					AbstractMaterialInfo matInfo = inspectorReferences.targetMatInfos[matIdx];
 
-					for (int matIdx = 0; matIdx < inspectorReferences.targetMatInfos.Length; matIdx++)
+					if (newPreset.isTransparent)
 					{
-						AbstractMaterialInfo matInfo = inspectorReferences.targetMatInfos[matIdx];
+						matInfo.EnableKeyword(Constants.KEYWORD_ALLIN13D_SURFACE_TRANSPARENT);
+					}
+					else
+					{
+						matInfo.DisableKeyword(Constants.KEYWORD_ALLIN13D_SURFACE_TRANSPARENT);
+					}
+
+					for (int i = 0; i < newPreset.defaultEnabledEffects.Length; i++)
+					{
+						string effectID = newPreset.defaultEnabledEffects[i];
+						AllIn13DEffectConfig effectConfig = currentPropertiesConfig.FindEffectConfigByID(effectID);
 						AllIn13DEffectConfig.EnableEffectToggle(effectConfig, inspectorReferences, matInfo);
 					}
 				}

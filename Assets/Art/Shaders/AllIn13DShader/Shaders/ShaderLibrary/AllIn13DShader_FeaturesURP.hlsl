@@ -1,37 +1,12 @@
 #ifndef ALLIN13DSHADER_FEATURESURP
 #define ALLIN13DSHADER_FEATURESURP
 
-//---------------------------------------------------------------------
-// Features to enable disable. You will want to disable features you don't use to speed up compilation and build times
-// You can also enable/disable these features in the Asset Window, in the URP Settings tab
+#ifdef ALLIN1_DOTS_INSTANCING_SUPPORT
+	#pragma target 4.5
+#else
+	#pragma target 3.0
+#endif
 
-// Core rendering features
-//#define ALLIN1_GPU_INSTANCING_SUPPORT           // Enables GPU Instancing for better performance
-//#define ALLIN1_DOTS_INSTANCING_SUPPORT          // Supports Unity ECS instancing
-#define ALLIN1_FOG_SUPPORT                      // Unity fog system integration
-
-// Lighting and shadows
-#define ALLIN1_LIGHTMAPS_SUPPORT                // Enables baked lightmap support
-#define ALLIN1_ADDITIONAL_LIGHTS_SUPPORT        // Support for additional real-time lights beyond main directional
-#define ALLIN1_CAST_SHADOWS_SUPPORT             // Enables shadow casting from this material
-#define ALLIN1_SHADOW_MASK_SUPPORT              // Mixed lighting shadowmask support
-
-// Advanced rendering (Unity 6+)
-#define ALLIN1_FORWARD_PLUS_SUPPORT_UNITY6      // Forward+ rendering path (Unity 6+)
-//#define ALLIN1_REFLECTIONS_PROBES_SUPPORT_UNITY6 // Probe blending (Unity 6+ only, enable if using probe blending)
-
-// Screen-space effects
-#define ALLIN1_SSO_SUPPORT                      // Screen Space Ambient Occlusion support
-
-//Light Cookies
-#define ALLIN1_LIGHT_COOKIES_SUPPORT
-
-//Decals
-#define ALLIN1_DECALS_SUPPORT
-
-// Specialized features
-//#define ALLIN1_LIGHT_LAYERS_SUPPORT             // Unity light layer system (if using light layers)
-//---------------------------------------------------------------------
 
 #if defined(ALLIN1_FORWARD_PASS)
 	#ifdef ALLIN1_GPU_INSTANCING_SUPPORT
@@ -64,6 +39,12 @@
 		#pragma multi_compile_fragment _ _REFLECTION_PROBE_BLENDING
 		#pragma multi_compile_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
 		#pragma multi_compile_fragment _ _REFLECTION_PROBE_ATLAS
+	#endif
+
+	#ifdef ALLIN1_ADAPTATIVE_PROBE_VOLUMES_UNITY6
+		#if UNITY_VERSION >= 60000000
+			#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ProbeVolumeVariants.hlsl"
+		#endif
 	#endif
 
 	#ifdef ALLIN1_LIGHT_LAYERS_SUPPORT

@@ -85,9 +85,13 @@
 	#endif
 #endif
 
+
+//------ Shader features --------
+#pragma shader_feature_local_fragment _ALLIN13D_SURFACE_TRANSPARENT
 #if !defined(ALLIN1_SHADER_VARIANT)
 	#include_with_pragmas "../ShaderLibrary/AllIn13DShader_ShaderFeatures.hlsl"
 #endif
+//------------------------------
 
 #if defined(_SPECULARMODEL_CLASSIC) || defined(_SPECULARMODEL_TOON) || defined(_SPECULARMODEL_ANISOTROPIC) || defined(_SPECULARMODEL_ANISOTROPICTOON)
 	#define SPECULAR_ON

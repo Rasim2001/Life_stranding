@@ -9,7 +9,7 @@ namespace AllIn13DShader
 	{
 		private const string TAB_NAME = "URP Settings";
 
-		private bool[] featureToggles = new bool[11]; // Array to track toggle states
+		private bool[] featureToggles = new bool[12]; // Array to track toggle states
 		private string shaderFeaturesFilePath;
 
 		private readonly string[] featureDefineNames = {
@@ -22,13 +22,14 @@ namespace AllIn13DShader
 			"ALLIN1_SHADOW_MASK_SUPPORT",
 			"ALLIN1_FORWARD_PLUS_SUPPORT_UNITY6",
 			"ALLIN1_REFLECTIONS_PROBES_SUPPORT_UNITY6",
+			"ALLIN1_ADAPTATIVE_PROBE_VOLUMES_UNITY6",
 			"ALLIN1_SSO_SUPPORT",
 			"ALLIN1_LIGHT_LAYERS_SUPPORT"
 		};
 
 		private readonly string[] featureNames = {
 			"GPU Instancing Support",
-			"Entities Graphics Instancing Support", 
+			"Entities Graphics Instancing Support (and GPU Resident Drawer)", 
 			"Fog Support",
 			"Lightmaps Support",
 			"Additional Lights Support",
@@ -36,13 +37,14 @@ namespace AllIn13DShader
 			"Shadow Mask Support",
 			"Forward+ Support (Unity 6+)",
 			"Reflection Probes Blending Support (Unity 6+)",
+			"Adaptative Probe Volumes (Unity 6+)",
 			"Screen Space Ambient Occlusion",
 			"Light Layers Support"
 		};
 
 		private readonly string[] featureTooltips = {
 			"Enables GPU Instancing for better performance when rendering many identical objects",
-			"Supports Unity Entities Graphics instancing for DOTS-based projects",
+			"Supports Unity Entities Graphics instancing for DOTS-based projects and GPU Resident Drawer",
 			"Unity fog system integration for atmospheric effects",
 			"Enables baked lightmap support for static lighting",
 			"Support for additional real-time lights beyond main directional light",
@@ -50,6 +52,7 @@ namespace AllIn13DShader
 			"Mixed lighting shadowmask support for hybrid lighting setups",
 			"Forward+ rendering path support (Unity 6+ only)",
 			"Probe blending support (Unity 6+ only, if you aren't using more than 1 probe you can disable this)",
+			"Adaptative Probe Volumes support (Unity 6+ only)",
 			"Screen Space Ambient Occlusion integration",
 			"Unity light layer system support (for selective lighting)"
 		};
@@ -130,7 +133,7 @@ namespace AllIn13DShader
 		private void LoadCurrentFeatureStates()
 		{
 			// Find the shader features file
-			string[] guids = AssetDatabase.FindAssets("AllIn13DShader_FeaturesURP");
+			string[] guids = AssetDatabase.FindAssets("AllIn13DShader_FeaturesURP_Defines");
 			if(guids.Length == 0)
 			{
 				Debug.LogWarning("AllIn13DShader_FeaturesURP file not found");
@@ -203,17 +206,18 @@ namespace AllIn13DShader
 		private void ResetToDefaults()
 		{
 			// Set default values (most features enabled, some disabled)
-			featureToggles[0] = true;  // GPU_INSTANCING_SUPPORT
-			featureToggles[1] = false; // DOTS_INSTANCING_SUPPORT
-			featureToggles[2] = true;  // FOG_SUPPORT
-			featureToggles[3] = true;  // LIGHTMAPS_SUPPORT
-			featureToggles[4] = true;  // ADDITIONAL_LIGHTS_SUPPORT
-			featureToggles[5] = true;  // CAST_SHADOWS_SUPPORT
-			featureToggles[6] = true;  // SHADOW_MASK_SUPPORT
-			featureToggles[7] = true;  // FORWARD_PLUS_SUPPORT_UNITY6
-			featureToggles[8] = false; // REFLECTIONS_PROBES_SUPPORT_UNITY6
-			featureToggles[9] = true;  // SSO_SUPPORT
-			featureToggles[10] = false; // LIGHT_LAYERS_SUPPORT
+			featureToggles[0]	= true;		// GPU_INSTANCING_SUPPORT
+			featureToggles[1]	= false;	// DOTS_INSTANCING_SUPPORT
+			featureToggles[2]	= true;		// FOG_SUPPORT
+			featureToggles[3]	= true;		// LIGHTMAPS_SUPPORT
+			featureToggles[4]	= true;		// ADDITIONAL_LIGHTS_SUPPORT
+			featureToggles[5]	= true;		// CAST_SHADOWS_SUPPORT
+			featureToggles[6]	= true;		// SHADOW_MASK_SUPPORT
+			featureToggles[7]	= true;		// FORWARD_PLUS_SUPPORT_UNITY6
+			featureToggles[8]	= false;	// REFLECTIONS_PROBES_SUPPORT_UNITY6
+			featureToggles[9]	= true;     // ALLIN1_ADAPTATIVE_PROBE_VOLUMES_UNITY6 
+			featureToggles[10]	= true;		// SSO_SUPPORT
+			featureToggles[11]	= false;	// LIGHT_LAYERS_SUPPORT
 		}
 
 		public override string GetTabName()

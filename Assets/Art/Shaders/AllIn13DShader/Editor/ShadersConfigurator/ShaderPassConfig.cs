@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace AllIn13DShader
@@ -25,7 +27,7 @@ namespace AllIn13DShader
 		private const string BIRP_PASS_SYMBOL = "BIRP_PASS";
 
 
-		private const string EFFECT_LIBRARY_PATH_FORMAT = @"../ShaderLibrary/{0}.hlsl";
+		private const string EFFECT_LIBRARY_PATH_FORMAT = @"Shaders/ShaderLibrary/{0}.hlsl";
 		private const string INCLUDE_SHADER_ENTRY_FORMAT = @"#include ""{0}""";
 		private const string INCLUDE_WITH_PRAGMA_SHADER_ENTRY_FORMAT = @"#include_with_pragmas ""{0}""";
 		private const string DEFINE_SHADER_ENTRY_FORMAT = @"#define {0}";
@@ -61,7 +63,7 @@ namespace AllIn13DShader
 		[Header("Extra Pragma - URP")]
 		[TextArea] public string extraPragmaLinesURP;
 
-		public string GetHelperLibraryPath(RenderPipelineEnum renderPipeline)
+		public string GetHelperLibraryPath(RenderPipelineEnum renderPipeline, string shaderFolder)
 		{
 			string res;
 			switch (renderPipeline)
@@ -77,17 +79,35 @@ namespace AllIn13DShader
 					break;
 			}
 
+			res = ConvertPathToRelative(res, shaderFolder);
+
 			return res;
 		}
 
-		private string GetPipelineFeatuersLibrary(RenderPipelineEnum renderPipeline)
+		private string GetPipelineFeatuersLibrary(RenderPipelineEnum renderPipeline, string shaderFolder)
 		{
 			string res = string.Empty;
 
 			if (renderPipeline == RenderPipelineEnum.URP)
 			{
-				res = "../ShaderLibrary/AllIn13DShader_FeaturesURP.hlsl";
+				res = "Shaders/ShaderLibrary/AllIn13DShader_FeaturesURP.hlsl";
 			}
+
+			res = ConvertPathToRelative(res, shaderFolder);
+
+			return res;
+		}
+
+		private string GetPipelineFeaturesDefinesPath(RenderPipelineEnum renderPipeline, string shaderFolder)
+		{
+			string res = string.Empty;
+
+			if (renderPipeline == RenderPipelineEnum.URP)
+			{
+				res = "Shaders/ShaderLibrary/AllIn13DShader_FeaturesURP_Defines.hlsl";
+			}
+
+			res = ConvertPathToRelative(res, shaderFolder);
 
 			return res;
 		}
@@ -126,9 +146,17 @@ namespace AllIn13DShader
 			return res;
 		}
 
-		public string GetPipelineFeaturesLibraryShaderEntry(RenderPipelineEnum renderPipeline)
+		public string GetPipelineFeaturesDefinesShaderEntry(RenderPipelineEnum renderPipeline, string shaderFolder)
 		{
-			string libraryPath = GetPipelineFeatuersLibrary(renderPipeline);
+			string definesFilePath = GetPipelineFeaturesDefinesPath(renderPipeline, shaderFolder);
+
+			string res = CreateIncludeShaderEntry(definesFilePath);
+			return res;
+		}
+
+		public string GetPipelineFeaturesLibraryShaderEntry(RenderPipelineEnum renderPipeline, string shaderFolder)
+		{
+			string libraryPath = GetPipelineFeatuersLibrary(renderPipeline, shaderFolder);
 			string res = GetIncludeWithPragmaShaderEntry(libraryPath);
 
 			return res;
@@ -157,6 +185,46 @@ namespace AllIn13DShader
 		public string GetPassSymbolShaderEntry()
 		{
 			string res = string.Format(DEFINE_SHADER_ENTRY_FORMAT, passSymbol);
+			return res;
+		}
+
+		public string GetLightLibraryShaderEntry(string shaderFolder)
+		{
+			string res = ConvertPathToRelative("Shaders/ShaderLibrary/AllIn13DShaderLight.hlsl", shaderFolder);
+			res = CreateIncludeShaderEntry(res);
+
+			return res;
+		}
+
+		public string GetCoreLibraryShaderEntry(string shaderFolder)
+		{
+			string res = ConvertPathToRelative("Shaders/ShaderLibrary/AllIn13DShaderCore.hlsl", shaderFolder);
+			res = CreateIncludeShaderEntry(res);
+
+			return res;
+		}
+
+		public string GetCommonStructsShaderEntry(string shaderFolder)
+		{
+			string res = ConvertPathToRelative("Shaders/ShaderLibrary/AllIn13DShader_CommonStructs.hlsl", shaderFolder);
+			res = CreateIncludeShaderEntry(res);
+
+			return res;
+		}
+
+		public string GetCommonFunctionsShaderEntry(string shaderFolder)
+		{
+			string res = ConvertPathToRelative("Shaders/ShaderLibrary/AllIn13DShader_CommonFunctions.hlsl", shaderFolder);
+			res = CreateIncludeShaderEntry(res);
+
+			return res;
+		}
+
+		public string GetShaderFeaturesLibraryShaderEntry(string shaderFolder)
+		{
+			string res = ConvertPathToRelative("Shaders/ShaderLibrary/AllIn13DShader_Features.hlsl", shaderFolder);
+			res = GetIncludeWithPragmaShaderEntry(res);
+
 			return res;
 		}
 
@@ -208,7 +276,18 @@ namespace AllIn13DShader
 			return res;
 		}
 
-		public string GetPassFilePath()
+
+		private string ConvertPathToRelative(string localPath, string shaderFolder)
+		{
+			string res = Path.Combine(GlobalConfiguration.GetRootPluginFolderPath(), localPath);
+			res = Path.GetRelativePath(shaderFolder, res);
+
+			res = res.Replace("\\", "/");
+
+			return res;
+		}
+
+		public string GetPassFilePath(string shaderFolder)
 		{
 			string res = string.Empty;
 
@@ -240,6 +319,8 @@ namespace AllIn13DShader
 					break;
 			}
 
+			res = ConvertPathToRelative(res, shaderFolder);
+
 			return res;
 		}
 
@@ -260,7 +341,7 @@ namespace AllIn13DShader
 			return res;
 		}
 
-		public string GetEffectsLibrariesShaderEntry(EffectsProfile effectsProfile)
+		public string GetEffectsLibrariesShaderEntry(EffectsProfile effectsProfile, string shaderFolder)
 		{
 			string res = string.Empty;
 
@@ -273,11 +354,12 @@ namespace AllIn13DShader
 				if (!string.IsNullOrEmpty(libraryFileName))
 				{
 					string path = string.Format(EFFECT_LIBRARY_PATH_FORMAT, libraryFileName);
+					path = ConvertPathToRelative(path, shaderFolder);
 
 					string entry = CreateIncludeShaderEntry(path);
 
 					res += entry;
-					res += "\n";
+					res += Environment.NewLine;
 				}
 			}
 

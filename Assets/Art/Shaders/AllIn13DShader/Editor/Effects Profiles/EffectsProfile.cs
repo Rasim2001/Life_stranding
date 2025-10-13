@@ -16,10 +16,18 @@ namespace AllIn13DShader
 		public EffectsProfile(string id, string profileName)
 		{
 			this.id = id;
+
 			this.profileName = profileName;
+			FormatProfileName();
 
 			this.shaderGUID = string.Empty;
 			this.groups = new List<EffectsProfileGroup>();
+		}
+
+		private void FormatProfileName()
+		{
+			this.profileName = this.profileName.Replace("\\", "_");
+			this.profileName = this.profileName.Replace("/", "_");
 		}
 
 		public void InitFromOtherProfile(EffectsProfile copyFrom)

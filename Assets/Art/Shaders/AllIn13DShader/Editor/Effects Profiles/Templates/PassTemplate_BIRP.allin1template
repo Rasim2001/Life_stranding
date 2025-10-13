@@ -31,15 +31,15 @@ Pass
 	//</ALLIN1_EFFECTS>
 
 	#include "UnityCG.cginc"
-	#include_with_pragmas "../ShaderLibrary/AllIn13DShader_Features.hlsl"
+	<INCLUDE_ALL_IN_1_SHADER_FEATURES>
 	#include "AutoLight.cginc"
 	#include "UnityLightingCommon.cginc"
-	#include "../ShaderLibrary/AllIn13DShader_CommonStructs.hlsl"
-	#include "../ShaderLibrary/AllIn13DShader_CommonFunctions.hlsl"
+	<INCLUDE_COMMON_STRUCTS>
+	<INCLUDE_COMMON_FUNCTIONS>
 	<INCLUDE_PIPELINE_HELPER>
-	#include "../ShaderLibrary/AllIn13DShaderLight.hlsl"
+	<INCLUDE_ALL_IN_1_SHADER_LIGHT>
 	<INCLUDE_EFFECT_LIBRARIES>
-	#include "../ShaderLibrary/AllIn13DShaderCore.hlsl"
+	<INCLUDE_CORE_LIBRARY>
 	<INCLUDE_PASS>
 	
 	ENDHLSL

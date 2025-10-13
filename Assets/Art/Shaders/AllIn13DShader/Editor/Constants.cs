@@ -4,7 +4,7 @@ namespace AllIn13DShader
 {
 	public static class Constants
 	{
-		public static string VERSION = "2.2";
+		public static string VERSION = "2.21";
 		
 		public const string EFFECT_ATTRIBUTE_PREFIX = "Effect(";
 		public const string EFFECT_PROPERTY_ATTRIBUTE_PREFIX = "EffectProperty(";
@@ -60,16 +60,16 @@ namespace AllIn13DShader
 		public const string STANDARD_EXAMPLES_MATERIALS_LOCAL_PATH = "Demo/Materials/StandardExamples";
 		
 		/* Shader Passes Paths */
-		public const string MAIN_PASS_PATH			= "../ShaderLibrary/AllIn13DShader_BasePass.hlsl";
-		public const string LIGHT_ADD_PASS_PATH		= "../ShaderLibrary/AllIn13DShaderLightAddPass.hlsl";
-		public const string SHADOW_CASTER_PASS_PATH = "../ShaderLibrary/AllIn13DShader_ShadowCasterPass.hlsl";
-		public const string DEPTH_ONLY_PASS_PATH	= "../ShaderLibrary/AllIn13DShader_URP_DepthOnlyPass.hlsl";
-		public const string DEPTH_NORMALS_PASS_PATH = "../ShaderLibrary/AllIn13DShader_URP_DepthNormalsPass.hlsl";
-		public const string META_PASS_PATH			= "../ShaderLibrary/AllIn13DShader_URP_MetaPass.hlsl";
-		public const string OUTLINE_PASS_PATH		= "../ShaderLibrary/AllIn13DShader_OutlinePass.hlsl";
+		public const string MAIN_PASS_PATH			= "Shaders/ShaderLibrary/AllIn13DShader_BasePass.hlsl";
+		public const string LIGHT_ADD_PASS_PATH		= "Shaders/ShaderLibrary/AllIn13DShaderLightAddPass.hlsl";
+		public const string SHADOW_CASTER_PASS_PATH = "Shaders/ShaderLibrary/AllIn13DShader_ShadowCasterPass.hlsl";
+		public const string DEPTH_ONLY_PASS_PATH	= "Shaders/ShaderLibrary/AllIn13DShader_URP_DepthOnlyPass.hlsl";
+		public const string DEPTH_NORMALS_PASS_PATH = "Shaders/ShaderLibrary/AllIn13DShader_URP_DepthNormalsPass.hlsl";
+		public const string META_PASS_PATH			= "Shaders/ShaderLibrary/AllIn13DShader_URP_MetaPass.hlsl";
+		public const string OUTLINE_PASS_PATH		= "Shaders/ShaderLibrary/AllIn13DShader_OutlinePass.hlsl";
 
-		public const string BIRP_HELPER_PATH		= "../ShaderLibrary/AllIn13DShaderHelper_BIRP.hlsl";
-		public const string URP_HELPER_PATH			= "../ShaderLibrary/AllIn13DShaderHelper_URP.hlsl";
+		public const string BIRP_HELPER_PATH		= "Shaders/ShaderLibrary/AllIn13DShaderHelper_BIRP.hlsl";
+		public const string URP_HELPER_PATH			= "Shaders/ShaderLibrary/AllIn13DShaderHelper_URP.hlsl";
 
 		//====================================
 
@@ -79,6 +79,7 @@ namespace AllIn13DShader
 		public const string MATPROPERTY_RENDERING_MODE = "_RenderPreset";
 		public const string MATPROPERTY_BLEND_SRC = "_BlendSrc";
 		public const string MATPROPERTY_BLEND_DST = "_BlendDst";
+		public const string KEYWORD_ALLIN13D_SURFACE_TRANSPARENT = "_ALLIN13D_SURFACE_TRANSPARENT";
 
 		//Drawers IDs
 		public const string GENERAL_EFFECT_DRAWER_ID = "GENERAL_EFFECT_DRAWER";

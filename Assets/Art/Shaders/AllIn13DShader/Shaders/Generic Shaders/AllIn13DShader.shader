@@ -387,7 +387,7 @@ Shader "AllIn13DShader/AllIn13DShader"
             HLSLPROGRAM
 			#define URP_PASS
 			#define ALLIN1_FORWARD_PASS
-
+			 
             #pragma vertex BasicVertex 
             #pragma fragment BasicFragment
 
@@ -396,15 +396,8 @@ Shader "AllIn13DShader/AllIn13DShader"
 				#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/RenderingLayers.hlsl"
 			#endif
 
+			#include "../ShaderLibrary/AllIn13DShader_FeaturesURP_Defines.hlsl" 
 			#include_with_pragmas "../ShaderLibrary/AllIn13DShader_FeaturesURP.hlsl"
-
-
-			#ifdef ALLIN1_DOTS_INSTANCING_SUPPORT
-				#pragma target 4.5
-			#else
-				#pragma target 3.0
-			#endif
-
 
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
@@ -441,13 +434,8 @@ Shader "AllIn13DShader/AllIn13DShader"
 			#define URP_PASS
 			#define SHADOW_CASTER_PASS
 
+			#include "../ShaderLibrary/AllIn13DShader_FeaturesURP_Defines.hlsl"
 			#include_with_pragmas "../ShaderLibrary/AllIn13DShader_FeaturesURP.hlsl"
-
-			#ifdef ALLIN1_DOTS_INSTANCING_SUPPORT
-				#pragma target 4.5
-			#else
-				#pragma target 3.0
-			#endif
 
             #pragma vertex BasicVertexShadowCaster
             #pragma fragment BasicFragmentShadowCaster
@@ -502,13 +490,8 @@ Shader "AllIn13DShader/AllIn13DShader"
 
 			#define URP_PASS
             
+			#include "../ShaderLibrary/AllIn13DShader_FeaturesURP_Defines.hlsl"
 			#include_with_pragmas "../ShaderLibrary/AllIn13DShader_FeaturesURP.hlsl"
-
-			#ifdef ALLIN1_DOTS_INSTANCING_SUPPORT
-				#pragma target 4.5
-			#else
-				#pragma target 3.0 
-			#endif
 
             // -------------------------------------
             // Includes
@@ -555,13 +538,8 @@ Shader "AllIn13DShader/AllIn13DShader"
 				#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/RenderingLayers.hlsl"
 			#endif
 			
+			#include "../ShaderLibrary/AllIn13DShader_FeaturesURP_Defines.hlsl"
 			#include_with_pragmas "../ShaderLibrary/AllIn13DShader_FeaturesURP.hlsl"
-			
-			#ifdef ALLIN1_DOTS_INSTANCING_SUPPORT
-				#pragma target 4.5
-			#else
-				#pragma target 3.0
-			#endif
 			
 			//Includes
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -594,12 +572,6 @@ Shader "AllIn13DShader/AllIn13DShader"
 
             HLSLPROGRAM
             #pragma exclude_renderers gles gles3 glcore
-            #ifdef ALLIN1_DOTS_INSTANCING_SUPPORT
-				#pragma target 4.5
-			#else
-				#pragma target 3.0
-			#endif
-
 			#define URP_PASS
 
             #pragma vertex AllIn1VertexMeta
@@ -614,52 +586,6 @@ Shader "AllIn13DShader/AllIn13DShader"
             ENDHLSL
         }
 		/*<META_PASS_URP_END>*/
-
-		Pass
-		{
-			Name "AllIn13D_Outline_URP"
-			Tags {"LightMode"="OutlinePass"}
-			
-			Blend [_BlendSrc] [_BlendDst]
-			Cull Front
-
-			Stencil
-            {
-                 Ref [_StencilRef]
-                 Comp [_OutlineMode]
-			}
-
-			HLSLPROGRAM
-            #pragma vertex OutlinePass_Vertex
-            #pragma fragment OutlinePass_Fragment
-			
-			#define URP_PASS
-			#define ALLIN1_OUTLINE_PASS
-			
-			#include_with_pragmas "../ShaderLibrary/AllIn13DShader_FeaturesURP.hlsl"
-
-			#ifdef ALLIN1_DOTS_INSTANCING_SUPPORT 
-				#pragma target 4.5
-			#else
-				#pragma target 3.0
-			#endif
-
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-			#include_with_pragmas  "../ShaderLibrary/AllIn13DShader_Features.hlsl"
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-			#include "../ShaderLibrary/AllIn13DShader_CommonStructs.hlsl"
-			#include "../ShaderLibrary/AllIn13DShader_CommonFunctions.hlsl"
-			#include "../ShaderLibrary/AllIn13DShaderHelper_URP.hlsl"
-			#include "../ShaderLibrary/AllIn13DShaderLight.hlsl"
-			#include "../ShaderLibrary/AllIn13DShader_UVEffects.hlsl"
-			#include "../ShaderLibrary/AllIn13DShader_VertexEffects.hlsl"
-			#include "../ShaderLibrary/AllIn13DShader_FragmentEffects.hlsl"
-			#include "../ShaderLibrary/AllIn13DShader_AlphaEffects.hlsl"
-			#include "../ShaderLibrary/AllIn13DShaderCore.hlsl"
-			#include "../ShaderLibrary/AllIn13DShader_OutlinePass.hlsl"
-
-            ENDHLSL
-		}
 	}
 	
 	SubShader
