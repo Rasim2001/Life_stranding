@@ -9,7 +9,6 @@ namespace PickupObjects.PickUpOnPlatform
     public class PickupObjectBase : MonoBehaviour
     {
         [SerializeField] private float _speed = 1;
-        [SerializeField] private float _colorLerpSpeed = 5;
 
         private readonly Vector3 _startPosition = new Vector3(0, 0.007330549f, 0);
         private readonly Quaternion _startRotation = Quaternion.Euler(-90, 0, 0);
@@ -20,10 +19,14 @@ namespace PickupObjects.PickUpOnPlatform
 
         public bool IsFreezingOnPlatform;
 
-        private Material _robotPlaneMaterial;
+        private Material _planeBlinkMaterial;
+        private Material _defaultMaterial;
+
+        private bool _isBlinking;
+        private float _blinkSpeed;
 
         private Transform _platform;
-        private MeshRenderer _meshRenderer;
+        private SkinnedMeshRenderer _meshRenderer;
         private IPlatformObjectsService _platformObjectsService;
         private SphereCollider _sphereCollider;
 
@@ -31,16 +34,17 @@ namespace PickupObjects.PickUpOnPlatform
         public void Construct(IStaticDataService staticDataService, IPlatformObjectsService platformObjectsService)
         {
             _platformObjectsService = platformObjectsService;
-            _robotPlaneMaterial = new Material(staticDataService.MaterialsStaticData.RobotPlaneMaterial);
+            _planeBlinkMaterial = new Material(staticDataService.MaterialsStaticData.PlaneBlinkMaterial);
         }
 
-        public void Initialize(Transform platformTransform, MeshRenderer meshRenderer, SphereCollider sphereCollider)
+        public void Initialize(Transform platformTransform, SkinnedMeshRenderer meshRenderer,
+            SphereCollider sphereCollider)
         {
             _sphereCollider = sphereCollider;
             _platform = platformTransform;
             _meshRenderer = meshRenderer;
 
-            _meshRenderer.material = _robotPlaneMaterial;
+            _defaultMaterial = _meshRenderer.material;
         }
 
         private void Awake() =>
@@ -53,13 +57,18 @@ namespace PickupObjects.PickUpOnPlatform
 
             Vector3 localPos = transform.localPosition;
             float distanceFactor = Mathf.Max(Mathf.Abs(localPos.x), Mathf.Abs(localPos.z));
+            float distanceFactorNormalized = distanceFactor / _sphereCollider.radius;
+
 
             IsOnPlatform = distanceFactor < _sphereCollider.radius;
 
-            ChangeRobotPlaneColor(distanceFactor);
 
             if (IsOnPlatform)
+            {
+                ChangeRobotPlaneColor(distanceFactorNormalized);
                 SimulateRotation();
+            }
+
             else
                 StartSimulatePhysics();
         }
@@ -70,6 +79,8 @@ namespace PickupObjects.PickUpOnPlatform
 
         protected virtual void StartSimulatePhysics()
         {
+            ReturnToDefaultMaterial();
+
             _platformObjectsService.PickupObjects.Remove(this);
 
             Rigidbody.isKinematic = false;
@@ -95,19 +106,10 @@ namespace PickupObjects.PickUpOnPlatform
 
         private void ChangeRobotPlaneColor(float distanceFactor)
         {
-            Color targetColor;
-            if (distanceFactor < 0.33f)
-                targetColor = Color.blue;
-            else if (distanceFactor < 0.66f)
-                targetColor = new Color(0.5f, 0f, 0.5f);
+            if (distanceFactor > 0.5f)
+                SetBlinkMaterial();
             else
-                targetColor = Color.red;
-
-            _meshRenderer.material.color = Color.Lerp(
-                _meshRenderer.material.color,
-                targetColor,
-                Time.deltaTime * _colorLerpSpeed
-            );
+                ReturnToDefaultMaterial();
         }
 
         private void SimulateRotation()
@@ -127,6 +129,24 @@ namespace PickupObjects.PickUpOnPlatform
             movementVector = _startRotation * movementVector;
 
             transform.Translate(movementVector, Space.Self);
+        }
+
+        private void ReturnToDefaultMaterial()
+        {
+            if (!_isBlinking)
+                return;
+
+            _isBlinking = false;
+            _meshRenderer.material = _defaultMaterial;
+        }
+
+        private void SetBlinkMaterial()
+        {
+            if (_isBlinking)
+                return;
+
+            _isBlinking = true;
+            _meshRenderer.material = _planeBlinkMaterial;
         }
     }
 }
