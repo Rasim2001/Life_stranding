@@ -30,6 +30,7 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Enter();
 
+            Data.GlobalY = Spider.transform.position.y;
             Data.AirbornSpeed = SpiderStaticData.FallWithoutEnergySpeed;
             Data.IsFallingDownWithoutEnergyState = true;
 
@@ -63,6 +64,8 @@ namespace SpiderController.StateMachine.States.Airborn
 
         private async UniTask StandUpAsync()
         {
+            ShakeCamera();
+
             Data.IsStandingUpAfterFalling = true;
 
             if (IsInputZero())

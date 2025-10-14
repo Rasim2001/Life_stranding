@@ -26,13 +26,19 @@ namespace Infastructure.StaticData.Spider
         public float MaxAngle = 45f;
         public float PlaneRotationSpeed;
 
-        [Header("MouseLookZoom")]
+        [Header("MouseLook")]
         public float SmoothTime = 0.3f;
         public float CameraRotationSpeed = 6f;
         public float MouseRotationSpeedX = 6;
         public float MouseRotationSpeedY = 400f;
         public float ScrollSensitivity = 15f;
         public float WorldUpSmoothRotation = 2;
+
+        [Header("CameraShake")]
+        public float MinShakeDistance = 5;
+        public float MaxShakeDistance = 20;
+        public float MinForceShake = 0.5f;
+        public float MaxForceShake = 3;
 
         [Header("AirbornState")]
         public float FallSpeed;

@@ -1,3 +1,4 @@
+using System;
 using HighlightPlus;
 using HUD;
 using Infastructure.Common.Pickup;
@@ -47,6 +48,8 @@ namespace SpiderController
         public IMagnetFreezingService MagnetFreezingService => _magnetFreezingService;
         public ThrusterSystem ThrusterSystem => _thrusterSystem;
         public ScannerAnimator ScannerAnimator => _scannerAnimator;
+
+        public Action<float> OnShakeCameraHappened;
 
         private Rigidbody _rigidbody;
         private SpiderStateMachine _spiderStateMachine;
@@ -111,6 +114,7 @@ namespace SpiderController
 
             StateMachineData stateMachineData = new StateMachineData();
             stateMachineData.EnergyFillAmount = _staticDataService.SpiderStaticData.EnergyFillAmount;
+            stateMachineData.OnShakeHappened += distanceFalling => OnShakeCameraHappened?.Invoke(distanceFalling);
 
             EnergySystem energySystem = new EnergySystem(stateMachineData, _spiderUI.EnergyBar, _cutSceneService);
 

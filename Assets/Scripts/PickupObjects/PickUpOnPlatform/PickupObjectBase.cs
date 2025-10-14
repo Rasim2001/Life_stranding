@@ -22,7 +22,7 @@ namespace PickupObjects.PickUpOnPlatform
 
         private Material _robotPlaneMaterial;
 
-        [SerializeField] private Transform _platform;
+        private Transform _platform;
         private MeshRenderer _meshRenderer;
         private IPlatformObjectsService _platformObjectsService;
         private SphereCollider _sphereCollider;

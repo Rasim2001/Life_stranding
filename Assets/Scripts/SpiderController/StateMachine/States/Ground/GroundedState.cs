@@ -64,8 +64,6 @@ namespace SpiderController.StateMachine.States.Ground
 
             if (InputService.JerkPressed && Data.CurrentEnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling)
                 StateMachine.SwitchState<JerkState>();
-
-           
         }
 
         private async UniTask StartTerrainScan()

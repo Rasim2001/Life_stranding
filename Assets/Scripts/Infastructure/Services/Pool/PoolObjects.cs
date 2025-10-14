@@ -53,8 +53,6 @@ namespace Infastructure.Services.Pool
         {
             poolObj.gameObject.SetActive(false);
             poolObj.transform.SetParent(_parent);
-
-            Debug.Log("ReturnObjectToPool");
         }
 
 

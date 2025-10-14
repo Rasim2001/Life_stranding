@@ -68,6 +68,7 @@ namespace SpiderController.StateMachine.States.Airborn
 
             if (_offsetJumpingTime <= 0 && _spiderGroundChecker.IsTouchesWithLegs)
             {
+                Data.GlobalY = 0;
                 Data.YVelocity = 0;
 
                 if (IsInputZero())

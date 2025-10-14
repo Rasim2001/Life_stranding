@@ -26,6 +26,7 @@ namespace SpiderController.StateMachine.States.Airborn
             base.Enter();
 
             Data.YVelocity = 0;
+            Data.GlobalY = Spider.transform.position.y;
             Data.AirbornSpeed = SpiderStaticData.FallSpeed;
 
             Spider.MagnetFreezingService.Freeze();
@@ -57,6 +58,8 @@ namespace SpiderController.StateMachine.States.Airborn
 
             if (_spiderGroundChecker.IsTouchesWithLegs)
             {
+                ShakeCamera();
+
                 Data.YVelocity = 0;
 
                 if (IsInputZero())

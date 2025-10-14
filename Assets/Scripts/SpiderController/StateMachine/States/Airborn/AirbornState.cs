@@ -30,6 +30,7 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Exit();
 
+
             SetGroundLegs();
         }
 
@@ -73,6 +74,18 @@ namespace SpiderController.StateMachine.States.Airborn
             {
                 ref LegDataStruct legData = ref Legs[index];
                 legData.Leg.IsCrossingLeg = false;
+            }
+        }
+
+        protected void ShakeCamera()
+        {
+            float currentY = Spider.transform.position.y;
+            float distanceFalling = Mathf.Abs(Data.GlobalY - currentY);
+
+            if (distanceFalling > SpiderStaticData.MinShakeDistance)
+            {
+                Data.GlobalY = 0;
+                Data.OnShakeHappened?.Invoke(distanceFalling);
             }
         }
 
