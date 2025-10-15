@@ -43,7 +43,7 @@ namespace SpiderController.Platform
                 SelectPlatform(PlatformId.Box);
 
             if (_IsOnPlatform && _spiderStateMachine.IsCurrentState<AirbornState>() == false)
-                ChangeRobotPlaneColor();
+                ChangeMaterial();
         }
 
         public void ReturnToDefaultMaterial()
@@ -104,7 +104,7 @@ namespace SpiderController.Platform
             _currentPlatformData.MeshRenderer.material = _planeBlinkMaterial;
         }
 
-        private void ChangeRobotPlaneColor()
+        private void ChangeMaterial()
         {
             Vector3 closestPoint = _currentPlatformData.BlinkDetectionCollider.ClosestPoint(_pointPositionCached);
             closestPoint.y = 0;
