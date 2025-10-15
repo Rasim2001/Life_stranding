@@ -8,11 +8,10 @@ namespace PickupObjects.PickUpOnPlatform
     public class Flower : PickupObjectBase
     {
         [SerializeField] private MMF_Player _feedbackPlayer;
-        
+
         public Action OnDroppedFromPlatform;
 
         private FlowerPointIndicator _flowerPointIndicator;
-
 
         public void Initialize(FlowerPointIndicator flowerPointIndicator) =>
             _flowerPointIndicator = flowerPointIndicator;
@@ -27,7 +26,7 @@ namespace PickupObjects.PickUpOnPlatform
         protected override void StartSimulatePhysics()
         {
             base.StartSimulatePhysics();
-            
+
             _feedbackPlayer.PlayFeedbacks();
             _flowerPointIndicator.ShowTargetPoint();
 

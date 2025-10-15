@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Common.SceneMarkers;
 using HighlightPlus;
 using HUD;
 using Infastructure.Common.Pickup;
@@ -31,11 +32,12 @@ namespace SpiderController
     public class Spider : SerializedMonoBehaviour
     {
         [SerializeField] private SpiderUI _spiderUI;
-        [SerializeField] private FlowerChecker _flowerChecker;
-        [SerializeField] private BatteryProductChecker _batteryChecker;
         [SerializeField] private ThrusterSystem _thrusterSystem;
         [SerializeField] private ScannerAnimator _scannerAnimator;
+        [SerializeField] private FlowerChecker _flowerChecker;
+        [SerializeField] private BatteryProductChecker _batteryChecker;
         [SerializeField] private EnergyChecker _energyChecker;
+        [SerializeField] private ElephantChecker _elephantChecker;
 
         [SerializeField] private Transform _rotationPlaneTransform;
         [SerializeField] private GroundChecker _groundChecker;
@@ -66,6 +68,7 @@ namespace SpiderController
         private FlowerPickup _flowerPickup;
         private BatteryProductPickup _batteryProductPickup;
         private EnergyPickup _energyPickup;
+        private ElephantProductPickup _elephantProductPickup;
 
         private HudUI _hudUI;
 
@@ -112,6 +115,7 @@ namespace SpiderController
             _batteryProductPickup.Destroy();
             _flowerPickup.Destroy();
             _energyPickup.Destroy();
+            _elephantProductPickup.Destroy();
         }
 
         public void Initialize(Flower flower)
@@ -122,7 +126,7 @@ namespace SpiderController
             stateMachineData.EnergyFillAmount = _staticDataService.SpiderStaticData.EnergyFillAmount;
             stateMachineData.OnShakeHappened += distanceFalling => OnShakeCameraHappened?.Invoke(distanceFalling);
 
-          
+
             EnergySystem energySystem = new EnergySystem(stateMachineData, _spiderUI.EnergyBar, _cutSceneService);
 
             _spiderImpactReceiver = new SpiderImpactReceiver(stateMachineData, transform);
@@ -142,8 +146,11 @@ namespace SpiderController
 
             _energyPickup = new EnergyPickup(_inputService, _pickupDisplayer, _xRayService, _energyChecker,
                 SpiderUI.EnergyBar, stateMachineData, energyLegs);
-
             _energyPickup.Initialize();
+
+            _elephantProductPickup = new ElephantProductPickup(_inputService, _pickupDisplayer, _platformObjectsService,
+                _elephantChecker);
+            _elephantProductPickup.Initialize();
 
             _spiderUI.StickerUI.PlaySticker(StickerEnum.StartGame);
 
@@ -156,10 +163,9 @@ namespace SpiderController
                     _legs,
                     flower,
                     energySystem);
-            
+
             _platformSelector = new PlatformSelector(_staticDataService, _spiderStateMachine);
             _platformSelector.Initialize(_platformDatas);
-
         }
 
 
@@ -180,6 +186,7 @@ namespace SpiderController
             _spiderImpactReceiver.Update();
             _energyPickup.Update();
             _platformSelector.Update();
+            _elephantProductPickup.Update();
         }
 
         private void FixedUpdate()

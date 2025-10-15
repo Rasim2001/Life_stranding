@@ -11,5 +11,7 @@ namespace Infastructure.Services.PlatformObjects
 
         public bool HasAny<T>() where T : PickupObjectBase =>
             PickupObjects.Any(x => x is T);
+
+        public bool IsEmpty() => PickupObjects.Count == 0;
     }
 }

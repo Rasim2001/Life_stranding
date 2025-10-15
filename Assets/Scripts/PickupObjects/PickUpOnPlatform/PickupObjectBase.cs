@@ -1,8 +1,10 @@
+using System;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController;
 using SpiderController.Platform;
 using UnityEngine;
+using VInspector.Libs;
 using Zenject;
 
 namespace PickupObjects.PickUpOnPlatform
@@ -10,10 +12,13 @@ namespace PickupObjects.PickUpOnPlatform
     [RequireComponent(typeof(Rigidbody))]
     public class PickupObjectBase : MonoBehaviour
     {
-        [SerializeField] private float _speed = 1;
+        [SerializeField] private Vector3 _startRotationEuler;
+        [SerializeField] private Vector3 _startPositionVector;
 
-        private readonly Vector3 _startPosition = new Vector3(0, 0.007330549f, 0);
-        private readonly Quaternion _startRotation = Quaternion.Euler(-90, 0, 0);
+        [SerializeField] private float _speed = 1;
+        private Vector3 StartPosition => _startPositionVector;
+        private Quaternion StartRotation => Quaternion.Euler(_startRotationEuler);
+
         private Vector3 _customPositionOffset = Vector3.zero;
 
         public bool IsOnPlatform { get; private set; }
@@ -57,6 +62,8 @@ namespace PickupObjects.PickUpOnPlatform
 
         protected virtual void StartSimulatePhysics()
         {
+            Debug.Log("Start");
+
             _platformSelector.ReturnToDefaultMaterial();
 
             _platformObjectsService.PickupObjects.Remove(this);
@@ -69,6 +76,8 @@ namespace PickupObjects.PickUpOnPlatform
 
         public virtual void StopSimulatePhysics()
         {
+            Debug.Log("Stop");
+
             if (!_platformObjectsService.PickupObjects.Contains(this))
                 _platformObjectsService.PickupObjects.Add(this);
 
@@ -77,8 +86,8 @@ namespace PickupObjects.PickUpOnPlatform
 
             transform.SetParent(_platformArmature);
 
-            transform.localPosition = _startPosition + _customPositionOffset;
-            transform.localRotation = _startRotation;
+            transform.localPosition = StartPosition + _customPositionOffset;
+            transform.localRotation = StartRotation;
         }
 
 
@@ -96,7 +105,7 @@ namespace PickupObjects.PickUpOnPlatform
             );
 
             Vector3 movementVector = gravityForce * (Time.deltaTime * _speed);
-            movementVector = _startRotation * movementVector;
+            movementVector = StartRotation * movementVector;
 
             transform.Translate(movementVector, Space.Self);
         }

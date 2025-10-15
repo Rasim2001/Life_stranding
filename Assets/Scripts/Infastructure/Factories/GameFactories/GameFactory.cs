@@ -103,6 +103,7 @@ namespace Infastructure.Factories.GameFactories
                 BatteryProduct batteryProduct =
                     _diContainer.InstantiatePrefabForComponent<BatteryProduct>(prefab, position, Quaternion.identity,
                         null);
+                batteryProduct.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
 
                 IProduct product = batteryProduct.GetComponent<IProduct>();
                 product.ProductType = productType;
@@ -111,8 +112,6 @@ namespace Infastructure.Factories.GameFactories
                 xRayMarker.Type = productType;
 
                 _xRayService.Add(xRayMarker);
-
-                batteryProduct.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
             }
         }
 
@@ -137,6 +136,26 @@ namespace Infastructure.Factories.GameFactories
                 xRayMarker.Type = productType;
 
                 _xRayService.Add(xRayMarker);
+            }
+        }
+
+        public void CreateElephantProduct(Spider spider)
+        {
+            ProductType productType = ProductType.Elephant;
+
+            ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
+            GameObject prefab = productsStaticData.ProductsDictionary[productType];
+
+            foreach (WorldData data in _staticDataService.GameStaticData.GameDatas[ActiveSceneName].ElephantPoints)
+            {
+                ElephantProduct elephantProduct =
+                    _diContainer.InstantiatePrefabForComponent<ElephantProduct>(prefab, data.WorldPosition,
+                        data.WorldRotation,
+                        null);
+                elephantProduct.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
+
+                IProduct product = elephantProduct.GetComponent<IProduct>();
+                product.ProductType = productType;
             }
         }
 

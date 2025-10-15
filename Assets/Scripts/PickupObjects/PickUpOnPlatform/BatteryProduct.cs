@@ -19,18 +19,18 @@ namespace PickupObjects.PickUpOnPlatform
         private void Start() =>
             _xRayMarker = GetComponent<XRayMarker>();
 
-        protected override void StartSimulatePhysics()
-        {
-            base.StartSimulatePhysics();
-
-            _xRayService.Add(_xRayMarker);
-        }
-
         public override void StopSimulatePhysics()
         {
             base.StopSimulatePhysics();
 
             _xRayService.Remove(_xRayMarker);
+        }
+
+        protected override void StartSimulatePhysics()
+        {
+            base.StartSimulatePhysics();
+
+            _xRayService.Add(_xRayMarker);
         }
     }
 }

@@ -59,6 +59,7 @@ namespace SpiderController.Platform
         {
             _pointPositionCached = flowerPosition;
             _IsOnPlatform = _currentPlatformData.Collider.bounds.Contains(flowerPosition);
+
             return _IsOnPlatform;
         }
 
