@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using HighlightPlus;
 using HUD;
 using Infastructure.Common.Pickup;
@@ -11,7 +12,9 @@ using Infastructure.Services.XRay;
 using Infastructure.States;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects.PickUpOnPlatform;
+using Sirenix.OdinInspector;
 using SpiderController.PickUp;
+using SpiderController.Platform;
 using SpiderController.Scanner;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine;
@@ -25,37 +28,40 @@ using Zenject;
 namespace SpiderController
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class Spider : MonoBehaviour
+    public class Spider : SerializedMonoBehaviour
     {
         [SerializeField] private SpiderUI _spiderUI;
         [SerializeField] private FlowerChecker _flowerChecker;
         [SerializeField] private BatteryProductChecker _batteryChecker;
-        [SerializeField] private SkinnedMeshRenderer _boundPlaneMeshRender;
         [SerializeField] private ThrusterSystem _thrusterSystem;
         [SerializeField] private ScannerAnimator _scannerAnimator;
         [SerializeField] private EnergyChecker _energyChecker;
-        [SerializeField] private HighlightEffect[] _energyHighlightEffects;
 
         [SerializeField] private Transform _rotationPlaneTransform;
-        [SerializeField] private LegDataStruct[] _legs;
         [SerializeField] private GroundChecker _groundChecker;
+
+        [SerializeField] private HighlightEffect[] _energyHighlightEffects;
+        [SerializeField] private LegDataStruct[] _legs;
+        [SerializeField] private Dictionary<PlatformId, PlatformData> _platformDatas;
+
+        public IMagnetFreezingService MagnetFreezingService => _magnetFreezingService;
         public Rigidbody Rigidbody => _rigidbody;
         public GroundChecker GroundChecker => _groundChecker;
         public SpiderUI SpiderUI => _spiderUI;
         public SpiderImpactReceiver SpiderImpactReceiver => _spiderImpactReceiver;
         public Transform RotationPlaneTransform => _rotationPlaneTransform;
-        public SkinnedMeshRenderer BoundPlaneMeshRender => _boundPlaneMeshRender;
-        public IMagnetFreezingService MagnetFreezingService => _magnetFreezingService;
         public ThrusterSystem ThrusterSystem => _thrusterSystem;
         public ScannerAnimator ScannerAnimator => _scannerAnimator;
+        public PlatformSelector PlatformSelector => _platformSelector;
 
-        public Action<float> OnShakeCameraHappened;
+        [HideInEditorMode] public Action<float> OnShakeCameraHappened;
 
         private Rigidbody _rigidbody;
         private SpiderStateMachine _spiderStateMachine;
         private SpiderPlane _spiderPlane;
         private CheckPointChanger _checkPointChanger;
         private SpiderImpactReceiver _spiderImpactReceiver;
+        private PlatformSelector _platformSelector;
 
         private FlowerPickup _flowerPickup;
         private BatteryProductPickup _batteryProductPickup;
@@ -140,6 +146,10 @@ namespace SpiderController
 
             _spiderUI.StickerUI.PlaySticker(StickerEnum.StartGame);
 
+            _platformSelector = new PlatformSelector(_staticDataService);
+            _platformSelector.Initialize(_platformDatas);
+
+
             _spiderStateMachine =
                 new SpiderStateMachine(this,
                     stateMachineData,
@@ -167,6 +177,7 @@ namespace SpiderController
             _checkPointChanger.Update();
             _spiderImpactReceiver.Update();
             _energyPickup.Update();
+            _platformSelector.Update();
         }
 
         private void FixedUpdate()

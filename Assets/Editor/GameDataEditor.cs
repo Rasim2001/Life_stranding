@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Common.SceneMarkers;
 using Infastructure.StaticData;
@@ -11,6 +12,7 @@ namespace Editor
     [CustomEditor(typeof(GameStaticData))]
     public class GameDataEditor : OdinEditor
     {
+        [Obsolete("Obsolete")]
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();

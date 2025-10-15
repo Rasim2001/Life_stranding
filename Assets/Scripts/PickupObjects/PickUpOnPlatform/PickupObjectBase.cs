@@ -1,5 +1,7 @@
 using Infastructure.Services.PlatformObjects;
 using Infastructure.StaticData.StaticDataService;
+using SpiderController;
+using SpiderController.Platform;
 using UnityEngine;
 using Zenject;
 
@@ -19,32 +21,18 @@ namespace PickupObjects.PickUpOnPlatform
 
         public bool IsFreezingOnPlatform;
 
-        private Material _planeBlinkMaterial;
-        private Material _defaultMaterial;
-
-        private bool _isBlinking;
-        private float _blinkSpeed;
-
-        private Transform _platform;
-        private SkinnedMeshRenderer _meshRenderer;
+        private Transform _platformArmature;
         private IPlatformObjectsService _platformObjectsService;
-        private SphereCollider _sphereCollider;
+        private PlatformSelector _platformSelector;
 
         [Inject]
-        public void Construct(IStaticDataService staticDataService, IPlatformObjectsService platformObjectsService)
-        {
+        public void Construct(IStaticDataService staticDataService, IPlatformObjectsService platformObjectsService) =>
             _platformObjectsService = platformObjectsService;
-            _planeBlinkMaterial = new Material(staticDataService.MaterialsStaticData.PlaneBlinkMaterial);
-        }
 
-        public void Initialize(Transform platformTransform, SkinnedMeshRenderer meshRenderer,
-            SphereCollider sphereCollider)
+        public void Initialize(Transform platformTransform, PlatformSelector platformSelector)
         {
-            _sphereCollider = sphereCollider;
-            _platform = platformTransform;
-            _meshRenderer = meshRenderer;
-
-            _defaultMaterial = _meshRenderer.material;
+            _platformSelector = platformSelector;
+            _platformArmature = platformTransform;
         }
 
         private void Awake() =>
@@ -55,20 +43,10 @@ namespace PickupObjects.PickUpOnPlatform
             if (!IsOnPlatform || IsFreezingOnPlatform)
                 return;
 
-            Vector3 localPos = transform.localPosition;
-            float distanceFactor = Mathf.Max(Mathf.Abs(localPos.x), Mathf.Abs(localPos.z));
-            float distanceFactorNormalized = distanceFactor / _sphereCollider.radius;
-
-
-            IsOnPlatform = distanceFactor < _sphereCollider.radius;
-
+            IsOnPlatform = _platformSelector.IsOnPlatform(transform.position);
 
             if (IsOnPlatform)
-            {
-                ChangeRobotPlaneColor(distanceFactorNormalized);
                 SimulateRotation();
-            }
-
             else
                 StartSimulatePhysics();
         }
@@ -79,7 +57,7 @@ namespace PickupObjects.PickUpOnPlatform
 
         protected virtual void StartSimulatePhysics()
         {
-            ReturnToDefaultMaterial();
+            _platformSelector.ReturnToDefaultMaterial();
 
             _platformObjectsService.PickupObjects.Remove(this);
 
@@ -97,24 +75,16 @@ namespace PickupObjects.PickUpOnPlatform
             Rigidbody.isKinematic = true;
             IsOnPlatform = true;
 
-            transform.SetParent(_platform);
+            transform.SetParent(_platformArmature);
 
             transform.localPosition = _startPosition + _customPositionOffset;
             transform.localRotation = _startRotation;
         }
 
 
-        private void ChangeRobotPlaneColor(float distanceFactor)
-        {
-            if (distanceFactor > 0.5f)
-                SetBlinkMaterial();
-            else
-                ReturnToDefaultMaterial();
-        }
-
         private void SimulateRotation()
         {
-            Vector3 platformRotation = _platform.eulerAngles;
+            Vector3 platformRotation = _platformArmature.eulerAngles;
 
             float angleX = Mathf.Deg2Rad * platformRotation.x;
             float angleZ = Mathf.Deg2Rad * platformRotation.z;
@@ -129,24 +99,6 @@ namespace PickupObjects.PickUpOnPlatform
             movementVector = _startRotation * movementVector;
 
             transform.Translate(movementVector, Space.Self);
-        }
-
-        private void ReturnToDefaultMaterial()
-        {
-            if (!_isBlinking)
-                return;
-
-            _isBlinking = false;
-            _meshRenderer.material = _defaultMaterial;
-        }
-
-        private void SetBlinkMaterial()
-        {
-            if (_isBlinking)
-                return;
-
-            _isBlinking = true;
-            _meshRenderer.material = _planeBlinkMaterial;
         }
     }
 }

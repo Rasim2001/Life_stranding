@@ -70,10 +70,8 @@ namespace Infastructure.Factories.GameFactories
             hud.RegisterFlowerPoint(flower);
             hud.RegisterFinishTarget(_checkPointService.PointIndicator);
 
-            SphereCollider sphereCollider = spider.RotationPlaneTransform.GetComponent<SphereCollider>();
-
             flower.Initialize(hud.FlowerPointIndicator);
-            flower.Initialize(spider.RotationPlaneTransform, spider.BoundPlaneMeshRender, sphereCollider);
+            flower.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
             flower.StopSimulatePhysics();
 
             _xRayService.Initialize(hud.XRayCollectionContainer);
@@ -114,8 +112,7 @@ namespace Infastructure.Factories.GameFactories
 
                 _xRayService.Add(xRayMarker);
 
-                SphereCollider sphereCollider = spider.RotationPlaneTransform.GetComponent<SphereCollider>();
-                batteryProduct.Initialize(spider.RotationPlaneTransform, spider.BoundPlaneMeshRender, sphereCollider);
+                batteryProduct.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
             }
         }
 

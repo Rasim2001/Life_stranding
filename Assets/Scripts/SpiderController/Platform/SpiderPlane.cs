@@ -7,7 +7,7 @@ using SpiderController.UI;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace SpiderController
+namespace SpiderController.Platform
 {
     public class SpiderPlane
     {
