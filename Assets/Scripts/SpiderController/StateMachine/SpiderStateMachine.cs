@@ -64,6 +64,9 @@ namespace SpiderController.StateMachine
             _currentState.Enter();
         }
 
+        public bool IsCurrentState<T>() where T : ISpiderState =>
+            _currentState is T;
+
         public void HandleInput() => _currentState.HandleInput();
 
         public void Update() => _currentState.Update();

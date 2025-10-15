@@ -26,7 +26,6 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ALBEDOVERTEXCOLORMODE_REPLACE
-  - _ALPHA_CUTOFF_ON
   - _CAST_SHADOWS_ON
   - _COLORRAMPLIGHTINGSTAGE_BEFORELIGHTING
   - _COLOR_RAMP_ON
@@ -200,12 +199,12 @@ Material:
     - _AOMapEnabled: 0
     - _AOMapStrength: 1
     - _AddPrecomputedVelocity: 0
-    - _AdvancedConfigurationEnabled: 0
+    - _AdvancedConfigurationEnabled: 1
     - _AffectedByLightmaps: 0
     - _AlbedoVertexColorMode: 1
     - _AlbedoVertexColorOn: 0
     - _AlphaClip: 0
-    - _AlphaCutoffOn: 1
+    - _AlphaCutoffOn: 0
     - _AlphaCutoffValue: 0.25
     - _AlphaRoundOn: 0
     - _AlphaToMask: 0
@@ -257,7 +256,7 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EmissionEnabled: 0
-    - _EmissionSelfGlow: 1
+    - _EmissionSelfGlow: 20
     - _EnvironmentReflections: 1
     - _FaceDownCutoff: 0.25
     - _FadeAmount: 0
@@ -430,7 +429,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _CustomAmbientColor: {r: 0.65, g: 0.65, b: 0.65, a: 1}
     - _DepthGlowColor: {r: 1, g: 0.9869999, b: 0.6, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _FadeBurnColor: {r: 1, g: 1, b: 0, a: 1}
     - _GlitchOffset: {r: -0.5, g: 0, b: 0, a: 0}
     - _GradientHeightColor01: {r: 0.2, g: 0.2, b: 0.2, a: 1}

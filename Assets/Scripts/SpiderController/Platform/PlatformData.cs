@@ -7,7 +7,8 @@ namespace SpiderController.Platform
     public class PlatformData
     {
         public GameObject[] AllPieceObjects;
-        public Collider Collider;
         public SkinnedMeshRenderer MeshRenderer;
+        public Collider Collider;
+        public Collider BlinkDetectionCollider;
     }
 }

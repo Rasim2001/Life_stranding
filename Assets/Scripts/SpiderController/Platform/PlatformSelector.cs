@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using Infastructure.StaticData.StaticDataService;
+using SpiderController.StateMachine;
+using SpiderController.StateMachine.States.Airborn;
 using UnityEngine;
 
 namespace SpiderController.Platform
 {
     public class PlatformSelector
     {
+        private readonly SpiderStateMachine _spiderStateMachine;
         private Dictionary<PlatformId, PlatformData> _platformDatas;
 
         private readonly Material _planeBlinkMaterial;
@@ -16,10 +19,13 @@ namespace SpiderController.Platform
         private bool _IsOnPlatform;
 
         private PlatformData _currentPlatformData;
-        private Vector3 _flowerPositionCached;
+        private Vector3 _pointPositionCached;
 
-        public PlatformSelector(IStaticDataService staticDataService) =>
+        public PlatformSelector(IStaticDataService staticDataService, SpiderStateMachine spiderStateMachine)
+        {
+            _spiderStateMachine = spiderStateMachine;
             _planeBlinkMaterial = new Material(staticDataService.MaterialsStaticData.PlaneBlinkMaterial);
+        }
 
         public void Initialize(Dictionary<PlatformId, PlatformData> platformDatas)
         {
@@ -36,8 +42,24 @@ namespace SpiderController.Platform
             if (Input.GetKeyDown(KeyCode.Alpha2))
                 SelectPlatform(PlatformId.Box);
 
-            if (_IsOnPlatform)
-                ChangeRobotPlaneColor(_flowerPositionCached);
+            if (_IsOnPlatform && _spiderStateMachine.IsCurrentState<AirbornState>() == false)
+                ChangeRobotPlaneColor();
+        }
+
+        public void ReturnToDefaultMaterial()
+        {
+            if (!_isBlinking)
+                return;
+
+            _isBlinking = false;
+            _currentPlatformData.MeshRenderer.material = _defaultMaterial;
+        }
+
+        public bool IsOnPlatform(Vector3 flowerPosition)
+        {
+            _pointPositionCached = flowerPosition;
+            _IsOnPlatform = _currentPlatformData.Collider.bounds.Contains(flowerPosition);
+            return _IsOnPlatform;
         }
 
         private void InitializePlatform(PlatformId platformId)
@@ -73,39 +95,27 @@ namespace SpiderController.Platform
             _currentPlatformData = platformData;
         }
 
-        public bool IsOnPlatform(Vector3 flowerPosition)
+        private void SetBlinkMaterial()
         {
-            _flowerPositionCached = flowerPosition;
-            _IsOnPlatform = _currentPlatformData.Collider.bounds.Contains(flowerPosition);
-            return _IsOnPlatform;
-        }
-
-        public void ReturnToDefaultMaterial()
-        {
-            if (!_isBlinking)
+            if (_isBlinking)
                 return;
 
-            _isBlinking = false;
-            _currentPlatformData.MeshRenderer.material = _defaultMaterial;
+            _isBlinking = true;
+            _currentPlatformData.MeshRenderer.material = _planeBlinkMaterial;
         }
 
-        private void ChangeRobotPlaneColor(Vector3 point)
+        private void ChangeRobotPlaneColor()
         {
-            Bounds bounds = _currentPlatformData.Collider.bounds;
+            Vector3 closestPoint = _currentPlatformData.BlinkDetectionCollider.ClosestPoint(_pointPositionCached);
+            closestPoint.y = 0;
+            _pointPositionCached.y = 0;
 
-            Vector3 center = bounds.center;
-            Vector3 extents = bounds.extents;
+            bool isInside = (closestPoint - _pointPositionCached).sqrMagnitude < Mathf.Epsilon;
 
-            Vector3 offset = point - center;
-            Vector3 absOffset = new Vector3(Mathf.Abs(offset.x), 0, Mathf.Abs(offset.z));
-
-            Vector3 edgeDistance = extents - absOffset;
-            float minDistance = Mathf.Min(Mathf.Abs(edgeDistance.x), Mathf.Abs(edgeDistance.z));
-
-            if (minDistance < 0.3f)
-                SetBlinkMaterial();
-            else
+            if (isInside)
                 ReturnToDefaultMaterial();
+            else
+                SetBlinkMaterial();
         }
 
         private void Activate(PlatformData platformData, bool value)
@@ -117,16 +127,7 @@ namespace SpiderController.Platform
                 pieceObject.SetActive(value);
 
             platformData.Collider.enabled = value;
-        }
-
-
-        private void SetBlinkMaterial()
-        {
-            if (_isBlinking)
-                return;
-
-            _isBlinking = true;
-            _currentPlatformData.MeshRenderer.material = _planeBlinkMaterial;
+            platformData.BlinkDetectionCollider.enabled = value;
         }
     }
 }

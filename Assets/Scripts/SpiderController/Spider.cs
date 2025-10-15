@@ -122,6 +122,7 @@ namespace SpiderController
             stateMachineData.EnergyFillAmount = _staticDataService.SpiderStaticData.EnergyFillAmount;
             stateMachineData.OnShakeHappened += distanceFalling => OnShakeCameraHappened?.Invoke(distanceFalling);
 
+          
             EnergySystem energySystem = new EnergySystem(stateMachineData, _spiderUI.EnergyBar, _cutSceneService);
 
             _spiderImpactReceiver = new SpiderImpactReceiver(stateMachineData, transform);
@@ -146,9 +147,6 @@ namespace SpiderController
 
             _spiderUI.StickerUI.PlaySticker(StickerEnum.StartGame);
 
-            _platformSelector = new PlatformSelector(_staticDataService);
-            _platformSelector.Initialize(_platformDatas);
-
 
             _spiderStateMachine =
                 new SpiderStateMachine(this,
@@ -158,6 +156,10 @@ namespace SpiderController
                     _legs,
                     flower,
                     energySystem);
+            
+            _platformSelector = new PlatformSelector(_staticDataService, _spiderStateMachine);
+            _platformSelector.Initialize(_platformDatas);
+
         }
 
 
