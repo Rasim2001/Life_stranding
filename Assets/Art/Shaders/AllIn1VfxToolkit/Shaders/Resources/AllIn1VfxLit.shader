@@ -9,254 +9,211 @@
 ////////////////////////////////////////
 
 
-Shader "AllIn1SpriteShader/AllIn1SpriteShaderLit"
+Shader "AllIn1Vfx/AllIn1VfxLit"
 {
    Properties
    {
       
-	_MainTex ("Main Texture", 2D) = "white" {}	//0
-	_Color("Main Color", Color) = (1,1,1,1)		//1
-	_Alpha("General Alpha",  Range(0,1)) = 1	//2
+	_RenderingMode("Rendering Mode", float) = 0 // 0
+    _SrcMode("SrcMode", float) = 5 // 1
+    _DstMode("DstMode", float) = 10 // 2
+    _CullingOption("Culling Option", float) = 0 // 3
+    _ZWrite("Depth Write", float) = 0.0 // 4
+    _ZTestMode("Z Test Mode", float) = 4 // 5
+    _ColorMask("Color Write Mask", float) = 15 // 6
 
-	_GlowColor("Glow Color", Color) = (1,1,1,1) //3
-	_Glow("Glow Color Intensity", Range(0,100)) = 10 //4
-    _GlowGlobal("Global Glow Intensity", Range(1,100)) = 1 //5
-	[NoScaleOffset] _GlowTex("Glow Texture", 2D) = "white" {} //6
-
-	_FadeTex("Fade Texture", 2D) = "white" {} //7
-	_FadeAmount("Fade Amount",  Range(-0.1,1)) = -0.1 //8
-	_FadeBurnWidth("Fade Burn Width",  Range(0,1)) = 0.025 //9
-	_FadeBurnTransition("Burn Transition",  Range(0.01,0.5)) = 0.075 //10
-	_FadeBurnColor("Fade Burn Color", Color) = (1,1,0,1) //11
-	_FadeBurnTex("Fade Burn Texture", 2D) = "white" {} //12
-	_FadeBurnGlow("Fade Burn Glow",  Range(1,250)) = 2//13
+    _Alpha("Global Alpha", Range(0, 1)) = 1 //7
+    _Color("Global Color", Color) = (1,1,1,1) //8
         
-	_OutlineColor("Outline Base Color", Color) = (1,1,1,1) //14
-	_OutlineAlpha("Outline Base Alpha",  Range(0,1)) = 1 //15
-	_OutlineGlow("Outline Base Glow", Range(1,100)) = 1.5 //16
-	_OutlineWidth("Outline Base Width", Range(0,0.2)) = 0.004 //17
-	_OutlinePixelWidth("Outline Base Pixel Width", Int) = 1 //18
-		
-	[Space]
-	_OutlineTex("Outline Texture", 2D) = "white" {} //19
-	_OutlineTexXSpeed("Texture scroll speed X", Range(-50,50)) = 10 //20
-	_OutlineTexYSpeed("Texture scroll speed Y", Range(-50,50)) = 0 //21
+    _TimingSeed("Random Seed", Float) = 0.0 //9
+    _EditorDrawers("Editor Drawers", Int) = 60 //10
 
-    [Space]
-	_OutlineDistortTex("Outline Distortion Texture", 2D) = "white" {} //22
-	_OutlineDistortAmount("Outline Distortion Amount", Range(0,2)) = 0.5 //23
-	_OutlineDistortTexXSpeed("Distortion scroll speed X", Range(-50,50)) = 5 //24
-	_OutlineDistortTexYSpeed("Distortion scroll speed Y", Range(-50,50)) = 5 //25
+    _MainTex("Shape1 Texture", 2D) = "white" {} //11
+    [HDR] _ShapeColor("Shape1 Color", Color) = (1,1,1,1) //12
+    _ShapeXSpeed("Shape1 X Speed", Float) = 0 //13
+    _ShapeYSpeed("Shape1 Y Speed", Float) = 0 //14 
+    _ShapeContrast("Shape1 Contrast", Range (0, 10)) = 1 //15
+    _ShapeBrightness("Shape1 Brightness", Range (-1, 1)) = 0 //16
+    _ShapeDistortTex("Distortion Texture", 2D) = "black" {} //17
+    _ShapeDistortAmount("Distortion Amount", Range(0, 10)) = 0.5 //18
+    _ShapeDistortXSpeed("Scroll speed X", Float) = 0.1 //19
+    _ShapeDistortYSpeed("Scroll speed Y", Float) = 0.1 //20
+    _ShapeColorWeight("Shape1 RGB Weight", Range(0, 5)) = 1 //21
+    _ShapeAlphaWeight("Shape1 A Weight", Range(0, 5)) = 1 //22
+
+    _Shape2Tex ("Shape2 Texture", 2D) = "white" {} //23
+    [HDR] _Shape2Color("Shape2 Color", Color) = (1,1,1,1)
+    _Shape2XSpeed("Shape2 X Speed", Float) = 0
+    _Shape2YSpeed("Shape2 Y Speed", Float) = 0
+    _Shape2Contrast("Shape2 Contrast", Range (0, 10)) = 1
+    _Shape2Brightness("Shape2 Brightness", Range (-1, 1)) = 0
+    _Shape2DistortTex("Distortion Texture", 2D) = "black" {}
+    _Shape2DistortAmount("Distortion Amount", Range(0,10)) = 0.5
+    _Shape2DistortXSpeed("Scroll Speed X", Float) = 0.1
+    _Shape2DistortYSpeed("Scroll Speed Y", Float) = 0.1
+    _Shape2ColorWeight("Shape2 RGB Weight", Range(0, 5)) = 2
+    _Shape2AlphaWeight("Shape2 A Weight", Range(0, 5)) = 2 //34
+
+    _Shape3Tex("Shape3 Texture", 2D) = "white" {} //35
+    [HDR] _Shape3Color("Shape3 Color", Color) = (1,1,1,1)
+    _Shape3XSpeed("Shape3 X Speed", Float) = 0
+    _Shape3YSpeed("Shape3 Y Speed", Float) = 0
+    _Shape3Contrast("Shape3 Contrast", Range (0, 10)) = 1
+    _Shape3Brightness("Shape3 Brightness", Range (-1, 1)) = 0
+    _Shape3DistortTex("Distortion Texture", 2D) = "black" {}
+    _Shape3DistortAmount("Distortion Amount", Range(0, 10)) = 0.5
+    _Shape3DistortXSpeed("Scroll Speed X", Float) = 0.1
+    _Shape3DistortYSpeed("Scroll Speed Y", Float) = 0.1
+    _Shape3ColorWeight("Shape3 RGB Weight", Range(0, 5)) = 2
+    _Shape3AlphaWeight("Shape3 A Weight", Range(0, 5)) = 2 //46
+
+    _SoftFactor("Soft Particles Factor", Range(0.01, 3.0)) = 0.5 //47
+
+    [NoScaleOffset] _ColorRampTex("Color Ramp Texture", 2D) = "white" {} //48
+    _ColorRampLuminosity("Color Ramp luminosity", Range(-1, 1)) = 0 //49
+    [AllIn1VfxGradient] _ColorRampTexGradient("Color Ramp Gradient", 2D) = "white" {} //50
+    _ColorRampBlend ("Color Ramp Blend", Range(0, 1)) = 1 // 51
+
+    _AlphaCutoffValue("Alpha cutoff value", Range(0, 1)) = 0.25 //52
+    _AlphaStepMin("Smoothstep Min", Range(0, 1)) = 0.0 //53
+    _AlphaStepMax("Smoothstep Max", Range(0, 1)) = 0.075 //54
+    _AlphaFadeAmount("Fade Amount", Range(-0.1, 1)) = -0.1 //55
+    _AlphaFadeSmooth("Fade Transition", Range(0.0, 1.5)) = 0.075 //56
+    _AlphaFadePow("Fade Power", Range(0.001, 10)) = 1 //57
     	
-    _AlphaOutlineColor("Color", Color) = (1, 1, 1, 1) //26
-	_AlphaOutlineGlow("Outline Glow", Range(1,100)) = 5 //27
-	_AlphaOutlinePower("Power", Range(0, 5)) = 1 // 28
-	_AlphaOutlineMinAlpha("Min Alpha", Range(0, 1)) = 0 // 29
-	_AlphaOutlineBlend("Blend", Range(0, 1)) = 1 // 30
+    _TrailWidthPower("Trail Width Power", Range(0.1, 5.0)) = 1.0 //58
+    [AllIn1VfxGradient] _TrailWidthGradient("Trail Width Gradient", 2D) = "white" {} //59
 
-	_GradBlend("Gradient Blend", Range(0,1)) = 1 //31
-	_GradTopLeftCol("Top Color", Color) = (1,0,0,1) //32
-	_GradTopRightCol("Top Color 2", Color) = (1, 1, 0, 1) //33
-	_GradBotLeftCol("Bot Color", Color) = (0,0,1,1) //34
-	_GradBotRightCol("Bot Color 2", Color) = (0, 1, 0, 1) //35
+    _GlowColor("Glow Color", Color) = (1,1,1,1) //60
+    _Glow("Glow Color Intensity", float) = 0 //61
+    _GlowGlobal("Global Glow Intensity", float) = 1 //62
+    _GlowTex("Glow Mask Texture", 2D) = "white" {} //63
 
-	[NoScaleOffset] _ColorSwapTex("Color Swap Texture", 2D) = "black" {} //36
-	[HDR] _ColorSwapRed("Red Channel", Color) = (1,1,1,1) //37
-	_ColorSwapRedLuminosity("Red luminosity",  Range(-1,1)) = 0.5 //38
-	[HDR] _ColorSwapGreen("Green Channel", Color) = (1,1,1,1) //39
-	_ColorSwapGreenLuminosity("Green luminosity",  Range(-1,1)) = 0.5 //40
-	[HDR] _ColorSwapBlue("Blue Channel", Color) = (1,1,1,1) //41
-	_ColorSwapBlueLuminosity("Blue luminosity",  Range(-1,1)) = 0.5 //42
-
-	_HsvShift("Hue Shift", Range(0, 360)) = 180 //43
-	_HsvSaturation("Saturation", Range(0, 2)) = 1 //44
-	_HsvBright("Brightness", Range(0, 2)) = 1 //45
-
-	_HitEffectColor("Hit Effect Color", Color) = (1,1,1,1) //46
-	_HitEffectGlow("Glow Intensity", Range(1,100)) = 5 //47
-	[Space]
-	_HitEffectBlend("Hit Effect Blend", Range(0,1)) = 1 //48
-
-	_NegativeAmount("Negative Amount", Range(0, 1)) = 1 //49
-
-	_PixelateSize("Pixelate size", Range(4,512)) = 32 //50
-
-	[NoScaleOffset] _ColorRampTex("Color ramp Texture", 2D) = "white" {} //51
-	_ColorRampLuminosity("Color ramp luminosity",  Range(-1,1)) = 0 //52
-	[Toggle()] _ColorRampOutline("Affects everything?", float) = 0 //53
-
-	_GreyscaleLuminosity("Greyscale luminosity",  Range(-1,1)) = 0 //54
-	[Toggle()] _GreyscaleOutline("Affects everything?", float) = 0 //55
-	_GreyscaleTintColor("Greyscale Tint Color", Color) = (1,1,1,1) //56
-
-	_PosterizeNumColors("Number of Colors",  Range(0,100)) = 8 //57
-	_PosterizeGamma("Posterize Amount",  Range(0.1,10)) = 0.75 //58
-	[Toggle()] _PosterizeOutline("Affects everything?", float) = 0 //59
-
-	_BlurIntensity("Blur Intensity",  Range(0,100)) = 10 //60
-	[Toggle()] _BlurHD("Blur is Low Res?", float) = 0 //61
-
-	_MotionBlurAngle("Motion Blur Angle", Range(-1, 1)) = 0.1 //62
-	_MotionBlurDist("Motion Blur Distance", Range(-3, 3)) = 1.25 //63
-
-	_GhostColorBoost("Ghost Color Boost",  Range(0,5)) = 1 //64
-	_GhostTransparency("Ghost Transparency",  Range(0,1)) = 0 //65
-
-	_InnerOutlineColor("Inner Outline Color", Color) = (1,0,0,1) //66
-	_InnerOutlineThickness("Outline Thickness",  Range(0,3)) = 1 //67
-	_InnerOutlineAlpha("Inner Outline Alpha",  Range(0,1)) = 1 //68
-	_InnerOutlineGlow("Inner Outline Glow",  Range(1,250)) = 4 //69
-
-	_AlphaCutoffValue("Alpha cutoff value", Range(0, 1)) = 0.25 //70
-
-	[Toggle()] _OnlyOutline("Only render outline?", float) = 0 //71
-	[Toggle()] _OnlyInnerOutline("Only render inner outline?", float) = 0 //72
-
-	_HologramStripesAmount("Stripes Amount", Range(0, 1)) = 0.1 //73
-	_HologramUnmodAmount("Unchanged Amount", Range(0, 1)) = 0.0 //74
-	_HologramStripesSpeed("Stripes Speed", Range(-20, 20)) = 4.5 //75
-	_HologramMinAlpha("Min Alpha", Range(0, 1)) = 0.1 //76
-	_HologramMaxAlpha("Max Alpha", Range(0, 100)) = 0.75 //77
-
-	_ChromAberrAmount("ChromAberr Amount", Range(0, 1)) = 1 //78
-	_ChromAberrAlpha("ChromAberr Alpha", Range(0, 1)) = 0.4 //79
-
-	_GlitchAmount("Glitch Amount", Range(0, 20)) = 3 //80
-
-	_FlickerPercent("Flicker Percent", Range(0, 1)) = 0.05 //81
-	_FlickerFreq("Flicker Frequency", Range(0, 5)) = 0.2 //82
-	_FlickerAlpha("Flicker Alpha", Range(0, 1)) = 0 //83
-
-	_ShadowX("Shadow X Axis", Range(-0.5, 0.5)) = 0.1 //84
-	_ShadowY("Shadow Y Axis", Range(-0.5, 0.5)) = -0.05 //85
-	_ShadowAlpha("Shadow Alpha", Range(0, 1)) = 0.5 //86
-	_ShadowColor("Shadow Color", Color) = (0, 0, 0, 1) //87
-
-	_HandDrawnAmount("Hand Drawn Amount", Range(0, 20)) = 10 //88
-	_HandDrawnSpeed("Hand Drawn Speed", Range(1, 15)) = 5 //89
-
-	_GrassSpeed("Speed", Range(0,50)) = 2 //90
-	_GrassWind("Bend amount", Range(0,50)) = 20 //91
-	[Space]
-	[Toggle()] _GrassManualToggle("Manually animated?", float) = 0 //92
-	_GrassManualAnim("Manual Anim Value", Range(-1,1)) = 1 //93
-
-	_WaveAmount("Wave Amount", Range(0, 25)) = 7 //94
-	_WaveSpeed("Wave Speed", Range(0, 25)) = 10 //95
-	_WaveStrength("Wave Strength", Range(0, 25)) = 7.5 //96
-	_WaveX("Wave X Axis", Range(0, 1)) = 0 //97
-	_WaveY("Wave Y Axis", Range(0, 1)) = 0.5 //98
-
-	_RectSize("Rect Size", Range(1, 4)) = 1 //99
-
-	_OffsetUvX("X axis", Range(-1, 1)) = 0 //100
-	_OffsetUvY("Y axis", Range(-1, 1)) = 0 //101
-
-	_ClipUvLeft("Clipping Left", Range(0, 1)) = 0 //102
-	_ClipUvRight("Clipping Right", Range(0, 1)) = 0 //103
-	_ClipUvUp("Clipping Up", Range(0, 1)) = 0 //104
-	_ClipUvDown("Clipping Down", Range(0, 1)) = 0 //105
-
-	_TextureScrollXSpeed("Speed X Axis", Range(-5, 5)) = 1 //106
-	_TextureScrollYSpeed("Speed Y Axis", Range(-5, 5)) = 0 //107
-
-	_ZoomUvAmount("Zoom Amount", Range(0.1, 5)) = 0.5 //108
-
-	_DistortTex("Distortion Texture", 2D) = "white" {} //109
-	_DistortAmount("Distortion Amount", Range(0,2)) = 0.5 //110
-	_DistortTexXSpeed("Scroll speed X", Range(-50,50)) = 5 //111
-	_DistortTexYSpeed("Scroll speed Y", Range(-50,50)) = 5 //112
-
-	_TwistUvAmount("Twist Amount", Range(0, 3.1416)) = 1 //113
-	_TwistUvPosX("Twist Pos X Axis", Range(0, 1)) = 0.5 //114
-	_TwistUvPosY("Twist Pos Y Axis", Range(0, 1)) = 0.5 //115
-	_TwistUvRadius("Twist Radius", Range(0, 3)) = 0.75 //116
-
-	_RotateUvAmount("Rotate Angle(radians)", Range(0, 6.2831)) = 0 //117
-
-	_FishEyeUvAmount("Fish Eye Amount", Range(0, 0.5)) = 0.35 //118
-
-	_PinchUvAmount("Pinch Amount", Range(0, 0.5)) = 0.35 //119
-
-	_ShakeUvSpeed("Shake Speed", Range(0, 20)) = 2.5 //120
-	_ShakeUvX("X Multiplier", Range(0, 5)) = 1.5 //121
-	_ShakeUvY("Y Multiplier", Range(0, 5)) = 1 //122
-
-	_ColorChangeTolerance("Tolerance", Range(0, 1)) = 0.25 //123
-	_ColorChangeTarget("Color to change", Color) = (1, 0, 0, 1) //124
-	[HDR] _ColorChangeNewCol("New Color", Color) = (1, 1, 0, 1) //125
-	_ColorChangeLuminosity("New Color Luminosity", Range(0, 1)) = 0.0 //126
-
-	_RoundWaveStrength("Wave Strength", Range(0, 1)) = 0.7 //127
-	_RoundWaveSpeed("Wave Speed", Range(0, 5)) = 2 //128
-
-	[Toggle()] _BillboardY("Billboard on both axis?", float) = 0 //129
-	_ZWrite ("Depth Write", Float) = 1.0 // 130
-
-	_MySrcMode ("SrcMode", Float) = 5 // 131
-    _MyDstMode ("DstMode", Float) = 10 // 132
-
-    _ShineColor("Shine Color", Color) = (1,1,1,1) // 133
-    _ShineLocation("Shine Location", Range(0,1)) = 0.5 // 134
-    _ShineRotate("Rotate Angle(radians)", Range(0, 6.2831)) = 0 //135
-    _ShineWidth("Shine Width", Range(0.05,1)) = 0.1 // 136
-    _ShineGlow("Shine Glow", Range(0,100)) = 1 // 137
-	[NoScaleOffset] _ShineMask("Shine Mask", 2D) = "white" {} // 138
-
-	_GlitchSize("Glitch Size", Range(0.25, 5)) = 1 //139
-	_HologramStripeColor("Stripes Color", Color) = (0,1,1,1) //140
-	_GradBoostX("Boost X axis", Range(0.1, 5)) = 1.2 //141
-	_GradBoostY("Boost Y axis", Range(0.1, 5)) = 1.2 //142
-	[Toggle()] _GradIsRadial("Radial Gradient?", float) = 0 //143
-	_AlphaRoundThreshold("Round Threshold", Range(0.005, 1.0)) = 0.5 //144
-	_GrassRadialBend("Radial Bend", Range(0.0, 5.0)) = 0.1 //145
-
-	_ColorChangeTolerance2("Tolerance 2", Range(0, 1)) = 0.25 //146
-	_ColorChangeTarget2("Color to change 2", Color) = (1, 0, 0, 1) //147
-	[HDR] _ColorChangeNewCol2("New Color 2", Color) = (1, 1, 0, 1) //148
-	_ColorChangeTolerance3("Tolerance 3", Range(0, 1)) = 0.25 //149
-	_ColorChangeTarget3("Color to change 3", Color) = (1, 0, 0, 1) //150
-	[HDR] _ColorChangeNewCol3("New Color 3", Color) = (1, 1, 0, 1) //151
-
-	_Contrast ("Contrast", Range(0, 6)) = 1 // 152
-	_Brightness ("Brightness", Range(-1, 1)) = 0 // 153
-
-	_ColorSwapBlend ("Color Swap Blend", Range(0, 1)) = 1 // 154
-	_ColorRampBlend ("Color Ramp Blend", Range(0, 1)) = 1 // 155
-	_GreyscaleBlend ("Greyscale Blend", Range(0, 1)) = 1 // 156
-	_GhostBlend ("Ghost Blend", Range(0, 1)) = 1 // 157
-	_HologramBlend ("Hologram Blend", Range(0, 1)) = 1 // 158
-
-    [AllIn1ShaderGradient] _ColorRampTexGradient("Color ramp Gradient", 2D) = "white" {} //159
-
-	_OverlayTex("Overlay Texture", 2D) = "white" {} //160
-	_OverlayColor("Overlay Color", Color) = (1, 1, 1, 1) //161
-	_OverlayGlow("Overlay Glow", Range(0,25)) = 1 // 162
-	_OverlayBlend("Overlay Blend", Range(0, 1)) = 1 // 163
+    _DepthGlowDist("Depth Distance", Range(0.01, 10.0)) = 0.5 //64
+    _DepthGlowPow("Depth Power", Range(0.01, 10.0)) = 1 //65
+    _DepthGlowColor("Glow Color", Color) = (1,1,1,1) //66
+    _DepthGlow("Glow Color Intensity", float) = 1 //67
+    _DepthGlowGlobal("Global Glow Intensity", float) = 1 //68
+        
+    _MaskTex("Mask Texture", 2D) = "white" {} //69
+    _MaskPow("Mask Power", Range(0.001, 10)) = 1 //70
+        
+    _HsvShift("Hue Shift", Range(0, 360)) = 180 //71
+	_HsvSaturation("Saturation", Range(0, 2)) = 1 //72
+	_HsvBright("Brightness", Range(0, 2)) = 1 //73
+        
+    _RandomSh1Mult("Shape 1 Mult", Range(0, 1)) = 1.0 //74
+    _RandomSh2Mult("Shape 2 Mult", Range(0, 1)) = 1.0 //75
+    _RandomSh3Mult("Shape 3 Mult", Range(0, 1)) = 1.0 //76
+        
+    _PixelateSize("Pixelate size", Range(4, 512)) = 32 //77
+        
+    _DistortTex("Distortion Texture", 2D) = "black" {} //78
+	_DistortAmount("Distortion Amount", Range(0, 10)) = 0.5 //79
+	_DistortTexXSpeed("Scroll Speed X", Range(-50, 50)) = 5 //80
+	_DistortTexYSpeed("Scroll Speed Y", Range(-50, 50)) = 5 //81
+        
+    [HDR] _BackFaceTint("Backface Tint", Color) = (0.5, 0.5, 0.5, 1) //82
+    [HDR] _FrontFaceTint("Frontface Tint", Color) = (1, 1, 1, 1) //83
+        
+    _ShakeUvSpeed("Shake Speed", Range(0, 50)) = 20 //84
+	_ShakeUvX("X Multiplier", Range(-15, 15)) = 5 //85
+	_ShakeUvY("Y Multiplier", Range(-15, 15)) = 4 //86
+        
+    _WaveAmount("Wave Amount", Range(0, 25)) = 7 //87
+	_WaveSpeed("Wave Speed", Range(0, 25)) = 10 //88
+	_WaveStrength("Wave Strength", Range(0, 25)) = 7.5 //89
+	_WaveX("Wave X Axis", Range(0, 1)) = 0 //90
+	_WaveY("Wave Y Axis", Range(0, 1)) = 0.5 //91
+        
+    _RoundWaveStrength("Wave Strength", Range(0, 1)) = 0.7 //92
+	_RoundWaveSpeed("Wave Speed", Range(0, 5)) = 2 //93
+        
+    _TwistUvAmount("Twist Amount", Range(0, 3.1416)) = 1 //94
+	_TwistUvPosX("Twist Pos X Axis", Range(0, 1)) = 0.5 //95
+	_TwistUvPosY("Twist Pos Y Axis", Range(0, 1)) = 0.5 //96
+	_TwistUvRadius("Twist Radius", Range(0, 3)) = 0.75 //97
+        
+    _HandDrawnAmount("Hand Drawn Amount", Range(0, 40)) = 10 //98
+	_HandDrawnSpeed("Hand Drawn Speed", Range(1, 30)) = 5 //99
     	
-    _RadialStartAngle("Radial Start Angle", Range(0, 360)) = 90 //164
-	_RadialClip("Radial Clip", Range(0, 360)) = 45 //165
-	_RadialClip2("Radial Clip 2", Range(0, 360)) = 0 //166
+    _OffsetSh1("Shape 1 Offset Mult", Range(-5, 5)) = 1 //100
+    _OffsetSh2("Shape 2 Offset Mult", Range(-5, 5)) = 1 //101
+    _OffsetSh3("Shape 3 Offset Mult", Range(-5, 5)) = 1 //102
     	
-    _WarpStrength("Warp Strength", Range(0, 0.1)) = 0.025 //167
-	_WarpSpeed("Warp Speed", Range(0, 25)) = 8 //168
-	_WarpScale("Warp Scale", Range(0.05, 3)) = 0.5 //169
+    _DistNormalMap("Normal Map", 2D) = "bump" {} //103
+	_DistortionPower("Distortion Power", Float) = 10 //104
+	_DistortionBlend("Distortion Blend", Range(0, 1)) = 1 //105
+    _DistortionScrollXSpeed("Scroll speed X Axis", Float) = 0 //106
+	_DistortionScrollYSpeed("Scroll speed Y Axis", Float) = 0 //107
     	
-    _OverlayTextureScrollXSpeed("Speed X Axis", Range(-5, 5)) = 0.25 //170
-	_OverlayTextureScrollYSpeed("Speed Y Axis", Range(-5, 5)) = 0.25 //171
-
-    _ZTestMode ("Z Test Mode", Float) = 4
-    _CullingOption ("Culling Option", float) = 0
-
-	[HideInInspector] _MinXUV("_MinXUV", Range(0, 1)) = 0.0
-	[HideInInspector] _MaxXUV("_MaxXUV", Range(0, 1)) = 1.0
-	[HideInInspector] _MinYUV("_MinYUV", Range(0, 1)) = 0.0
-	[HideInInspector] _MaxYUV("_MaxYUV", Range(0, 1)) = 1.0
-	[HideInInspector] _RandomSeed("_MaxYUV", Range(0, 10000)) = 0.0
-    _EditorDrawers("Editor Drawers", Int) = 6
-
+    _TextureScrollXSpeed("Speed X Axis", Float) = 1 //108
+	_TextureScrollYSpeed("Speed Y Axis", Float) = 0 //109
+    	
+    _VertOffsetTex("Offset Noise Texture", 2D) = "white" {} //110
+	_VertOffsetAmount("Offset Amount", Range(0, 2)) = 0.5 //111
+	_VertOffsetPower("Offset Power", Range(0.01, 10)) = 1 //112
+	_VertOffsetTexXSpeed("Scroll Speed X", Range(-2, 2)) = 0.1 //113
+	_VertOffsetTexYSpeed("Scroll Speed Y", Range(-2, 2)) = 0.1 //114
+    	
+    _FadeTex("Fade Texture", 2D) = "white" {} //115
+	_FadeAmount("Fade Amount", Range(-0.1, 1)) = -0.1 //116
+	_FadeTransition("Fade Transition", Range(0.01, 0.75)) = 0.075 //117
+	_FadePower("Fade Power", Range(0.001, 10)) = 1 //118
+    _FadeScrollXSpeed("Speed X Axis", Float) = 0 //119
+	_FadeScrollYSpeed("Speed Y Axis", Float) = 0 //120
+	_FadeBurnTex("Fade Burn Texture", 2D) = "white" {} //121
+	[HDR] _FadeBurnColor("Fade Burn Color", Color) = (1,1,0,1) //122
+	_FadeBurnWidth("Fade Burn Width", Range(0, 0.2)) = 0.01 //123
+	_FadeBurnGlow("Fade Burn Glow", Range(1, 250)) = 5//124
+    	
+    [HDR] _ColorGradingLight("Light Color Tint", Color) = (1,1,1,1) //125
+    [HDR] _ColorGradingMiddle("Mid Tone Color Tint", Color) = (1,1,1,1) //126
+    [HDR] _ColorGradingDark("Dark/Shadow Color Tint", Color) = (1,1,1,1) //127
+    _ColorGradingMidPoint("Mid Point", Range(0.01, 0.99)) = 0.5 //128
+    	
+    _CamDistFadeStepMin("Far Fade Start Point", Range(0, 1000)) = 0.0 //129
+    _CamDistFadeStepMax("Far Fade End Point", Range(0, 1000)) = 100 //130
+    _CamDistProximityFade("Close Fade Start Point", Range(0, 250)) = 0.0 //131
+    	
+    _ScreenUvShDistScale("Scale With Dist Amount", Range(0, 1)) = 1 //132
+    _ScreenUvSh2DistScale("Scale With Dist Amount", Range(0, 1)) = 1 //133
+    _ScreenUvSh3DistScale("Scale With Dist Amount", Range(0, 1)) = 1 //134
+    	
+    [HDR] _RimColor("Rim Color", Color) = (1, 1, 1, 1) //135
+    _RimBias("Rim Bias", Range(0, 1)) = 0 //136
+    _RimScale("Rim Scale", Range(0, 25)) = 1 //137
+    _RimPower("Rim Power", Range(0.1, 20.0)) = 5.0 //138
+    _RimIntensity("Rim Intensity", Range(0.0, 50.0)) = 1  //139
+    _RimAddAmount("Add Amount (0 is mult)", Range(0.0, 1.0)) = 1  //140
+    _RimErodesAlpha("Erode Transparency", Range(0.0, 2.0)) = 0  //141
+    	
+    _Shape1MaskTex("Shape 1 Mask Texture", 2D) = "white" {} //142
+    _Shape1MaskPow("Shape 1 Mask Power", Range(0.001, 10)) = 1 //143
+    	
+    _LightAmount("Light Amount", Range(0, 1)) = 0//144
+    [HDR] _LightColor("Light Color", Color) = (1,1,1,1) //147
+    _ShadowAmount("Shadow Amount", Range(0, 1)) = 0.4//148
+    _ShadowStepMin("Shadow Min", Range(0, 1)) = 0.0 //149
+    _ShadowStepMax("Shadow Max", Range(0, 1)) = 1.0 //148
+        
+    _PosterizeNumColors("Number of Colors", Range(1, 30)) = 5 //149
+    	
+    _ShapeRotationOffset("Rotation Offset", Range(0, 6.28318530718)) = 0 //150
+    _ShapeRotationSpeed("Rotation Speed", Float) = 0 //151
+    _Shape2RotationOffset("Rotation Offset", Range(0, 6.28318530718)) = 0 //152
+    _Shape2RotationSpeed("Rotation Speed", Float) = 0 //153
+    _Shape3RotationOffset("Rotation Offset", Range(0, 6.28318530718)) = 0 //154
+    _Shape3RotationSpeed("Rotation Speed", Float) = 0 //155
+    	
+    _Sh1BlendOffset("Shape 1 Blend Offset", Range(-5, 5)) = 0 //156
+	_Sh2BlendOffset("Shape 2 Blend Offset", Range(-5, 5)) = 0 //157
+	_Sh3BlendOffset("Shape 3 Blend Offset", Range(-5, 5)) = 0 //158
+    	
 	[Normal][NoScaleOffset] _NormalMap("Normal Map", 2D) = "bump" {}
 	_NormalStrength("Normal Strength", Range(0, 15)) = 1.0
+
+    _DebugShape("Shape Debug Number", Int) = 1 //160 Needs to be last property
 
 
       [HideInInspector]_QueueOffset("_QueueOffset", Float) = 0
@@ -290,10 +247,15 @@ Cull Back
 ZTest LEqual
 ZWrite On
 
-            	Tags { "RenderType" = "Opaque" "Queue" = "Geometry" "PreviewType" = "Plane" }
+            	Tags
+    {
+        "RenderType" = "Opaque" "Queue" = "Geometry" "PreviewType" = "Sphere"
+    }   
 	Cull [_CullingOption]
 	ZWrite [_ZWrite]
 	ZTest [_ZTestMode]
+	ColorMask [_ColorMask]
+Lighting Off
 
 
             HLSLPROGRAM
@@ -344,81 +306,81 @@ ZWrite On
             
 
             
-	#pragma shader_feature_local GLOW_ON
-	#pragma shader_feature_local FADE_ON
-	#pragma shader_feature_local OUTBASE_ON
-	#pragma shader_feature_local ONLYOUTLINE_ON
-	#pragma shader_feature_local GRADIENT_ON
-	#pragma shader_feature_local GRADIENT2COL_ON
-	#pragma shader_feature_local RADIALGRADIENT_ON
-	#pragma shader_feature_local COLORSWAP_ON
-	#pragma shader_feature_local HSV_ON
-	#pragma shader_feature_local CHANGECOLOR_ON
-	#pragma shader_feature_local CHANGECOLOR2_ON
-	#pragma shader_feature_local CHANGECOLOR3_ON
-	#pragma shader_feature_local COLORRAMP_ON
-	#pragma shader_feature_local GRADIENTCOLORRAMP_ON
-	#pragma shader_feature_local HITEFFECT_ON
-	#pragma shader_feature_local NEGATIVE_ON
-	#pragma shader_feature_local PIXELATE_ON
-	#pragma shader_feature_local GREYSCALE_ON
-	#pragma shader_feature_local POSTERIZE_ON
-	#pragma shader_feature_local BLUR_ON
-	#pragma shader_feature_local MOTIONBLUR_ON
-	#pragma shader_feature_local GHOST_ON
-	#pragma shader_feature_local ALPHAOUTLINE_ON
-	#pragma shader_feature_local INNEROUTLINE_ON
-	#pragma shader_feature_local ONLYINNEROUTLINE_ON
-	#pragma shader_feature_local HOLOGRAM_ON
-	#pragma shader_feature_local CHROMABERR_ON
-	#pragma shader_feature_local GLITCH_ON
-	#pragma shader_feature_local FLICKER_ON
-	#pragma shader_feature_local SHADOW_ON
-	#pragma shader_feature_local SHINE_ON
-	#pragma shader_feature_local CONTRAST_ON
-	#pragma shader_feature_local OVERLAY_ON
-	#pragma shader_feature_local OVERLAYMULT_ON
-	#pragma shader_feature_local DOODLE_ON
-	#pragma shader_feature_local WIND_ON
-	#pragma shader_feature_local WAVEUV_ON
-	#pragma shader_feature_local ROUNDWAVEUV_ON
-	#pragma shader_feature_local RECTSIZE_ON
-	#pragma shader_feature_local OFFSETUV_ON
-	#pragma shader_feature_local CLIPPING_ON
-	#pragma shader_feature_local RADIALCLIPPING_ON
-	#pragma shader_feature_local TEXTURESCROLL_ON
-	#pragma shader_feature_local ZOOMUV_ON
-	#pragma shader_feature_local DISTORT_ON
-	#pragma shader_feature_local WARP_ON
-	#pragma shader_feature_local TWISTUV_ON
-	#pragma shader_feature_local ROTATEUV_ON
-	#pragma shader_feature_local POLARUV_ON
-	#pragma shader_feature_local FISHEYE_ON
-	#pragma shader_feature_local PINCH_ON
+    #pragma shader_feature_local TIMEISCUSTOM_ON
+    #pragma shader_feature_local ADDITIVECONFIG_ON
+    #pragma shader_feature_local PREMULTIPLYALPHA_ON
+    #pragma shader_feature_local PREMULTIPLYCOLOR_ON
+    #pragma shader_feature_local SPLITRGBA_ON
+    #pragma shader_feature_local SHAPEADD_ON
+
+    #pragma shader_feature_local SHAPE1SCREENUV_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local SHAPE2SCREENUV_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local SHAPE3SCREENUV_ON /////////////////Pipeline specific implementation
+
+    #pragma shader_feature_local SHAPEDEBUG_ON
+            
+    #pragma shader_feature_local SHAPE1CONTRAST_ON
+    #pragma shader_feature_local SHAPE1DISTORT_ON
+    #pragma shader_feature_local SHAPE1ROTATE_ON
+    #pragma shader_feature_local SHAPE1SHAPECOLOR_ON
+
+    #pragma shader_feature_local SHAPE2_ON
+    #pragma shader_feature_local SHAPE2CONTRAST_ON
+    #pragma shader_feature_local SHAPE2DISTORT_ON
+    #pragma shader_feature_local SHAPE2ROTATE_ON
+    #pragma shader_feature_local SHAPE2SHAPECOLOR_ON
+
+    #pragma shader_feature_local SHAPE3_ON
+    #pragma shader_feature_local SHAPE3CONTRAST_ON
+    #pragma shader_feature_local SHAPE3DISTORT_ON
+    #pragma shader_feature_local SHAPE3ROTATE_ON
+    #pragma shader_feature_local SHAPE3SHAPECOLOR_ON
+
+    #pragma shader_feature_local GLOW_ON
+    #pragma shader_feature_local GLOWTEX_ON
+    #pragma shader_feature_local DEPTHGLOW_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local MASK_ON
+    #pragma shader_feature_local COLORRAMP_ON
+    #pragma shader_feature_local COLORRAMPGRAD_ON
+    #pragma shader_feature_local COLORGRADING_ON
+    #pragma shader_feature_local HSV_ON
+    #pragma shader_feature_local POSTERIZE_ON
+    #pragma shader_feature_local PIXELATE_ON
+    #pragma shader_feature_local DISTORT_ON
 	#pragma shader_feature_local SHAKEUV_ON
-
-	#pragma shader_feature_local GLOWTEX_ON
-	#pragma shader_feature_local OUTTEX_ON
-	#pragma shader_feature_local OUTDIST_ON
-	#pragma shader_feature_local OUTBASE8DIR_ON
-	#pragma shader_feature_local OUTBASEPIXELPERF_ON
-	#pragma shader_feature_local COLORRAMPOUTLINE_ON
-	#pragma shader_feature_local GREYSCALEOUTLINE_ON
-	#pragma shader_feature_local POSTERIZEOUTLINE_ON
-	#pragma shader_feature_local BLURISHD_ON
-	#pragma shader_feature_local MANUALWIND_ON
-	#pragma shader_feature_local ATLAS_ON
-	#pragma shader_feature_local PREMULTIPLYALPHA_ON
-
-	#pragma shader_feature BILBOARD_ON
-	#pragma shader_feature BILBOARDY_ON
+    #pragma shader_feature_local WAVEUV_ON
+	#pragma shader_feature_local ROUNDWAVEUV_ON
+    #pragma shader_feature_local TWISTUV_ON
+    #pragma shader_feature_local DOODLE_ON
+    #pragma shader_feature_local OFFSETSTREAM_ON
+    #pragma shader_feature_local TEXTURESCROLL_ON
+    #pragma shader_feature_local VERTOFFSET_ON
+    #pragma shader_feature_local RIM_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local BACKFACETINT_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local POLARUV_ON
+    #pragma shader_feature_local POLARUVDISTORT_ON
+    #pragma shader_feature_local SHAPE1MASK_ON
+    #pragma shader_feature_local TRAILWIDTH_ON
+    #pragma shader_feature_local LIGHTANDSHADOW_ON
+    #pragma shader_feature_local SHAPETEXOFFSET_ON
+    #pragma shader_feature_local SHAPEWEIGHTS_ON
+            
+    #pragma shader_feature_local ALPHACUTOFF_ON
+    #pragma shader_feature_local ALPHASMOOTHSTEP_ON
+    #pragma shader_feature_local FADE_ON
+    #pragma shader_feature_local FADEBURN_ON
+    #pragma shader_feature_local ALPHAFADE_ON
+    #pragma shader_feature_local ALPHAFADEUSESHAPE1_ON
+    #pragma shader_feature_local ALPHAFADEUSEREDCHANNEL_ON
+    #pragma shader_feature_local ALPHAFADETRANSPARENCYTOO_ON
+    #pragma shader_feature_local ALPHAFADEINPUTSTREAM_ON
+    #pragma shader_feature_local CAMDISTFADE_ON
 
 	#pragma shader_feature NORMALMAP_ON
 
 
    #define _URP 1
-#define _USINGTEXCOORD1 1
-#define _USINGTEXCOORD2 1
+#define REQUIRE_DEPTH_TEXTURE
 
 
             // this has to be here or specular color will be ignored. Not in SG code
@@ -485,15 +447,15 @@ ZWrite On
          float3 worldNormal : TEXCOORD1;
          float4 worldTangent : TEXCOORD2;
           float4 texcoord0 : TEXCOORD3;
-          float4 texcoord1 : TEXCOORD4;
-          float4 texcoord2 : TEXCOORD5;
+         // float4 texcoord1 : TEXCOORD4;
+         // float4 texcoord2 : TEXCOORD5;
 
          // #if %TEXCOORD3REQUIREKEY%
-          float4 texcoord3 : TEXCOORD6;
+         // float4 texcoord3 : TEXCOORD6;
          // #endif
 
          // #if %SCREENPOSREQUIREKEY%
-         // float4 screenPos : TEXCOORD7;
+          float4 screenPos : TEXCOORD7;
          // #endif
 
          // #if %VERTEXCOLORREQUIREKEY%
@@ -520,19 +482,19 @@ ZWrite On
          #endif
 
          // #if %EXTRAV2F0REQUIREKEY%
-         // float4 extraV2F0 : TEXCOORD13;
+          float4 extraV2F0 : TEXCOORD13;
          // #endif
 
          // #if %EXTRAV2F1REQUIREKEY%
-         // float4 extraV2F1 : TEXCOORD14;
+          float4 extraV2F1 : TEXCOORD14;
          // #endif
 
          // #if %EXTRAV2F2REQUIREKEY%
-         // float4 extraV2F2 : TEXCOORD15;
+          float4 extraV2F2 : TEXCOORD15;
          // #endif
 
          // #if %EXTRAV2F3REQUIREKEY%
-         // float4 extraV2F3 : TEXCOORD16;
+          float4 extraV2F3 : TEXCOORD16;
          // #endif
 
          // #if %EXTRAV2F4REQUIREKEY%
@@ -697,7 +659,7 @@ ZWrite On
                #endif
 
                // #if %TEXCOORD3REQUIREKEY%
-                float4 texcoord3 : TEXCOORD3;
+               // float4 texcoord3 : TEXCOORD3;
                // #endif
 
                // #if %VERTEXCOLORREQUIREKEY%
@@ -724,7 +686,7 @@ ZWrite On
                float4 texcoord2 : TEXCOORD2;
 
                // #if %TEXCOORD3REQUIREKEY%
-                float4 texcoord3 : TEXCOORD3;
+               // float4 texcoord3 : TEXCOORD3;
                // #endif
 
                // #if %VERTEXCOLORREQUIREKEY%
@@ -732,19 +694,19 @@ ZWrite On
                // #endif
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // float4 extraV2F0 : TEXCOORD5;
+                float4 extraV2F0 : TEXCOORD5;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // float4 extraV2F1 : TEXCOORD6;
+                float4 extraV2F1 : TEXCOORD6;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // float4 extraV2F2 : TEXCOORD7;
+                float4 extraV2F2 : TEXCOORD7;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // float4 extraV2F3 : TEXCOORD8;
+                float4 extraV2F3 : TEXCOORD8;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -985,20 +947,116 @@ ZWrite On
 
             
 	half4 _Color;
-	half4 _MainTex_ST, _MainTex_TexelSize;
-	half _Alpha, _AlphaCutoffValue;
+	half _Alpha;
+	half _AlphaCutoffValue;
 
-	#if ATLAS_ON
-		half _MinXUV, _MaxXUV, _MinYUV, _MaxYUV;
+	half _TimingSeed;
+
+	#if TIMEISCUSTOM_ON
+		float4 globalCustomTime;
+	#endif
+
+	half4 _MainTex_ST, _ShapeColor;
+	half _ShapeXSpeed, _ShapeYSpeed, _ShapeColorWeight, _ShapeAlphaWeight;
+	
+	#if SHAPE1CONTRAST_ON
+		half _ShapeContrast, _ShapeBrightness;
+	#endif
+	
+	#if SHAPE1DISTORT_ON
+		half4 _ShapeDistortTex_ST;
+		half _ShapeDistortAmount, _ShapeDistortXSpeed, _ShapeDistortYSpeed;
+	#endif
+	
+	#if SHAPE1ROTATE_ON
+		half _ShapeRotationOffset, _ShapeRotationSpeed;
+	#endif
+	
+	#if OFFSETSTREAM_ON
+		half _OffsetSh1;
+	#endif
+	
+	#if SHAPEWEIGHTS_ON
+		half _Sh1BlendOffset;
+	#endif
+
+	#if SHAPE2_ON
+		half4 _Shape2Tex_ST, _Shape2Color;
+		half _Shape2XSpeed, _Shape2YSpeed, _Shape2ColorWeight, _Shape2AlphaWeight;
+		#if SHAPE2CONTRAST_ON
+			half _Shape2Contrast, _Shape2Brightness;
+		#endif
+		#if SHAPE2DISTORT_ON
+			half4 _Shape2DistortTex_ST;
+			half _Shape2DistortAmount, _Shape2DistortXSpeed, _Shape2DistortYSpeed;
+		#endif
+		#if SHAPE2ROTATE_ON
+			half _Shape2RotationOffset, _Shape2RotationSpeed;
+		#endif
+		#if OFFSETSTREAM_ON
+			half _OffsetSh2;
+		#endif
+		#if SHAPEWEIGHTS_ON
+			half _Sh2BlendOffset;
+		#endif
+	#endif
+
+	#if SHAPE3_ON
+		half4 _Shape3Tex_ST, _Shape3Color;
+		half _Shape3XSpeed, _Shape3YSpeed, _Shape3ColorWeight, _Shape3AlphaWeight;
+		#if SHAPE3CONTRAST_ON
+			half _Shape3Contrast, _Shape3Brightness;
+		#endif
+		#if SHAPE3DISTORT_ON
+			half4 _Shape3DistortTex_ST;
+			half _Shape3DistortAmount, _Shape3DistortXSpeed, _Shape3DistortYSpeed;
+		#endif
+		#if SHAPE3ROTATE_ON
+			half _Shape3RotationOffset, _Shape3RotationSpeed;
+		#endif
+		#if OFFSETSTREAM_ON
+			half _OffsetSh3;
+		#endif
+		#if SHAPEWEIGHTS_ON
+			half _Sh3BlendOffset;
+		#endif
 	#endif
 
 	#if GLOW_ON
 		half4 _GlowColor;
 		half _Glow, _GlowGlobal;
+		#if GLOWTEX_ON
+			half4 _GlowTex_ST;
+		#endif
 	#endif
-	 
+
+	#if MASK_ON
+		half4 _MaskTex_ST;
+		half _MaskPow;
+	#endif
+
+	#if COLORRAMP_ON
+		half _ColorRampLuminosity, _ColorRampBlend;
+	#endif
+
+	#if ALPHASMOOTHSTEP_ON
+		half _AlphaStepMin, _AlphaStepMax;
+	#endif
+
+	#if ALPHAFADE_ON
+		half _AlphaFadeAmount, _AlphaFadeSmooth, _AlphaFadePow;
+	#endif
+
 	#if HSV_ON
 		half _HsvShift, _HsvSaturation, _HsvBright;
+	#endif
+
+	#if POSTERIZE_ON
+		half _PosterizeNumColors;
+	#endif
+
+	#if PIXELATE_ON
+		half _PixelateSize;
 	#endif
 
 	#if DISTORT_ON
@@ -1006,203 +1064,101 @@ ZWrite On
 		half _DistortTexXSpeed, _DistortTexYSpeed, _DistortAmount;
 	#endif
 
-	#if FADE_ON
-		half4 _FadeBurnColor, _FadeTex_ST, _FadeBurnTex_ST;
-		half _FadeAmount, _FadeBurnWidth, _FadeBurnTransition,_FadeBurnGlow;
-	#endif
-
-	#if OUTBASE_ON
-		half4 _OutlineColor;
-		half _OutlineAlpha, _OutlineGlow, _OutlineWidth;
-		int _OutlinePixelWidth;
-	#endif
-
-	#if OUTTEX_ON
-		half4 _OutlineTex_ST;
-		half _OutlineTexXSpeed, _OutlineTexYSpeed;
-	#endif
-
-	#if OUTDIST_ON
-		half4 _OutlineDistortTex_ST;
-		half _OutlineDistortTexXSpeed, _OutlineDistortTexYSpeed, _OutlineDistortAmount;
-	#endif
-
-	#if ALPHAOUTLINE_ON
-		half _AlphaOutlineGlow, _AlphaOutlinePower, _AlphaOutlineMinAlpha, _AlphaOutlineBlend;
-		half4 _AlphaOutlineColor;
-	#endif
-
-	#if INNEROUTLINE_ON
-		half _InnerOutlineThickness, _InnerOutlineAlpha, _InnerOutlineGlow;
-		half4 _InnerOutlineColor;
-	#endif
-
-	#if GRADIENT_ON
-		half _GradBlend, _GradBoostX, _GradBoostY;
-		half4 _GradTopRightCol, _GradTopLeftCol, _GradBotRightCol, _GradBotLeftCol;
-	#endif
-
-	#if COLORSWAP_ON
-		half4 _ColorSwapRed, _ColorSwapGreen, _ColorSwapBlue;
-		half _ColorSwapRedLuminosity, _ColorSwapGreenLuminosity, _ColorSwapBlueLuminosity, _ColorSwapBlend;
-	#endif
-
-	#if CHANGECOLOR_ON
-		half4 _ColorChangeNewCol, _ColorChangeTarget;
-		half _ColorChangeTolerance, _ColorChangeLuminosity;
-	#endif
-	#if CHANGECOLOR2_ON
-		half4 _ColorChangeNewCol2, _ColorChangeTarget2;
-		half _ColorChangeTolerance2;
-	#endif
-	#if CHANGECOLOR3_ON
-		half4 _ColorChangeNewCol3, _ColorChangeTarget3;
-		half _ColorChangeTolerance3;
-	#endif
-
-	#if COLORRAMP_ON
-		half _ColorRampLuminosity, _ColorRampBlend;
-	#endif
-
-	#if HITEFFECT_ON
-		half4 _HitEffectColor;
-		half _HitEffectGlow, _HitEffectBlend;
-	#endif
-
-	#if NEGATIVE_ON
-		half _NegativeAmount;
-	#endif
-
-	#if PIXELATE_ON
-		half _PixelateSize;
-	#endif
-
-	#if GREYSCALE_ON
-		half _GreyscaleLuminosity, _GreyscaleBlend;
-		half4 _GreyscaleTintColor;
-	#endif
-
-	#if POSTERIZE_ON
-		half _PosterizeNumColors, _PosterizeGamma;
-	#endif
-
-	#if BLUR_ON
-		half _BlurIntensity;
-	#endif
-
-	#if MOTIONBLUR_ON
-		half _MotionBlurAngle, _MotionBlurDist;
-	#endif
-
-	#if GHOST_ON
-		half _GhostColorBoost, _GhostTransparency, _GhostBlend;
-	#endif
-
-	#if HOLOGRAM_ON
-		half _HologramStripesAmount, _HologramMinAlpha, _HologramUnmodAmount, _HologramStripesSpeed, _HologramMaxAlpha, _HologramBlend;
-		half4 _HologramStripeColor;
-	#endif
-
-	#if CHROMABERR_ON
-		half _ChromAberrAmount, _ChromAberrAlpha;
-	#endif
-
-	#if GLITCH_ON
-		half _GlitchAmount, _GlitchSize;
-	#endif
-
-	#if FLICKER_ON
-		half _FlickerFreq, _FlickerPercent, _FlickerAlpha;
-	#endif
-
-	#if SHADOW_ON
-		half _ShadowX, _ShadowY, _ShadowAlpha;
-		half4 _ShadowColor;
-	#endif
-
-	#if SHINE_ON
-		half4 _ShineColor;
-		half _ShineLocation, _ShineRotate, _ShineWidth, _ShineGlow;
-	#endif
-
-	#if CONTRAST_ON
-		half _Contrast, _Brightness;
-	#endif
-
-	#if OVERLAY_ON
-		half4 _OverlayTex_ST, _OverlayColor;
-		half _OverlayGlow, _OverlayBlend, _OverlayTextureScrollXSpeed, _OverlayTextureScrollYSpeed;
-	#endif
-
-	#if DOODLE_ON
-		half _HandDrawnAmount, _HandDrawnSpeed;
-	#endif
-
-	#if WIND_ON
-		half _GrassSpeed, _GrassWind, _GrassManualAnim, _GrassRadialBend;
-	#endif
-
-	#if WAVEUV_ON
-		float _WaveAmount, _WaveSpeed, _WaveStrength, _WaveX, _WaveY;
-	#endif
-
-	#if ROUNDWAVEUV_ON
-		half _RoundWaveStrength, _RoundWaveSpeed;
-	#endif
-
-	#if RECTSIZE_ON
-		half _RectSize;
-	#endif
-
-	#if OFFSETUV_ON
-		half _OffsetUvX, _OffsetUvY;
-	#endif
-
-	#if CLIPPING_ON
-		half _ClipUvLeft, _ClipUvRight, _ClipUvUp, _ClipUvDown;
-	#endif
-
-	#if RADIALCLIPPING_ON
-		half _RadialStartAngle, _RadialClip, _RadialClip2;
-	#endif
-
 	#if TEXTURESCROLL_ON
 		half _TextureScrollXSpeed, _TextureScrollYSpeed;
-	#endif
-
-	#if ZOOMUV_ON
-		half _ZoomUvAmount;
-	#endif
-
-	#if WARP_ON
-		half _WarpStrength, _WarpSpeed, _WarpScale;
-	#endif
-
-	#if TWISTUV_ON
-		half _TwistUvAmount, _TwistUvPosX, _TwistUvPosY, _TwistUvRadius;
-	#endif
-
-	#if ROTATEUV_ON
-		half _RotateUvAmount;
-	#endif
-
-	#if FISHEYE_ON
-		half _FishEyeUvAmount;
-	#endif
-
-	#if PINCH_ON
-		half _PinchUvAmount;
 	#endif
 
 	#if SHAKEUV_ON
 		half _ShakeUvSpeed, _ShakeUvX, _ShakeUvY;
 	#endif
 
+	#if WAVEUV_ON
+		half _WaveAmount, _WaveSpeed, _WaveStrength, _WaveX, _WaveY;
+	#endif
+
+	#if ROUNDWAVEUV_ON
+		half _RoundWaveStrength, _RoundWaveSpeed;
+	#endif
+
+	#if TWISTUV_ON
+		half _TwistUvAmount, _TwistUvPosX, _TwistUvPosY, _TwistUvRadius;
+	#endif
+
+	#if DOODLE_ON
+		half _HandDrawnAmount, _HandDrawnSpeed;
+	#endif
+
+	#if ROUNDWAVEUV_ON || PIXELATE_ON
+		half4 _MainTex_TexelSize;
+	#endif
+
+	#if VERTOFFSET_ON
+		half4 _VertOffsetTex_ST;
+		half _VertOffsetAmount, _VertOffsetPower, _VertOffsetTexXSpeed, _VertOffsetTexYSpeed;
+	#endif
+
+	#if FADE_ON
+		half4 _FadeTex_ST;
+		half _FadeAmount, _FadeTransition, _FadePower, _FadeScrollXSpeed, _FadeScrollYSpeed;
+		#if FADEBURN_ON
+			half4 _FadeBurnColor, _FadeBurnTex_ST;
+			half _FadeBurnWidth, _FadeBurnGlow;
+		#endif
+	#endif
+
+	#if COLORGRADING_ON
+		half3 _ColorGradingLight, _ColorGradingMiddle, _ColorGradingDark;
+		half _ColorGradingMidPoint;
+	#endif
+            
+	#if CAMDISTFADE_ON
+		half _CamDistFadeStepMin, _CamDistFadeStepMax, _CamDistProximityFade;
+	#endif
+
+	#if RIM_ON
+		half _RimBias, _RimScale, _RimPower, _RimIntensity, _RimAddAmount, _RimErodesAlpha;
+		half4 _RimColor;
+	#endif
+
+	#if BACKFACETINT_ON
+		half4 _BackFaceTint, _FrontFaceTint;
+	#endif
+
+	#if SHAPEDEBUG_ON
+		half _DebugShape;
+	#endif
+
+	#if SHAPE1MASK_ON
+		half4 _Shape1MaskTex_ST;
+		half _Shape1MaskPow;
+	#endif
+
+	#if TRAILWIDTH_ON
+		half _TrailWidthPower;
+	#endif
+
+	#if LIGHTANDSHADOW_ON
+		half3 _All1VfxLightDir;
+		half _ShadowAmount, _ShadowStepMin, _ShadowStepMax, _LightAmount;
+		half4 _LightColor;
+	#endif
+
+	#if SHAPETEXOFFSET_ON
+		half _RandomSh1Mult, _RandomSh2Mult, _RandomSh3Mult;
+	#endif
+
+	#if DEPTHGLOW_ON
+		half _DepthGlowDist, _DepthGlowPow, _DepthGlow, _DepthGlowGlobal;
+		half4 _DepthGlowColor;
+    #endif
+
+	#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+        half _ScreenUvShDistScale,_ScreenUvSh2DistScale, _ScreenUvSh3DistScale;
+	#endif
+
 	#if NORMALMAP_ON
 		half _NormalStrength;
 	#endif
-
-	float _RandomSeed;
 
 
 
@@ -1214,58 +1170,82 @@ ZWrite On
          
 
          
-	
+
 	TEXTURE2D(_MainTex);
 	SAMPLER(sampler_MainTex);
 
+	#if SHAPE1DISTORT_ON
+		TEXTURE2D(_ShapeDistortTex);
+		SAMPLER(sampler_ShapeDistortTex);
+	#endif
+
+	#if SHAPE2_ON
+		TEXTURE2D(_Shape2Tex);
+		SAMPLER(sampler_Shape2Tex);
+		#if SHAPE2DISTORT_ON
+			TEXTURE2D(_Shape2DistortTex);
+			SAMPLER(sampler_Shape2DistortTex);
+		#endif
+	#endif
+
+	#if SHAPE3_ON
+		TEXTURE2D(_Shape3Tex);
+		SAMPLER(sampler_Shape3Tex);
+		#if SHAPE3DISTORT_ON
+			TEXTURE2D(_Shape3DistortTex);
+			SAMPLER(sampler_Shape3DistortTex);
+		#endif
+	#endif
+
 	#if GLOW_ON
-		TEXTURE2D(_GlowTex);
-		SAMPLER(sampler_GlowTex);
+		#if GLOWTEX_ON
+			TEXTURE2D(_GlowTex);
+			SAMPLER(sampler_GlowTex);
+		#endif
+	#endif
+
+	#if MASK_ON
+		TEXTURE2D(_MaskTex);
+		SAMPLER(sampler_MaskTex);
+	#endif
+
+	#if COLORRAMP_ON
+		TEXTURE2D(_ColorRampTex);
+		SAMPLER(sampler_ColorRampTex);
+	#endif
+
+	#if COLORRAMPGRAD_ON
+		TEXTURE2D(_ColorRampTexGradient);
+		SAMPLER(sampler_ColorRampTexGradient);
+	#endif
+	
+	#if DISTORT_ON
+		TEXTURE2D(_DistortTex);
+		SAMPLER(sampler_DistortTex);
+	#endif
+
+	#if VERTOFFSET_ON
+		TEXTURE2D(_VertOffsetTex);
+		SAMPLER(sampler_VertOffsetTex);
 	#endif
 
 	#if FADE_ON
 		TEXTURE2D(_FadeTex);
 		SAMPLER(sampler_FadeTex);
-
-		TEXTURE2D(_FadeBurnTex);
-		SAMPLER(sampler_FadeBurnTex);
+		#if FADEBURN_ON
+			TEXTURE2D(_FadeBurnTex);
+			SAMPLER(sampler_FadeBurnTex);
+		#endif
 	#endif
 
-	#if DISTORT_ON
-		TEXTURE2D(_DistortTex);
-		SAMPLER(sampler_DistortTex);	
+	#if SHAPE1MASK_ON
+		TEXTURE2D(_Shape1MaskTex);
+		SAMPLER(sampler_Shape1MaskTex);
 	#endif
 
-	#if OUTTEX_ON
-		TEXTURE2D(_OutlineTex);
-		SAMPLER(sampler_OutlineTex);
-	#endif
-
-	#if OUTDIST_ON
-		TEXTURE2D(_OutlineDistortTex);
-		SAMPLER(sampler_OutlineDistortTex);
-	#endif
-
-	#if COLORSWAP_ON
-		TEXTURE2D(_ColorSwapTex);
-		SAMPLER(sampler_ColorSwapTex);
-	#endif
-
-	#if COLORRAMP_ON
-		TEXTURE2D(_ColorRampTex);
-		TEXTURE2D(_ColorRampTexGradient);
-		SAMPLER(sampler_ColorRampTex);
-		SAMPLER(sampler_ColorRampTexGradient);
-	#endif
-
-	#if SHINE_ON
-		TEXTURE2D(_ShineMask);
-		SAMPLER(sampler_ShineMask);
-	#endif
-
-	#if OVERLAY_ON
-		TEXTURE2D(_OverlayTex);
-		SAMPLER(sampler_OverlayTex);
+	#if TRAILWIDTH_ON
+		TEXTURE2D(_TrailWidthGradient);
+		SAMPLER(sampler_TrailWidthGradient);
 	#endif
 
 	#if NORMALMAP_ON
@@ -1273,225 +1253,124 @@ ZWrite On
 		SAMPLER(sampler_NormalMap);
 	#endif
 
-
-	half3 GetPixel(in int offsetX, in int offsetY, in half2 uv, in Texture2D _tex, in SamplerState _sampler)
+	half4 SampleTextureWithScroll(in Texture2D _tex, in SamplerState _sampler, in float2 uv, in half scrollXSpeed, in half scrollYSpeed, in float time)
 	{
-		half2 _uv = uv + half2(offsetX * _MainTex_TexelSize.x, offsetY * _MainTex_TexelSize.y);
-		half4 col = SAMPLE_TEXTURE2D(_tex, _sampler, _uv);
-		return col.rgb;
+		half2 _uv = uv;
+		_uv.x += (time * scrollXSpeed) % 1;
+		_uv.y += (time * scrollYSpeed) % 1;
+		return SAMPLE_TEXTURE2D(_tex, _sampler, _uv);
 	}
 
-
-	//BLURS-------------------------------------------------------------------------
-	half4 Blur(half2 uv, Texture2D source, SamplerState sampler_source, half Intensity)
+	half EaseOutQuint(half x) 
 	{
-		const half2 texelSize = 1.0 / _ScreenParams.xy;
-		const half4 color = SAMPLE_TEXTURE2D(source, sampler_source, uv);
-		const half2 offset = Intensity * texelSize;
-
-		half4 accumulatedColor = color;
-		half accumulatedWeight = 1.0;
-		for (int x = -1; x <= 1; x++)
-		{
-			for (int y = -1; y <= 1; y++)
-			{
-				const half2 sampleUV = uv + half2(x, y) * offset;
-				const half4 sampleColor = SAMPLE_TEXTURE2D(source, sampler_source, sampleUV);
-
-				accumulatedColor += sampleColor;
-				accumulatedWeight += 1.0;
-			}
-		}
-
-		half4 blurredColor = accumulatedColor / accumulatedWeight;
-		return blurredColor;
+		return 1 - pow(1 - x, 5);
 	}
 
-	half BlurHD_G(half bhqp, half x)
+	half RemapFloat(half inValue, half inMin, half inMax, half outMin, half outMax)
 	{
-		return exp(-(x * x) / (2.0 * bhqp * bhqp));
-	}
-	half4 BlurHD(half2 uv, Texture2D source, SamplerState sampler_source, half BlurAmount, half xScale, half yScale)
-	{
-		int iterations = 16;
-		int halfIterations = iterations / 2;
-		half sigmaX = 0.1 + BlurAmount * 0.5;
-		half sigmaY = sigmaX;
-		half total = 0.0;
-		half4 ret = half4(0, 0, 0, 0);
-		for (int iy = 0; iy < iterations; ++iy)
-		{
-			half fy = BlurHD_G(sigmaY, half(iy) -half(halfIterations));
-			half offsetY = half(iy - halfIterations) * 0.00390625 * xScale;
-			for (int ix = 0; ix < iterations; ++ix)
-			{
-				half fx = BlurHD_G(sigmaX, half(ix) - half(halfIterations));
-				half offsetX = half(ix - halfIterations) * 0.00390625 * yScale;
-				total += fx * fy;
-				ret += SAMPLE_TEXTURE2D(source, sampler_source, uv + half2(offsetX, offsetY)) * fx * fy;
-			}
-		}
-		return ret / total;
-	}
-	//-----------------------------------------------------------------------
-
-
-	//-------------------------------------------
-	half RemapFloat(half inValue, half inMin, half inMax, half outMin, half outMax){
 		return outMin + (inValue - inMin) * (outMax - outMin) / (inMax - inMin);
 	}
-	//-------------------------------------------
 
-	//-----------------------------------------------------------------------
-	half rand(half2 seed, half offset) {
-		return (frac(sin(dot(seed, half2(12.9898, 78.233))) * 43758.5453) + offset) % 1.0;
+	float2 RotateUvs(float2 uv, half rotation, half4 scaleAndTranslate)
+	{
+		half2 center = half2(0.5 * scaleAndTranslate.x + scaleAndTranslate.z, 0.5 * scaleAndTranslate.y + scaleAndTranslate.w);
+		half cosAngle = cos(rotation);
+		half sinAngle = sin(rotation);
+		uv -= center;
+		uv = mul(half2x2(cosAngle, -sinAngle, sinAngle, cosAngle), uv);
+		uv += center;
+		return uv; 
 	}
 
-	half rand2(half2 seed, half offset) {
-		return (frac(sin(dot(seed * floor(50 + (_Time.x % 1.0) * 12.), half2(127.1, 311.7))) * 43758.5453123) + offset) % 1.0;
-	}
+	half4 GetDebugColor(float4 resColor, half4 shape1, half4 shape2, half4 shape3)
+	{
+		half4 res = resColor;
 
-	half rand2CustomTime(half2 seed, half offset, half customTime) {
-		return (frac(sin(dot(seed * floor(50 + (customTime % 1.0) * 12.), half2(127.1, 311.7))) * 43758.5453123) + offset) % 1.0;
-	}
-	//-----------------------------------------------------------------------
+		//MAKE SURE THE FOLLOWING CODE BLOCK IS UNCOMMENTED-------------------------------------------
+        #if SHAPEDEBUG_ON
+			if(_DebugShape < 1.5) return shape1;
+			#if SHAPE2_ON
+				else if (_DebugShape < 2.5) return shape2;
+			#endif
+			#if SHAPE3_ON
+				else return shape3;
+			#endif
+        #endif
 
+		return res;
+	}
 
 	void Ext_ModifyVertex0 (inout VertexData v, inout ExtraV2F d)
 	{
-		//BILBOARD_ON
-		#if BILBOARD_ON
-			half3 camRight = mul((half3x3)unity_CameraToWorld, half3(1,0,0));
-			half3 camUp = half3(0,1,0);
-			#if BILBOARDY_ON
-				camUp = mul((half3x3)unity_CameraToWorld, half3(0,1,0));
+		//uvDistTex --> extraV2F0
+		//uvSh1DistTex --> extraV2F1
+		//uvSh2DistTex --> extraV2F2
+		//uvSh3DistTex --> extraV2F3
+ 
+		#if VERTOFFSET_ON
+			#if TIMEISCUSTOM_ON
+				const half time = v.texcoord0.z + globalCustomTime.y;
+			#else
+				const half time = v.texcoord0.z + _Time.y;
 			#endif
-			half3 localPos = v.vertex.x * camRight + v.vertex.y * camUp;
-			v.vertex = half4(localPos, 1);
-		#endif
-        //-----------------------------------------------------------
-
-        v.texcoord0.xy = TRANSFORM_TEX(v.texcoord0.xy, _MainTex);
-		half2 center = half2(0.5, 0.5);
-        #if ATLAS_ON
-		    center = half2((_MaxXUV + _MinXUV) / 2.0, (_MaxYUV + _MinYUV) / 2.0);
-		#endif
-		
-		//POLARUV_ON
-		#if POLARUV_ON
-			v.texcoord0.xy = v.texcoord0.xy - center;
+				half4 offsetUv = half4(TRANSFORM_TEX(v.texcoord0.xy, _VertOffsetTex), 0, 0);
+            	offsetUv.x += (time * _VertOffsetTexXSpeed) % 1;
+				offsetUv.y += (time * _VertOffsetTexYSpeed) % 1;
+                v.vertex.xyz += v.normal * _VertOffsetAmount * pow(SAMPLE_TEXTURE2D_LOD(_VertOffsetTex, sampler_VertOffsetTex, offsetUv, 0).r, _VertOffsetPower); 
 		#endif
 
-		//----------------------------------------
-
-		//ROTATEUV_ON
-		#if ROTATEUV_ON
-			half2 uvC = v.texcoord0.xy;
-			half cosAngle = cos(_RotateUvAmount);
-			half sinAngle = sin(_RotateUvAmount);
-			half2x2 rot = half2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
-			uvC -= center;
-			v.texcoord0.xy = mul(rot, uvC);
-			v.texcoord0.xy += center;
-		#endif
-		//--------------------
-
-		#if RECTSIZE_ON
-			v.vertex.xyz += (v.vertex.xyz * (_RectSize - 1.0));
+		#if DISTORT_ON && !POLARUVDISTORT_ON
+			d.extraV2F0.xy = TRANSFORM_TEX(v.texcoord0.xy, _DistortTex);
 		#endif
 
-		#if OUTTEX_ON
-			v.texcoord1.xy = TRANSFORM_TEX(v.texcoord0.xy, _OutlineTex);
+		#if SHAPE1DISTORT_ON && !POLARUVDISTORT_ON
+			d.extraV2F1.xy = TRANSFORM_TEX(v.texcoord0.xy, _ShapeDistortTex);
+        #endif
+
+		#if SHAPE2_ON
+			#if SHAPE2DISTORT_ON && !POLARUVDISTORT_ON
+				d.extraV2F2.xy = TRANSFORM_TEX(v.texcoord0.xy, _Shape2DistortTex);;
+			#endif
 		#endif
 
-		#if OUTDIST_ON
-			v.texcoord2.xy = TRANSFORM_TEX(v.texcoord0.xy, _OutlineDistortTex);
-		#endif
-
-		#if DISTORT_ON
-			v.texcoord3.xy = TRANSFORM_TEX(v.texcoord0.xy, _DistortTex);
-		#endif
+		#if SHAPE3_ON
+			#if SHAPE3DISTORT_ON && !POLARUVDISTORT_ON
+				d.extraV2F3.xy = TRANSFORM_TEX(v.texcoord0.xy, _Shape3DistortTex);
+			#endif
+        #endif
 	}
 
 	void Ext_SurfaceFunction0 (inout Surface o, ShaderData d)
 	{
-		half randomSeed = _RandomSeed;
+		//i.uvSeed -> d.texcoord0.xy
 
-		float2 uvRect = d.texcoord0;
-		half2 center = half2(0.5, 0.5);
-		#if ATLAS_ON
-			center = half2((_MaxXUV + _MinXUV) / 2.0, (_MaxYUV + _MinYUV) / 2.0);
-			uvRect = half2((d.texcoord0.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord0.y - _MinYUV) / (_MaxYUV - _MinYUV));
+		float seed = d.texcoord0.z + _TimingSeed;
+		#if TIMEISCUSTOM_ON
+			const float4 shaderTime = globalCustomTime;
+		#else
+			const float4 shaderTime = _Time;
 		#endif
-		half2 centerTiled = half2(center.x *  _MainTex_ST.x, center.y *  _MainTex_ST.y);
+		float time = shaderTime.y + seed;
 
-		//CLIPPING_ON
-		#if CLIPPING_ON
-			half2 tiledUv = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				tiledUv = half2((tiledUv.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUv.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			clip((1 - _ClipUvUp) - tiledUv.y);
-			clip(tiledUv.y - _ClipUvDown);
-			clip((1 - _ClipUvRight) - tiledUv.x);
-			clip(tiledUv.x - _ClipUvLeft);
-		#endif
-		//----------------------------------
+		#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half2 originalUvs = d.texcoord0.xy;
+        #endif
 
-		//RADIALCLIPPING_ON
-		#if RADIALCLIPPING_ON
-			half2 tiledUv2 = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				tiledUv2 = half2((tiledUv2.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUv2.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			half startAngle = _RadialStartAngle - _RadialClip;
-			half endAngle = _RadialStartAngle + _RadialClip2;
-			half offset0 = clamp(0, 360, startAngle + 360);
-			half offset360 = clamp(0, 360, endAngle - 360);
-			half2 atan2Coord = half2(lerp(-1, 1, tiledUv2.x), lerp(-1, 1, tiledUv2.y));
-			half atanAngle = atan2(atan2Coord.y, atan2Coord.x) * 57.3; // angle in degrees
-			if(atanAngle < 0) atanAngle = 360 + atanAngle;
-			if(atanAngle >= startAngle && atanAngle <= endAngle) discard;
-			if(atanAngle <= offset360) discard;
-			if(atanAngle >= offset0) discard;
+		#if PIXELATE_ON
+			half aspectRatio = _MainTex_TexelSize.x / _MainTex_TexelSize.y;
+			half2 pixelSize = float2(_PixelateSize, _PixelateSize * aspectRatio);
+			d.texcoord0.xy = floor(d.texcoord0.xy * pixelSize) / pixelSize;
 		#endif
 
-		//-----------------------------
-
-		//TEXTURESCROLL_ON && ATLAS_ON
-		#if TEXTURESCROLL_ON && ATLAS_ON
-			d.texcoord0.xy = half2(_MinXUV + ((_MaxXUV - _MinXUV) * (abs(((_Time.y + randomSeed) * _TextureScrollXSpeed) + uvRect.x) % 1)),
-			_MinYUV + ((_MaxYUV - _MinYUV) * (abs(((_Time.y + randomSeed) * _TextureScrollYSpeed) + uvRect.y) % 1)));
-		#endif
-		//----------------------------
-
-		//OFFSETUV_ON
-		#if OFFSETUV_ON
-			#if ATLAS_ON
-				d.texcoord0.xy = half2(_MinXUV + ((_MaxXUV - _MinXUV) * (abs((_OffsetUvX + uvRect.x) % 1))),
-				_MinYUV + ((_MaxYUV - _MinYUV) * (abs(_OffsetUvY + uvRect.y) % 1)));
-			#else
-				d.texcoord0.xy += half2(_OffsetUvX, _OffsetUvY);
-			#endif
+		#if NORMALMAP_ON
+			half4 normalSample = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, d.texcoord0.xy);
+			half3 normalTS = UnpackNormal(normalSample);
+			normalTS.xy *= _NormalStrength;
+			o.Normal = normalTS;
 		#endif
 
-		//----------------------
-
-		//POLARUV_ON
-		#if POLARUV_ON
-			d.texcoord0.xy = half2(atan2(d.texcoord0.y, d.texcoord0.x) / (2.0f * 3.141592653589f), length(d.texcoord0.xy));
-			d.texcoord0.xy *= _MainTex_ST.xy;
-		#endif
-
-		//--------------------------------------
-
-		//TWISTUV_ON
 		#if TWISTUV_ON
-			#if ATLAS_ON
-				_TwistUvPosX = ((_MaxXUV - _MinXUV) * _TwistUvPosX) + _MinXUV;
-				_TwistUvPosY = ((_MaxYUV - _MinYUV) * _TwistUvPosY) + _MinYUV;
-			#endif
-			half2 tempUv = d.texcoord0.xy - half2(_TwistUvPosX *  _MainTex_ST.x, _TwistUvPosY *  _MainTex_ST.y);
+			half2 tempUv = d.texcoord0.xy - half2(_TwistUvPosX * _MainTex_ST.x, _TwistUvPosY * _MainTex_ST.y);
 			_TwistUvRadius *= (_MainTex_ST.x + _MainTex_ST.y) / 2;
 			half percent = (_TwistUvRadius - length(tempUv)) / _TwistUvRadius;
 			half theta = percent * percent * (2.0 * sin(_TwistUvAmount)) * 8.0;
@@ -1499,593 +1378,505 @@ ZWrite On
 			half c = cos(theta);
 			half beta = max(sign(_TwistUvRadius - length(tempUv)), 0.0);
 			tempUv = half2(dot(tempUv, half2(c, -s)), dot(tempUv, half2(s, c))) * beta +	tempUv * (1 - beta);
-			tempUv += half2(_TwistUvPosX *  _MainTex_ST.x, _TwistUvPosY *  _MainTex_ST.y);
+			tempUv += half2(_TwistUvPosX * _MainTex_ST.x, _TwistUvPosY * _MainTex_ST.y);
 			d.texcoord0.xy = tempUv;
 		#endif
 
-		//--------------------------------------------
-
-		//FISHEYE_ON
-		#if FISHEYE_ON
-			half bind = length(centerTiled);
-			half2 dF = d.texcoord0.xy - centerTiled;
-			half dFlen = length(dF);
-			half fishInt = (3.14159265359 / bind) * (_FishEyeUvAmount + 0.001);
-			d.texcoord0.xy = centerTiled + (dF / (max(0.0001, dFlen))) * tan(dFlen * fishInt) * bind / tan(bind * fishInt);
-		#endif
-		//---------------------------------------------
-
-		//PINCH_ON
-		#if PINCH_ON
-			half2 dP = d.texcoord0.xy - centerTiled;
-			half pinchInt = (3.141592 / length(centerTiled)) * (-_PinchUvAmount + 0.001);
-			d.texcoord0.xy = centerTiled + normalize(dP) * atan(length(dP) * -pinchInt * 10.0) * 0.5 / atan(-pinchInt * 5);
-		#endif
-
-		//---------------------------------------------
-
-		//ZOOMUV_ON
-		#if ZOOMUV_ON
-			d.texcoord0.xy -= centerTiled;
-			d.texcoord0.xy = d.texcoord0.xy * _ZoomUvAmount;
-			d.texcoord0.xy += centerTiled;
-		#endif
-
-		//-----------------------------------------------
-
-		//DOODLE_ON
 		#if DOODLE_ON
-			half2 uvCopy = uvRect;
-			_HandDrawnSpeed = (floor((_Time.x + randomSeed) * 20 * _HandDrawnSpeed) / _HandDrawnSpeed) * _HandDrawnSpeed;
+			half2 uvCopy = d.texcoord0.xy;
+			_HandDrawnSpeed = (floor((shaderTime.x + seed) * 20 * _HandDrawnSpeed) / _HandDrawnSpeed) * _HandDrawnSpeed;
 			uvCopy.x = sin((uvCopy.x * _HandDrawnAmount + _HandDrawnSpeed) * 4);
 			uvCopy.y = cos((uvCopy.y * _HandDrawnAmount + _HandDrawnSpeed) * 4);
 			d.texcoord0.xy = lerp(d.texcoord0.xy, d.texcoord0.xy + uvCopy, 0.0005 * _HandDrawnAmount);
 		#endif
 
-		//--------------------------
-
-		//SHAKEUV_ON
 		#if SHAKEUV_ON
-			half xShake = sin((_Time.x + randomSeed) * _ShakeUvSpeed * 50) * _ShakeUvX;
-			half yShake = cos((_Time.x + randomSeed) * _ShakeUvSpeed * 50) * _ShakeUvY;
+			half xShake = sin((shaderTime.x + seed) * _ShakeUvSpeed * 50) * _ShakeUvX;
+			half yShake = cos((shaderTime.x + seed) * _ShakeUvSpeed * 50) * _ShakeUvY;
 			d.texcoord0.xy += half2(xShake * 0.012, yShake * 0.01);
 		#endif
 
-		//-------------------------------------------
-
-		//RECTSIZE_ON
-		#if RECTSIZE_ON
-			d.texcoord0.xy = d.texcoord0.xy * (_RectSize).xx + (((-_RectSize * 0.5) + 0.5)).xx;
-		#endif
-
-		//-------------------------------------------
-
-		//DISTORT_ON
-		#if DISTORT_ON
-			#if ATLAS_ON
-				d.texcoord3.x = d.texcoord3.x * (1 / (_MaxXUV - _MinXUV));
-				d.texcoord3.y = d.texcoord3.y * (1 / (_MaxYUV - _MinYUV)); 
-			#endif
-
-			d.texcoord3.x += ((_Time.x + _RandomSeed) * _DistortTexXSpeed) % 1;
-			d.texcoord3.y += ((_Time.x + _RandomSeed) * _DistortTexYSpeed) % 1;
-			half distortAmnt = (SAMPLE_TEXTURE2D(_DistortTex, sampler_DistortTex, d.texcoord3.xy).r - 0.5) * 0.2 * _DistortAmount;
-			d.texcoord0.x += distortAmnt;
-			d.texcoord0.y += distortAmnt;
-		#endif
-		//-------------------------------------------------------
-
-		//WARP_ON
-		#if WARP_ON
-            half2 warpUv = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				warpUv = half2((warpUv.x - _MinXUV) / (_MaxXUV - _MinXUV), (warpUv.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			const float tau = 6.283185307179586;
-            float xWarp = (_Time.y + randomSeed) * _WarpSpeed + warpUv.x * tau / _WarpScale;
-            float yWarp = (_Time.y + randomSeed) * _WarpSpeed + warpUv.y * tau / _WarpScale;
-            float2 warp = float2(sin(xWarp), sin(yWarp)) * _WarpStrength;
-            d.texcoord0.xy += warp;
-		#endif
-
-		//-------------------------------------------------------
-
-		//WAVEUV_ON
 		#if WAVEUV_ON
-			float2 uvWave = half2(_WaveX * _MainTex_ST.x, _WaveY * _MainTex_ST.y) - d.texcoord0.xy;
-            uvWave %= 1;
+			half2 uvWave = half2(_WaveX * _MainTex_ST.x, _WaveY * _MainTex_ST.y) - d.texcoord0.xy;
 			#if ATLAS_ON
 				uvWave = half2(_WaveX, _WaveY) - uvRect;
 			#endif
 			uvWave.x *= _ScreenParams.x / _ScreenParams.y;
-            float waveTime = _Time.y + randomSeed;
-			float angWave = (sqrt(dot(uvWave, uvWave)) * _WaveAmount) - ((waveTime *  _WaveSpeed));
-			d.texcoord0.xy = d.texcoord0.xy + uvWave * sin(angWave) * (_WaveStrength / 1000.0);
+			half angWave = (sqrt(dot(uvWave, uvWave)) * _WaveAmount) - ((time * _WaveSpeed) % 360.0);
+			d.texcoord0.xy = d.texcoord0.xy + normalize(uvWave) * sin(angWave) * (_WaveStrength / 1000.0);
 		#endif
-		//----------------------------------------------------
 
-		//ROUNDWAVEUV_ON
 		#if ROUNDWAVEUV_ON
-			half xWave = ((0.5 * _MainTex_ST.x) - uvRect.x);
-			half yWave = ((0.5 * _MainTex_ST.y) - uvRect.y) * (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
+			half xWave = ((0.5 * _MainTex_ST.x) - d.texcoord0.x);
+			half yWave = ((0.5 * _MainTex_ST.y) - d.texcoord0.y) * (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
 			half ripple = -sqrt(xWave*xWave + yWave* yWave);
-			d.texcoord0.xy += (sin((ripple + (_Time.y + randomSeed) * (_RoundWaveSpeed/10.0)) / 0.015) * (_RoundWaveStrength/10.0)) % 1;
+            d.texcoord0.xy += (sin((ripple + time * (_RoundWaveSpeed/10.0)) / 0.015) * (_RoundWaveStrength/10.0)) % 1;
 		#endif
-		//----------------------------------------------------
 
+		#if POLARUV_ON
+            half2 prePolarUvs = d.texcoord0.xy;
+            d.texcoord0.xy = d.texcoord0.xy - half2(0.5, 0.5);
+			d.texcoord0.xy = half2(atan2(d.texcoord0.y, d.texcoord0.x) / (1.0 * 6.28318530718), length(d.texcoord0.xy) * 2.0);
+            d.texcoord0.xy *= _MainTex_ST.xy;
+		#endif
 
-		//WIND_ON
-		#if WIND_ON
-			half windOffset = sin((_Time.x + randomSeed) * _GrassSpeed * 10);
-			half2 windCenter = half2(0.5, 0.1);
-			#if ATLAS_ON
-				windCenter.x = ((_MaxXUV - _MinXUV) * windCenter.x) + _MinXUV;
-				windCenter.y = ((_MaxYUV - _MinYUV) * windCenter.y) + _MinYUV;
-			#endif
-			#if !MANUALWIND_ON
-				d.texcoord0.x = fmod(abs(lerp(d.texcoord0.x, d.texcoord0.x + (_GrassWind * 0.01 * windOffset), uvRect.y)), 1);
+		#if DISTORT_ON
+			#if POLARUVDISTORT_ON
+				half2 distortUvs = TRANSFORM_TEX(d.texcoord0.xy, _DistortTex);
 			#else
-				d.texcoord0.x = fmod(abs(lerp(d.texcoord0.x, d.texcoord0.x + (_GrassWind * 0.01 * _GrassManualAnim), uvRect.y)), 1);
-				windOffset = _GrassManualAnim;
+				half2 distortUvs = d.extraV2F0.xy;
 			#endif
-			half2 delta = d.texcoord0.xy - windCenter;
-			half delta2 = dot(delta.xy, delta.xy);
-			half2 delta_offset = delta2 * windOffset;
-			d.texcoord0.xy = d.texcoord0.xy + half2(delta.y, -delta.x) * delta_offset * _GrassRadialBend;
-		#endif
-
-		//--------------------------------------------------------
-
-		//TEXTURESCROLL_ON && !ATLAS_ON
-		#if TEXTURESCROLL_ON && !ATLAS_ON
-			d.texcoord0.x += ((_Time.y + randomSeed) * _TextureScrollXSpeed) % 1;
-			d.texcoord0.y += ((_Time.y + randomSeed) * _TextureScrollYSpeed) % 1;
-		#endif
-		//------------------------------
-
-		//PIXELATE_ON
-		#if PIXELATE_ON
-            half aspectRatio = _MainTex_TexelSize.x / _MainTex_TexelSize.y;
-			half2 pixelSize = float2(_PixelateSize, _PixelateSize * aspectRatio);
-			d.texcoord0.xy = floor(d.texcoord0.xy * pixelSize) / pixelSize;
-		#endif
-		//--------------
-
-		half4 col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy);
-		half originalAlpha = col.a;
-		col *= d.vertexColor;
-
-		//NORMAL MAP
-		#if NORMALMAP_ON
-			half4 normalSample = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, d.texcoord0.xy);
-			half3 normalTS = UnpackNormal(normalSample);
-			normalTS.xy *= _NormalStrength;
-			o.Normal = normalTS;
-		#endif
-        float normalSign = sign(dot(d.worldSpaceViewDir, d.worldSpaceNormal));
-        o.Normal *= normalSign;
-
-
-		//GLITCH_ON
-		#if GLITCH_ON
-			half2 uvGlitch = uvRect;
-			uvGlitch.y -= 0.5;
-			half lineNoise = pow(rand2(floor(uvGlitch * half2(24., 19.) * _GlitchSize) * 4.0, randomSeed), 3.0) * _GlitchAmount
-				* pow(rand2(floor(uvGlitch * half2(38., 14.) * _GlitchSize) * 4.0, randomSeed), 3.0);
-			col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(lineNoise * 0.02 * rand2(half2(2.0, 1), randomSeed), 0)) * d.vertexColor;
-		#endif
-		//--------------------------------------
-
-		//CHROMABERR_ON
-		#if CHROMABERR_ON
-			half4 r = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(_ChromAberrAmount/10, 0))	* d.vertexColor;
-			half4 b = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-_ChromAberrAmount/10, 0)) * d.vertexColor;
-			col = half4(r.r * r.a, col.g, b.b * b.a, max(max(r.a, b.a) * _ChromAberrAlpha, col.a));
-		#endif
-
-		//--------------------------------
-
-		//BLUR_ON
-		#if BLUR_ON
+			distortUvs.x += ((shaderTime.x + seed) * _DistortTexXSpeed) % 1;
+			distortUvs.y += ((shaderTime.x + seed) * _DistortTexYSpeed) % 1;
 			#if ATLAS_ON
-				#if !BLURISHD_ON
-					col = BlurHD(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity, (_MaxXUV - _MinXUV), (_MaxYUV - _MinYUV)) * d.vertexColor;
-				#else
-					col = Blur(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity * (_MaxXUV - _MinXUV)) * d.vertexColor;
+				d.extraV2F0.xy = half2((d.extraV2F0.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.extraV2F0.y - _MinYUV) / (_MaxYUV - _MinYUV));
+			#endif
+			half distortAmnt = (SAMPLE_TEXTURE2D(_DistortTex, sampler_DistortTex, distortUvs).r - 0.5) * 0.2 * _DistortAmount;
+			d.texcoord0.x += distortAmnt;
+			d.texcoord0.y += distortAmnt;
+		#endif
+
+		#if TEXTURESCROLL_ON
+			d.texcoord0.x += (time * _TextureScrollXSpeed) % 1;
+			d.texcoord0.y += (time * _TextureScrollYSpeed) % 1;
+		#endif
+
+		#if TRAILWIDTH_ON
+            half width = pow(SAMPLE_TEXTURE2D(_TrailWidthGradient, sampler_TrailWidthGradient, d.texcoord0).r, _TrailWidthPower);
+            d.texcoord0.y = (d.texcoord0.y * 2 - 1) / width * 0.5 + 0.5;
+            clip(d.texcoord0.y);
+            clip(1 - d.texcoord0.y);
+        #endif
+
+		float2 shape1Uv = d.texcoord0.xy;
+        #if SHAPE2_ON
+			float2 shape2Uv = shape1Uv;
+        #endif
+        #if SHAPE3_ON
+			float2 shape3Uv = shape1Uv;
+        #endif
+
+        #if CAMDISTFADE_ON || SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half camDistance = distance(d.worldSpacePosition, _WorldSpaceCameraPos);
+		#endif
+		 
+		#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half2 uvOffsetPostFx = d.texcoord0.xy - originalUvs;
+			d.texcoord0.xy = d.screenPos.xy / d.screenPos.w;
+			d.texcoord0.x = d.texcoord0.x * (_ScreenParams.x / _ScreenParams.y);
+			d.texcoord0.x -= 0.5;
+			d.texcoord0.xy -= uvOffsetPostFx;
+			originalUvs += uvOffsetPostFx;
+			half distanceZoom = camDistance * 0.1;
+			half2 scaleWithDistUvs = d.texcoord0.xy * distanceZoom + ((-distanceZoom * 0.5) + 0.5);
+			#if SHAPE1SCREENUV_ON
+				shape1Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvShDistScale);
+			#else
+				shape1Uv = originalUvs;
+			#endif
+			#if SHAPE2SCREENUV_ON && SHAPE2_ON
+				shape2Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvSh2DistScale);
+			#else
+				#if SHAPE2_ON
+					shape2Uv = originalUvs;
 				#endif
+			#endif
+			#if SHAPE3SCREENUV_ON && SHAPE3_ON
+				shape3Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvSh3DistScale);
 			#else
-				#if !BLURISHD_ON
-					col = BlurHD(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity, 1, 1) * d.vertexColor;
+				#if SHAPE3_ON
+					shape3Uv = originalUvs;
+				#endif
+			#endif
+		#endif
+
+		shape1Uv = TRANSFORM_TEX(shape1Uv, _MainTex);
+		#if OFFSETSTREAM_ON
+			shape1Uv.x += i.offsetCustomData.x * _OffsetSh1;
+			shape1Uv.y += i.offsetCustomData.y * _OffsetSh1;
+		#endif
+        #if SHAPETEXOFFSET_ON
+			shape1Uv += seed * _RandomSh1Mult;
+		#endif
+        
+		#if SHAPE1DISTORT_ON
+			#if POLARUVDISTORT_ON
+				half2 sh1DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _ShapeDistortTex);
+			#else
+				half2 sh1DistortUvs = d.extraV2F1.xy;
+			#endif
+			
+			sh1DistortUvs.x += ((time + seed) * _ShapeDistortXSpeed) % 1;
+			sh1DistortUvs.y += ((time + seed) * _ShapeDistortYSpeed) % 1;
+			half distortAmount = (SAMPLE_TEXTURE2D(_ShapeDistortTex, sampler_ShapeDistortTex, sh1DistortUvs).r - 0.5) * 0.2 * _ShapeDistortAmount;
+			shape1Uv.x += distortAmount;
+			shape1Uv.y += distortAmount;
+		#endif
+		#if SHAPE1ROTATE_ON
+			shape1Uv = RotateUvs(shape1Uv, _ShapeRotationOffset + ((_ShapeRotationSpeed * time) % 6.28318530718), _MainTex_ST);
+		#endif
+
+		half4 shape1 = SampleTextureWithScroll(_MainTex, sampler_MainTex, shape1Uv, _ShapeXSpeed, _ShapeYSpeed, time);
+		#if SHAPE1SHAPECOLOR_ON
+			shape1.a = shape1.r;
+			shape1.rgb = _ShapeColor.rgb;
+		#else
+			shape1 *= _ShapeColor;
+		#endif
+		#if SHAPE1CONTRAST_ON
+			#if SHAPE1SHAPECOLOR_ON
+				shape1.a = saturate((shape1.a - 0.5) * _ShapeContrast + 0.5 + _ShapeBrightness);
+			#else
+				shape1.rgb = max(0, (shape1.rgb - half3(0.5, 0.5, 0.5)) * _ShapeContrast + half3(0.5, 0.5, 0.5) + _ShapeBrightness);
+			#endif
+        #endif
+
+		half4 shape2 = 1.0;
+		#if SHAPE2_ON
+			shape2Uv = TRANSFORM_TEX(shape2Uv, _Shape2Tex);
+			#if OFFSETSTREAM_ON
+				shape2Uv.x += i.offsetCustomData.x * _OffsetSh2;
+				shape2Uv.y += i.offsetCustomData.y * _OffsetSh2;
+			#endif
+			#if SHAPETEXOFFSET_ON
+				shape2Uv += seed * _RandomSh2Mult;
+			#endif
+			#if SHAPE2DISTORT_ON
+				#if POLARUVDISTORT_ON
+					half2 sh2DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _Shape2DistortTex);
 				#else
-					col = Blur(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity) * d.vertexColor;
+					half2 sh2DistortUvs = d.extraV2F2.xy;
+				#endif
+				sh2DistortUvs.x += ((time + seed) * _Shape2DistortXSpeed) % 1;
+				sh2DistortUvs.y += ((time + seed) * _Shape2DistortYSpeed) % 1;
+				half distortAmnt2 = (SAMPLE_TEXTURE2D(_Shape2DistortTex, sampler_Shape2DistortTex, sh2DistortUvs).r - 0.5) * 0.2 * _Shape2DistortAmount;
+				shape2Uv.x += distortAmnt2;
+				shape2Uv.y += distortAmnt2;
+			#endif
+			#if SHAPE2ROTATE_ON
+				shape2Uv = RotateUvs(shape2Uv, _Shape2RotationOffset + ((_Shape2RotationSpeed * time) % 6.28318530718), _Shape2Tex_ST);
+			#endif
+			
+			shape2 = SampleTextureWithScroll(_Shape2Tex, sampler_Shape2Tex, shape2Uv, _Shape2XSpeed, _Shape2YSpeed, time); 
+			#if SHAPE2SHAPECOLOR_ON
+				shape2.a = shape2.r;
+				shape2.rgb = _Shape2Color.rgb;
+			#else
+				shape2 *= _Shape2Color;
+			#endif
+			#if SHAPE2CONTRAST_ON
+				#if SHAPE2SHAPECOLOR_ON
+					shape2.a = max(0, (shape2.a - 0.5) * _Shape2Contrast + 0.5 + _Shape2Brightness);
+				#else
+					shape2.rgb = max(0, (shape2.rgb - half3(0.5, 0.5, 0.5)) * _Shape2Contrast + half3(0.5, 0.5, 0.5) + _Shape2Brightness);
 				#endif
 			#endif
         #endif
 
-		//--------------------
-
-		//MOTIONBLUR_ON
-		#if MOTIONBLUR_ON
-			_MotionBlurAngle = _MotionBlurAngle * 3.1415926;
-			#define rot(n) mul(n, half2x2(cos(_MotionBlurAngle), -sin(_MotionBlurAngle), sin(_MotionBlurAngle), cos(_MotionBlurAngle)))
-			_MotionBlurDist = _MotionBlurDist * 0.005;
-			#if ATLAS_ON
-				_MotionBlurDist *= (_MaxXUV - _MinXUV);
+		half4 shape3 = 1.0;
+		 #if SHAPE3_ON
+            shape3Uv = TRANSFORM_TEX(shape3Uv, _Shape3Tex);
+			
+            #if OFFSETSTREAM_ON
+				shape3Uv.x += i.offsetCustomData.x * _OffsetSh3;
+				shape3Uv.y += i.offsetCustomData.y * _OffsetSh3;
 			#endif
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist, -_MotionBlurDist)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 2, -_MotionBlurDist * 2)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 3, -_MotionBlurDist * 3)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 4, -_MotionBlurDist * 4)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist, _MotionBlurDist)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 2, _MotionBlurDist * 2)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 3, _MotionBlurDist * 3)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 4, _MotionBlurDist * 4)));
-			col.rgb = col.rgb / 9;
+            #if SHAPETEXOFFSET_ON
+				shape3Uv += seed * _RandomSh3Mult;
+			#endif
+            #if SHAPE3DISTORT_ON
+				#if POLARUVDISTORT_ON
+					half2 sh3DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _Shape3DistortTex);
+				#else
+					half2 sh3DistortUvs = d.extraV2F3.xy;
+				#endif
+				sh3DistortUvs.x += ((time + seed) * _Shape3DistortXSpeed) % 1;
+				sh3DistortUvs.y += ((time + seed) * _Shape3DistortYSpeed) % 1;
+				half distortAmnt3 = (SAMPLE_TEXTURE2D(_Shape3DistortTex, sampler_Shape3DistortTex, sh3DistortUvs).r - 0.5) * 0.3 * _Shape3DistortAmount;
+				shape3Uv.x += distortAmnt3;
+				shape3Uv.y += distortAmnt3;
+            #endif
+            #if SHAPE3ROTATE_ON
+				shape3Uv = RotateUvs(shape3Uv, _Shape3RotationOffset + ((_Shape3RotationSpeed * time) % 6.28318530718), _Shape3Tex_ST);
+            #endif
+				shape3 = SampleTextureWithScroll(_Shape3Tex, sampler_Shape3Tex, shape3Uv, _Shape3XSpeed, _Shape3YSpeed, time);
+            #if SHAPE3SHAPECOLOR_ON
+				shape3.a = shape3.r;
+				shape3.rgb = _Shape3Color.rgb;
+            #else
+				shape3 *= _Shape3Color;
+            #endif
+            #if SHAPE3CONTRAST_ON
+				#if SHAPE3SHAPECOLOR_ON
+					shape3.a = max(0, (shape3.a - 0.5) * _Shape3Contrast + 0.5 + _Shape3Brightness);
+				#else
+					shape3.rgb = max(0, (shape3.rgb - half3(0.5, 0.5, 0.5)) * _Shape3Contrast + half3(0.5, 0.5, 0.5) + _Shape3Brightness);
+				#endif
+            #endif
+		#endif
+
+		half4 col = shape1;
+		//Mix all shapes pre: change weights if custom vertex effect active
+        #if SHAPEWEIGHTS_ON
+			half shapeWeightOffset;
+			#if SHAPE2_ON
+				shapeWeightOffset = i.offsetCustomData.z * _Sh1BlendOffset;
+				_ShapeColorWeight = max(0, _ShapeColorWeight + shapeWeightOffset);
+				_ShapeAlphaWeight = max(0, _ShapeAlphaWeight + shapeWeightOffset);
+				shapeWeightOffset = i.offsetCustomData.z * _Sh2BlendOffset;
+				_Shape2ColorWeight = max(0, _Shape2ColorWeight + shapeWeightOffset);
+				_Shape2AlphaWeight = max(0, _Shape2AlphaWeight + shapeWeightOffset);
+			#endif
+			#if SHAPE3_ON
+				shapeWeightOffset = i.offsetCustomData.z * _Sh3BlendOffset;
+				_Shape3ColorWeight = max(0, _Shape3ColorWeight + shapeWeightOffset);
+				_Shape3AlphaWeight = max(0, _Shape3AlphaWeight + shapeWeightOffset);
+			#endif
+		#endif
+
+		//Mix all shapes
+        #if SHAPE2_ON
+			#if !SPLITRGBA_ON
+				_ShapeAlphaWeight = _ShapeColorWeight;
+				_Shape2AlphaWeight = _Shape2ColorWeight;
+			#endif
+			#if SHAPE3_ON //Shape3 On
+				#if !SPLITRGBA_ON
+					_Shape3AlphaWeight = _Shape3ColorWeight;
+				#endif
+			#if SHAPEADD_ON
+				col.rgb = ((shape1.rgb * _ShapeColorWeight) + (shape2.rgb * _Shape2ColorWeight)) + (shape3.rgb * _Shape3ColorWeight);
+				col.a = saturate(max(shape3.a * _Shape3AlphaWeight, max(shape1.a * _ShapeAlphaWeight, shape2.a * _Shape2AlphaWeight)));
+			#else
+				col.rgb = ((shape1.rgb * _ShapeColorWeight) * (shape2.rgb * _Shape2ColorWeight)) * (shape3.rgb * _Shape3ColorWeight);
+				col.a = saturate(((shape1.a * _ShapeAlphaWeight) * (shape2.a * _Shape2AlphaWeight)) * (shape3.a * _Shape3AlphaWeight));
+			#endif
+			#else //Shape3 Off
+				#if SHAPEADD_ON
+					col.rgb = (shape1.rgb * _ShapeColorWeight) + (shape2.rgb * _Shape2ColorWeight);
+					col.a = saturate(max(shape1.a * _ShapeAlphaWeight, shape2.a * _Shape2AlphaWeight));
+				#else
+					col.rgb = (shape1.rgb * _ShapeColorWeight) * (shape2.rgb * _Shape2ColorWeight);
+					col.a = saturate((shape1.a * _ShapeAlphaWeight) * (shape2.a * _Shape2AlphaWeight));
+				#endif
+			#endif
         #endif
-		//------------------------------------
 
-		//NEGATIVE_ON
-		#if NEGATIVE_ON
-			col.rgb = lerp(col.rgb, 1 - col.rgb, _NegativeAmount);
-		#endif
-
-		//--------------
-		half luminance = 0;
-
-		//GREYSCALE_ON && !GREYSCALEOUTLINE_ON
-		#if GREYSCALE_ON && !GREYSCALEOUTLINE_ON
+		#if SHAPE1MASK_ON
+            col = lerp(col, shape1, pow(SAMPLE_TEXTURE2D(_Shape1MaskTex, sampler_Shape1MaskTex, TRANSFORM_TEX(i.uvSeed.xy, _Shape1MaskTex)).r, _Shape1MaskPow));
+        #endif
+		
+		#if PREMULTIPLYCOLOR_ON
+			half luminance = 0;
 			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _GreyscaleLuminosity);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _GreyscaleTintColor, _GreyscaleBlend);
-		#endif
-		//------------------------------------
+			luminance *= col.a;
+			col.a = min(luminance, col.a);
+        #endif
 
-		//GHOST_ON
-		#if GHOST_ON
+		col.rgb *= _Color.rgb * d.vertexColor.rgb;
+		#if PREMULTIPLYALPHA_ON
+			col.rgb *= col.a;
+        #endif
+
+        #if !PREMULTIPLYCOLOR_ON && (COLORRAMP_ON || ALPHAFADE_ON || COLORGRADING_ON || FADE_ON || (ADDITIVECONFIG_ON && (GLOW_ON || DEPTHGLOW_ON)))
+			half luminance = 0;
 			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			half4 ghostResult;
-			ghostResult.a = saturate(luminance - _GhostTransparency) * col.a;
-			ghostResult.rgb = col.rgb * (luminance + _GhostColorBoost);
-			col = lerp(col, ghostResult, _GhostBlend);
-		#endif
-		//------------------------------------
+			luminance *= col.a;
+        #endif
 
-		//INNEROUTLINE_ON
-		#if INNEROUTLINE_ON
-			half3 innerT = abs(GetPixel(0, _InnerOutlineThickness, d.texcoord0.xy, _MainTex, sampler_MainTex) - GetPixel(0, -_InnerOutlineThickness, d.texcoord0.xy, _MainTex, sampler_MainTex));
-			innerT += abs(GetPixel(_InnerOutlineThickness, 0, d.texcoord0.xy, _MainTex, sampler_MainTex) - GetPixel(-_InnerOutlineThickness, 0, d.texcoord0.xy, _MainTex, sampler_MainTex));
-			#if !ONLYINNEROUTLINE_ON
-				innerT = (innerT / 2.0) * col.a * _InnerOutlineAlpha;
-				col.rgb += length(innerT) * _InnerOutlineColor.rgb * _InnerOutlineGlow;
+		#if (FADE_ON || ALPHAFADE_ON) && ALPHAFADEINPUTSTREAM_ON
+			col.a *= d.vertexColor.a;
+			d.vertexColor.a = d.texcoord0.w;
+        #endif
+
+		#if FADE_ON
+			half preFadeAlpha = col.a;
+			_FadeAmount = saturate(_FadeAmount + (1 - d.vertexColor.a));
+			_FadeTransition = max(0.01, _FadeTransition * EaseOutQuint(saturate(_FadeAmount)));
+			half2 fadeUv;
+			fadeUv = d.texcoord0.xy + seed;
+			fadeUv.x += (time * _FadeScrollXSpeed) % 1;
+			fadeUv.y += (time * _FadeScrollYSpeed) % 1;
+			half2 tiledUvFade1 = TRANSFORM_TEX(fadeUv, _FadeTex);
+			#if ADDITIVECONFIG_ON && !PREMULTIPLYCOLOR_ON
+				preFadeAlpha *= luminance;
+			#endif
+			_FadeAmount = saturate(pow(_FadeAmount, _FadePower));
+			#if FADEBURN_ON
+				half2 tiledUvFade2 = TRANSFORM_TEX(fadeUv, _FadeBurnTex);
+				half fadeSample = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
+				half fadeNaturalEdge = saturate(smoothstep(0.0 , _FadeTransition, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				col.a *= fadeNaturalEdge;
+				half fadeBurn = saturate(smoothstep(0.0 , _FadeTransition + _FadeBurnWidth, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				fadeBurn = fadeNaturalEdge - fadeBurn;
+				_FadeBurnColor.rgb *= _FadeBurnGlow;
+				col.rgb += fadeBurn * SAMPLE_TEXTURE2D(_FadeBurnTex, sampler_FadeBurnTex, tiledUvFade2).rgb * _FadeBurnColor.rgb * preFadeAlpha;
 			#else
-				innerT *= col.a * _InnerOutlineAlpha;
-				col.rgb = length(innerT) * _InnerOutlineColor.rgb * _InnerOutlineGlow;
-				col.a = step(0.3, col.r+col.g+col.b);
+				half fadeSample = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
+				float fade = saturate(smoothstep(0.0 , _FadeTransition, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				col.a *= fade;
+			#endif
+			#if ALPHAFADETRANSPARENCYTOO_ON
+				col.a *= 1 - _FadeAmount;
 			#endif
 		#endif
-		//-------------------------------------------------------
 
-		//HITEFFECT_ON
-		#if HITEFFECT_ON
-			col.rgb = lerp(col.rgb, _HitEffectColor.rgb * _HitEffectGlow, _HitEffectBlend);
-		#endif
-		//--------------------
-
-		//GRADIENT_ON
-		#if GRADIENT_ON
-			half2 tiledUvGrad = half2(uvRect.x / _MainTex_ST.x, uvRect.y / _MainTex_ST.y);
-			#if GRADIENT2COL_ON
-				_GradTopRightCol = _GradTopLeftCol;
-				_GradBotRightCol = _GradBotLeftCol;
-			#endif
-			#if RADIALGRADIENT_ON
-				half radialDist = 1 - length(tiledUvGrad - half2(0.5, 0.5));
-				radialDist *= (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
-				radialDist = saturate(_GradBoostX * radialDist);
-				half4 gradientResult = lerp(_GradTopLeftCol, _GradBotLeftCol, radialDist);
+		#if ALPHAFADE_ON
+			half alphaFadeLuminance;
+			_AlphaFadeAmount = saturate(_AlphaFadeAmount + (1 - d.vertexColor.a));
+			_AlphaFadeAmount = saturate(pow(_AlphaFadeAmount, _AlphaFadePow));
+			_AlphaFadeSmooth = max(0.01, _AlphaFadeSmooth * EaseOutQuint(saturate(_AlphaFadeAmount)));
+			#if ALPHAFADEUSESHAPE1_ON
+				alphaFadeLuminance = shape1.r;
 			#else
-				half gradXLerpFactor = saturate(pow(tiledUvGrad.x, _GradBoostX));
-				half4 gradientResult = lerp(lerp(_GradBotLeftCol, _GradBotRightCol, gradXLerpFactor),
-				lerp(_GradTopLeftCol, _GradTopRightCol, gradXLerpFactor), saturate(pow(tiledUvGrad.y, _GradBoostY)));
+				alphaFadeLuminance = luminance;
 			#endif
-			gradientResult = lerp(col, gradientResult, _GradBlend);
-			col.rgb = gradientResult.rgb * col.a;
-			col.a *= gradientResult.a;
-		#endif
-		//--------------------------------------------------------------------
+				alphaFadeLuminance = saturate(alphaFadeLuminance - 0.001);
+			#if ALPHAFADEUSEREDCHANNEL_ON
+				col.a *= col.r;
+			#endif
+				col.a = saturate(col.a);
+				float alphaFade = saturate(smoothstep(0.0 , _AlphaFadeSmooth, RemapFloat(1.0 - _AlphaFadeAmount, 0.0, 1.0, -1.0, 1.0) + alphaFadeLuminance));
+				col.a *= alphaFade;
+			#if ALPHAFADETRANSPARENCYTOO_ON
+				col.a *= 1 - _AlphaFadeAmount;
+			#endif
+        #endif
 
-		//CONTRAST_ON
-		#if CONTRAST_ON
-			col.rgb = (col.rgb - float3(0.5, 0.5, 0.5)) * _Contrast + float3(0.5, 0.5, 0.5);
-			col.rgb += _Brightness;
-		#endif
+		#if BACKFACETINT_ON
+			col.rgb = lerp(col.rgb * _BackFaceTint, col.rgb * _FrontFaceTint, step(0, dot(d.worldSpaceNormal, d.worldSpaceViewDir)));
+        #endif
 
-		//-------------------------------------------------------------------
+		//#if LIGHTANDSHADOW_ON
+			//half NdL = saturate(dot(d.worldSpaceNormal, -_All1VfxLightDir));
+			//col.rgb += _LightColor * _LightAmount * NdL;
+			//NdL = max(_ShadowAmount, NdL);
+            //NdL = smoothstep(_ShadowStepMin, _ShadowStepMax, NdL);
+            //col.rgb *= NdL;
+		//#endif
 
-		//COLORSWAP_ON
-		#if COLORSWAP_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			half4 swapMask = SAMPLE_TEXTURE2D(_ColorSwapTex, sampler_ColorSwapTex, d.texcoord0.xy);
-			swapMask.rgb *= swapMask.a;
-			half3 redSwap = _ColorSwapRed * swapMask.r * saturate(luminance + _ColorSwapRedLuminosity);
-			half3 greenSwap = _ColorSwapGreen * swapMask.g * saturate(luminance + _ColorSwapGreenLuminosity);
-			half3 blueSwap = _ColorSwapBlue * swapMask.b * saturate(luminance + _ColorSwapBlueLuminosity);
-			swapMask.rgb = col.rgb * saturate(1 - swapMask.r - swapMask.g - swapMask.b);
-			col.rgb = lerp(col.rgb, swapMask.rgb + redSwap + greenSwap + blueSwap, _ColorSwapBlend);
-		#endif
-		//--------------------------------------------------------------------
+		#if COLORGRADING_ON
+			col.rgb *= lerp(lerp(_ColorGradingDark, _ColorGradingMiddle, luminance/_ColorGradingMidPoint),
+			lerp(_ColorGradingMiddle, _ColorGradingLight, (luminance - _ColorGradingMidPoint)/(1.0 - _ColorGradingMidPoint)), step(_ColorGradingMidPoint, luminance));
+        #endif
 
-		//COLORRAMP_ON && !COLORRAMPOUTLINE_ON
-		#if COLORRAMP_ON && !COLORRAMPOUTLINE_ON 
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _ColorRampLuminosity);
-			#if GRADIENTCOLORRAMP_ON
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(luminance, 0)).rgb, _ColorRampBlend);
+		#if COLORRAMP_ON
+			half colorRampLuminance = saturate(luminance + _ColorRampLuminosity);
+			#if COLORRAMPGRAD_ON
+				half4 colorRampRes = SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(colorRampLuminance, 0));
 			#else
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(luminance, 0)).rgb, _ColorRampBlend);
+				half4 colorRampRes = SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(colorRampLuminance, 0));
 			#endif
-		#endif
-		//--------------------------------------------------------------------
+			col.rgb = lerp(col.rgb, colorRampRes.rgb, _ColorRampBlend);
+			col.a = lerp(col.a, saturate(col.a * colorRampRes.a), _ColorRampBlend);
+        #endif
 
-		//CHANGECOLOR_ON
-		#if CHANGECOLOR_ON
-			float3 currChangeColor = saturate(col.rgb);
-			luminance = 0.3 * currChangeColor.r + 0.59 * currChangeColor.g + 0.11 * currChangeColor.b;
-			luminance = saturate(luminance + _ColorChangeLuminosity);
-			half3 dif = abs(currChangeColor - _ColorChangeTarget.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance), 0.0));
-			#if CHANGECOLOR2_ON
-			dif = abs(currChangeColor - _ColorChangeTarget2.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol2.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance2), 0.0));
-			#endif
-			#if CHANGECOLOR3_ON
-			dif = abs(currChangeColor - _ColorChangeTarget3.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol3.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance3), 0.0));
-			#endif
-		#endif
-		//-------------------------------------------------------
-
-		//POSTERIZE_ON && !POSTERIZEOUTLINE_ON
 		#if POSTERIZE_ON && !POSTERIZEOUTLINE_ON
-			col.rgb = pow(col.rgb, _PosterizeGamma) * _PosterizeNumColors;
-			col.rgb = floor(col.rgb) / _PosterizeNumColors;
-			col.rgb = pow(col.rgb, 1.0 / _PosterizeGamma);
+			col.rgb = floor(col.rgb / (1.0 / _PosterizeNumColors)) * (1.0 / _PosterizeNumColors);
 		#endif
-		//------------------------------------
 
-		//HSV_ON
+		#if DEPTHGLOW_ON
+			half sceneDepthDiff = GetLinearEyeDepth(d.screenUV) - d.screenPos.w;
+        #endif
+
+		#if RIM_ON
+			half NdV = 1 - abs(dot(d.worldSpaceNormal, d.worldSpaceViewDir));
+			half rimFactor = saturate(_RimBias + _RimScale * pow(NdV, _RimPower));
+			half4 rimCol = _RimColor * rimFactor;
+			rimCol.rgb *= _RimIntensity;
+			col.rgb = lerp(col.rgb * (rimCol.rgb + half3(1,1,1)), col.rgb + rimCol.rgb, _RimAddAmount);
+			col.a = saturate(col.a * (1 - rimFactor * _RimErodesAlpha));
+        #endif
+
+		#if DEPTHGLOW_ON
+			half depthGlowMask = saturate(_DepthGlowDist * pow((1 - sceneDepthDiff), _DepthGlowPow));
+			col.rgb = lerp(col.rgb, _DepthGlowGlobal * col.rgb, depthGlowMask);
+			half depthGlowMult = 1;
+			#if ADDITIVECONFIG_ON
+				depthGlowMult = luminance;
+			#endif
+			col.rgb += _DepthGlowColor.rgb * _DepthGlow * depthGlowMask * col.a * depthGlowMult;
+        #endif
+
+		#if GLOW_ON
+			half glowMask = 1;
+			#if GLOWTEX_ON
+				glowMask = SAMPLE_TEXTURE2D(_GlowTex, sampler_GlowTex, TRANSFORM_TEX(d.texcoord0.xy, _GlowTex));
+			#endif
+				col.rgb *= _GlowGlobal * glowMask;
+				half glowMult = 1;
+			#if ADDITIVECONFIG_ON
+				glowMult = luminance;
+			#endif
+			
+			col.rgb += _GlowColor.rgb * _Glow * glowMask * col.a * glowMult;
+        #endif
+
 		#if HSV_ON
 			half3 resultHsv = half3(col.rgb);
 			half cosHsv = _HsvBright * _HsvSaturation * cos(_HsvShift * 3.14159265 / 180);
 			half sinHsv = _HsvBright * _HsvSaturation * sin(_HsvShift * 3.14159265 / 180);
 			resultHsv.x = (.299 * _HsvBright + .701 * cosHsv + .168 * sinHsv) * col.x
-			+ (.587 * _HsvBright - .587 * cosHsv + .330 * sinHsv) * col.y
-			+ (.114 * _HsvBright - .114 * cosHsv - .497 * sinHsv) * col.z;
+				+ (.587 * _HsvBright - .587 * cosHsv + .330 * sinHsv) * col.y
+				+ (.114 * _HsvBright - .114 * cosHsv - .497 * sinHsv) * col.z;
 			resultHsv.y = (.299 * _HsvBright - .299 * cosHsv - .328 * sinHsv) *col.x
-			+ (.587 * _HsvBright + .413 * cosHsv + .035 * sinHsv) * col.y
-			+ (.114 * _HsvBright - .114 * cosHsv + .292 * sinHsv) * col.z;
+				+ (.587 * _HsvBright + .413 * cosHsv + .035 * sinHsv) * col.y
+				+ (.114 * _HsvBright - .114 * cosHsv + .292 * sinHsv) * col.z;
 			resultHsv.z = (.299 * _HsvBright - .3 * cosHsv + 1.25 * sinHsv) * col.x
-			+ (.587 * _HsvBright - .588 * cosHsv - 1.05 * sinHsv) * col.y
-			+ (.114 * _HsvBright + .886 * cosHsv - .203 * sinHsv) * col.z;
+				+ (.587 * _HsvBright - .588 * cosHsv - 1.05 * sinHsv) * col.y
+				+ (.114 * _HsvBright + .886 * cosHsv - .203 * sinHsv) * col.z;
 			col.rgb = resultHsv;
 		#endif
-		//-------------------------------------------------------
 
-		//OVERLAY_ON
-		#if OVERLAY_ON
-			half2 overlayUvs = d.texcoord0.xy;
-			overlayUvs.x += ((_Time.y + randomSeed) * _OverlayTextureScrollXSpeed) % 1;
-			overlayUvs.y += ((_Time.y + randomSeed) * _OverlayTextureScrollYSpeed) % 1;
-			half4 overlayCol = SAMPLE_TEXTURE2D(_OverlayTex, sampler_OverlayTex, TRANSFORM_TEX(overlayUvs, _OverlayTex));
-			overlayCol.rgb *= _OverlayColor.rgb * _OverlayGlow;
-			#if !OVERLAYMULT_ON
-				overlayCol.rgb *= overlayCol.a * _OverlayColor.rgb * _OverlayColor.a * _OverlayBlend;
-				col.rgb += overlayCol.rgb;
-			#else
-				overlayCol.a *= _OverlayColor.a;
-				col = lerp(col, col * overlayCol, _OverlayBlend);
+		#if CAMDISTFADE_ON
+			col.a *= 1 - saturate(smoothstep(_CamDistFadeStepMin, _CamDistFadeStepMax, camDistance));
+			col.a *= smoothstep(0.0, _CamDistProximityFade, camDistance);
+		#endif
+
+		#if MASK_ON
+            half2 maskUv = d.texcoord0.xy;
+            #if POLARUV_ON
+				maskUv = prePolarUvs;
 			#endif
+            half4 maskSample = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, TRANSFORM_TEX(maskUv, _MaskTex));
+			half mask = pow(min(maskSample.r, maskSample.a), _MaskPow);
+			col.a *= mask;
+        #endif
+
+		#if ALPHASMOOTHSTEP_ON
+			col.a = smoothstep(_AlphaStepMin, _AlphaStepMax, col.a);
+        #endif
+
+		half4 debugColor = col;
+		#if SHAPEDEBUG_ON
+			debugColor = GetDebugColor(col, shape1, shape2, shape3);
 		#endif
 
-		//---------------------------------
+		clip(debugColor.a - _AlphaCutoffValue - 0.01);
 
-		//OUTBASE_ON
-		#if OUTBASE_ON
-			#if OUTBASEPIXELPERF_ON
-				half2 destUv = half2(_OutlinePixelWidth * _MainTex_TexelSize.x, _OutlinePixelWidth * _MainTex_TexelSize.y);
-			#else
-				half2 destUv = half2(_OutlineWidth * _MainTex_TexelSize.x * 200, _OutlineWidth * _MainTex_TexelSize.y * 200);
-			#endif
+		//#if FOG_ON
+			//UNITY_APPLY_FOG(i.fogCoord, col);
+        //#endif
+		
+		//Don't use a starting i.color.a lower than 1 unless using vertex stream dissolve when using a FADE effect
+        #if !FADE_ON && !ALPHAFADE_ON
+			col.a *= _Alpha * d.vertexColor.a;
+        #endif
+        #if FADE_ON || ALPHAFADE_ON
+			col.a *= _Alpha;
+        #endif
+        #if ADDITIVECONFIG_ON
+			col.rgb *= col.a;
+        #endif
 
-			#if OUTDIST_ON
-				d.texcoord3.x += ((_Time.x + _RandomSeed) * _OutlineDistortTexXSpeed) % 1;
-				d.texcoord3.y += ((_Time.x + _RandomSeed) * _OutlineDistortTexYSpeed) % 1;
-				#if ATLAS_ON
-					d.texcoord3 = half2((d.texcoord3.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord3.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				#endif
-				half outDistortAmnt = (SAMPLE_TEXTURE2D(_OutlineDistortTex, sampler_OutlineDistortTex, d.texcoord3).r - 0.5) * 0.2 * _OutlineDistortAmount;
-				destUv.x += outDistortAmnt;
-				destUv.y += outDistortAmnt;
-			#endif
-
-			half spriteLeft		= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, 0)).a;
-			half spriteRight	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy - half2(destUv.x, 0)).a;
-			half spriteBottom	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(0, destUv.y)).a;
-			half spriteTop		= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy - half2(0, destUv.y)).a;
-			half result = spriteLeft + spriteRight + spriteBottom + spriteTop;
-
-			#if OUTBASE8DIR_ON
-				half spriteTopLeft	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, destUv.y)).a;
-				half spriteTopRight = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-destUv.x, destUv.y)).a;
-				half spriteBotLeft	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, -destUv.y)).a;
-				half spriteBotRight = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-destUv.x, -destUv.y)).a;
-				result = result + spriteTopLeft + spriteTopRight + spriteBotLeft + spriteBotRight;
-			#endif
-					
-			result = step(0.05, saturate(result));
-
-			#if OUTTEX_ON
-				d.texcoord1.x += ((_Time.x + _RandomSeed) * _OutlineTexXSpeed) % 1;
-				d.texcoord1.y += ((_Time.x + _RandomSeed) * _OutlineTexYSpeed) % 1;
-				#if ATLAS_ON
-					d.texcoord1 = half2((d.texcoord1.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord1.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				#endif
-				half4 tempOutColor = SAMPLE_TEXTURE2D(_OutlineTex, sampler_OutlineTex, d.texcoord1);
-				tempOutColor *= _OutlineColor;
-				_OutlineColor = tempOutColor;
-			#endif
-
-			result *= (1 - originalAlpha) * _OutlineAlpha;
-
-			half4 outline = _OutlineColor * d.vertexColor.a;
-			outline.rgb *= _OutlineGlow;
-			outline.a = result;
-			#if ONLYOUTLINE_ON
-			col = outline;
-			#else
-			col = lerp(col, outline, result);
-			#endif
+		
+		#if SHAPEDEBUG_ON
+		o.Albedo = debugColor.rgb; 
+		o.Alpha = debugColor.a;
+		#else
+		o.Albedo = col.rgb; 
+		o.Alpha = col.a;
 		#endif
-		//-------------------------------------------------------
-
-		//FADE_ON
-		#if FADE_ON
-			half2 tiledUvFade1	= TRANSFORM_TEX(d.texcoord0, _FadeTex);
-			half2 tiledUvFade2	= TRANSFORM_TEX(d.texcoord0, _FadeBurnTex);
-			#if ATLAS_ON
-				tiledUvFade1 = half2((tiledUvFade1.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUvFade1.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				tiledUvFade2 = half2((tiledUvFade2.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUvFade2.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			half fadeTemp = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
-			half fade = smoothstep(_FadeAmount, _FadeAmount + _FadeBurnTransition, fadeTemp);
-			half fadeBurn = saturate(smoothstep(_FadeAmount - _FadeBurnWidth, _FadeAmount - _FadeBurnWidth + 0.1, fadeTemp) * _FadeAmount);
-			col.a *= fade;
-			_FadeBurnColor.rgb *= _FadeBurnGlow;
-			col += fadeBurn * SAMPLE_TEXTURE2D(_FadeBurnTex, sampler_FadeBurnTex, tiledUvFade2) * _FadeBurnColor * originalAlpha * (1 - col.a);
-		#endif
-		//-------------------------------------------------------
-
-		//SHADOW_ON
-		#if SHADOW_ON
-			half shadowA = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(_ShadowX, _ShadowY)).a;
-			half preMultShadowMask = 1 - (saturate(shadowA - col.a) * (1 - col.a));
-			col.rgb *= 1 - ((shadowA - col.a) * (1 - col.a));
-			col.rgb += (_ShadowColor * shadowA) * (1 - col.a);
-			col.a = max(shadowA * _ShadowAlpha * d.vertexColor.a, col.a);
-		#endif
-
-		//-------------------------------------------------------
-
-		//GLOW_ON
-		#if GLOW_ON
-			half4 emission;
-			#if GLOWTEX_ON
-				emission = SAMPLE_TEXTURE2D(_GlowTex, sampler_GlowTex, d.texcoord0);
-			#else
-				emission = col;
-			#endif
-
-			col.rgb *= _GlowGlobal;
-			emission.rgb *= emission.a * col.a * _Glow * _GlowColor;
-			col.rgb += emission.rgb;
-		#endif
-		//-------------------------------------------------------
-
-		//COLORRAMP_ON && COLORRAMPOUTLINE_ON
-		#if COLORRAMP_ON && COLORRAMPOUTLINE_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _ColorRampLuminosity);
-			#if GRADIENTCOLORRAMP_ON
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(luminance, 0)).rgb, _ColorRampBlend);
-			#else
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(luminance, 0)).rgb, _ColorRampBlend);
-			#endif
-		#endif
-		//---------------
-
-		//GREYSCALE_ON && GREYSCALEOUTLINE_ON
-		#if GREYSCALE_ON && GREYSCALEOUTLINE_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _GreyscaleLuminosity);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _GreyscaleTintColor, _GreyscaleBlend);
-		#endif
-
-		//-----------------------------------
-
-		//POSTERIZE_ON && POSTERIZEOUTLINE_ON
-		#if POSTERIZE_ON && POSTERIZEOUTLINE_ON
-			col.rgb = pow(col.rgb, _PosterizeGamma) * _PosterizeNumColors;
-			col.rgb = floor(col.rgb) / _PosterizeNumColors;
-			col.rgb = pow(col.rgb, 1.0 / _PosterizeGamma);
-		#endif
-
-		//-----------------------------------
-
-		//SHINE_ON
-		#if SHINE_ON
-			half2 uvShine = uvRect;
-			half cosAngle = cos(_ShineRotate);
-			half sinAngle = sin(_ShineRotate);
-			half2x2 rot = half2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
-			uvShine -= half2(0.5, 0.5);
-			uvShine = mul(rot, uvShine);
-			uvShine += half2(0.5, 0.5);
-			half shineMask = SAMPLE_TEXTURE2D(_ShineMask, sampler_ShineMask, d.texcoord0.xy).a;
-			half currentDistanceProjection = (uvShine.x + uvShine.y) / 2;
-			half whitePower = 1 - (abs(currentDistanceProjection - _ShineLocation) / _ShineWidth);
-			col.rgb +=  col.a * whitePower * _ShineGlow * max(sign(currentDistanceProjection - (_ShineLocation - _ShineWidth)), 0.0)
-			* max(sign((_ShineLocation + _ShineWidth) - currentDistanceProjection), 0.0) * _ShineColor * shineMask;
-		#endif
-
-		//-----------------------------------
-
-		//HOLOGRAM_ON
-		#if HOLOGRAM_ON
-			half totalHologram = _HologramStripesAmount + _HologramUnmodAmount;
-			half hologramYCoord = ((uvRect.y + (((_Time.x + randomSeed) % 1) * _HologramStripesSpeed)) % totalHologram) / totalHologram;
-			hologramYCoord = abs(hologramYCoord);
-			half alpha = RemapFloat(saturate(hologramYCoord - (_HologramUnmodAmount/totalHologram)), 0.0, 1.0, _HologramMinAlpha, saturate(_HologramMaxAlpha));
-			half hologramMask = max(sign((_HologramUnmodAmount/totalHologram) - hologramYCoord), 0.0);
-			half4 hologramResult = col;
-			hologramResult.a *= lerp(alpha, 1, hologramMask);
-			hologramResult.rgb *= max(1, _HologramMaxAlpha * max(sign(hologramYCoord - (_HologramUnmodAmount/totalHologram)), 0.0));
-			hologramMask = 1 - step(0.01,hologramMask);
-			hologramResult.rgb += hologramMask * _HologramStripeColor * col.a;
-			col = lerp(col, hologramResult, _HologramBlend);
-		#endif
-
-		//-----------------------------------
-
-		//FLICKER_ON
-		#if FLICKER_ON
-			col.a *= saturate(col.a * step(frac(0.05 + (_Time.w + randomSeed) * _FlickerFreq), 1 - _FlickerPercent) + _FlickerAlpha);
-		#endif
-		//-----------------------------------
-
-		//ALPHACUTOFF_ON
-
-		//ALPHAROUND_ON
-
-		//ALPHAOUTLINE_ON
-		#if ALPHAOUTLINE_ON
-			half alphaOutlineRes = pow(1 - col.a, max(_AlphaOutlinePower, 0.0001)) * step(_AlphaOutlineMinAlpha, col.a) * _AlphaOutlineBlend;
-			col.rgb = lerp(col.rgb, _AlphaOutlineColor.rgb * _AlphaOutlineGlow, alphaOutlineRes);
-			col.a = lerp(col.a, 1, alphaOutlineRes > 1);
-		#endif
-		//-------------------------------------------------------
-
-		//FOG_ON
-
-		//------------------
-
-        col *= _Color;
-		o.Albedo = col;
-		col.a *= _Alpha;
-        clip(col.a - _AlphaCutoffValue - 0.01);
-		o.Alpha = _Color.a;
 	}
 
 
@@ -2172,19 +1963,19 @@ ZWrite On
 
 
                  // #if %EXTRAV2F0REQUIREKEY%
-                 // v2p.extraV2F0 = d.extraV2F0;
+                  v2p.extraV2F0 = d.extraV2F0;
                  // #endif
 
                  // #if %EXTRAV2F1REQUIREKEY%
-                 // v2p.extraV2F1 = d.extraV2F1;
+                  v2p.extraV2F1 = d.extraV2F1;
                  // #endif
 
                  // #if %EXTRAV2F2REQUIREKEY%
-                 // v2p.extraV2F2 = d.extraV2F2;
+                  v2p.extraV2F2 = d.extraV2F2;
                  // #endif
 
                  // #if %EXTRAV2F3REQUIREKEY%
-                 // v2p.extraV2F3 = d.extraV2F3;
+                  v2p.extraV2F3 = d.extraV2F3;
                  // #endif
 
                  // #if %EXTRAV2F4REQUIREKEY%
@@ -2211,19 +2002,19 @@ ZWrite On
                ZERO_INITIALIZE(Blackboard, d.blackboard);
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // d.extraV2F0 = v2p.extraV2F0;
+                d.extraV2F0 = v2p.extraV2F0;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // d.extraV2F1 = v2p.extraV2F1;
+                d.extraV2F1 = v2p.extraV2F1;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // d.extraV2F2 = v2p.extraV2F2;
+                d.extraV2F2 = v2p.extraV2F2;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // d.extraV2F3 = v2p.extraV2F3;
+                d.extraV2F3 = v2p.extraV2F3;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -2275,19 +2066,19 @@ ZWrite On
                // Ext_ModifyTessellatedVertex29(v, d);
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // v2p.extraV2F0 = d.extraV2F0;
+                v2p.extraV2F0 = d.extraV2F0;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // v2p.extraV2F1 = d.extraV2F1;
+                v2p.extraV2F1 = d.extraV2F1;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // v2p.extraV2F2 = d.extraV2F2;
+                v2p.extraV2F2 = d.extraV2F2;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // v2p.extraV2F3 = d.extraV2F3;
+                v2p.extraV2F3 = d.extraV2F3;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -2407,7 +2198,7 @@ ZWrite On
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), d.worldSpaceTangent.xyz));
 
             // #if %SCREENPOSREQUIREKEY%
-            // d.screenUV = (IN.ScreenPosition.xy / max(0.01, IN.ScreenPosition.w));
+             d.screenUV = (IN.ScreenPosition.xy / max(0.01, IN.ScreenPosition.w));
             // #endif
 
             return d;
@@ -2435,11 +2226,11 @@ ZWrite On
 
             d.tangentSpaceViewDir = mul(d.TBNMatrix, d.worldSpaceViewDir);
              d.texcoord0 = i.texcoord0;
-             d.texcoord1 = i.texcoord1;
-             d.texcoord2 = i.texcoord2;
+            // d.texcoord1 = i.texcoord1;
+            // d.texcoord2 = i.texcoord2;
 
             // #if %TEXCOORD3REQUIREKEY%
-             d.texcoord3 = i.texcoord3;
+            // d.texcoord3 = i.texcoord3;
             // #endif
 
             // d.isFrontFace = facing;
@@ -2457,25 +2248,25 @@ ZWrite On
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldTangent.xyz));
 
             // #if %SCREENPOSREQUIREKEY%
-            // d.screenPos = i.screenPos;
-            // d.screenUV = (i.screenPos.xy / i.screenPos.w);
+             d.screenPos = i.screenPos;
+             d.screenUV = (i.screenPos.xy / i.screenPos.w);
             // #endif
 
 
             // #if %EXTRAV2F0REQUIREKEY%
-            // d.extraV2F0 = i.extraV2F0;
+             d.extraV2F0 = i.extraV2F0;
             // #endif
 
             // #if %EXTRAV2F1REQUIREKEY%
-            // d.extraV2F1 = i.extraV2F1;
+             d.extraV2F1 = i.extraV2F1;
             // #endif
 
             // #if %EXTRAV2F2REQUIREKEY%
-            // d.extraV2F2 = i.extraV2F2;
+             d.extraV2F2 = i.extraV2F2;
             // #endif
 
             // #if %EXTRAV2F3REQUIREKEY%
-            // d.extraV2F3 = i.extraV2F3;
+             d.extraV2F3 = i.extraV2F3;
             // #endif
 
             // #if %EXTRAV2F4REQUIREKEY%
@@ -2546,11 +2337,11 @@ ZWrite On
            #endif
 
             o.texcoord0 = v.texcoord0;
-            o.texcoord1 = v.texcoord1;
-            o.texcoord2 = v.texcoord2;
+           // o.texcoord1 = v.texcoord1;
+           // o.texcoord2 = v.texcoord2;
 
            // #if %TEXCOORD3REQUIREKEY%
-            o.texcoord3 = v.texcoord3;
+           // o.texcoord3 = v.texcoord3;
            // #endif
 
            // #if %VERTEXCOLORREQUIREKEY%
@@ -2589,14 +2380,14 @@ ZWrite On
           #endif
 
           // #if %SCREENPOSREQUIREKEY%
-          // o.screenPos = ComputeScreenPos(o.pos, _ProjectionParams.x);
+           o.screenPos = ComputeScreenPos(o.pos, _ProjectionParams.x);
           // #endif
 
           
           #if _PASSFORWARD || _PASSGBUFFER
               float2 uv1 = v.texcoord1.xy;
               OUTPUT_LIGHTMAP_UV(uv1, unity_LightmapST, o.lightmapUV);
-               o.texcoord1.xy = uv1;
+              // o.texcoord1.xy = uv1;
               #if UNITY_VERSION < 60000009
                 OUTPUT_SH(o.worldNormal, o.sh);
               #endif
@@ -2923,10 +2714,15 @@ ZWrite On
              ZTest LEqual
              ZWrite On
 
-            	Tags { "RenderType" = "Opaque" "Queue" = "Geometry" "PreviewType" = "Plane" }
+            	Tags
+    {
+        "RenderType" = "Opaque" "Queue" = "Geometry" "PreviewType" = "Sphere"
+    }   
 	Cull [_CullingOption]
 	ZWrite [_ZWrite]
 	ZTest [_ZTestMode]
+	ColorMask [_ColorMask]
+Lighting Off
 
 
             HLSLPROGRAM
@@ -2969,81 +2765,81 @@ ZWrite On
             #define _PASSGBUFFER 1
 
             
-	#pragma shader_feature_local GLOW_ON
-	#pragma shader_feature_local FADE_ON
-	#pragma shader_feature_local OUTBASE_ON
-	#pragma shader_feature_local ONLYOUTLINE_ON
-	#pragma shader_feature_local GRADIENT_ON
-	#pragma shader_feature_local GRADIENT2COL_ON
-	#pragma shader_feature_local RADIALGRADIENT_ON
-	#pragma shader_feature_local COLORSWAP_ON
-	#pragma shader_feature_local HSV_ON
-	#pragma shader_feature_local CHANGECOLOR_ON
-	#pragma shader_feature_local CHANGECOLOR2_ON
-	#pragma shader_feature_local CHANGECOLOR3_ON
-	#pragma shader_feature_local COLORRAMP_ON
-	#pragma shader_feature_local GRADIENTCOLORRAMP_ON
-	#pragma shader_feature_local HITEFFECT_ON
-	#pragma shader_feature_local NEGATIVE_ON
-	#pragma shader_feature_local PIXELATE_ON
-	#pragma shader_feature_local GREYSCALE_ON
-	#pragma shader_feature_local POSTERIZE_ON
-	#pragma shader_feature_local BLUR_ON
-	#pragma shader_feature_local MOTIONBLUR_ON
-	#pragma shader_feature_local GHOST_ON
-	#pragma shader_feature_local ALPHAOUTLINE_ON
-	#pragma shader_feature_local INNEROUTLINE_ON
-	#pragma shader_feature_local ONLYINNEROUTLINE_ON
-	#pragma shader_feature_local HOLOGRAM_ON
-	#pragma shader_feature_local CHROMABERR_ON
-	#pragma shader_feature_local GLITCH_ON
-	#pragma shader_feature_local FLICKER_ON
-	#pragma shader_feature_local SHADOW_ON
-	#pragma shader_feature_local SHINE_ON
-	#pragma shader_feature_local CONTRAST_ON
-	#pragma shader_feature_local OVERLAY_ON
-	#pragma shader_feature_local OVERLAYMULT_ON
-	#pragma shader_feature_local DOODLE_ON
-	#pragma shader_feature_local WIND_ON
-	#pragma shader_feature_local WAVEUV_ON
-	#pragma shader_feature_local ROUNDWAVEUV_ON
-	#pragma shader_feature_local RECTSIZE_ON
-	#pragma shader_feature_local OFFSETUV_ON
-	#pragma shader_feature_local CLIPPING_ON
-	#pragma shader_feature_local RADIALCLIPPING_ON
-	#pragma shader_feature_local TEXTURESCROLL_ON
-	#pragma shader_feature_local ZOOMUV_ON
-	#pragma shader_feature_local DISTORT_ON
-	#pragma shader_feature_local WARP_ON
-	#pragma shader_feature_local TWISTUV_ON
-	#pragma shader_feature_local ROTATEUV_ON
-	#pragma shader_feature_local POLARUV_ON
-	#pragma shader_feature_local FISHEYE_ON
-	#pragma shader_feature_local PINCH_ON
+    #pragma shader_feature_local TIMEISCUSTOM_ON
+    #pragma shader_feature_local ADDITIVECONFIG_ON
+    #pragma shader_feature_local PREMULTIPLYALPHA_ON
+    #pragma shader_feature_local PREMULTIPLYCOLOR_ON
+    #pragma shader_feature_local SPLITRGBA_ON
+    #pragma shader_feature_local SHAPEADD_ON
+
+    #pragma shader_feature_local SHAPE1SCREENUV_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local SHAPE2SCREENUV_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local SHAPE3SCREENUV_ON /////////////////Pipeline specific implementation
+
+    #pragma shader_feature_local SHAPEDEBUG_ON
+            
+    #pragma shader_feature_local SHAPE1CONTRAST_ON
+    #pragma shader_feature_local SHAPE1DISTORT_ON
+    #pragma shader_feature_local SHAPE1ROTATE_ON
+    #pragma shader_feature_local SHAPE1SHAPECOLOR_ON
+
+    #pragma shader_feature_local SHAPE2_ON
+    #pragma shader_feature_local SHAPE2CONTRAST_ON
+    #pragma shader_feature_local SHAPE2DISTORT_ON
+    #pragma shader_feature_local SHAPE2ROTATE_ON
+    #pragma shader_feature_local SHAPE2SHAPECOLOR_ON
+
+    #pragma shader_feature_local SHAPE3_ON
+    #pragma shader_feature_local SHAPE3CONTRAST_ON
+    #pragma shader_feature_local SHAPE3DISTORT_ON
+    #pragma shader_feature_local SHAPE3ROTATE_ON
+    #pragma shader_feature_local SHAPE3SHAPECOLOR_ON
+
+    #pragma shader_feature_local GLOW_ON
+    #pragma shader_feature_local GLOWTEX_ON
+    #pragma shader_feature_local DEPTHGLOW_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local MASK_ON
+    #pragma shader_feature_local COLORRAMP_ON
+    #pragma shader_feature_local COLORRAMPGRAD_ON
+    #pragma shader_feature_local COLORGRADING_ON
+    #pragma shader_feature_local HSV_ON
+    #pragma shader_feature_local POSTERIZE_ON
+    #pragma shader_feature_local PIXELATE_ON
+    #pragma shader_feature_local DISTORT_ON
 	#pragma shader_feature_local SHAKEUV_ON
-
-	#pragma shader_feature_local GLOWTEX_ON
-	#pragma shader_feature_local OUTTEX_ON
-	#pragma shader_feature_local OUTDIST_ON
-	#pragma shader_feature_local OUTBASE8DIR_ON
-	#pragma shader_feature_local OUTBASEPIXELPERF_ON
-	#pragma shader_feature_local COLORRAMPOUTLINE_ON
-	#pragma shader_feature_local GREYSCALEOUTLINE_ON
-	#pragma shader_feature_local POSTERIZEOUTLINE_ON
-	#pragma shader_feature_local BLURISHD_ON
-	#pragma shader_feature_local MANUALWIND_ON
-	#pragma shader_feature_local ATLAS_ON
-	#pragma shader_feature_local PREMULTIPLYALPHA_ON
-
-	#pragma shader_feature BILBOARD_ON
-	#pragma shader_feature BILBOARDY_ON
+    #pragma shader_feature_local WAVEUV_ON
+	#pragma shader_feature_local ROUNDWAVEUV_ON
+    #pragma shader_feature_local TWISTUV_ON
+    #pragma shader_feature_local DOODLE_ON
+    #pragma shader_feature_local OFFSETSTREAM_ON
+    #pragma shader_feature_local TEXTURESCROLL_ON
+    #pragma shader_feature_local VERTOFFSET_ON
+    #pragma shader_feature_local RIM_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local BACKFACETINT_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local POLARUV_ON
+    #pragma shader_feature_local POLARUVDISTORT_ON
+    #pragma shader_feature_local SHAPE1MASK_ON
+    #pragma shader_feature_local TRAILWIDTH_ON
+    #pragma shader_feature_local LIGHTANDSHADOW_ON
+    #pragma shader_feature_local SHAPETEXOFFSET_ON
+    #pragma shader_feature_local SHAPEWEIGHTS_ON
+            
+    #pragma shader_feature_local ALPHACUTOFF_ON
+    #pragma shader_feature_local ALPHASMOOTHSTEP_ON
+    #pragma shader_feature_local FADE_ON
+    #pragma shader_feature_local FADEBURN_ON
+    #pragma shader_feature_local ALPHAFADE_ON
+    #pragma shader_feature_local ALPHAFADEUSESHAPE1_ON
+    #pragma shader_feature_local ALPHAFADEUSEREDCHANNEL_ON
+    #pragma shader_feature_local ALPHAFADETRANSPARENCYTOO_ON
+    #pragma shader_feature_local ALPHAFADEINPUTSTREAM_ON
+    #pragma shader_feature_local CAMDISTFADE_ON
 
 	#pragma shader_feature NORMALMAP_ON
 
 
    #define _URP 1
-#define _USINGTEXCOORD1 1
-#define _USINGTEXCOORD2 1
+#define REQUIRE_DEPTH_TEXTURE
 
 
             
@@ -3106,15 +2902,15 @@ ZWrite On
          float3 worldNormal : TEXCOORD1;
          float4 worldTangent : TEXCOORD2;
           float4 texcoord0 : TEXCOORD3;
-          float4 texcoord1 : TEXCOORD4;
-          float4 texcoord2 : TEXCOORD5;
+         // float4 texcoord1 : TEXCOORD4;
+         // float4 texcoord2 : TEXCOORD5;
 
          // #if %TEXCOORD3REQUIREKEY%
-          float4 texcoord3 : TEXCOORD6;
+         // float4 texcoord3 : TEXCOORD6;
          // #endif
 
          // #if %SCREENPOSREQUIREKEY%
-         // float4 screenPos : TEXCOORD7;
+          float4 screenPos : TEXCOORD7;
          // #endif
 
          // #if %VERTEXCOLORREQUIREKEY%
@@ -3141,19 +2937,19 @@ ZWrite On
          #endif
 
          // #if %EXTRAV2F0REQUIREKEY%
-         // float4 extraV2F0 : TEXCOORD13;
+          float4 extraV2F0 : TEXCOORD13;
          // #endif
 
          // #if %EXTRAV2F1REQUIREKEY%
-         // float4 extraV2F1 : TEXCOORD14;
+          float4 extraV2F1 : TEXCOORD14;
          // #endif
 
          // #if %EXTRAV2F2REQUIREKEY%
-         // float4 extraV2F2 : TEXCOORD15;
+          float4 extraV2F2 : TEXCOORD15;
          // #endif
 
          // #if %EXTRAV2F3REQUIREKEY%
-         // float4 extraV2F3 : TEXCOORD16;
+          float4 extraV2F3 : TEXCOORD16;
          // #endif
 
          // #if %EXTRAV2F4REQUIREKEY%
@@ -3319,7 +3115,7 @@ ZWrite On
                #endif
 
                // #if %TEXCOORD3REQUIREKEY%
-                float4 texcoord3 : TEXCOORD3;
+               // float4 texcoord3 : TEXCOORD3;
                // #endif
 
                // #if %VERTEXCOLORREQUIREKEY%
@@ -3346,7 +3142,7 @@ ZWrite On
                float4 texcoord2 : TEXCOORD2;
 
                // #if %TEXCOORD3REQUIREKEY%
-                float4 texcoord3 : TEXCOORD3;
+               // float4 texcoord3 : TEXCOORD3;
                // #endif
 
                // #if %VERTEXCOLORREQUIREKEY%
@@ -3354,19 +3150,19 @@ ZWrite On
                // #endif
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // float4 extraV2F0 : TEXCOORD5;
+                float4 extraV2F0 : TEXCOORD5;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // float4 extraV2F1 : TEXCOORD6;
+                float4 extraV2F1 : TEXCOORD6;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // float4 extraV2F2 : TEXCOORD7;
+                float4 extraV2F2 : TEXCOORD7;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // float4 extraV2F3 : TEXCOORD8;
+                float4 extraV2F3 : TEXCOORD8;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -3607,20 +3403,116 @@ ZWrite On
 
                
 	half4 _Color;
-	half4 _MainTex_ST, _MainTex_TexelSize;
-	half _Alpha, _AlphaCutoffValue;
+	half _Alpha;
+	half _AlphaCutoffValue;
 
-	#if ATLAS_ON
-		half _MinXUV, _MaxXUV, _MinYUV, _MaxYUV;
+	half _TimingSeed;
+
+	#if TIMEISCUSTOM_ON
+		float4 globalCustomTime;
+	#endif
+
+	half4 _MainTex_ST, _ShapeColor;
+	half _ShapeXSpeed, _ShapeYSpeed, _ShapeColorWeight, _ShapeAlphaWeight;
+	
+	#if SHAPE1CONTRAST_ON
+		half _ShapeContrast, _ShapeBrightness;
+	#endif
+	
+	#if SHAPE1DISTORT_ON
+		half4 _ShapeDistortTex_ST;
+		half _ShapeDistortAmount, _ShapeDistortXSpeed, _ShapeDistortYSpeed;
+	#endif
+	
+	#if SHAPE1ROTATE_ON
+		half _ShapeRotationOffset, _ShapeRotationSpeed;
+	#endif
+	
+	#if OFFSETSTREAM_ON
+		half _OffsetSh1;
+	#endif
+	
+	#if SHAPEWEIGHTS_ON
+		half _Sh1BlendOffset;
+	#endif
+
+	#if SHAPE2_ON
+		half4 _Shape2Tex_ST, _Shape2Color;
+		half _Shape2XSpeed, _Shape2YSpeed, _Shape2ColorWeight, _Shape2AlphaWeight;
+		#if SHAPE2CONTRAST_ON
+			half _Shape2Contrast, _Shape2Brightness;
+		#endif
+		#if SHAPE2DISTORT_ON
+			half4 _Shape2DistortTex_ST;
+			half _Shape2DistortAmount, _Shape2DistortXSpeed, _Shape2DistortYSpeed;
+		#endif
+		#if SHAPE2ROTATE_ON
+			half _Shape2RotationOffset, _Shape2RotationSpeed;
+		#endif
+		#if OFFSETSTREAM_ON
+			half _OffsetSh2;
+		#endif
+		#if SHAPEWEIGHTS_ON
+			half _Sh2BlendOffset;
+		#endif
+	#endif
+
+	#if SHAPE3_ON
+		half4 _Shape3Tex_ST, _Shape3Color;
+		half _Shape3XSpeed, _Shape3YSpeed, _Shape3ColorWeight, _Shape3AlphaWeight;
+		#if SHAPE3CONTRAST_ON
+			half _Shape3Contrast, _Shape3Brightness;
+		#endif
+		#if SHAPE3DISTORT_ON
+			half4 _Shape3DistortTex_ST;
+			half _Shape3DistortAmount, _Shape3DistortXSpeed, _Shape3DistortYSpeed;
+		#endif
+		#if SHAPE3ROTATE_ON
+			half _Shape3RotationOffset, _Shape3RotationSpeed;
+		#endif
+		#if OFFSETSTREAM_ON
+			half _OffsetSh3;
+		#endif
+		#if SHAPEWEIGHTS_ON
+			half _Sh3BlendOffset;
+		#endif
 	#endif
 
 	#if GLOW_ON
 		half4 _GlowColor;
 		half _Glow, _GlowGlobal;
+		#if GLOWTEX_ON
+			half4 _GlowTex_ST;
+		#endif
 	#endif
-	 
+
+	#if MASK_ON
+		half4 _MaskTex_ST;
+		half _MaskPow;
+	#endif
+
+	#if COLORRAMP_ON
+		half _ColorRampLuminosity, _ColorRampBlend;
+	#endif
+
+	#if ALPHASMOOTHSTEP_ON
+		half _AlphaStepMin, _AlphaStepMax;
+	#endif
+
+	#if ALPHAFADE_ON
+		half _AlphaFadeAmount, _AlphaFadeSmooth, _AlphaFadePow;
+	#endif
+
 	#if HSV_ON
 		half _HsvShift, _HsvSaturation, _HsvBright;
+	#endif
+
+	#if POSTERIZE_ON
+		half _PosterizeNumColors;
+	#endif
+
+	#if PIXELATE_ON
+		half _PixelateSize;
 	#endif
 
 	#if DISTORT_ON
@@ -3628,203 +3520,101 @@ ZWrite On
 		half _DistortTexXSpeed, _DistortTexYSpeed, _DistortAmount;
 	#endif
 
-	#if FADE_ON
-		half4 _FadeBurnColor, _FadeTex_ST, _FadeBurnTex_ST;
-		half _FadeAmount, _FadeBurnWidth, _FadeBurnTransition,_FadeBurnGlow;
-	#endif
-
-	#if OUTBASE_ON
-		half4 _OutlineColor;
-		half _OutlineAlpha, _OutlineGlow, _OutlineWidth;
-		int _OutlinePixelWidth;
-	#endif
-
-	#if OUTTEX_ON
-		half4 _OutlineTex_ST;
-		half _OutlineTexXSpeed, _OutlineTexYSpeed;
-	#endif
-
-	#if OUTDIST_ON
-		half4 _OutlineDistortTex_ST;
-		half _OutlineDistortTexXSpeed, _OutlineDistortTexYSpeed, _OutlineDistortAmount;
-	#endif
-
-	#if ALPHAOUTLINE_ON
-		half _AlphaOutlineGlow, _AlphaOutlinePower, _AlphaOutlineMinAlpha, _AlphaOutlineBlend;
-		half4 _AlphaOutlineColor;
-	#endif
-
-	#if INNEROUTLINE_ON
-		half _InnerOutlineThickness, _InnerOutlineAlpha, _InnerOutlineGlow;
-		half4 _InnerOutlineColor;
-	#endif
-
-	#if GRADIENT_ON
-		half _GradBlend, _GradBoostX, _GradBoostY;
-		half4 _GradTopRightCol, _GradTopLeftCol, _GradBotRightCol, _GradBotLeftCol;
-	#endif
-
-	#if COLORSWAP_ON
-		half4 _ColorSwapRed, _ColorSwapGreen, _ColorSwapBlue;
-		half _ColorSwapRedLuminosity, _ColorSwapGreenLuminosity, _ColorSwapBlueLuminosity, _ColorSwapBlend;
-	#endif
-
-	#if CHANGECOLOR_ON
-		half4 _ColorChangeNewCol, _ColorChangeTarget;
-		half _ColorChangeTolerance, _ColorChangeLuminosity;
-	#endif
-	#if CHANGECOLOR2_ON
-		half4 _ColorChangeNewCol2, _ColorChangeTarget2;
-		half _ColorChangeTolerance2;
-	#endif
-	#if CHANGECOLOR3_ON
-		half4 _ColorChangeNewCol3, _ColorChangeTarget3;
-		half _ColorChangeTolerance3;
-	#endif
-
-	#if COLORRAMP_ON
-		half _ColorRampLuminosity, _ColorRampBlend;
-	#endif
-
-	#if HITEFFECT_ON
-		half4 _HitEffectColor;
-		half _HitEffectGlow, _HitEffectBlend;
-	#endif
-
-	#if NEGATIVE_ON
-		half _NegativeAmount;
-	#endif
-
-	#if PIXELATE_ON
-		half _PixelateSize;
-	#endif
-
-	#if GREYSCALE_ON
-		half _GreyscaleLuminosity, _GreyscaleBlend;
-		half4 _GreyscaleTintColor;
-	#endif
-
-	#if POSTERIZE_ON
-		half _PosterizeNumColors, _PosterizeGamma;
-	#endif
-
-	#if BLUR_ON
-		half _BlurIntensity;
-	#endif
-
-	#if MOTIONBLUR_ON
-		half _MotionBlurAngle, _MotionBlurDist;
-	#endif
-
-	#if GHOST_ON
-		half _GhostColorBoost, _GhostTransparency, _GhostBlend;
-	#endif
-
-	#if HOLOGRAM_ON
-		half _HologramStripesAmount, _HologramMinAlpha, _HologramUnmodAmount, _HologramStripesSpeed, _HologramMaxAlpha, _HologramBlend;
-		half4 _HologramStripeColor;
-	#endif
-
-	#if CHROMABERR_ON
-		half _ChromAberrAmount, _ChromAberrAlpha;
-	#endif
-
-	#if GLITCH_ON
-		half _GlitchAmount, _GlitchSize;
-	#endif
-
-	#if FLICKER_ON
-		half _FlickerFreq, _FlickerPercent, _FlickerAlpha;
-	#endif
-
-	#if SHADOW_ON
-		half _ShadowX, _ShadowY, _ShadowAlpha;
-		half4 _ShadowColor;
-	#endif
-
-	#if SHINE_ON
-		half4 _ShineColor;
-		half _ShineLocation, _ShineRotate, _ShineWidth, _ShineGlow;
-	#endif
-
-	#if CONTRAST_ON
-		half _Contrast, _Brightness;
-	#endif
-
-	#if OVERLAY_ON
-		half4 _OverlayTex_ST, _OverlayColor;
-		half _OverlayGlow, _OverlayBlend, _OverlayTextureScrollXSpeed, _OverlayTextureScrollYSpeed;
-	#endif
-
-	#if DOODLE_ON
-		half _HandDrawnAmount, _HandDrawnSpeed;
-	#endif
-
-	#if WIND_ON
-		half _GrassSpeed, _GrassWind, _GrassManualAnim, _GrassRadialBend;
-	#endif
-
-	#if WAVEUV_ON
-		float _WaveAmount, _WaveSpeed, _WaveStrength, _WaveX, _WaveY;
-	#endif
-
-	#if ROUNDWAVEUV_ON
-		half _RoundWaveStrength, _RoundWaveSpeed;
-	#endif
-
-	#if RECTSIZE_ON
-		half _RectSize;
-	#endif
-
-	#if OFFSETUV_ON
-		half _OffsetUvX, _OffsetUvY;
-	#endif
-
-	#if CLIPPING_ON
-		half _ClipUvLeft, _ClipUvRight, _ClipUvUp, _ClipUvDown;
-	#endif
-
-	#if RADIALCLIPPING_ON
-		half _RadialStartAngle, _RadialClip, _RadialClip2;
-	#endif
-
 	#if TEXTURESCROLL_ON
 		half _TextureScrollXSpeed, _TextureScrollYSpeed;
-	#endif
-
-	#if ZOOMUV_ON
-		half _ZoomUvAmount;
-	#endif
-
-	#if WARP_ON
-		half _WarpStrength, _WarpSpeed, _WarpScale;
-	#endif
-
-	#if TWISTUV_ON
-		half _TwistUvAmount, _TwistUvPosX, _TwistUvPosY, _TwistUvRadius;
-	#endif
-
-	#if ROTATEUV_ON
-		half _RotateUvAmount;
-	#endif
-
-	#if FISHEYE_ON
-		half _FishEyeUvAmount;
-	#endif
-
-	#if PINCH_ON
-		half _PinchUvAmount;
 	#endif
 
 	#if SHAKEUV_ON
 		half _ShakeUvSpeed, _ShakeUvX, _ShakeUvY;
 	#endif
 
+	#if WAVEUV_ON
+		half _WaveAmount, _WaveSpeed, _WaveStrength, _WaveX, _WaveY;
+	#endif
+
+	#if ROUNDWAVEUV_ON
+		half _RoundWaveStrength, _RoundWaveSpeed;
+	#endif
+
+	#if TWISTUV_ON
+		half _TwistUvAmount, _TwistUvPosX, _TwistUvPosY, _TwistUvRadius;
+	#endif
+
+	#if DOODLE_ON
+		half _HandDrawnAmount, _HandDrawnSpeed;
+	#endif
+
+	#if ROUNDWAVEUV_ON || PIXELATE_ON
+		half4 _MainTex_TexelSize;
+	#endif
+
+	#if VERTOFFSET_ON
+		half4 _VertOffsetTex_ST;
+		half _VertOffsetAmount, _VertOffsetPower, _VertOffsetTexXSpeed, _VertOffsetTexYSpeed;
+	#endif
+
+	#if FADE_ON
+		half4 _FadeTex_ST;
+		half _FadeAmount, _FadeTransition, _FadePower, _FadeScrollXSpeed, _FadeScrollYSpeed;
+		#if FADEBURN_ON
+			half4 _FadeBurnColor, _FadeBurnTex_ST;
+			half _FadeBurnWidth, _FadeBurnGlow;
+		#endif
+	#endif
+
+	#if COLORGRADING_ON
+		half3 _ColorGradingLight, _ColorGradingMiddle, _ColorGradingDark;
+		half _ColorGradingMidPoint;
+	#endif
+            
+	#if CAMDISTFADE_ON
+		half _CamDistFadeStepMin, _CamDistFadeStepMax, _CamDistProximityFade;
+	#endif
+
+	#if RIM_ON
+		half _RimBias, _RimScale, _RimPower, _RimIntensity, _RimAddAmount, _RimErodesAlpha;
+		half4 _RimColor;
+	#endif
+
+	#if BACKFACETINT_ON
+		half4 _BackFaceTint, _FrontFaceTint;
+	#endif
+
+	#if SHAPEDEBUG_ON
+		half _DebugShape;
+	#endif
+
+	#if SHAPE1MASK_ON
+		half4 _Shape1MaskTex_ST;
+		half _Shape1MaskPow;
+	#endif
+
+	#if TRAILWIDTH_ON
+		half _TrailWidthPower;
+	#endif
+
+	#if LIGHTANDSHADOW_ON
+		half3 _All1VfxLightDir;
+		half _ShadowAmount, _ShadowStepMin, _ShadowStepMax, _LightAmount;
+		half4 _LightColor;
+	#endif
+
+	#if SHAPETEXOFFSET_ON
+		half _RandomSh1Mult, _RandomSh2Mult, _RandomSh3Mult;
+	#endif
+
+	#if DEPTHGLOW_ON
+		half _DepthGlowDist, _DepthGlowPow, _DepthGlow, _DepthGlowGlobal;
+		half4 _DepthGlowColor;
+    #endif
+
+	#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+        half _ScreenUvShDistScale,_ScreenUvSh2DistScale, _ScreenUvSh3DistScale;
+	#endif
+
 	#if NORMALMAP_ON
 		half _NormalStrength;
 	#endif
-
-	float _RandomSeed;
 
 
 
@@ -3836,58 +3626,82 @@ ZWrite On
             
 
             
-	
+
 	TEXTURE2D(_MainTex);
 	SAMPLER(sampler_MainTex);
 
+	#if SHAPE1DISTORT_ON
+		TEXTURE2D(_ShapeDistortTex);
+		SAMPLER(sampler_ShapeDistortTex);
+	#endif
+
+	#if SHAPE2_ON
+		TEXTURE2D(_Shape2Tex);
+		SAMPLER(sampler_Shape2Tex);
+		#if SHAPE2DISTORT_ON
+			TEXTURE2D(_Shape2DistortTex);
+			SAMPLER(sampler_Shape2DistortTex);
+		#endif
+	#endif
+
+	#if SHAPE3_ON
+		TEXTURE2D(_Shape3Tex);
+		SAMPLER(sampler_Shape3Tex);
+		#if SHAPE3DISTORT_ON
+			TEXTURE2D(_Shape3DistortTex);
+			SAMPLER(sampler_Shape3DistortTex);
+		#endif
+	#endif
+
 	#if GLOW_ON
-		TEXTURE2D(_GlowTex);
-		SAMPLER(sampler_GlowTex);
+		#if GLOWTEX_ON
+			TEXTURE2D(_GlowTex);
+			SAMPLER(sampler_GlowTex);
+		#endif
+	#endif
+
+	#if MASK_ON
+		TEXTURE2D(_MaskTex);
+		SAMPLER(sampler_MaskTex);
+	#endif
+
+	#if COLORRAMP_ON
+		TEXTURE2D(_ColorRampTex);
+		SAMPLER(sampler_ColorRampTex);
+	#endif
+
+	#if COLORRAMPGRAD_ON
+		TEXTURE2D(_ColorRampTexGradient);
+		SAMPLER(sampler_ColorRampTexGradient);
+	#endif
+	
+	#if DISTORT_ON
+		TEXTURE2D(_DistortTex);
+		SAMPLER(sampler_DistortTex);
+	#endif
+
+	#if VERTOFFSET_ON
+		TEXTURE2D(_VertOffsetTex);
+		SAMPLER(sampler_VertOffsetTex);
 	#endif
 
 	#if FADE_ON
 		TEXTURE2D(_FadeTex);
 		SAMPLER(sampler_FadeTex);
-
-		TEXTURE2D(_FadeBurnTex);
-		SAMPLER(sampler_FadeBurnTex);
+		#if FADEBURN_ON
+			TEXTURE2D(_FadeBurnTex);
+			SAMPLER(sampler_FadeBurnTex);
+		#endif
 	#endif
 
-	#if DISTORT_ON
-		TEXTURE2D(_DistortTex);
-		SAMPLER(sampler_DistortTex);	
+	#if SHAPE1MASK_ON
+		TEXTURE2D(_Shape1MaskTex);
+		SAMPLER(sampler_Shape1MaskTex);
 	#endif
 
-	#if OUTTEX_ON
-		TEXTURE2D(_OutlineTex);
-		SAMPLER(sampler_OutlineTex);
-	#endif
-
-	#if OUTDIST_ON
-		TEXTURE2D(_OutlineDistortTex);
-		SAMPLER(sampler_OutlineDistortTex);
-	#endif
-
-	#if COLORSWAP_ON
-		TEXTURE2D(_ColorSwapTex);
-		SAMPLER(sampler_ColorSwapTex);
-	#endif
-
-	#if COLORRAMP_ON
-		TEXTURE2D(_ColorRampTex);
-		TEXTURE2D(_ColorRampTexGradient);
-		SAMPLER(sampler_ColorRampTex);
-		SAMPLER(sampler_ColorRampTexGradient);
-	#endif
-
-	#if SHINE_ON
-		TEXTURE2D(_ShineMask);
-		SAMPLER(sampler_ShineMask);
-	#endif
-
-	#if OVERLAY_ON
-		TEXTURE2D(_OverlayTex);
-		SAMPLER(sampler_OverlayTex);
+	#if TRAILWIDTH_ON
+		TEXTURE2D(_TrailWidthGradient);
+		SAMPLER(sampler_TrailWidthGradient);
 	#endif
 
 	#if NORMALMAP_ON
@@ -3895,225 +3709,124 @@ ZWrite On
 		SAMPLER(sampler_NormalMap);
 	#endif
 
-
-	half3 GetPixel(in int offsetX, in int offsetY, in half2 uv, in Texture2D _tex, in SamplerState _sampler)
+	half4 SampleTextureWithScroll(in Texture2D _tex, in SamplerState _sampler, in float2 uv, in half scrollXSpeed, in half scrollYSpeed, in float time)
 	{
-		half2 _uv = uv + half2(offsetX * _MainTex_TexelSize.x, offsetY * _MainTex_TexelSize.y);
-		half4 col = SAMPLE_TEXTURE2D(_tex, _sampler, _uv);
-		return col.rgb;
+		half2 _uv = uv;
+		_uv.x += (time * scrollXSpeed) % 1;
+		_uv.y += (time * scrollYSpeed) % 1;
+		return SAMPLE_TEXTURE2D(_tex, _sampler, _uv);
 	}
 
-
-	//BLURS-------------------------------------------------------------------------
-	half4 Blur(half2 uv, Texture2D source, SamplerState sampler_source, half Intensity)
+	half EaseOutQuint(half x) 
 	{
-		const half2 texelSize = 1.0 / _ScreenParams.xy;
-		const half4 color = SAMPLE_TEXTURE2D(source, sampler_source, uv);
-		const half2 offset = Intensity * texelSize;
-
-		half4 accumulatedColor = color;
-		half accumulatedWeight = 1.0;
-		for (int x = -1; x <= 1; x++)
-		{
-			for (int y = -1; y <= 1; y++)
-			{
-				const half2 sampleUV = uv + half2(x, y) * offset;
-				const half4 sampleColor = SAMPLE_TEXTURE2D(source, sampler_source, sampleUV);
-
-				accumulatedColor += sampleColor;
-				accumulatedWeight += 1.0;
-			}
-		}
-
-		half4 blurredColor = accumulatedColor / accumulatedWeight;
-		return blurredColor;
+		return 1 - pow(1 - x, 5);
 	}
 
-	half BlurHD_G(half bhqp, half x)
+	half RemapFloat(half inValue, half inMin, half inMax, half outMin, half outMax)
 	{
-		return exp(-(x * x) / (2.0 * bhqp * bhqp));
-	}
-	half4 BlurHD(half2 uv, Texture2D source, SamplerState sampler_source, half BlurAmount, half xScale, half yScale)
-	{
-		int iterations = 16;
-		int halfIterations = iterations / 2;
-		half sigmaX = 0.1 + BlurAmount * 0.5;
-		half sigmaY = sigmaX;
-		half total = 0.0;
-		half4 ret = half4(0, 0, 0, 0);
-		for (int iy = 0; iy < iterations; ++iy)
-		{
-			half fy = BlurHD_G(sigmaY, half(iy) -half(halfIterations));
-			half offsetY = half(iy - halfIterations) * 0.00390625 * xScale;
-			for (int ix = 0; ix < iterations; ++ix)
-			{
-				half fx = BlurHD_G(sigmaX, half(ix) - half(halfIterations));
-				half offsetX = half(ix - halfIterations) * 0.00390625 * yScale;
-				total += fx * fy;
-				ret += SAMPLE_TEXTURE2D(source, sampler_source, uv + half2(offsetX, offsetY)) * fx * fy;
-			}
-		}
-		return ret / total;
-	}
-	//-----------------------------------------------------------------------
-
-
-	//-------------------------------------------
-	half RemapFloat(half inValue, half inMin, half inMax, half outMin, half outMax){
 		return outMin + (inValue - inMin) * (outMax - outMin) / (inMax - inMin);
 	}
-	//-------------------------------------------
 
-	//-----------------------------------------------------------------------
-	half rand(half2 seed, half offset) {
-		return (frac(sin(dot(seed, half2(12.9898, 78.233))) * 43758.5453) + offset) % 1.0;
+	float2 RotateUvs(float2 uv, half rotation, half4 scaleAndTranslate)
+	{
+		half2 center = half2(0.5 * scaleAndTranslate.x + scaleAndTranslate.z, 0.5 * scaleAndTranslate.y + scaleAndTranslate.w);
+		half cosAngle = cos(rotation);
+		half sinAngle = sin(rotation);
+		uv -= center;
+		uv = mul(half2x2(cosAngle, -sinAngle, sinAngle, cosAngle), uv);
+		uv += center;
+		return uv; 
 	}
 
-	half rand2(half2 seed, half offset) {
-		return (frac(sin(dot(seed * floor(50 + (_Time.x % 1.0) * 12.), half2(127.1, 311.7))) * 43758.5453123) + offset) % 1.0;
-	}
+	half4 GetDebugColor(float4 resColor, half4 shape1, half4 shape2, half4 shape3)
+	{
+		half4 res = resColor;
 
-	half rand2CustomTime(half2 seed, half offset, half customTime) {
-		return (frac(sin(dot(seed * floor(50 + (customTime % 1.0) * 12.), half2(127.1, 311.7))) * 43758.5453123) + offset) % 1.0;
-	}
-	//-----------------------------------------------------------------------
+		//MAKE SURE THE FOLLOWING CODE BLOCK IS UNCOMMENTED-------------------------------------------
+        #if SHAPEDEBUG_ON
+			if(_DebugShape < 1.5) return shape1;
+			#if SHAPE2_ON
+				else if (_DebugShape < 2.5) return shape2;
+			#endif
+			#if SHAPE3_ON
+				else return shape3;
+			#endif
+        #endif
 
+		return res;
+	}
 
 	void Ext_ModifyVertex0 (inout VertexData v, inout ExtraV2F d)
 	{
-		//BILBOARD_ON
-		#if BILBOARD_ON
-			half3 camRight = mul((half3x3)unity_CameraToWorld, half3(1,0,0));
-			half3 camUp = half3(0,1,0);
-			#if BILBOARDY_ON
-				camUp = mul((half3x3)unity_CameraToWorld, half3(0,1,0));
+		//uvDistTex --> extraV2F0
+		//uvSh1DistTex --> extraV2F1
+		//uvSh2DistTex --> extraV2F2
+		//uvSh3DistTex --> extraV2F3
+ 
+		#if VERTOFFSET_ON
+			#if TIMEISCUSTOM_ON
+				const half time = v.texcoord0.z + globalCustomTime.y;
+			#else
+				const half time = v.texcoord0.z + _Time.y;
 			#endif
-			half3 localPos = v.vertex.x * camRight + v.vertex.y * camUp;
-			v.vertex = half4(localPos, 1);
-		#endif
-        //-----------------------------------------------------------
-
-        v.texcoord0.xy = TRANSFORM_TEX(v.texcoord0.xy, _MainTex);
-		half2 center = half2(0.5, 0.5);
-        #if ATLAS_ON
-		    center = half2((_MaxXUV + _MinXUV) / 2.0, (_MaxYUV + _MinYUV) / 2.0);
-		#endif
-		
-		//POLARUV_ON
-		#if POLARUV_ON
-			v.texcoord0.xy = v.texcoord0.xy - center;
+				half4 offsetUv = half4(TRANSFORM_TEX(v.texcoord0.xy, _VertOffsetTex), 0, 0);
+            	offsetUv.x += (time * _VertOffsetTexXSpeed) % 1;
+				offsetUv.y += (time * _VertOffsetTexYSpeed) % 1;
+                v.vertex.xyz += v.normal * _VertOffsetAmount * pow(SAMPLE_TEXTURE2D_LOD(_VertOffsetTex, sampler_VertOffsetTex, offsetUv, 0).r, _VertOffsetPower); 
 		#endif
 
-		//----------------------------------------
-
-		//ROTATEUV_ON
-		#if ROTATEUV_ON
-			half2 uvC = v.texcoord0.xy;
-			half cosAngle = cos(_RotateUvAmount);
-			half sinAngle = sin(_RotateUvAmount);
-			half2x2 rot = half2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
-			uvC -= center;
-			v.texcoord0.xy = mul(rot, uvC);
-			v.texcoord0.xy += center;
-		#endif
-		//--------------------
-
-		#if RECTSIZE_ON
-			v.vertex.xyz += (v.vertex.xyz * (_RectSize - 1.0));
+		#if DISTORT_ON && !POLARUVDISTORT_ON
+			d.extraV2F0.xy = TRANSFORM_TEX(v.texcoord0.xy, _DistortTex);
 		#endif
 
-		#if OUTTEX_ON
-			v.texcoord1.xy = TRANSFORM_TEX(v.texcoord0.xy, _OutlineTex);
+		#if SHAPE1DISTORT_ON && !POLARUVDISTORT_ON
+			d.extraV2F1.xy = TRANSFORM_TEX(v.texcoord0.xy, _ShapeDistortTex);
+        #endif
+
+		#if SHAPE2_ON
+			#if SHAPE2DISTORT_ON && !POLARUVDISTORT_ON
+				d.extraV2F2.xy = TRANSFORM_TEX(v.texcoord0.xy, _Shape2DistortTex);;
+			#endif
 		#endif
 
-		#if OUTDIST_ON
-			v.texcoord2.xy = TRANSFORM_TEX(v.texcoord0.xy, _OutlineDistortTex);
-		#endif
-
-		#if DISTORT_ON
-			v.texcoord3.xy = TRANSFORM_TEX(v.texcoord0.xy, _DistortTex);
-		#endif
+		#if SHAPE3_ON
+			#if SHAPE3DISTORT_ON && !POLARUVDISTORT_ON
+				d.extraV2F3.xy = TRANSFORM_TEX(v.texcoord0.xy, _Shape3DistortTex);
+			#endif
+        #endif
 	}
 
 	void Ext_SurfaceFunction0 (inout Surface o, ShaderData d)
 	{
-		half randomSeed = _RandomSeed;
+		//i.uvSeed -> d.texcoord0.xy
 
-		float2 uvRect = d.texcoord0;
-		half2 center = half2(0.5, 0.5);
-		#if ATLAS_ON
-			center = half2((_MaxXUV + _MinXUV) / 2.0, (_MaxYUV + _MinYUV) / 2.0);
-			uvRect = half2((d.texcoord0.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord0.y - _MinYUV) / (_MaxYUV - _MinYUV));
+		float seed = d.texcoord0.z + _TimingSeed;
+		#if TIMEISCUSTOM_ON
+			const float4 shaderTime = globalCustomTime;
+		#else
+			const float4 shaderTime = _Time;
 		#endif
-		half2 centerTiled = half2(center.x *  _MainTex_ST.x, center.y *  _MainTex_ST.y);
+		float time = shaderTime.y + seed;
 
-		//CLIPPING_ON
-		#if CLIPPING_ON
-			half2 tiledUv = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				tiledUv = half2((tiledUv.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUv.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			clip((1 - _ClipUvUp) - tiledUv.y);
-			clip(tiledUv.y - _ClipUvDown);
-			clip((1 - _ClipUvRight) - tiledUv.x);
-			clip(tiledUv.x - _ClipUvLeft);
-		#endif
-		//----------------------------------
+		#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half2 originalUvs = d.texcoord0.xy;
+        #endif
 
-		//RADIALCLIPPING_ON
-		#if RADIALCLIPPING_ON
-			half2 tiledUv2 = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				tiledUv2 = half2((tiledUv2.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUv2.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			half startAngle = _RadialStartAngle - _RadialClip;
-			half endAngle = _RadialStartAngle + _RadialClip2;
-			half offset0 = clamp(0, 360, startAngle + 360);
-			half offset360 = clamp(0, 360, endAngle - 360);
-			half2 atan2Coord = half2(lerp(-1, 1, tiledUv2.x), lerp(-1, 1, tiledUv2.y));
-			half atanAngle = atan2(atan2Coord.y, atan2Coord.x) * 57.3; // angle in degrees
-			if(atanAngle < 0) atanAngle = 360 + atanAngle;
-			if(atanAngle >= startAngle && atanAngle <= endAngle) discard;
-			if(atanAngle <= offset360) discard;
-			if(atanAngle >= offset0) discard;
+		#if PIXELATE_ON
+			half aspectRatio = _MainTex_TexelSize.x / _MainTex_TexelSize.y;
+			half2 pixelSize = float2(_PixelateSize, _PixelateSize * aspectRatio);
+			d.texcoord0.xy = floor(d.texcoord0.xy * pixelSize) / pixelSize;
 		#endif
 
-		//-----------------------------
-
-		//TEXTURESCROLL_ON && ATLAS_ON
-		#if TEXTURESCROLL_ON && ATLAS_ON
-			d.texcoord0.xy = half2(_MinXUV + ((_MaxXUV - _MinXUV) * (abs(((_Time.y + randomSeed) * _TextureScrollXSpeed) + uvRect.x) % 1)),
-			_MinYUV + ((_MaxYUV - _MinYUV) * (abs(((_Time.y + randomSeed) * _TextureScrollYSpeed) + uvRect.y) % 1)));
-		#endif
-		//----------------------------
-
-		//OFFSETUV_ON
-		#if OFFSETUV_ON
-			#if ATLAS_ON
-				d.texcoord0.xy = half2(_MinXUV + ((_MaxXUV - _MinXUV) * (abs((_OffsetUvX + uvRect.x) % 1))),
-				_MinYUV + ((_MaxYUV - _MinYUV) * (abs(_OffsetUvY + uvRect.y) % 1)));
-			#else
-				d.texcoord0.xy += half2(_OffsetUvX, _OffsetUvY);
-			#endif
+		#if NORMALMAP_ON
+			half4 normalSample = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, d.texcoord0.xy);
+			half3 normalTS = UnpackNormal(normalSample);
+			normalTS.xy *= _NormalStrength;
+			o.Normal = normalTS;
 		#endif
 
-		//----------------------
-
-		//POLARUV_ON
-		#if POLARUV_ON
-			d.texcoord0.xy = half2(atan2(d.texcoord0.y, d.texcoord0.x) / (2.0f * 3.141592653589f), length(d.texcoord0.xy));
-			d.texcoord0.xy *= _MainTex_ST.xy;
-		#endif
-
-		//--------------------------------------
-
-		//TWISTUV_ON
 		#if TWISTUV_ON
-			#if ATLAS_ON
-				_TwistUvPosX = ((_MaxXUV - _MinXUV) * _TwistUvPosX) + _MinXUV;
-				_TwistUvPosY = ((_MaxYUV - _MinYUV) * _TwistUvPosY) + _MinYUV;
-			#endif
-			half2 tempUv = d.texcoord0.xy - half2(_TwistUvPosX *  _MainTex_ST.x, _TwistUvPosY *  _MainTex_ST.y);
+			half2 tempUv = d.texcoord0.xy - half2(_TwistUvPosX * _MainTex_ST.x, _TwistUvPosY * _MainTex_ST.y);
 			_TwistUvRadius *= (_MainTex_ST.x + _MainTex_ST.y) / 2;
 			half percent = (_TwistUvRadius - length(tempUv)) / _TwistUvRadius;
 			half theta = percent * percent * (2.0 * sin(_TwistUvAmount)) * 8.0;
@@ -4121,593 +3834,505 @@ ZWrite On
 			half c = cos(theta);
 			half beta = max(sign(_TwistUvRadius - length(tempUv)), 0.0);
 			tempUv = half2(dot(tempUv, half2(c, -s)), dot(tempUv, half2(s, c))) * beta +	tempUv * (1 - beta);
-			tempUv += half2(_TwistUvPosX *  _MainTex_ST.x, _TwistUvPosY *  _MainTex_ST.y);
+			tempUv += half2(_TwistUvPosX * _MainTex_ST.x, _TwistUvPosY * _MainTex_ST.y);
 			d.texcoord0.xy = tempUv;
 		#endif
 
-		//--------------------------------------------
-
-		//FISHEYE_ON
-		#if FISHEYE_ON
-			half bind = length(centerTiled);
-			half2 dF = d.texcoord0.xy - centerTiled;
-			half dFlen = length(dF);
-			half fishInt = (3.14159265359 / bind) * (_FishEyeUvAmount + 0.001);
-			d.texcoord0.xy = centerTiled + (dF / (max(0.0001, dFlen))) * tan(dFlen * fishInt) * bind / tan(bind * fishInt);
-		#endif
-		//---------------------------------------------
-
-		//PINCH_ON
-		#if PINCH_ON
-			half2 dP = d.texcoord0.xy - centerTiled;
-			half pinchInt = (3.141592 / length(centerTiled)) * (-_PinchUvAmount + 0.001);
-			d.texcoord0.xy = centerTiled + normalize(dP) * atan(length(dP) * -pinchInt * 10.0) * 0.5 / atan(-pinchInt * 5);
-		#endif
-
-		//---------------------------------------------
-
-		//ZOOMUV_ON
-		#if ZOOMUV_ON
-			d.texcoord0.xy -= centerTiled;
-			d.texcoord0.xy = d.texcoord0.xy * _ZoomUvAmount;
-			d.texcoord0.xy += centerTiled;
-		#endif
-
-		//-----------------------------------------------
-
-		//DOODLE_ON
 		#if DOODLE_ON
-			half2 uvCopy = uvRect;
-			_HandDrawnSpeed = (floor((_Time.x + randomSeed) * 20 * _HandDrawnSpeed) / _HandDrawnSpeed) * _HandDrawnSpeed;
+			half2 uvCopy = d.texcoord0.xy;
+			_HandDrawnSpeed = (floor((shaderTime.x + seed) * 20 * _HandDrawnSpeed) / _HandDrawnSpeed) * _HandDrawnSpeed;
 			uvCopy.x = sin((uvCopy.x * _HandDrawnAmount + _HandDrawnSpeed) * 4);
 			uvCopy.y = cos((uvCopy.y * _HandDrawnAmount + _HandDrawnSpeed) * 4);
 			d.texcoord0.xy = lerp(d.texcoord0.xy, d.texcoord0.xy + uvCopy, 0.0005 * _HandDrawnAmount);
 		#endif
 
-		//--------------------------
-
-		//SHAKEUV_ON
 		#if SHAKEUV_ON
-			half xShake = sin((_Time.x + randomSeed) * _ShakeUvSpeed * 50) * _ShakeUvX;
-			half yShake = cos((_Time.x + randomSeed) * _ShakeUvSpeed * 50) * _ShakeUvY;
+			half xShake = sin((shaderTime.x + seed) * _ShakeUvSpeed * 50) * _ShakeUvX;
+			half yShake = cos((shaderTime.x + seed) * _ShakeUvSpeed * 50) * _ShakeUvY;
 			d.texcoord0.xy += half2(xShake * 0.012, yShake * 0.01);
 		#endif
 
-		//-------------------------------------------
-
-		//RECTSIZE_ON
-		#if RECTSIZE_ON
-			d.texcoord0.xy = d.texcoord0.xy * (_RectSize).xx + (((-_RectSize * 0.5) + 0.5)).xx;
-		#endif
-
-		//-------------------------------------------
-
-		//DISTORT_ON
-		#if DISTORT_ON
-			#if ATLAS_ON
-				d.texcoord3.x = d.texcoord3.x * (1 / (_MaxXUV - _MinXUV));
-				d.texcoord3.y = d.texcoord3.y * (1 / (_MaxYUV - _MinYUV)); 
-			#endif
-
-			d.texcoord3.x += ((_Time.x + _RandomSeed) * _DistortTexXSpeed) % 1;
-			d.texcoord3.y += ((_Time.x + _RandomSeed) * _DistortTexYSpeed) % 1;
-			half distortAmnt = (SAMPLE_TEXTURE2D(_DistortTex, sampler_DistortTex, d.texcoord3.xy).r - 0.5) * 0.2 * _DistortAmount;
-			d.texcoord0.x += distortAmnt;
-			d.texcoord0.y += distortAmnt;
-		#endif
-		//-------------------------------------------------------
-
-		//WARP_ON
-		#if WARP_ON
-            half2 warpUv = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				warpUv = half2((warpUv.x - _MinXUV) / (_MaxXUV - _MinXUV), (warpUv.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			const float tau = 6.283185307179586;
-            float xWarp = (_Time.y + randomSeed) * _WarpSpeed + warpUv.x * tau / _WarpScale;
-            float yWarp = (_Time.y + randomSeed) * _WarpSpeed + warpUv.y * tau / _WarpScale;
-            float2 warp = float2(sin(xWarp), sin(yWarp)) * _WarpStrength;
-            d.texcoord0.xy += warp;
-		#endif
-
-		//-------------------------------------------------------
-
-		//WAVEUV_ON
 		#if WAVEUV_ON
-			float2 uvWave = half2(_WaveX * _MainTex_ST.x, _WaveY * _MainTex_ST.y) - d.texcoord0.xy;
-            uvWave %= 1;
+			half2 uvWave = half2(_WaveX * _MainTex_ST.x, _WaveY * _MainTex_ST.y) - d.texcoord0.xy;
 			#if ATLAS_ON
 				uvWave = half2(_WaveX, _WaveY) - uvRect;
 			#endif
 			uvWave.x *= _ScreenParams.x / _ScreenParams.y;
-            float waveTime = _Time.y + randomSeed;
-			float angWave = (sqrt(dot(uvWave, uvWave)) * _WaveAmount) - ((waveTime *  _WaveSpeed));
-			d.texcoord0.xy = d.texcoord0.xy + uvWave * sin(angWave) * (_WaveStrength / 1000.0);
+			half angWave = (sqrt(dot(uvWave, uvWave)) * _WaveAmount) - ((time * _WaveSpeed) % 360.0);
+			d.texcoord0.xy = d.texcoord0.xy + normalize(uvWave) * sin(angWave) * (_WaveStrength / 1000.0);
 		#endif
-		//----------------------------------------------------
 
-		//ROUNDWAVEUV_ON
 		#if ROUNDWAVEUV_ON
-			half xWave = ((0.5 * _MainTex_ST.x) - uvRect.x);
-			half yWave = ((0.5 * _MainTex_ST.y) - uvRect.y) * (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
+			half xWave = ((0.5 * _MainTex_ST.x) - d.texcoord0.x);
+			half yWave = ((0.5 * _MainTex_ST.y) - d.texcoord0.y) * (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
 			half ripple = -sqrt(xWave*xWave + yWave* yWave);
-			d.texcoord0.xy += (sin((ripple + (_Time.y + randomSeed) * (_RoundWaveSpeed/10.0)) / 0.015) * (_RoundWaveStrength/10.0)) % 1;
+            d.texcoord0.xy += (sin((ripple + time * (_RoundWaveSpeed/10.0)) / 0.015) * (_RoundWaveStrength/10.0)) % 1;
 		#endif
-		//----------------------------------------------------
 
+		#if POLARUV_ON
+            half2 prePolarUvs = d.texcoord0.xy;
+            d.texcoord0.xy = d.texcoord0.xy - half2(0.5, 0.5);
+			d.texcoord0.xy = half2(atan2(d.texcoord0.y, d.texcoord0.x) / (1.0 * 6.28318530718), length(d.texcoord0.xy) * 2.0);
+            d.texcoord0.xy *= _MainTex_ST.xy;
+		#endif
 
-		//WIND_ON
-		#if WIND_ON
-			half windOffset = sin((_Time.x + randomSeed) * _GrassSpeed * 10);
-			half2 windCenter = half2(0.5, 0.1);
-			#if ATLAS_ON
-				windCenter.x = ((_MaxXUV - _MinXUV) * windCenter.x) + _MinXUV;
-				windCenter.y = ((_MaxYUV - _MinYUV) * windCenter.y) + _MinYUV;
-			#endif
-			#if !MANUALWIND_ON
-				d.texcoord0.x = fmod(abs(lerp(d.texcoord0.x, d.texcoord0.x + (_GrassWind * 0.01 * windOffset), uvRect.y)), 1);
+		#if DISTORT_ON
+			#if POLARUVDISTORT_ON
+				half2 distortUvs = TRANSFORM_TEX(d.texcoord0.xy, _DistortTex);
 			#else
-				d.texcoord0.x = fmod(abs(lerp(d.texcoord0.x, d.texcoord0.x + (_GrassWind * 0.01 * _GrassManualAnim), uvRect.y)), 1);
-				windOffset = _GrassManualAnim;
+				half2 distortUvs = d.extraV2F0.xy;
 			#endif
-			half2 delta = d.texcoord0.xy - windCenter;
-			half delta2 = dot(delta.xy, delta.xy);
-			half2 delta_offset = delta2 * windOffset;
-			d.texcoord0.xy = d.texcoord0.xy + half2(delta.y, -delta.x) * delta_offset * _GrassRadialBend;
-		#endif
-
-		//--------------------------------------------------------
-
-		//TEXTURESCROLL_ON && !ATLAS_ON
-		#if TEXTURESCROLL_ON && !ATLAS_ON
-			d.texcoord0.x += ((_Time.y + randomSeed) * _TextureScrollXSpeed) % 1;
-			d.texcoord0.y += ((_Time.y + randomSeed) * _TextureScrollYSpeed) % 1;
-		#endif
-		//------------------------------
-
-		//PIXELATE_ON
-		#if PIXELATE_ON
-            half aspectRatio = _MainTex_TexelSize.x / _MainTex_TexelSize.y;
-			half2 pixelSize = float2(_PixelateSize, _PixelateSize * aspectRatio);
-			d.texcoord0.xy = floor(d.texcoord0.xy * pixelSize) / pixelSize;
-		#endif
-		//--------------
-
-		half4 col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy);
-		half originalAlpha = col.a;
-		col *= d.vertexColor;
-
-		//NORMAL MAP
-		#if NORMALMAP_ON
-			half4 normalSample = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, d.texcoord0.xy);
-			half3 normalTS = UnpackNormal(normalSample);
-			normalTS.xy *= _NormalStrength;
-			o.Normal = normalTS;
-		#endif
-        float normalSign = sign(dot(d.worldSpaceViewDir, d.worldSpaceNormal));
-        o.Normal *= normalSign;
-
-
-		//GLITCH_ON
-		#if GLITCH_ON
-			half2 uvGlitch = uvRect;
-			uvGlitch.y -= 0.5;
-			half lineNoise = pow(rand2(floor(uvGlitch * half2(24., 19.) * _GlitchSize) * 4.0, randomSeed), 3.0) * _GlitchAmount
-				* pow(rand2(floor(uvGlitch * half2(38., 14.) * _GlitchSize) * 4.0, randomSeed), 3.0);
-			col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(lineNoise * 0.02 * rand2(half2(2.0, 1), randomSeed), 0)) * d.vertexColor;
-		#endif
-		//--------------------------------------
-
-		//CHROMABERR_ON
-		#if CHROMABERR_ON
-			half4 r = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(_ChromAberrAmount/10, 0))	* d.vertexColor;
-			half4 b = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-_ChromAberrAmount/10, 0)) * d.vertexColor;
-			col = half4(r.r * r.a, col.g, b.b * b.a, max(max(r.a, b.a) * _ChromAberrAlpha, col.a));
-		#endif
-
-		//--------------------------------
-
-		//BLUR_ON
-		#if BLUR_ON
+			distortUvs.x += ((shaderTime.x + seed) * _DistortTexXSpeed) % 1;
+			distortUvs.y += ((shaderTime.x + seed) * _DistortTexYSpeed) % 1;
 			#if ATLAS_ON
-				#if !BLURISHD_ON
-					col = BlurHD(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity, (_MaxXUV - _MinXUV), (_MaxYUV - _MinYUV)) * d.vertexColor;
-				#else
-					col = Blur(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity * (_MaxXUV - _MinXUV)) * d.vertexColor;
+				d.extraV2F0.xy = half2((d.extraV2F0.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.extraV2F0.y - _MinYUV) / (_MaxYUV - _MinYUV));
+			#endif
+			half distortAmnt = (SAMPLE_TEXTURE2D(_DistortTex, sampler_DistortTex, distortUvs).r - 0.5) * 0.2 * _DistortAmount;
+			d.texcoord0.x += distortAmnt;
+			d.texcoord0.y += distortAmnt;
+		#endif
+
+		#if TEXTURESCROLL_ON
+			d.texcoord0.x += (time * _TextureScrollXSpeed) % 1;
+			d.texcoord0.y += (time * _TextureScrollYSpeed) % 1;
+		#endif
+
+		#if TRAILWIDTH_ON
+            half width = pow(SAMPLE_TEXTURE2D(_TrailWidthGradient, sampler_TrailWidthGradient, d.texcoord0).r, _TrailWidthPower);
+            d.texcoord0.y = (d.texcoord0.y * 2 - 1) / width * 0.5 + 0.5;
+            clip(d.texcoord0.y);
+            clip(1 - d.texcoord0.y);
+        #endif
+
+		float2 shape1Uv = d.texcoord0.xy;
+        #if SHAPE2_ON
+			float2 shape2Uv = shape1Uv;
+        #endif
+        #if SHAPE3_ON
+			float2 shape3Uv = shape1Uv;
+        #endif
+
+        #if CAMDISTFADE_ON || SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half camDistance = distance(d.worldSpacePosition, _WorldSpaceCameraPos);
+		#endif
+		 
+		#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half2 uvOffsetPostFx = d.texcoord0.xy - originalUvs;
+			d.texcoord0.xy = d.screenPos.xy / d.screenPos.w;
+			d.texcoord0.x = d.texcoord0.x * (_ScreenParams.x / _ScreenParams.y);
+			d.texcoord0.x -= 0.5;
+			d.texcoord0.xy -= uvOffsetPostFx;
+			originalUvs += uvOffsetPostFx;
+			half distanceZoom = camDistance * 0.1;
+			half2 scaleWithDistUvs = d.texcoord0.xy * distanceZoom + ((-distanceZoom * 0.5) + 0.5);
+			#if SHAPE1SCREENUV_ON
+				shape1Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvShDistScale);
+			#else
+				shape1Uv = originalUvs;
+			#endif
+			#if SHAPE2SCREENUV_ON && SHAPE2_ON
+				shape2Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvSh2DistScale);
+			#else
+				#if SHAPE2_ON
+					shape2Uv = originalUvs;
 				#endif
+			#endif
+			#if SHAPE3SCREENUV_ON && SHAPE3_ON
+				shape3Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvSh3DistScale);
 			#else
-				#if !BLURISHD_ON
-					col = BlurHD(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity, 1, 1) * d.vertexColor;
+				#if SHAPE3_ON
+					shape3Uv = originalUvs;
+				#endif
+			#endif
+		#endif
+
+		shape1Uv = TRANSFORM_TEX(shape1Uv, _MainTex);
+		#if OFFSETSTREAM_ON
+			shape1Uv.x += i.offsetCustomData.x * _OffsetSh1;
+			shape1Uv.y += i.offsetCustomData.y * _OffsetSh1;
+		#endif
+        #if SHAPETEXOFFSET_ON
+			shape1Uv += seed * _RandomSh1Mult;
+		#endif
+        
+		#if SHAPE1DISTORT_ON
+			#if POLARUVDISTORT_ON
+				half2 sh1DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _ShapeDistortTex);
+			#else
+				half2 sh1DistortUvs = d.extraV2F1.xy;
+			#endif
+			
+			sh1DistortUvs.x += ((time + seed) * _ShapeDistortXSpeed) % 1;
+			sh1DistortUvs.y += ((time + seed) * _ShapeDistortYSpeed) % 1;
+			half distortAmount = (SAMPLE_TEXTURE2D(_ShapeDistortTex, sampler_ShapeDistortTex, sh1DistortUvs).r - 0.5) * 0.2 * _ShapeDistortAmount;
+			shape1Uv.x += distortAmount;
+			shape1Uv.y += distortAmount;
+		#endif
+		#if SHAPE1ROTATE_ON
+			shape1Uv = RotateUvs(shape1Uv, _ShapeRotationOffset + ((_ShapeRotationSpeed * time) % 6.28318530718), _MainTex_ST);
+		#endif
+
+		half4 shape1 = SampleTextureWithScroll(_MainTex, sampler_MainTex, shape1Uv, _ShapeXSpeed, _ShapeYSpeed, time);
+		#if SHAPE1SHAPECOLOR_ON
+			shape1.a = shape1.r;
+			shape1.rgb = _ShapeColor.rgb;
+		#else
+			shape1 *= _ShapeColor;
+		#endif
+		#if SHAPE1CONTRAST_ON
+			#if SHAPE1SHAPECOLOR_ON
+				shape1.a = saturate((shape1.a - 0.5) * _ShapeContrast + 0.5 + _ShapeBrightness);
+			#else
+				shape1.rgb = max(0, (shape1.rgb - half3(0.5, 0.5, 0.5)) * _ShapeContrast + half3(0.5, 0.5, 0.5) + _ShapeBrightness);
+			#endif
+        #endif
+
+		half4 shape2 = 1.0;
+		#if SHAPE2_ON
+			shape2Uv = TRANSFORM_TEX(shape2Uv, _Shape2Tex);
+			#if OFFSETSTREAM_ON
+				shape2Uv.x += i.offsetCustomData.x * _OffsetSh2;
+				shape2Uv.y += i.offsetCustomData.y * _OffsetSh2;
+			#endif
+			#if SHAPETEXOFFSET_ON
+				shape2Uv += seed * _RandomSh2Mult;
+			#endif
+			#if SHAPE2DISTORT_ON
+				#if POLARUVDISTORT_ON
+					half2 sh2DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _Shape2DistortTex);
 				#else
-					col = Blur(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity) * d.vertexColor;
+					half2 sh2DistortUvs = d.extraV2F2.xy;
+				#endif
+				sh2DistortUvs.x += ((time + seed) * _Shape2DistortXSpeed) % 1;
+				sh2DistortUvs.y += ((time + seed) * _Shape2DistortYSpeed) % 1;
+				half distortAmnt2 = (SAMPLE_TEXTURE2D(_Shape2DistortTex, sampler_Shape2DistortTex, sh2DistortUvs).r - 0.5) * 0.2 * _Shape2DistortAmount;
+				shape2Uv.x += distortAmnt2;
+				shape2Uv.y += distortAmnt2;
+			#endif
+			#if SHAPE2ROTATE_ON
+				shape2Uv = RotateUvs(shape2Uv, _Shape2RotationOffset + ((_Shape2RotationSpeed * time) % 6.28318530718), _Shape2Tex_ST);
+			#endif
+			
+			shape2 = SampleTextureWithScroll(_Shape2Tex, sampler_Shape2Tex, shape2Uv, _Shape2XSpeed, _Shape2YSpeed, time); 
+			#if SHAPE2SHAPECOLOR_ON
+				shape2.a = shape2.r;
+				shape2.rgb = _Shape2Color.rgb;
+			#else
+				shape2 *= _Shape2Color;
+			#endif
+			#if SHAPE2CONTRAST_ON
+				#if SHAPE2SHAPECOLOR_ON
+					shape2.a = max(0, (shape2.a - 0.5) * _Shape2Contrast + 0.5 + _Shape2Brightness);
+				#else
+					shape2.rgb = max(0, (shape2.rgb - half3(0.5, 0.5, 0.5)) * _Shape2Contrast + half3(0.5, 0.5, 0.5) + _Shape2Brightness);
 				#endif
 			#endif
         #endif
 
-		//--------------------
-
-		//MOTIONBLUR_ON
-		#if MOTIONBLUR_ON
-			_MotionBlurAngle = _MotionBlurAngle * 3.1415926;
-			#define rot(n) mul(n, half2x2(cos(_MotionBlurAngle), -sin(_MotionBlurAngle), sin(_MotionBlurAngle), cos(_MotionBlurAngle)))
-			_MotionBlurDist = _MotionBlurDist * 0.005;
-			#if ATLAS_ON
-				_MotionBlurDist *= (_MaxXUV - _MinXUV);
+		half4 shape3 = 1.0;
+		 #if SHAPE3_ON
+            shape3Uv = TRANSFORM_TEX(shape3Uv, _Shape3Tex);
+			
+            #if OFFSETSTREAM_ON
+				shape3Uv.x += i.offsetCustomData.x * _OffsetSh3;
+				shape3Uv.y += i.offsetCustomData.y * _OffsetSh3;
 			#endif
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist, -_MotionBlurDist)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 2, -_MotionBlurDist * 2)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 3, -_MotionBlurDist * 3)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 4, -_MotionBlurDist * 4)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist, _MotionBlurDist)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 2, _MotionBlurDist * 2)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 3, _MotionBlurDist * 3)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 4, _MotionBlurDist * 4)));
-			col.rgb = col.rgb / 9;
+            #if SHAPETEXOFFSET_ON
+				shape3Uv += seed * _RandomSh3Mult;
+			#endif
+            #if SHAPE3DISTORT_ON
+				#if POLARUVDISTORT_ON
+					half2 sh3DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _Shape3DistortTex);
+				#else
+					half2 sh3DistortUvs = d.extraV2F3.xy;
+				#endif
+				sh3DistortUvs.x += ((time + seed) * _Shape3DistortXSpeed) % 1;
+				sh3DistortUvs.y += ((time + seed) * _Shape3DistortYSpeed) % 1;
+				half distortAmnt3 = (SAMPLE_TEXTURE2D(_Shape3DistortTex, sampler_Shape3DistortTex, sh3DistortUvs).r - 0.5) * 0.3 * _Shape3DistortAmount;
+				shape3Uv.x += distortAmnt3;
+				shape3Uv.y += distortAmnt3;
+            #endif
+            #if SHAPE3ROTATE_ON
+				shape3Uv = RotateUvs(shape3Uv, _Shape3RotationOffset + ((_Shape3RotationSpeed * time) % 6.28318530718), _Shape3Tex_ST);
+            #endif
+				shape3 = SampleTextureWithScroll(_Shape3Tex, sampler_Shape3Tex, shape3Uv, _Shape3XSpeed, _Shape3YSpeed, time);
+            #if SHAPE3SHAPECOLOR_ON
+				shape3.a = shape3.r;
+				shape3.rgb = _Shape3Color.rgb;
+            #else
+				shape3 *= _Shape3Color;
+            #endif
+            #if SHAPE3CONTRAST_ON
+				#if SHAPE3SHAPECOLOR_ON
+					shape3.a = max(0, (shape3.a - 0.5) * _Shape3Contrast + 0.5 + _Shape3Brightness);
+				#else
+					shape3.rgb = max(0, (shape3.rgb - half3(0.5, 0.5, 0.5)) * _Shape3Contrast + half3(0.5, 0.5, 0.5) + _Shape3Brightness);
+				#endif
+            #endif
+		#endif
+
+		half4 col = shape1;
+		//Mix all shapes pre: change weights if custom vertex effect active
+        #if SHAPEWEIGHTS_ON
+			half shapeWeightOffset;
+			#if SHAPE2_ON
+				shapeWeightOffset = i.offsetCustomData.z * _Sh1BlendOffset;
+				_ShapeColorWeight = max(0, _ShapeColorWeight + shapeWeightOffset);
+				_ShapeAlphaWeight = max(0, _ShapeAlphaWeight + shapeWeightOffset);
+				shapeWeightOffset = i.offsetCustomData.z * _Sh2BlendOffset;
+				_Shape2ColorWeight = max(0, _Shape2ColorWeight + shapeWeightOffset);
+				_Shape2AlphaWeight = max(0, _Shape2AlphaWeight + shapeWeightOffset);
+			#endif
+			#if SHAPE3_ON
+				shapeWeightOffset = i.offsetCustomData.z * _Sh3BlendOffset;
+				_Shape3ColorWeight = max(0, _Shape3ColorWeight + shapeWeightOffset);
+				_Shape3AlphaWeight = max(0, _Shape3AlphaWeight + shapeWeightOffset);
+			#endif
+		#endif
+
+		//Mix all shapes
+        #if SHAPE2_ON
+			#if !SPLITRGBA_ON
+				_ShapeAlphaWeight = _ShapeColorWeight;
+				_Shape2AlphaWeight = _Shape2ColorWeight;
+			#endif
+			#if SHAPE3_ON //Shape3 On
+				#if !SPLITRGBA_ON
+					_Shape3AlphaWeight = _Shape3ColorWeight;
+				#endif
+			#if SHAPEADD_ON
+				col.rgb = ((shape1.rgb * _ShapeColorWeight) + (shape2.rgb * _Shape2ColorWeight)) + (shape3.rgb * _Shape3ColorWeight);
+				col.a = saturate(max(shape3.a * _Shape3AlphaWeight, max(shape1.a * _ShapeAlphaWeight, shape2.a * _Shape2AlphaWeight)));
+			#else
+				col.rgb = ((shape1.rgb * _ShapeColorWeight) * (shape2.rgb * _Shape2ColorWeight)) * (shape3.rgb * _Shape3ColorWeight);
+				col.a = saturate(((shape1.a * _ShapeAlphaWeight) * (shape2.a * _Shape2AlphaWeight)) * (shape3.a * _Shape3AlphaWeight));
+			#endif
+			#else //Shape3 Off
+				#if SHAPEADD_ON
+					col.rgb = (shape1.rgb * _ShapeColorWeight) + (shape2.rgb * _Shape2ColorWeight);
+					col.a = saturate(max(shape1.a * _ShapeAlphaWeight, shape2.a * _Shape2AlphaWeight));
+				#else
+					col.rgb = (shape1.rgb * _ShapeColorWeight) * (shape2.rgb * _Shape2ColorWeight);
+					col.a = saturate((shape1.a * _ShapeAlphaWeight) * (shape2.a * _Shape2AlphaWeight));
+				#endif
+			#endif
         #endif
-		//------------------------------------
 
-		//NEGATIVE_ON
-		#if NEGATIVE_ON
-			col.rgb = lerp(col.rgb, 1 - col.rgb, _NegativeAmount);
-		#endif
-
-		//--------------
-		half luminance = 0;
-
-		//GREYSCALE_ON && !GREYSCALEOUTLINE_ON
-		#if GREYSCALE_ON && !GREYSCALEOUTLINE_ON
+		#if SHAPE1MASK_ON
+            col = lerp(col, shape1, pow(SAMPLE_TEXTURE2D(_Shape1MaskTex, sampler_Shape1MaskTex, TRANSFORM_TEX(i.uvSeed.xy, _Shape1MaskTex)).r, _Shape1MaskPow));
+        #endif
+		
+		#if PREMULTIPLYCOLOR_ON
+			half luminance = 0;
 			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _GreyscaleLuminosity);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _GreyscaleTintColor, _GreyscaleBlend);
-		#endif
-		//------------------------------------
+			luminance *= col.a;
+			col.a = min(luminance, col.a);
+        #endif
 
-		//GHOST_ON
-		#if GHOST_ON
+		col.rgb *= _Color.rgb * d.vertexColor.rgb;
+		#if PREMULTIPLYALPHA_ON
+			col.rgb *= col.a;
+        #endif
+
+        #if !PREMULTIPLYCOLOR_ON && (COLORRAMP_ON || ALPHAFADE_ON || COLORGRADING_ON || FADE_ON || (ADDITIVECONFIG_ON && (GLOW_ON || DEPTHGLOW_ON)))
+			half luminance = 0;
 			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			half4 ghostResult;
-			ghostResult.a = saturate(luminance - _GhostTransparency) * col.a;
-			ghostResult.rgb = col.rgb * (luminance + _GhostColorBoost);
-			col = lerp(col, ghostResult, _GhostBlend);
-		#endif
-		//------------------------------------
+			luminance *= col.a;
+        #endif
 
-		//INNEROUTLINE_ON
-		#if INNEROUTLINE_ON
-			half3 innerT = abs(GetPixel(0, _InnerOutlineThickness, d.texcoord0.xy, _MainTex, sampler_MainTex) - GetPixel(0, -_InnerOutlineThickness, d.texcoord0.xy, _MainTex, sampler_MainTex));
-			innerT += abs(GetPixel(_InnerOutlineThickness, 0, d.texcoord0.xy, _MainTex, sampler_MainTex) - GetPixel(-_InnerOutlineThickness, 0, d.texcoord0.xy, _MainTex, sampler_MainTex));
-			#if !ONLYINNEROUTLINE_ON
-				innerT = (innerT / 2.0) * col.a * _InnerOutlineAlpha;
-				col.rgb += length(innerT) * _InnerOutlineColor.rgb * _InnerOutlineGlow;
+		#if (FADE_ON || ALPHAFADE_ON) && ALPHAFADEINPUTSTREAM_ON
+			col.a *= d.vertexColor.a;
+			d.vertexColor.a = d.texcoord0.w;
+        #endif
+
+		#if FADE_ON
+			half preFadeAlpha = col.a;
+			_FadeAmount = saturate(_FadeAmount + (1 - d.vertexColor.a));
+			_FadeTransition = max(0.01, _FadeTransition * EaseOutQuint(saturate(_FadeAmount)));
+			half2 fadeUv;
+			fadeUv = d.texcoord0.xy + seed;
+			fadeUv.x += (time * _FadeScrollXSpeed) % 1;
+			fadeUv.y += (time * _FadeScrollYSpeed) % 1;
+			half2 tiledUvFade1 = TRANSFORM_TEX(fadeUv, _FadeTex);
+			#if ADDITIVECONFIG_ON && !PREMULTIPLYCOLOR_ON
+				preFadeAlpha *= luminance;
+			#endif
+			_FadeAmount = saturate(pow(_FadeAmount, _FadePower));
+			#if FADEBURN_ON
+				half2 tiledUvFade2 = TRANSFORM_TEX(fadeUv, _FadeBurnTex);
+				half fadeSample = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
+				half fadeNaturalEdge = saturate(smoothstep(0.0 , _FadeTransition, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				col.a *= fadeNaturalEdge;
+				half fadeBurn = saturate(smoothstep(0.0 , _FadeTransition + _FadeBurnWidth, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				fadeBurn = fadeNaturalEdge - fadeBurn;
+				_FadeBurnColor.rgb *= _FadeBurnGlow;
+				col.rgb += fadeBurn * SAMPLE_TEXTURE2D(_FadeBurnTex, sampler_FadeBurnTex, tiledUvFade2).rgb * _FadeBurnColor.rgb * preFadeAlpha;
 			#else
-				innerT *= col.a * _InnerOutlineAlpha;
-				col.rgb = length(innerT) * _InnerOutlineColor.rgb * _InnerOutlineGlow;
-				col.a = step(0.3, col.r+col.g+col.b);
+				half fadeSample = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
+				float fade = saturate(smoothstep(0.0 , _FadeTransition, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				col.a *= fade;
+			#endif
+			#if ALPHAFADETRANSPARENCYTOO_ON
+				col.a *= 1 - _FadeAmount;
 			#endif
 		#endif
-		//-------------------------------------------------------
 
-		//HITEFFECT_ON
-		#if HITEFFECT_ON
-			col.rgb = lerp(col.rgb, _HitEffectColor.rgb * _HitEffectGlow, _HitEffectBlend);
-		#endif
-		//--------------------
-
-		//GRADIENT_ON
-		#if GRADIENT_ON
-			half2 tiledUvGrad = half2(uvRect.x / _MainTex_ST.x, uvRect.y / _MainTex_ST.y);
-			#if GRADIENT2COL_ON
-				_GradTopRightCol = _GradTopLeftCol;
-				_GradBotRightCol = _GradBotLeftCol;
-			#endif
-			#if RADIALGRADIENT_ON
-				half radialDist = 1 - length(tiledUvGrad - half2(0.5, 0.5));
-				radialDist *= (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
-				radialDist = saturate(_GradBoostX * radialDist);
-				half4 gradientResult = lerp(_GradTopLeftCol, _GradBotLeftCol, radialDist);
+		#if ALPHAFADE_ON
+			half alphaFadeLuminance;
+			_AlphaFadeAmount = saturate(_AlphaFadeAmount + (1 - d.vertexColor.a));
+			_AlphaFadeAmount = saturate(pow(_AlphaFadeAmount, _AlphaFadePow));
+			_AlphaFadeSmooth = max(0.01, _AlphaFadeSmooth * EaseOutQuint(saturate(_AlphaFadeAmount)));
+			#if ALPHAFADEUSESHAPE1_ON
+				alphaFadeLuminance = shape1.r;
 			#else
-				half gradXLerpFactor = saturate(pow(tiledUvGrad.x, _GradBoostX));
-				half4 gradientResult = lerp(lerp(_GradBotLeftCol, _GradBotRightCol, gradXLerpFactor),
-				lerp(_GradTopLeftCol, _GradTopRightCol, gradXLerpFactor), saturate(pow(tiledUvGrad.y, _GradBoostY)));
+				alphaFadeLuminance = luminance;
 			#endif
-			gradientResult = lerp(col, gradientResult, _GradBlend);
-			col.rgb = gradientResult.rgb * col.a;
-			col.a *= gradientResult.a;
-		#endif
-		//--------------------------------------------------------------------
+				alphaFadeLuminance = saturate(alphaFadeLuminance - 0.001);
+			#if ALPHAFADEUSEREDCHANNEL_ON
+				col.a *= col.r;
+			#endif
+				col.a = saturate(col.a);
+				float alphaFade = saturate(smoothstep(0.0 , _AlphaFadeSmooth, RemapFloat(1.0 - _AlphaFadeAmount, 0.0, 1.0, -1.0, 1.0) + alphaFadeLuminance));
+				col.a *= alphaFade;
+			#if ALPHAFADETRANSPARENCYTOO_ON
+				col.a *= 1 - _AlphaFadeAmount;
+			#endif
+        #endif
 
-		//CONTRAST_ON
-		#if CONTRAST_ON
-			col.rgb = (col.rgb - float3(0.5, 0.5, 0.5)) * _Contrast + float3(0.5, 0.5, 0.5);
-			col.rgb += _Brightness;
-		#endif
+		#if BACKFACETINT_ON
+			col.rgb = lerp(col.rgb * _BackFaceTint, col.rgb * _FrontFaceTint, step(0, dot(d.worldSpaceNormal, d.worldSpaceViewDir)));
+        #endif
 
-		//-------------------------------------------------------------------
+		//#if LIGHTANDSHADOW_ON
+			//half NdL = saturate(dot(d.worldSpaceNormal, -_All1VfxLightDir));
+			//col.rgb += _LightColor * _LightAmount * NdL;
+			//NdL = max(_ShadowAmount, NdL);
+            //NdL = smoothstep(_ShadowStepMin, _ShadowStepMax, NdL);
+            //col.rgb *= NdL;
+		//#endif
 
-		//COLORSWAP_ON
-		#if COLORSWAP_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			half4 swapMask = SAMPLE_TEXTURE2D(_ColorSwapTex, sampler_ColorSwapTex, d.texcoord0.xy);
-			swapMask.rgb *= swapMask.a;
-			half3 redSwap = _ColorSwapRed * swapMask.r * saturate(luminance + _ColorSwapRedLuminosity);
-			half3 greenSwap = _ColorSwapGreen * swapMask.g * saturate(luminance + _ColorSwapGreenLuminosity);
-			half3 blueSwap = _ColorSwapBlue * swapMask.b * saturate(luminance + _ColorSwapBlueLuminosity);
-			swapMask.rgb = col.rgb * saturate(1 - swapMask.r - swapMask.g - swapMask.b);
-			col.rgb = lerp(col.rgb, swapMask.rgb + redSwap + greenSwap + blueSwap, _ColorSwapBlend);
-		#endif
-		//--------------------------------------------------------------------
+		#if COLORGRADING_ON
+			col.rgb *= lerp(lerp(_ColorGradingDark, _ColorGradingMiddle, luminance/_ColorGradingMidPoint),
+			lerp(_ColorGradingMiddle, _ColorGradingLight, (luminance - _ColorGradingMidPoint)/(1.0 - _ColorGradingMidPoint)), step(_ColorGradingMidPoint, luminance));
+        #endif
 
-		//COLORRAMP_ON && !COLORRAMPOUTLINE_ON
-		#if COLORRAMP_ON && !COLORRAMPOUTLINE_ON 
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _ColorRampLuminosity);
-			#if GRADIENTCOLORRAMP_ON
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(luminance, 0)).rgb, _ColorRampBlend);
+		#if COLORRAMP_ON
+			half colorRampLuminance = saturate(luminance + _ColorRampLuminosity);
+			#if COLORRAMPGRAD_ON
+				half4 colorRampRes = SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(colorRampLuminance, 0));
 			#else
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(luminance, 0)).rgb, _ColorRampBlend);
+				half4 colorRampRes = SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(colorRampLuminance, 0));
 			#endif
-		#endif
-		//--------------------------------------------------------------------
+			col.rgb = lerp(col.rgb, colorRampRes.rgb, _ColorRampBlend);
+			col.a = lerp(col.a, saturate(col.a * colorRampRes.a), _ColorRampBlend);
+        #endif
 
-		//CHANGECOLOR_ON
-		#if CHANGECOLOR_ON
-			float3 currChangeColor = saturate(col.rgb);
-			luminance = 0.3 * currChangeColor.r + 0.59 * currChangeColor.g + 0.11 * currChangeColor.b;
-			luminance = saturate(luminance + _ColorChangeLuminosity);
-			half3 dif = abs(currChangeColor - _ColorChangeTarget.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance), 0.0));
-			#if CHANGECOLOR2_ON
-			dif = abs(currChangeColor - _ColorChangeTarget2.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol2.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance2), 0.0));
-			#endif
-			#if CHANGECOLOR3_ON
-			dif = abs(currChangeColor - _ColorChangeTarget3.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol3.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance3), 0.0));
-			#endif
-		#endif
-		//-------------------------------------------------------
-
-		//POSTERIZE_ON && !POSTERIZEOUTLINE_ON
 		#if POSTERIZE_ON && !POSTERIZEOUTLINE_ON
-			col.rgb = pow(col.rgb, _PosterizeGamma) * _PosterizeNumColors;
-			col.rgb = floor(col.rgb) / _PosterizeNumColors;
-			col.rgb = pow(col.rgb, 1.0 / _PosterizeGamma);
+			col.rgb = floor(col.rgb / (1.0 / _PosterizeNumColors)) * (1.0 / _PosterizeNumColors);
 		#endif
-		//------------------------------------
 
-		//HSV_ON
+		#if DEPTHGLOW_ON
+			half sceneDepthDiff = GetLinearEyeDepth(d.screenUV) - d.screenPos.w;
+        #endif
+
+		#if RIM_ON
+			half NdV = 1 - abs(dot(d.worldSpaceNormal, d.worldSpaceViewDir));
+			half rimFactor = saturate(_RimBias + _RimScale * pow(NdV, _RimPower));
+			half4 rimCol = _RimColor * rimFactor;
+			rimCol.rgb *= _RimIntensity;
+			col.rgb = lerp(col.rgb * (rimCol.rgb + half3(1,1,1)), col.rgb + rimCol.rgb, _RimAddAmount);
+			col.a = saturate(col.a * (1 - rimFactor * _RimErodesAlpha));
+        #endif
+
+		#if DEPTHGLOW_ON
+			half depthGlowMask = saturate(_DepthGlowDist * pow((1 - sceneDepthDiff), _DepthGlowPow));
+			col.rgb = lerp(col.rgb, _DepthGlowGlobal * col.rgb, depthGlowMask);
+			half depthGlowMult = 1;
+			#if ADDITIVECONFIG_ON
+				depthGlowMult = luminance;
+			#endif
+			col.rgb += _DepthGlowColor.rgb * _DepthGlow * depthGlowMask * col.a * depthGlowMult;
+        #endif
+
+		#if GLOW_ON
+			half glowMask = 1;
+			#if GLOWTEX_ON
+				glowMask = SAMPLE_TEXTURE2D(_GlowTex, sampler_GlowTex, TRANSFORM_TEX(d.texcoord0.xy, _GlowTex));
+			#endif
+				col.rgb *= _GlowGlobal * glowMask;
+				half glowMult = 1;
+			#if ADDITIVECONFIG_ON
+				glowMult = luminance;
+			#endif
+			
+			col.rgb += _GlowColor.rgb * _Glow * glowMask * col.a * glowMult;
+        #endif
+
 		#if HSV_ON
 			half3 resultHsv = half3(col.rgb);
 			half cosHsv = _HsvBright * _HsvSaturation * cos(_HsvShift * 3.14159265 / 180);
 			half sinHsv = _HsvBright * _HsvSaturation * sin(_HsvShift * 3.14159265 / 180);
 			resultHsv.x = (.299 * _HsvBright + .701 * cosHsv + .168 * sinHsv) * col.x
-			+ (.587 * _HsvBright - .587 * cosHsv + .330 * sinHsv) * col.y
-			+ (.114 * _HsvBright - .114 * cosHsv - .497 * sinHsv) * col.z;
+				+ (.587 * _HsvBright - .587 * cosHsv + .330 * sinHsv) * col.y
+				+ (.114 * _HsvBright - .114 * cosHsv - .497 * sinHsv) * col.z;
 			resultHsv.y = (.299 * _HsvBright - .299 * cosHsv - .328 * sinHsv) *col.x
-			+ (.587 * _HsvBright + .413 * cosHsv + .035 * sinHsv) * col.y
-			+ (.114 * _HsvBright - .114 * cosHsv + .292 * sinHsv) * col.z;
+				+ (.587 * _HsvBright + .413 * cosHsv + .035 * sinHsv) * col.y
+				+ (.114 * _HsvBright - .114 * cosHsv + .292 * sinHsv) * col.z;
 			resultHsv.z = (.299 * _HsvBright - .3 * cosHsv + 1.25 * sinHsv) * col.x
-			+ (.587 * _HsvBright - .588 * cosHsv - 1.05 * sinHsv) * col.y
-			+ (.114 * _HsvBright + .886 * cosHsv - .203 * sinHsv) * col.z;
+				+ (.587 * _HsvBright - .588 * cosHsv - 1.05 * sinHsv) * col.y
+				+ (.114 * _HsvBright + .886 * cosHsv - .203 * sinHsv) * col.z;
 			col.rgb = resultHsv;
 		#endif
-		//-------------------------------------------------------
 
-		//OVERLAY_ON
-		#if OVERLAY_ON
-			half2 overlayUvs = d.texcoord0.xy;
-			overlayUvs.x += ((_Time.y + randomSeed) * _OverlayTextureScrollXSpeed) % 1;
-			overlayUvs.y += ((_Time.y + randomSeed) * _OverlayTextureScrollYSpeed) % 1;
-			half4 overlayCol = SAMPLE_TEXTURE2D(_OverlayTex, sampler_OverlayTex, TRANSFORM_TEX(overlayUvs, _OverlayTex));
-			overlayCol.rgb *= _OverlayColor.rgb * _OverlayGlow;
-			#if !OVERLAYMULT_ON
-				overlayCol.rgb *= overlayCol.a * _OverlayColor.rgb * _OverlayColor.a * _OverlayBlend;
-				col.rgb += overlayCol.rgb;
-			#else
-				overlayCol.a *= _OverlayColor.a;
-				col = lerp(col, col * overlayCol, _OverlayBlend);
+		#if CAMDISTFADE_ON
+			col.a *= 1 - saturate(smoothstep(_CamDistFadeStepMin, _CamDistFadeStepMax, camDistance));
+			col.a *= smoothstep(0.0, _CamDistProximityFade, camDistance);
+		#endif
+
+		#if MASK_ON
+            half2 maskUv = d.texcoord0.xy;
+            #if POLARUV_ON
+				maskUv = prePolarUvs;
 			#endif
+            half4 maskSample = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, TRANSFORM_TEX(maskUv, _MaskTex));
+			half mask = pow(min(maskSample.r, maskSample.a), _MaskPow);
+			col.a *= mask;
+        #endif
+
+		#if ALPHASMOOTHSTEP_ON
+			col.a = smoothstep(_AlphaStepMin, _AlphaStepMax, col.a);
+        #endif
+
+		half4 debugColor = col;
+		#if SHAPEDEBUG_ON
+			debugColor = GetDebugColor(col, shape1, shape2, shape3);
 		#endif
 
-		//---------------------------------
+		clip(debugColor.a - _AlphaCutoffValue - 0.01);
 
-		//OUTBASE_ON
-		#if OUTBASE_ON
-			#if OUTBASEPIXELPERF_ON
-				half2 destUv = half2(_OutlinePixelWidth * _MainTex_TexelSize.x, _OutlinePixelWidth * _MainTex_TexelSize.y);
-			#else
-				half2 destUv = half2(_OutlineWidth * _MainTex_TexelSize.x * 200, _OutlineWidth * _MainTex_TexelSize.y * 200);
-			#endif
+		//#if FOG_ON
+			//UNITY_APPLY_FOG(i.fogCoord, col);
+        //#endif
+		
+		//Don't use a starting i.color.a lower than 1 unless using vertex stream dissolve when using a FADE effect
+        #if !FADE_ON && !ALPHAFADE_ON
+			col.a *= _Alpha * d.vertexColor.a;
+        #endif
+        #if FADE_ON || ALPHAFADE_ON
+			col.a *= _Alpha;
+        #endif
+        #if ADDITIVECONFIG_ON
+			col.rgb *= col.a;
+        #endif
 
-			#if OUTDIST_ON
-				d.texcoord3.x += ((_Time.x + _RandomSeed) * _OutlineDistortTexXSpeed) % 1;
-				d.texcoord3.y += ((_Time.x + _RandomSeed) * _OutlineDistortTexYSpeed) % 1;
-				#if ATLAS_ON
-					d.texcoord3 = half2((d.texcoord3.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord3.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				#endif
-				half outDistortAmnt = (SAMPLE_TEXTURE2D(_OutlineDistortTex, sampler_OutlineDistortTex, d.texcoord3).r - 0.5) * 0.2 * _OutlineDistortAmount;
-				destUv.x += outDistortAmnt;
-				destUv.y += outDistortAmnt;
-			#endif
-
-			half spriteLeft		= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, 0)).a;
-			half spriteRight	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy - half2(destUv.x, 0)).a;
-			half spriteBottom	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(0, destUv.y)).a;
-			half spriteTop		= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy - half2(0, destUv.y)).a;
-			half result = spriteLeft + spriteRight + spriteBottom + spriteTop;
-
-			#if OUTBASE8DIR_ON
-				half spriteTopLeft	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, destUv.y)).a;
-				half spriteTopRight = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-destUv.x, destUv.y)).a;
-				half spriteBotLeft	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, -destUv.y)).a;
-				half spriteBotRight = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-destUv.x, -destUv.y)).a;
-				result = result + spriteTopLeft + spriteTopRight + spriteBotLeft + spriteBotRight;
-			#endif
-					
-			result = step(0.05, saturate(result));
-
-			#if OUTTEX_ON
-				d.texcoord1.x += ((_Time.x + _RandomSeed) * _OutlineTexXSpeed) % 1;
-				d.texcoord1.y += ((_Time.x + _RandomSeed) * _OutlineTexYSpeed) % 1;
-				#if ATLAS_ON
-					d.texcoord1 = half2((d.texcoord1.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord1.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				#endif
-				half4 tempOutColor = SAMPLE_TEXTURE2D(_OutlineTex, sampler_OutlineTex, d.texcoord1);
-				tempOutColor *= _OutlineColor;
-				_OutlineColor = tempOutColor;
-			#endif
-
-			result *= (1 - originalAlpha) * _OutlineAlpha;
-
-			half4 outline = _OutlineColor * d.vertexColor.a;
-			outline.rgb *= _OutlineGlow;
-			outline.a = result;
-			#if ONLYOUTLINE_ON
-			col = outline;
-			#else
-			col = lerp(col, outline, result);
-			#endif
+		
+		#if SHAPEDEBUG_ON
+		o.Albedo = debugColor.rgb; 
+		o.Alpha = debugColor.a;
+		#else
+		o.Albedo = col.rgb; 
+		o.Alpha = col.a;
 		#endif
-		//-------------------------------------------------------
-
-		//FADE_ON
-		#if FADE_ON
-			half2 tiledUvFade1	= TRANSFORM_TEX(d.texcoord0, _FadeTex);
-			half2 tiledUvFade2	= TRANSFORM_TEX(d.texcoord0, _FadeBurnTex);
-			#if ATLAS_ON
-				tiledUvFade1 = half2((tiledUvFade1.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUvFade1.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				tiledUvFade2 = half2((tiledUvFade2.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUvFade2.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			half fadeTemp = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
-			half fade = smoothstep(_FadeAmount, _FadeAmount + _FadeBurnTransition, fadeTemp);
-			half fadeBurn = saturate(smoothstep(_FadeAmount - _FadeBurnWidth, _FadeAmount - _FadeBurnWidth + 0.1, fadeTemp) * _FadeAmount);
-			col.a *= fade;
-			_FadeBurnColor.rgb *= _FadeBurnGlow;
-			col += fadeBurn * SAMPLE_TEXTURE2D(_FadeBurnTex, sampler_FadeBurnTex, tiledUvFade2) * _FadeBurnColor * originalAlpha * (1 - col.a);
-		#endif
-		//-------------------------------------------------------
-
-		//SHADOW_ON
-		#if SHADOW_ON
-			half shadowA = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(_ShadowX, _ShadowY)).a;
-			half preMultShadowMask = 1 - (saturate(shadowA - col.a) * (1 - col.a));
-			col.rgb *= 1 - ((shadowA - col.a) * (1 - col.a));
-			col.rgb += (_ShadowColor * shadowA) * (1 - col.a);
-			col.a = max(shadowA * _ShadowAlpha * d.vertexColor.a, col.a);
-		#endif
-
-		//-------------------------------------------------------
-
-		//GLOW_ON
-		#if GLOW_ON
-			half4 emission;
-			#if GLOWTEX_ON
-				emission = SAMPLE_TEXTURE2D(_GlowTex, sampler_GlowTex, d.texcoord0);
-			#else
-				emission = col;
-			#endif
-
-			col.rgb *= _GlowGlobal;
-			emission.rgb *= emission.a * col.a * _Glow * _GlowColor;
-			col.rgb += emission.rgb;
-		#endif
-		//-------------------------------------------------------
-
-		//COLORRAMP_ON && COLORRAMPOUTLINE_ON
-		#if COLORRAMP_ON && COLORRAMPOUTLINE_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _ColorRampLuminosity);
-			#if GRADIENTCOLORRAMP_ON
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(luminance, 0)).rgb, _ColorRampBlend);
-			#else
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(luminance, 0)).rgb, _ColorRampBlend);
-			#endif
-		#endif
-		//---------------
-
-		//GREYSCALE_ON && GREYSCALEOUTLINE_ON
-		#if GREYSCALE_ON && GREYSCALEOUTLINE_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _GreyscaleLuminosity);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _GreyscaleTintColor, _GreyscaleBlend);
-		#endif
-
-		//-----------------------------------
-
-		//POSTERIZE_ON && POSTERIZEOUTLINE_ON
-		#if POSTERIZE_ON && POSTERIZEOUTLINE_ON
-			col.rgb = pow(col.rgb, _PosterizeGamma) * _PosterizeNumColors;
-			col.rgb = floor(col.rgb) / _PosterizeNumColors;
-			col.rgb = pow(col.rgb, 1.0 / _PosterizeGamma);
-		#endif
-
-		//-----------------------------------
-
-		//SHINE_ON
-		#if SHINE_ON
-			half2 uvShine = uvRect;
-			half cosAngle = cos(_ShineRotate);
-			half sinAngle = sin(_ShineRotate);
-			half2x2 rot = half2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
-			uvShine -= half2(0.5, 0.5);
-			uvShine = mul(rot, uvShine);
-			uvShine += half2(0.5, 0.5);
-			half shineMask = SAMPLE_TEXTURE2D(_ShineMask, sampler_ShineMask, d.texcoord0.xy).a;
-			half currentDistanceProjection = (uvShine.x + uvShine.y) / 2;
-			half whitePower = 1 - (abs(currentDistanceProjection - _ShineLocation) / _ShineWidth);
-			col.rgb +=  col.a * whitePower * _ShineGlow * max(sign(currentDistanceProjection - (_ShineLocation - _ShineWidth)), 0.0)
-			* max(sign((_ShineLocation + _ShineWidth) - currentDistanceProjection), 0.0) * _ShineColor * shineMask;
-		#endif
-
-		//-----------------------------------
-
-		//HOLOGRAM_ON
-		#if HOLOGRAM_ON
-			half totalHologram = _HologramStripesAmount + _HologramUnmodAmount;
-			half hologramYCoord = ((uvRect.y + (((_Time.x + randomSeed) % 1) * _HologramStripesSpeed)) % totalHologram) / totalHologram;
-			hologramYCoord = abs(hologramYCoord);
-			half alpha = RemapFloat(saturate(hologramYCoord - (_HologramUnmodAmount/totalHologram)), 0.0, 1.0, _HologramMinAlpha, saturate(_HologramMaxAlpha));
-			half hologramMask = max(sign((_HologramUnmodAmount/totalHologram) - hologramYCoord), 0.0);
-			half4 hologramResult = col;
-			hologramResult.a *= lerp(alpha, 1, hologramMask);
-			hologramResult.rgb *= max(1, _HologramMaxAlpha * max(sign(hologramYCoord - (_HologramUnmodAmount/totalHologram)), 0.0));
-			hologramMask = 1 - step(0.01,hologramMask);
-			hologramResult.rgb += hologramMask * _HologramStripeColor * col.a;
-			col = lerp(col, hologramResult, _HologramBlend);
-		#endif
-
-		//-----------------------------------
-
-		//FLICKER_ON
-		#if FLICKER_ON
-			col.a *= saturate(col.a * step(frac(0.05 + (_Time.w + randomSeed) * _FlickerFreq), 1 - _FlickerPercent) + _FlickerAlpha);
-		#endif
-		//-----------------------------------
-
-		//ALPHACUTOFF_ON
-
-		//ALPHAROUND_ON
-
-		//ALPHAOUTLINE_ON
-		#if ALPHAOUTLINE_ON
-			half alphaOutlineRes = pow(1 - col.a, max(_AlphaOutlinePower, 0.0001)) * step(_AlphaOutlineMinAlpha, col.a) * _AlphaOutlineBlend;
-			col.rgb = lerp(col.rgb, _AlphaOutlineColor.rgb * _AlphaOutlineGlow, alphaOutlineRes);
-			col.a = lerp(col.a, 1, alphaOutlineRes > 1);
-		#endif
-		//-------------------------------------------------------
-
-		//FOG_ON
-
-		//------------------
-
-        col *= _Color;
-		o.Albedo = col;
-		col.a *= _Alpha;
-        clip(col.a - _AlphaCutoffValue - 0.01);
-		o.Alpha = _Color.a;
 	}
 
 
@@ -4794,19 +4419,19 @@ ZWrite On
 
 
                  // #if %EXTRAV2F0REQUIREKEY%
-                 // v2p.extraV2F0 = d.extraV2F0;
+                  v2p.extraV2F0 = d.extraV2F0;
                  // #endif
 
                  // #if %EXTRAV2F1REQUIREKEY%
-                 // v2p.extraV2F1 = d.extraV2F1;
+                  v2p.extraV2F1 = d.extraV2F1;
                  // #endif
 
                  // #if %EXTRAV2F2REQUIREKEY%
-                 // v2p.extraV2F2 = d.extraV2F2;
+                  v2p.extraV2F2 = d.extraV2F2;
                  // #endif
 
                  // #if %EXTRAV2F3REQUIREKEY%
-                 // v2p.extraV2F3 = d.extraV2F3;
+                  v2p.extraV2F3 = d.extraV2F3;
                  // #endif
 
                  // #if %EXTRAV2F4REQUIREKEY%
@@ -4833,19 +4458,19 @@ ZWrite On
                ZERO_INITIALIZE(Blackboard, d.blackboard);
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // d.extraV2F0 = v2p.extraV2F0;
+                d.extraV2F0 = v2p.extraV2F0;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // d.extraV2F1 = v2p.extraV2F1;
+                d.extraV2F1 = v2p.extraV2F1;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // d.extraV2F2 = v2p.extraV2F2;
+                d.extraV2F2 = v2p.extraV2F2;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // d.extraV2F3 = v2p.extraV2F3;
+                d.extraV2F3 = v2p.extraV2F3;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -4897,19 +4522,19 @@ ZWrite On
                // Ext_ModifyTessellatedVertex29(v, d);
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // v2p.extraV2F0 = d.extraV2F0;
+                v2p.extraV2F0 = d.extraV2F0;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // v2p.extraV2F1 = d.extraV2F1;
+                v2p.extraV2F1 = d.extraV2F1;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // v2p.extraV2F2 = d.extraV2F2;
+                v2p.extraV2F2 = d.extraV2F2;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // v2p.extraV2F3 = d.extraV2F3;
+                v2p.extraV2F3 = d.extraV2F3;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -5029,7 +4654,7 @@ ZWrite On
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), d.worldSpaceTangent.xyz));
 
             // #if %SCREENPOSREQUIREKEY%
-            // d.screenUV = (IN.ScreenPosition.xy / max(0.01, IN.ScreenPosition.w));
+             d.screenUV = (IN.ScreenPosition.xy / max(0.01, IN.ScreenPosition.w));
             // #endif
 
             return d;
@@ -5057,11 +4682,11 @@ ZWrite On
 
             d.tangentSpaceViewDir = mul(d.TBNMatrix, d.worldSpaceViewDir);
              d.texcoord0 = i.texcoord0;
-             d.texcoord1 = i.texcoord1;
-             d.texcoord2 = i.texcoord2;
+            // d.texcoord1 = i.texcoord1;
+            // d.texcoord2 = i.texcoord2;
 
             // #if %TEXCOORD3REQUIREKEY%
-             d.texcoord3 = i.texcoord3;
+            // d.texcoord3 = i.texcoord3;
             // #endif
 
             // d.isFrontFace = facing;
@@ -5079,25 +4704,25 @@ ZWrite On
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldTangent.xyz));
 
             // #if %SCREENPOSREQUIREKEY%
-            // d.screenPos = i.screenPos;
-            // d.screenUV = (i.screenPos.xy / i.screenPos.w);
+             d.screenPos = i.screenPos;
+             d.screenUV = (i.screenPos.xy / i.screenPos.w);
             // #endif
 
 
             // #if %EXTRAV2F0REQUIREKEY%
-            // d.extraV2F0 = i.extraV2F0;
+             d.extraV2F0 = i.extraV2F0;
             // #endif
 
             // #if %EXTRAV2F1REQUIREKEY%
-            // d.extraV2F1 = i.extraV2F1;
+             d.extraV2F1 = i.extraV2F1;
             // #endif
 
             // #if %EXTRAV2F2REQUIREKEY%
-            // d.extraV2F2 = i.extraV2F2;
+             d.extraV2F2 = i.extraV2F2;
             // #endif
 
             // #if %EXTRAV2F3REQUIREKEY%
-            // d.extraV2F3 = i.extraV2F3;
+             d.extraV2F3 = i.extraV2F3;
             // #endif
 
             // #if %EXTRAV2F4REQUIREKEY%
@@ -5168,11 +4793,11 @@ ZWrite On
            #endif
 
             o.texcoord0 = v.texcoord0;
-            o.texcoord1 = v.texcoord1;
-            o.texcoord2 = v.texcoord2;
+           // o.texcoord1 = v.texcoord1;
+           // o.texcoord2 = v.texcoord2;
 
            // #if %TEXCOORD3REQUIREKEY%
-            o.texcoord3 = v.texcoord3;
+           // o.texcoord3 = v.texcoord3;
            // #endif
 
            // #if %VERTEXCOLORREQUIREKEY%
@@ -5211,14 +4836,14 @@ ZWrite On
           #endif
 
           // #if %SCREENPOSREQUIREKEY%
-          // o.screenPos = ComputeScreenPos(o.pos, _ProjectionParams.x);
+           o.screenPos = ComputeScreenPos(o.pos, _ProjectionParams.x);
           // #endif
 
           
           #if _PASSFORWARD || _PASSGBUFFER
               float2 uv1 = v.texcoord1.xy;
               OUTPUT_LIGHTMAP_UV(uv1, unity_LightmapST, o.lightmapUV);
-               o.texcoord1.xy = uv1;
+              // o.texcoord1.xy = uv1;
               #if UNITY_VERSION < 60000009
                 OUTPUT_SH(o.worldNormal, o.sh);
               #endif
@@ -5471,10 +5096,15 @@ ZWrite On
             ZWrite On
             // ColorMask: <None>
 
-            	Tags { "RenderType" = "Opaque" "Queue" = "Geometry" "PreviewType" = "Plane" }
+            	Tags
+    {
+        "RenderType" = "Opaque" "Queue" = "Geometry" "PreviewType" = "Sphere"
+    }   
 	Cull [_CullingOption]
 	ZWrite [_ZWrite]
 	ZTest [_ZTestMode]
+	ColorMask [_ColorMask]
+Lighting Off
 
 
             HLSLPROGRAM
@@ -5497,81 +5127,81 @@ ZWrite On
             #define _PASSSHADOW 1
 
             
-	#pragma shader_feature_local GLOW_ON
-	#pragma shader_feature_local FADE_ON
-	#pragma shader_feature_local OUTBASE_ON
-	#pragma shader_feature_local ONLYOUTLINE_ON
-	#pragma shader_feature_local GRADIENT_ON
-	#pragma shader_feature_local GRADIENT2COL_ON
-	#pragma shader_feature_local RADIALGRADIENT_ON
-	#pragma shader_feature_local COLORSWAP_ON
-	#pragma shader_feature_local HSV_ON
-	#pragma shader_feature_local CHANGECOLOR_ON
-	#pragma shader_feature_local CHANGECOLOR2_ON
-	#pragma shader_feature_local CHANGECOLOR3_ON
-	#pragma shader_feature_local COLORRAMP_ON
-	#pragma shader_feature_local GRADIENTCOLORRAMP_ON
-	#pragma shader_feature_local HITEFFECT_ON
-	#pragma shader_feature_local NEGATIVE_ON
-	#pragma shader_feature_local PIXELATE_ON
-	#pragma shader_feature_local GREYSCALE_ON
-	#pragma shader_feature_local POSTERIZE_ON
-	#pragma shader_feature_local BLUR_ON
-	#pragma shader_feature_local MOTIONBLUR_ON
-	#pragma shader_feature_local GHOST_ON
-	#pragma shader_feature_local ALPHAOUTLINE_ON
-	#pragma shader_feature_local INNEROUTLINE_ON
-	#pragma shader_feature_local ONLYINNEROUTLINE_ON
-	#pragma shader_feature_local HOLOGRAM_ON
-	#pragma shader_feature_local CHROMABERR_ON
-	#pragma shader_feature_local GLITCH_ON
-	#pragma shader_feature_local FLICKER_ON
-	#pragma shader_feature_local SHADOW_ON
-	#pragma shader_feature_local SHINE_ON
-	#pragma shader_feature_local CONTRAST_ON
-	#pragma shader_feature_local OVERLAY_ON
-	#pragma shader_feature_local OVERLAYMULT_ON
-	#pragma shader_feature_local DOODLE_ON
-	#pragma shader_feature_local WIND_ON
-	#pragma shader_feature_local WAVEUV_ON
-	#pragma shader_feature_local ROUNDWAVEUV_ON
-	#pragma shader_feature_local RECTSIZE_ON
-	#pragma shader_feature_local OFFSETUV_ON
-	#pragma shader_feature_local CLIPPING_ON
-	#pragma shader_feature_local RADIALCLIPPING_ON
-	#pragma shader_feature_local TEXTURESCROLL_ON
-	#pragma shader_feature_local ZOOMUV_ON
-	#pragma shader_feature_local DISTORT_ON
-	#pragma shader_feature_local WARP_ON
-	#pragma shader_feature_local TWISTUV_ON
-	#pragma shader_feature_local ROTATEUV_ON
-	#pragma shader_feature_local POLARUV_ON
-	#pragma shader_feature_local FISHEYE_ON
-	#pragma shader_feature_local PINCH_ON
+    #pragma shader_feature_local TIMEISCUSTOM_ON
+    #pragma shader_feature_local ADDITIVECONFIG_ON
+    #pragma shader_feature_local PREMULTIPLYALPHA_ON
+    #pragma shader_feature_local PREMULTIPLYCOLOR_ON
+    #pragma shader_feature_local SPLITRGBA_ON
+    #pragma shader_feature_local SHAPEADD_ON
+
+    #pragma shader_feature_local SHAPE1SCREENUV_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local SHAPE2SCREENUV_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local SHAPE3SCREENUV_ON /////////////////Pipeline specific implementation
+
+    #pragma shader_feature_local SHAPEDEBUG_ON
+            
+    #pragma shader_feature_local SHAPE1CONTRAST_ON
+    #pragma shader_feature_local SHAPE1DISTORT_ON
+    #pragma shader_feature_local SHAPE1ROTATE_ON
+    #pragma shader_feature_local SHAPE1SHAPECOLOR_ON
+
+    #pragma shader_feature_local SHAPE2_ON
+    #pragma shader_feature_local SHAPE2CONTRAST_ON
+    #pragma shader_feature_local SHAPE2DISTORT_ON
+    #pragma shader_feature_local SHAPE2ROTATE_ON
+    #pragma shader_feature_local SHAPE2SHAPECOLOR_ON
+
+    #pragma shader_feature_local SHAPE3_ON
+    #pragma shader_feature_local SHAPE3CONTRAST_ON
+    #pragma shader_feature_local SHAPE3DISTORT_ON
+    #pragma shader_feature_local SHAPE3ROTATE_ON
+    #pragma shader_feature_local SHAPE3SHAPECOLOR_ON
+
+    #pragma shader_feature_local GLOW_ON
+    #pragma shader_feature_local GLOWTEX_ON
+    #pragma shader_feature_local DEPTHGLOW_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local MASK_ON
+    #pragma shader_feature_local COLORRAMP_ON
+    #pragma shader_feature_local COLORRAMPGRAD_ON
+    #pragma shader_feature_local COLORGRADING_ON
+    #pragma shader_feature_local HSV_ON
+    #pragma shader_feature_local POSTERIZE_ON
+    #pragma shader_feature_local PIXELATE_ON
+    #pragma shader_feature_local DISTORT_ON
 	#pragma shader_feature_local SHAKEUV_ON
-
-	#pragma shader_feature_local GLOWTEX_ON
-	#pragma shader_feature_local OUTTEX_ON
-	#pragma shader_feature_local OUTDIST_ON
-	#pragma shader_feature_local OUTBASE8DIR_ON
-	#pragma shader_feature_local OUTBASEPIXELPERF_ON
-	#pragma shader_feature_local COLORRAMPOUTLINE_ON
-	#pragma shader_feature_local GREYSCALEOUTLINE_ON
-	#pragma shader_feature_local POSTERIZEOUTLINE_ON
-	#pragma shader_feature_local BLURISHD_ON
-	#pragma shader_feature_local MANUALWIND_ON
-	#pragma shader_feature_local ATLAS_ON
-	#pragma shader_feature_local PREMULTIPLYALPHA_ON
-
-	#pragma shader_feature BILBOARD_ON
-	#pragma shader_feature BILBOARDY_ON
+    #pragma shader_feature_local WAVEUV_ON
+	#pragma shader_feature_local ROUNDWAVEUV_ON
+    #pragma shader_feature_local TWISTUV_ON
+    #pragma shader_feature_local DOODLE_ON
+    #pragma shader_feature_local OFFSETSTREAM_ON
+    #pragma shader_feature_local TEXTURESCROLL_ON
+    #pragma shader_feature_local VERTOFFSET_ON
+    #pragma shader_feature_local RIM_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local BACKFACETINT_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local POLARUV_ON
+    #pragma shader_feature_local POLARUVDISTORT_ON
+    #pragma shader_feature_local SHAPE1MASK_ON
+    #pragma shader_feature_local TRAILWIDTH_ON
+    #pragma shader_feature_local LIGHTANDSHADOW_ON
+    #pragma shader_feature_local SHAPETEXOFFSET_ON
+    #pragma shader_feature_local SHAPEWEIGHTS_ON
+            
+    #pragma shader_feature_local ALPHACUTOFF_ON
+    #pragma shader_feature_local ALPHASMOOTHSTEP_ON
+    #pragma shader_feature_local FADE_ON
+    #pragma shader_feature_local FADEBURN_ON
+    #pragma shader_feature_local ALPHAFADE_ON
+    #pragma shader_feature_local ALPHAFADEUSESHAPE1_ON
+    #pragma shader_feature_local ALPHAFADEUSEREDCHANNEL_ON
+    #pragma shader_feature_local ALPHAFADETRANSPARENCYTOO_ON
+    #pragma shader_feature_local ALPHAFADEINPUTSTREAM_ON
+    #pragma shader_feature_local CAMDISTFADE_ON
 
 	#pragma shader_feature NORMALMAP_ON
 
 
    #define _URP 1
-#define _USINGTEXCOORD1 1
-#define _USINGTEXCOORD2 1
+#define REQUIRE_DEPTH_TEXTURE
 
 
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
@@ -5625,15 +5255,15 @@ ZWrite On
          float3 worldNormal : TEXCOORD1;
          float4 worldTangent : TEXCOORD2;
           float4 texcoord0 : TEXCOORD3;
-          float4 texcoord1 : TEXCOORD4;
-          float4 texcoord2 : TEXCOORD5;
+         // float4 texcoord1 : TEXCOORD4;
+         // float4 texcoord2 : TEXCOORD5;
 
          // #if %TEXCOORD3REQUIREKEY%
-          float4 texcoord3 : TEXCOORD6;
+         // float4 texcoord3 : TEXCOORD6;
          // #endif
 
          // #if %SCREENPOSREQUIREKEY%
-         // float4 screenPos : TEXCOORD7;
+          float4 screenPos : TEXCOORD7;
          // #endif
 
          // #if %VERTEXCOLORREQUIREKEY%
@@ -5660,19 +5290,19 @@ ZWrite On
          #endif
 
          // #if %EXTRAV2F0REQUIREKEY%
-         // float4 extraV2F0 : TEXCOORD13;
+          float4 extraV2F0 : TEXCOORD13;
          // #endif
 
          // #if %EXTRAV2F1REQUIREKEY%
-         // float4 extraV2F1 : TEXCOORD14;
+          float4 extraV2F1 : TEXCOORD14;
          // #endif
 
          // #if %EXTRAV2F2REQUIREKEY%
-         // float4 extraV2F2 : TEXCOORD15;
+          float4 extraV2F2 : TEXCOORD15;
          // #endif
 
          // #if %EXTRAV2F3REQUIREKEY%
-         // float4 extraV2F3 : TEXCOORD16;
+          float4 extraV2F3 : TEXCOORD16;
          // #endif
 
          // #if %EXTRAV2F4REQUIREKEY%
@@ -5837,7 +5467,7 @@ ZWrite On
                #endif
 
                // #if %TEXCOORD3REQUIREKEY%
-                float4 texcoord3 : TEXCOORD3;
+               // float4 texcoord3 : TEXCOORD3;
                // #endif
 
                // #if %VERTEXCOLORREQUIREKEY%
@@ -5864,7 +5494,7 @@ ZWrite On
                float4 texcoord2 : TEXCOORD2;
 
                // #if %TEXCOORD3REQUIREKEY%
-                float4 texcoord3 : TEXCOORD3;
+               // float4 texcoord3 : TEXCOORD3;
                // #endif
 
                // #if %VERTEXCOLORREQUIREKEY%
@@ -5872,19 +5502,19 @@ ZWrite On
                // #endif
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // float4 extraV2F0 : TEXCOORD5;
+                float4 extraV2F0 : TEXCOORD5;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // float4 extraV2F1 : TEXCOORD6;
+                float4 extraV2F1 : TEXCOORD6;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // float4 extraV2F2 : TEXCOORD7;
+                float4 extraV2F2 : TEXCOORD7;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // float4 extraV2F3 : TEXCOORD8;
+                float4 extraV2F3 : TEXCOORD8;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -6125,20 +5755,116 @@ ZWrite On
 
                
 	half4 _Color;
-	half4 _MainTex_ST, _MainTex_TexelSize;
-	half _Alpha, _AlphaCutoffValue;
+	half _Alpha;
+	half _AlphaCutoffValue;
 
-	#if ATLAS_ON
-		half _MinXUV, _MaxXUV, _MinYUV, _MaxYUV;
+	half _TimingSeed;
+
+	#if TIMEISCUSTOM_ON
+		float4 globalCustomTime;
+	#endif
+
+	half4 _MainTex_ST, _ShapeColor;
+	half _ShapeXSpeed, _ShapeYSpeed, _ShapeColorWeight, _ShapeAlphaWeight;
+	
+	#if SHAPE1CONTRAST_ON
+		half _ShapeContrast, _ShapeBrightness;
+	#endif
+	
+	#if SHAPE1DISTORT_ON
+		half4 _ShapeDistortTex_ST;
+		half _ShapeDistortAmount, _ShapeDistortXSpeed, _ShapeDistortYSpeed;
+	#endif
+	
+	#if SHAPE1ROTATE_ON
+		half _ShapeRotationOffset, _ShapeRotationSpeed;
+	#endif
+	
+	#if OFFSETSTREAM_ON
+		half _OffsetSh1;
+	#endif
+	
+	#if SHAPEWEIGHTS_ON
+		half _Sh1BlendOffset;
+	#endif
+
+	#if SHAPE2_ON
+		half4 _Shape2Tex_ST, _Shape2Color;
+		half _Shape2XSpeed, _Shape2YSpeed, _Shape2ColorWeight, _Shape2AlphaWeight;
+		#if SHAPE2CONTRAST_ON
+			half _Shape2Contrast, _Shape2Brightness;
+		#endif
+		#if SHAPE2DISTORT_ON
+			half4 _Shape2DistortTex_ST;
+			half _Shape2DistortAmount, _Shape2DistortXSpeed, _Shape2DistortYSpeed;
+		#endif
+		#if SHAPE2ROTATE_ON
+			half _Shape2RotationOffset, _Shape2RotationSpeed;
+		#endif
+		#if OFFSETSTREAM_ON
+			half _OffsetSh2;
+		#endif
+		#if SHAPEWEIGHTS_ON
+			half _Sh2BlendOffset;
+		#endif
+	#endif
+
+	#if SHAPE3_ON
+		half4 _Shape3Tex_ST, _Shape3Color;
+		half _Shape3XSpeed, _Shape3YSpeed, _Shape3ColorWeight, _Shape3AlphaWeight;
+		#if SHAPE3CONTRAST_ON
+			half _Shape3Contrast, _Shape3Brightness;
+		#endif
+		#if SHAPE3DISTORT_ON
+			half4 _Shape3DistortTex_ST;
+			half _Shape3DistortAmount, _Shape3DistortXSpeed, _Shape3DistortYSpeed;
+		#endif
+		#if SHAPE3ROTATE_ON
+			half _Shape3RotationOffset, _Shape3RotationSpeed;
+		#endif
+		#if OFFSETSTREAM_ON
+			half _OffsetSh3;
+		#endif
+		#if SHAPEWEIGHTS_ON
+			half _Sh3BlendOffset;
+		#endif
 	#endif
 
 	#if GLOW_ON
 		half4 _GlowColor;
 		half _Glow, _GlowGlobal;
+		#if GLOWTEX_ON
+			half4 _GlowTex_ST;
+		#endif
 	#endif
-	 
+
+	#if MASK_ON
+		half4 _MaskTex_ST;
+		half _MaskPow;
+	#endif
+
+	#if COLORRAMP_ON
+		half _ColorRampLuminosity, _ColorRampBlend;
+	#endif
+
+	#if ALPHASMOOTHSTEP_ON
+		half _AlphaStepMin, _AlphaStepMax;
+	#endif
+
+	#if ALPHAFADE_ON
+		half _AlphaFadeAmount, _AlphaFadeSmooth, _AlphaFadePow;
+	#endif
+
 	#if HSV_ON
 		half _HsvShift, _HsvSaturation, _HsvBright;
+	#endif
+
+	#if POSTERIZE_ON
+		half _PosterizeNumColors;
+	#endif
+
+	#if PIXELATE_ON
+		half _PixelateSize;
 	#endif
 
 	#if DISTORT_ON
@@ -6146,203 +5872,101 @@ ZWrite On
 		half _DistortTexXSpeed, _DistortTexYSpeed, _DistortAmount;
 	#endif
 
-	#if FADE_ON
-		half4 _FadeBurnColor, _FadeTex_ST, _FadeBurnTex_ST;
-		half _FadeAmount, _FadeBurnWidth, _FadeBurnTransition,_FadeBurnGlow;
-	#endif
-
-	#if OUTBASE_ON
-		half4 _OutlineColor;
-		half _OutlineAlpha, _OutlineGlow, _OutlineWidth;
-		int _OutlinePixelWidth;
-	#endif
-
-	#if OUTTEX_ON
-		half4 _OutlineTex_ST;
-		half _OutlineTexXSpeed, _OutlineTexYSpeed;
-	#endif
-
-	#if OUTDIST_ON
-		half4 _OutlineDistortTex_ST;
-		half _OutlineDistortTexXSpeed, _OutlineDistortTexYSpeed, _OutlineDistortAmount;
-	#endif
-
-	#if ALPHAOUTLINE_ON
-		half _AlphaOutlineGlow, _AlphaOutlinePower, _AlphaOutlineMinAlpha, _AlphaOutlineBlend;
-		half4 _AlphaOutlineColor;
-	#endif
-
-	#if INNEROUTLINE_ON
-		half _InnerOutlineThickness, _InnerOutlineAlpha, _InnerOutlineGlow;
-		half4 _InnerOutlineColor;
-	#endif
-
-	#if GRADIENT_ON
-		half _GradBlend, _GradBoostX, _GradBoostY;
-		half4 _GradTopRightCol, _GradTopLeftCol, _GradBotRightCol, _GradBotLeftCol;
-	#endif
-
-	#if COLORSWAP_ON
-		half4 _ColorSwapRed, _ColorSwapGreen, _ColorSwapBlue;
-		half _ColorSwapRedLuminosity, _ColorSwapGreenLuminosity, _ColorSwapBlueLuminosity, _ColorSwapBlend;
-	#endif
-
-	#if CHANGECOLOR_ON
-		half4 _ColorChangeNewCol, _ColorChangeTarget;
-		half _ColorChangeTolerance, _ColorChangeLuminosity;
-	#endif
-	#if CHANGECOLOR2_ON
-		half4 _ColorChangeNewCol2, _ColorChangeTarget2;
-		half _ColorChangeTolerance2;
-	#endif
-	#if CHANGECOLOR3_ON
-		half4 _ColorChangeNewCol3, _ColorChangeTarget3;
-		half _ColorChangeTolerance3;
-	#endif
-
-	#if COLORRAMP_ON
-		half _ColorRampLuminosity, _ColorRampBlend;
-	#endif
-
-	#if HITEFFECT_ON
-		half4 _HitEffectColor;
-		half _HitEffectGlow, _HitEffectBlend;
-	#endif
-
-	#if NEGATIVE_ON
-		half _NegativeAmount;
-	#endif
-
-	#if PIXELATE_ON
-		half _PixelateSize;
-	#endif
-
-	#if GREYSCALE_ON
-		half _GreyscaleLuminosity, _GreyscaleBlend;
-		half4 _GreyscaleTintColor;
-	#endif
-
-	#if POSTERIZE_ON
-		half _PosterizeNumColors, _PosterizeGamma;
-	#endif
-
-	#if BLUR_ON
-		half _BlurIntensity;
-	#endif
-
-	#if MOTIONBLUR_ON
-		half _MotionBlurAngle, _MotionBlurDist;
-	#endif
-
-	#if GHOST_ON
-		half _GhostColorBoost, _GhostTransparency, _GhostBlend;
-	#endif
-
-	#if HOLOGRAM_ON
-		half _HologramStripesAmount, _HologramMinAlpha, _HologramUnmodAmount, _HologramStripesSpeed, _HologramMaxAlpha, _HologramBlend;
-		half4 _HologramStripeColor;
-	#endif
-
-	#if CHROMABERR_ON
-		half _ChromAberrAmount, _ChromAberrAlpha;
-	#endif
-
-	#if GLITCH_ON
-		half _GlitchAmount, _GlitchSize;
-	#endif
-
-	#if FLICKER_ON
-		half _FlickerFreq, _FlickerPercent, _FlickerAlpha;
-	#endif
-
-	#if SHADOW_ON
-		half _ShadowX, _ShadowY, _ShadowAlpha;
-		half4 _ShadowColor;
-	#endif
-
-	#if SHINE_ON
-		half4 _ShineColor;
-		half _ShineLocation, _ShineRotate, _ShineWidth, _ShineGlow;
-	#endif
-
-	#if CONTRAST_ON
-		half _Contrast, _Brightness;
-	#endif
-
-	#if OVERLAY_ON
-		half4 _OverlayTex_ST, _OverlayColor;
-		half _OverlayGlow, _OverlayBlend, _OverlayTextureScrollXSpeed, _OverlayTextureScrollYSpeed;
-	#endif
-
-	#if DOODLE_ON
-		half _HandDrawnAmount, _HandDrawnSpeed;
-	#endif
-
-	#if WIND_ON
-		half _GrassSpeed, _GrassWind, _GrassManualAnim, _GrassRadialBend;
-	#endif
-
-	#if WAVEUV_ON
-		float _WaveAmount, _WaveSpeed, _WaveStrength, _WaveX, _WaveY;
-	#endif
-
-	#if ROUNDWAVEUV_ON
-		half _RoundWaveStrength, _RoundWaveSpeed;
-	#endif
-
-	#if RECTSIZE_ON
-		half _RectSize;
-	#endif
-
-	#if OFFSETUV_ON
-		half _OffsetUvX, _OffsetUvY;
-	#endif
-
-	#if CLIPPING_ON
-		half _ClipUvLeft, _ClipUvRight, _ClipUvUp, _ClipUvDown;
-	#endif
-
-	#if RADIALCLIPPING_ON
-		half _RadialStartAngle, _RadialClip, _RadialClip2;
-	#endif
-
 	#if TEXTURESCROLL_ON
 		half _TextureScrollXSpeed, _TextureScrollYSpeed;
-	#endif
-
-	#if ZOOMUV_ON
-		half _ZoomUvAmount;
-	#endif
-
-	#if WARP_ON
-		half _WarpStrength, _WarpSpeed, _WarpScale;
-	#endif
-
-	#if TWISTUV_ON
-		half _TwistUvAmount, _TwistUvPosX, _TwistUvPosY, _TwistUvRadius;
-	#endif
-
-	#if ROTATEUV_ON
-		half _RotateUvAmount;
-	#endif
-
-	#if FISHEYE_ON
-		half _FishEyeUvAmount;
-	#endif
-
-	#if PINCH_ON
-		half _PinchUvAmount;
 	#endif
 
 	#if SHAKEUV_ON
 		half _ShakeUvSpeed, _ShakeUvX, _ShakeUvY;
 	#endif
 
+	#if WAVEUV_ON
+		half _WaveAmount, _WaveSpeed, _WaveStrength, _WaveX, _WaveY;
+	#endif
+
+	#if ROUNDWAVEUV_ON
+		half _RoundWaveStrength, _RoundWaveSpeed;
+	#endif
+
+	#if TWISTUV_ON
+		half _TwistUvAmount, _TwistUvPosX, _TwistUvPosY, _TwistUvRadius;
+	#endif
+
+	#if DOODLE_ON
+		half _HandDrawnAmount, _HandDrawnSpeed;
+	#endif
+
+	#if ROUNDWAVEUV_ON || PIXELATE_ON
+		half4 _MainTex_TexelSize;
+	#endif
+
+	#if VERTOFFSET_ON
+		half4 _VertOffsetTex_ST;
+		half _VertOffsetAmount, _VertOffsetPower, _VertOffsetTexXSpeed, _VertOffsetTexYSpeed;
+	#endif
+
+	#if FADE_ON
+		half4 _FadeTex_ST;
+		half _FadeAmount, _FadeTransition, _FadePower, _FadeScrollXSpeed, _FadeScrollYSpeed;
+		#if FADEBURN_ON
+			half4 _FadeBurnColor, _FadeBurnTex_ST;
+			half _FadeBurnWidth, _FadeBurnGlow;
+		#endif
+	#endif
+
+	#if COLORGRADING_ON
+		half3 _ColorGradingLight, _ColorGradingMiddle, _ColorGradingDark;
+		half _ColorGradingMidPoint;
+	#endif
+            
+	#if CAMDISTFADE_ON
+		half _CamDistFadeStepMin, _CamDistFadeStepMax, _CamDistProximityFade;
+	#endif
+
+	#if RIM_ON
+		half _RimBias, _RimScale, _RimPower, _RimIntensity, _RimAddAmount, _RimErodesAlpha;
+		half4 _RimColor;
+	#endif
+
+	#if BACKFACETINT_ON
+		half4 _BackFaceTint, _FrontFaceTint;
+	#endif
+
+	#if SHAPEDEBUG_ON
+		half _DebugShape;
+	#endif
+
+	#if SHAPE1MASK_ON
+		half4 _Shape1MaskTex_ST;
+		half _Shape1MaskPow;
+	#endif
+
+	#if TRAILWIDTH_ON
+		half _TrailWidthPower;
+	#endif
+
+	#if LIGHTANDSHADOW_ON
+		half3 _All1VfxLightDir;
+		half _ShadowAmount, _ShadowStepMin, _ShadowStepMax, _LightAmount;
+		half4 _LightColor;
+	#endif
+
+	#if SHAPETEXOFFSET_ON
+		half _RandomSh1Mult, _RandomSh2Mult, _RandomSh3Mult;
+	#endif
+
+	#if DEPTHGLOW_ON
+		half _DepthGlowDist, _DepthGlowPow, _DepthGlow, _DepthGlowGlobal;
+		half4 _DepthGlowColor;
+    #endif
+
+	#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+        half _ScreenUvShDistScale,_ScreenUvSh2DistScale, _ScreenUvSh3DistScale;
+	#endif
+
 	#if NORMALMAP_ON
 		half _NormalStrength;
 	#endif
-
-	float _RandomSeed;
 
 
 
@@ -6354,58 +5978,82 @@ ZWrite On
             
 
             
-	
+
 	TEXTURE2D(_MainTex);
 	SAMPLER(sampler_MainTex);
 
+	#if SHAPE1DISTORT_ON
+		TEXTURE2D(_ShapeDistortTex);
+		SAMPLER(sampler_ShapeDistortTex);
+	#endif
+
+	#if SHAPE2_ON
+		TEXTURE2D(_Shape2Tex);
+		SAMPLER(sampler_Shape2Tex);
+		#if SHAPE2DISTORT_ON
+			TEXTURE2D(_Shape2DistortTex);
+			SAMPLER(sampler_Shape2DistortTex);
+		#endif
+	#endif
+
+	#if SHAPE3_ON
+		TEXTURE2D(_Shape3Tex);
+		SAMPLER(sampler_Shape3Tex);
+		#if SHAPE3DISTORT_ON
+			TEXTURE2D(_Shape3DistortTex);
+			SAMPLER(sampler_Shape3DistortTex);
+		#endif
+	#endif
+
 	#if GLOW_ON
-		TEXTURE2D(_GlowTex);
-		SAMPLER(sampler_GlowTex);
+		#if GLOWTEX_ON
+			TEXTURE2D(_GlowTex);
+			SAMPLER(sampler_GlowTex);
+		#endif
+	#endif
+
+	#if MASK_ON
+		TEXTURE2D(_MaskTex);
+		SAMPLER(sampler_MaskTex);
+	#endif
+
+	#if COLORRAMP_ON
+		TEXTURE2D(_ColorRampTex);
+		SAMPLER(sampler_ColorRampTex);
+	#endif
+
+	#if COLORRAMPGRAD_ON
+		TEXTURE2D(_ColorRampTexGradient);
+		SAMPLER(sampler_ColorRampTexGradient);
+	#endif
+	
+	#if DISTORT_ON
+		TEXTURE2D(_DistortTex);
+		SAMPLER(sampler_DistortTex);
+	#endif
+
+	#if VERTOFFSET_ON
+		TEXTURE2D(_VertOffsetTex);
+		SAMPLER(sampler_VertOffsetTex);
 	#endif
 
 	#if FADE_ON
 		TEXTURE2D(_FadeTex);
 		SAMPLER(sampler_FadeTex);
-
-		TEXTURE2D(_FadeBurnTex);
-		SAMPLER(sampler_FadeBurnTex);
+		#if FADEBURN_ON
+			TEXTURE2D(_FadeBurnTex);
+			SAMPLER(sampler_FadeBurnTex);
+		#endif
 	#endif
 
-	#if DISTORT_ON
-		TEXTURE2D(_DistortTex);
-		SAMPLER(sampler_DistortTex);	
+	#if SHAPE1MASK_ON
+		TEXTURE2D(_Shape1MaskTex);
+		SAMPLER(sampler_Shape1MaskTex);
 	#endif
 
-	#if OUTTEX_ON
-		TEXTURE2D(_OutlineTex);
-		SAMPLER(sampler_OutlineTex);
-	#endif
-
-	#if OUTDIST_ON
-		TEXTURE2D(_OutlineDistortTex);
-		SAMPLER(sampler_OutlineDistortTex);
-	#endif
-
-	#if COLORSWAP_ON
-		TEXTURE2D(_ColorSwapTex);
-		SAMPLER(sampler_ColorSwapTex);
-	#endif
-
-	#if COLORRAMP_ON
-		TEXTURE2D(_ColorRampTex);
-		TEXTURE2D(_ColorRampTexGradient);
-		SAMPLER(sampler_ColorRampTex);
-		SAMPLER(sampler_ColorRampTexGradient);
-	#endif
-
-	#if SHINE_ON
-		TEXTURE2D(_ShineMask);
-		SAMPLER(sampler_ShineMask);
-	#endif
-
-	#if OVERLAY_ON
-		TEXTURE2D(_OverlayTex);
-		SAMPLER(sampler_OverlayTex);
+	#if TRAILWIDTH_ON
+		TEXTURE2D(_TrailWidthGradient);
+		SAMPLER(sampler_TrailWidthGradient);
 	#endif
 
 	#if NORMALMAP_ON
@@ -6413,225 +6061,124 @@ ZWrite On
 		SAMPLER(sampler_NormalMap);
 	#endif
 
-
-	half3 GetPixel(in int offsetX, in int offsetY, in half2 uv, in Texture2D _tex, in SamplerState _sampler)
+	half4 SampleTextureWithScroll(in Texture2D _tex, in SamplerState _sampler, in float2 uv, in half scrollXSpeed, in half scrollYSpeed, in float time)
 	{
-		half2 _uv = uv + half2(offsetX * _MainTex_TexelSize.x, offsetY * _MainTex_TexelSize.y);
-		half4 col = SAMPLE_TEXTURE2D(_tex, _sampler, _uv);
-		return col.rgb;
+		half2 _uv = uv;
+		_uv.x += (time * scrollXSpeed) % 1;
+		_uv.y += (time * scrollYSpeed) % 1;
+		return SAMPLE_TEXTURE2D(_tex, _sampler, _uv);
 	}
 
-
-	//BLURS-------------------------------------------------------------------------
-	half4 Blur(half2 uv, Texture2D source, SamplerState sampler_source, half Intensity)
+	half EaseOutQuint(half x) 
 	{
-		const half2 texelSize = 1.0 / _ScreenParams.xy;
-		const half4 color = SAMPLE_TEXTURE2D(source, sampler_source, uv);
-		const half2 offset = Intensity * texelSize;
-
-		half4 accumulatedColor = color;
-		half accumulatedWeight = 1.0;
-		for (int x = -1; x <= 1; x++)
-		{
-			for (int y = -1; y <= 1; y++)
-			{
-				const half2 sampleUV = uv + half2(x, y) * offset;
-				const half4 sampleColor = SAMPLE_TEXTURE2D(source, sampler_source, sampleUV);
-
-				accumulatedColor += sampleColor;
-				accumulatedWeight += 1.0;
-			}
-		}
-
-		half4 blurredColor = accumulatedColor / accumulatedWeight;
-		return blurredColor;
+		return 1 - pow(1 - x, 5);
 	}
 
-	half BlurHD_G(half bhqp, half x)
+	half RemapFloat(half inValue, half inMin, half inMax, half outMin, half outMax)
 	{
-		return exp(-(x * x) / (2.0 * bhqp * bhqp));
-	}
-	half4 BlurHD(half2 uv, Texture2D source, SamplerState sampler_source, half BlurAmount, half xScale, half yScale)
-	{
-		int iterations = 16;
-		int halfIterations = iterations / 2;
-		half sigmaX = 0.1 + BlurAmount * 0.5;
-		half sigmaY = sigmaX;
-		half total = 0.0;
-		half4 ret = half4(0, 0, 0, 0);
-		for (int iy = 0; iy < iterations; ++iy)
-		{
-			half fy = BlurHD_G(sigmaY, half(iy) -half(halfIterations));
-			half offsetY = half(iy - halfIterations) * 0.00390625 * xScale;
-			for (int ix = 0; ix < iterations; ++ix)
-			{
-				half fx = BlurHD_G(sigmaX, half(ix) - half(halfIterations));
-				half offsetX = half(ix - halfIterations) * 0.00390625 * yScale;
-				total += fx * fy;
-				ret += SAMPLE_TEXTURE2D(source, sampler_source, uv + half2(offsetX, offsetY)) * fx * fy;
-			}
-		}
-		return ret / total;
-	}
-	//-----------------------------------------------------------------------
-
-
-	//-------------------------------------------
-	half RemapFloat(half inValue, half inMin, half inMax, half outMin, half outMax){
 		return outMin + (inValue - inMin) * (outMax - outMin) / (inMax - inMin);
 	}
-	//-------------------------------------------
 
-	//-----------------------------------------------------------------------
-	half rand(half2 seed, half offset) {
-		return (frac(sin(dot(seed, half2(12.9898, 78.233))) * 43758.5453) + offset) % 1.0;
+	float2 RotateUvs(float2 uv, half rotation, half4 scaleAndTranslate)
+	{
+		half2 center = half2(0.5 * scaleAndTranslate.x + scaleAndTranslate.z, 0.5 * scaleAndTranslate.y + scaleAndTranslate.w);
+		half cosAngle = cos(rotation);
+		half sinAngle = sin(rotation);
+		uv -= center;
+		uv = mul(half2x2(cosAngle, -sinAngle, sinAngle, cosAngle), uv);
+		uv += center;
+		return uv; 
 	}
 
-	half rand2(half2 seed, half offset) {
-		return (frac(sin(dot(seed * floor(50 + (_Time.x % 1.0) * 12.), half2(127.1, 311.7))) * 43758.5453123) + offset) % 1.0;
-	}
+	half4 GetDebugColor(float4 resColor, half4 shape1, half4 shape2, half4 shape3)
+	{
+		half4 res = resColor;
 
-	half rand2CustomTime(half2 seed, half offset, half customTime) {
-		return (frac(sin(dot(seed * floor(50 + (customTime % 1.0) * 12.), half2(127.1, 311.7))) * 43758.5453123) + offset) % 1.0;
-	}
-	//-----------------------------------------------------------------------
+		//MAKE SURE THE FOLLOWING CODE BLOCK IS UNCOMMENTED-------------------------------------------
+        #if SHAPEDEBUG_ON
+			if(_DebugShape < 1.5) return shape1;
+			#if SHAPE2_ON
+				else if (_DebugShape < 2.5) return shape2;
+			#endif
+			#if SHAPE3_ON
+				else return shape3;
+			#endif
+        #endif
 
+		return res;
+	}
 
 	void Ext_ModifyVertex0 (inout VertexData v, inout ExtraV2F d)
 	{
-		//BILBOARD_ON
-		#if BILBOARD_ON
-			half3 camRight = mul((half3x3)unity_CameraToWorld, half3(1,0,0));
-			half3 camUp = half3(0,1,0);
-			#if BILBOARDY_ON
-				camUp = mul((half3x3)unity_CameraToWorld, half3(0,1,0));
+		//uvDistTex --> extraV2F0
+		//uvSh1DistTex --> extraV2F1
+		//uvSh2DistTex --> extraV2F2
+		//uvSh3DistTex --> extraV2F3
+ 
+		#if VERTOFFSET_ON
+			#if TIMEISCUSTOM_ON
+				const half time = v.texcoord0.z + globalCustomTime.y;
+			#else
+				const half time = v.texcoord0.z + _Time.y;
 			#endif
-			half3 localPos = v.vertex.x * camRight + v.vertex.y * camUp;
-			v.vertex = half4(localPos, 1);
-		#endif
-        //-----------------------------------------------------------
-
-        v.texcoord0.xy = TRANSFORM_TEX(v.texcoord0.xy, _MainTex);
-		half2 center = half2(0.5, 0.5);
-        #if ATLAS_ON
-		    center = half2((_MaxXUV + _MinXUV) / 2.0, (_MaxYUV + _MinYUV) / 2.0);
-		#endif
-		
-		//POLARUV_ON
-		#if POLARUV_ON
-			v.texcoord0.xy = v.texcoord0.xy - center;
+				half4 offsetUv = half4(TRANSFORM_TEX(v.texcoord0.xy, _VertOffsetTex), 0, 0);
+            	offsetUv.x += (time * _VertOffsetTexXSpeed) % 1;
+				offsetUv.y += (time * _VertOffsetTexYSpeed) % 1;
+                v.vertex.xyz += v.normal * _VertOffsetAmount * pow(SAMPLE_TEXTURE2D_LOD(_VertOffsetTex, sampler_VertOffsetTex, offsetUv, 0).r, _VertOffsetPower); 
 		#endif
 
-		//----------------------------------------
-
-		//ROTATEUV_ON
-		#if ROTATEUV_ON
-			half2 uvC = v.texcoord0.xy;
-			half cosAngle = cos(_RotateUvAmount);
-			half sinAngle = sin(_RotateUvAmount);
-			half2x2 rot = half2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
-			uvC -= center;
-			v.texcoord0.xy = mul(rot, uvC);
-			v.texcoord0.xy += center;
-		#endif
-		//--------------------
-
-		#if RECTSIZE_ON
-			v.vertex.xyz += (v.vertex.xyz * (_RectSize - 1.0));
+		#if DISTORT_ON && !POLARUVDISTORT_ON
+			d.extraV2F0.xy = TRANSFORM_TEX(v.texcoord0.xy, _DistortTex);
 		#endif
 
-		#if OUTTEX_ON
-			v.texcoord1.xy = TRANSFORM_TEX(v.texcoord0.xy, _OutlineTex);
+		#if SHAPE1DISTORT_ON && !POLARUVDISTORT_ON
+			d.extraV2F1.xy = TRANSFORM_TEX(v.texcoord0.xy, _ShapeDistortTex);
+        #endif
+
+		#if SHAPE2_ON
+			#if SHAPE2DISTORT_ON && !POLARUVDISTORT_ON
+				d.extraV2F2.xy = TRANSFORM_TEX(v.texcoord0.xy, _Shape2DistortTex);;
+			#endif
 		#endif
 
-		#if OUTDIST_ON
-			v.texcoord2.xy = TRANSFORM_TEX(v.texcoord0.xy, _OutlineDistortTex);
-		#endif
-
-		#if DISTORT_ON
-			v.texcoord3.xy = TRANSFORM_TEX(v.texcoord0.xy, _DistortTex);
-		#endif
+		#if SHAPE3_ON
+			#if SHAPE3DISTORT_ON && !POLARUVDISTORT_ON
+				d.extraV2F3.xy = TRANSFORM_TEX(v.texcoord0.xy, _Shape3DistortTex);
+			#endif
+        #endif
 	}
 
 	void Ext_SurfaceFunction0 (inout Surface o, ShaderData d)
 	{
-		half randomSeed = _RandomSeed;
+		//i.uvSeed -> d.texcoord0.xy
 
-		float2 uvRect = d.texcoord0;
-		half2 center = half2(0.5, 0.5);
-		#if ATLAS_ON
-			center = half2((_MaxXUV + _MinXUV) / 2.0, (_MaxYUV + _MinYUV) / 2.0);
-			uvRect = half2((d.texcoord0.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord0.y - _MinYUV) / (_MaxYUV - _MinYUV));
+		float seed = d.texcoord0.z + _TimingSeed;
+		#if TIMEISCUSTOM_ON
+			const float4 shaderTime = globalCustomTime;
+		#else
+			const float4 shaderTime = _Time;
 		#endif
-		half2 centerTiled = half2(center.x *  _MainTex_ST.x, center.y *  _MainTex_ST.y);
+		float time = shaderTime.y + seed;
 
-		//CLIPPING_ON
-		#if CLIPPING_ON
-			half2 tiledUv = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				tiledUv = half2((tiledUv.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUv.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			clip((1 - _ClipUvUp) - tiledUv.y);
-			clip(tiledUv.y - _ClipUvDown);
-			clip((1 - _ClipUvRight) - tiledUv.x);
-			clip(tiledUv.x - _ClipUvLeft);
-		#endif
-		//----------------------------------
+		#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half2 originalUvs = d.texcoord0.xy;
+        #endif
 
-		//RADIALCLIPPING_ON
-		#if RADIALCLIPPING_ON
-			half2 tiledUv2 = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				tiledUv2 = half2((tiledUv2.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUv2.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			half startAngle = _RadialStartAngle - _RadialClip;
-			half endAngle = _RadialStartAngle + _RadialClip2;
-			half offset0 = clamp(0, 360, startAngle + 360);
-			half offset360 = clamp(0, 360, endAngle - 360);
-			half2 atan2Coord = half2(lerp(-1, 1, tiledUv2.x), lerp(-1, 1, tiledUv2.y));
-			half atanAngle = atan2(atan2Coord.y, atan2Coord.x) * 57.3; // angle in degrees
-			if(atanAngle < 0) atanAngle = 360 + atanAngle;
-			if(atanAngle >= startAngle && atanAngle <= endAngle) discard;
-			if(atanAngle <= offset360) discard;
-			if(atanAngle >= offset0) discard;
+		#if PIXELATE_ON
+			half aspectRatio = _MainTex_TexelSize.x / _MainTex_TexelSize.y;
+			half2 pixelSize = float2(_PixelateSize, _PixelateSize * aspectRatio);
+			d.texcoord0.xy = floor(d.texcoord0.xy * pixelSize) / pixelSize;
 		#endif
 
-		//-----------------------------
-
-		//TEXTURESCROLL_ON && ATLAS_ON
-		#if TEXTURESCROLL_ON && ATLAS_ON
-			d.texcoord0.xy = half2(_MinXUV + ((_MaxXUV - _MinXUV) * (abs(((_Time.y + randomSeed) * _TextureScrollXSpeed) + uvRect.x) % 1)),
-			_MinYUV + ((_MaxYUV - _MinYUV) * (abs(((_Time.y + randomSeed) * _TextureScrollYSpeed) + uvRect.y) % 1)));
-		#endif
-		//----------------------------
-
-		//OFFSETUV_ON
-		#if OFFSETUV_ON
-			#if ATLAS_ON
-				d.texcoord0.xy = half2(_MinXUV + ((_MaxXUV - _MinXUV) * (abs((_OffsetUvX + uvRect.x) % 1))),
-				_MinYUV + ((_MaxYUV - _MinYUV) * (abs(_OffsetUvY + uvRect.y) % 1)));
-			#else
-				d.texcoord0.xy += half2(_OffsetUvX, _OffsetUvY);
-			#endif
+		#if NORMALMAP_ON
+			half4 normalSample = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, d.texcoord0.xy);
+			half3 normalTS = UnpackNormal(normalSample);
+			normalTS.xy *= _NormalStrength;
+			o.Normal = normalTS;
 		#endif
 
-		//----------------------
-
-		//POLARUV_ON
-		#if POLARUV_ON
-			d.texcoord0.xy = half2(atan2(d.texcoord0.y, d.texcoord0.x) / (2.0f * 3.141592653589f), length(d.texcoord0.xy));
-			d.texcoord0.xy *= _MainTex_ST.xy;
-		#endif
-
-		//--------------------------------------
-
-		//TWISTUV_ON
 		#if TWISTUV_ON
-			#if ATLAS_ON
-				_TwistUvPosX = ((_MaxXUV - _MinXUV) * _TwistUvPosX) + _MinXUV;
-				_TwistUvPosY = ((_MaxYUV - _MinYUV) * _TwistUvPosY) + _MinYUV;
-			#endif
-			half2 tempUv = d.texcoord0.xy - half2(_TwistUvPosX *  _MainTex_ST.x, _TwistUvPosY *  _MainTex_ST.y);
+			half2 tempUv = d.texcoord0.xy - half2(_TwistUvPosX * _MainTex_ST.x, _TwistUvPosY * _MainTex_ST.y);
 			_TwistUvRadius *= (_MainTex_ST.x + _MainTex_ST.y) / 2;
 			half percent = (_TwistUvRadius - length(tempUv)) / _TwistUvRadius;
 			half theta = percent * percent * (2.0 * sin(_TwistUvAmount)) * 8.0;
@@ -6639,593 +6186,505 @@ ZWrite On
 			half c = cos(theta);
 			half beta = max(sign(_TwistUvRadius - length(tempUv)), 0.0);
 			tempUv = half2(dot(tempUv, half2(c, -s)), dot(tempUv, half2(s, c))) * beta +	tempUv * (1 - beta);
-			tempUv += half2(_TwistUvPosX *  _MainTex_ST.x, _TwistUvPosY *  _MainTex_ST.y);
+			tempUv += half2(_TwistUvPosX * _MainTex_ST.x, _TwistUvPosY * _MainTex_ST.y);
 			d.texcoord0.xy = tempUv;
 		#endif
 
-		//--------------------------------------------
-
-		//FISHEYE_ON
-		#if FISHEYE_ON
-			half bind = length(centerTiled);
-			half2 dF = d.texcoord0.xy - centerTiled;
-			half dFlen = length(dF);
-			half fishInt = (3.14159265359 / bind) * (_FishEyeUvAmount + 0.001);
-			d.texcoord0.xy = centerTiled + (dF / (max(0.0001, dFlen))) * tan(dFlen * fishInt) * bind / tan(bind * fishInt);
-		#endif
-		//---------------------------------------------
-
-		//PINCH_ON
-		#if PINCH_ON
-			half2 dP = d.texcoord0.xy - centerTiled;
-			half pinchInt = (3.141592 / length(centerTiled)) * (-_PinchUvAmount + 0.001);
-			d.texcoord0.xy = centerTiled + normalize(dP) * atan(length(dP) * -pinchInt * 10.0) * 0.5 / atan(-pinchInt * 5);
-		#endif
-
-		//---------------------------------------------
-
-		//ZOOMUV_ON
-		#if ZOOMUV_ON
-			d.texcoord0.xy -= centerTiled;
-			d.texcoord0.xy = d.texcoord0.xy * _ZoomUvAmount;
-			d.texcoord0.xy += centerTiled;
-		#endif
-
-		//-----------------------------------------------
-
-		//DOODLE_ON
 		#if DOODLE_ON
-			half2 uvCopy = uvRect;
-			_HandDrawnSpeed = (floor((_Time.x + randomSeed) * 20 * _HandDrawnSpeed) / _HandDrawnSpeed) * _HandDrawnSpeed;
+			half2 uvCopy = d.texcoord0.xy;
+			_HandDrawnSpeed = (floor((shaderTime.x + seed) * 20 * _HandDrawnSpeed) / _HandDrawnSpeed) * _HandDrawnSpeed;
 			uvCopy.x = sin((uvCopy.x * _HandDrawnAmount + _HandDrawnSpeed) * 4);
 			uvCopy.y = cos((uvCopy.y * _HandDrawnAmount + _HandDrawnSpeed) * 4);
 			d.texcoord0.xy = lerp(d.texcoord0.xy, d.texcoord0.xy + uvCopy, 0.0005 * _HandDrawnAmount);
 		#endif
 
-		//--------------------------
-
-		//SHAKEUV_ON
 		#if SHAKEUV_ON
-			half xShake = sin((_Time.x + randomSeed) * _ShakeUvSpeed * 50) * _ShakeUvX;
-			half yShake = cos((_Time.x + randomSeed) * _ShakeUvSpeed * 50) * _ShakeUvY;
+			half xShake = sin((shaderTime.x + seed) * _ShakeUvSpeed * 50) * _ShakeUvX;
+			half yShake = cos((shaderTime.x + seed) * _ShakeUvSpeed * 50) * _ShakeUvY;
 			d.texcoord0.xy += half2(xShake * 0.012, yShake * 0.01);
 		#endif
 
-		//-------------------------------------------
-
-		//RECTSIZE_ON
-		#if RECTSIZE_ON
-			d.texcoord0.xy = d.texcoord0.xy * (_RectSize).xx + (((-_RectSize * 0.5) + 0.5)).xx;
-		#endif
-
-		//-------------------------------------------
-
-		//DISTORT_ON
-		#if DISTORT_ON
-			#if ATLAS_ON
-				d.texcoord3.x = d.texcoord3.x * (1 / (_MaxXUV - _MinXUV));
-				d.texcoord3.y = d.texcoord3.y * (1 / (_MaxYUV - _MinYUV)); 
-			#endif
-
-			d.texcoord3.x += ((_Time.x + _RandomSeed) * _DistortTexXSpeed) % 1;
-			d.texcoord3.y += ((_Time.x + _RandomSeed) * _DistortTexYSpeed) % 1;
-			half distortAmnt = (SAMPLE_TEXTURE2D(_DistortTex, sampler_DistortTex, d.texcoord3.xy).r - 0.5) * 0.2 * _DistortAmount;
-			d.texcoord0.x += distortAmnt;
-			d.texcoord0.y += distortAmnt;
-		#endif
-		//-------------------------------------------------------
-
-		//WARP_ON
-		#if WARP_ON
-            half2 warpUv = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				warpUv = half2((warpUv.x - _MinXUV) / (_MaxXUV - _MinXUV), (warpUv.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			const float tau = 6.283185307179586;
-            float xWarp = (_Time.y + randomSeed) * _WarpSpeed + warpUv.x * tau / _WarpScale;
-            float yWarp = (_Time.y + randomSeed) * _WarpSpeed + warpUv.y * tau / _WarpScale;
-            float2 warp = float2(sin(xWarp), sin(yWarp)) * _WarpStrength;
-            d.texcoord0.xy += warp;
-		#endif
-
-		//-------------------------------------------------------
-
-		//WAVEUV_ON
 		#if WAVEUV_ON
-			float2 uvWave = half2(_WaveX * _MainTex_ST.x, _WaveY * _MainTex_ST.y) - d.texcoord0.xy;
-            uvWave %= 1;
+			half2 uvWave = half2(_WaveX * _MainTex_ST.x, _WaveY * _MainTex_ST.y) - d.texcoord0.xy;
 			#if ATLAS_ON
 				uvWave = half2(_WaveX, _WaveY) - uvRect;
 			#endif
 			uvWave.x *= _ScreenParams.x / _ScreenParams.y;
-            float waveTime = _Time.y + randomSeed;
-			float angWave = (sqrt(dot(uvWave, uvWave)) * _WaveAmount) - ((waveTime *  _WaveSpeed));
-			d.texcoord0.xy = d.texcoord0.xy + uvWave * sin(angWave) * (_WaveStrength / 1000.0);
+			half angWave = (sqrt(dot(uvWave, uvWave)) * _WaveAmount) - ((time * _WaveSpeed) % 360.0);
+			d.texcoord0.xy = d.texcoord0.xy + normalize(uvWave) * sin(angWave) * (_WaveStrength / 1000.0);
 		#endif
-		//----------------------------------------------------
 
-		//ROUNDWAVEUV_ON
 		#if ROUNDWAVEUV_ON
-			half xWave = ((0.5 * _MainTex_ST.x) - uvRect.x);
-			half yWave = ((0.5 * _MainTex_ST.y) - uvRect.y) * (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
+			half xWave = ((0.5 * _MainTex_ST.x) - d.texcoord0.x);
+			half yWave = ((0.5 * _MainTex_ST.y) - d.texcoord0.y) * (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
 			half ripple = -sqrt(xWave*xWave + yWave* yWave);
-			d.texcoord0.xy += (sin((ripple + (_Time.y + randomSeed) * (_RoundWaveSpeed/10.0)) / 0.015) * (_RoundWaveStrength/10.0)) % 1;
+            d.texcoord0.xy += (sin((ripple + time * (_RoundWaveSpeed/10.0)) / 0.015) * (_RoundWaveStrength/10.0)) % 1;
 		#endif
-		//----------------------------------------------------
 
+		#if POLARUV_ON
+            half2 prePolarUvs = d.texcoord0.xy;
+            d.texcoord0.xy = d.texcoord0.xy - half2(0.5, 0.5);
+			d.texcoord0.xy = half2(atan2(d.texcoord0.y, d.texcoord0.x) / (1.0 * 6.28318530718), length(d.texcoord0.xy) * 2.0);
+            d.texcoord0.xy *= _MainTex_ST.xy;
+		#endif
 
-		//WIND_ON
-		#if WIND_ON
-			half windOffset = sin((_Time.x + randomSeed) * _GrassSpeed * 10);
-			half2 windCenter = half2(0.5, 0.1);
-			#if ATLAS_ON
-				windCenter.x = ((_MaxXUV - _MinXUV) * windCenter.x) + _MinXUV;
-				windCenter.y = ((_MaxYUV - _MinYUV) * windCenter.y) + _MinYUV;
-			#endif
-			#if !MANUALWIND_ON
-				d.texcoord0.x = fmod(abs(lerp(d.texcoord0.x, d.texcoord0.x + (_GrassWind * 0.01 * windOffset), uvRect.y)), 1);
+		#if DISTORT_ON
+			#if POLARUVDISTORT_ON
+				half2 distortUvs = TRANSFORM_TEX(d.texcoord0.xy, _DistortTex);
 			#else
-				d.texcoord0.x = fmod(abs(lerp(d.texcoord0.x, d.texcoord0.x + (_GrassWind * 0.01 * _GrassManualAnim), uvRect.y)), 1);
-				windOffset = _GrassManualAnim;
+				half2 distortUvs = d.extraV2F0.xy;
 			#endif
-			half2 delta = d.texcoord0.xy - windCenter;
-			half delta2 = dot(delta.xy, delta.xy);
-			half2 delta_offset = delta2 * windOffset;
-			d.texcoord0.xy = d.texcoord0.xy + half2(delta.y, -delta.x) * delta_offset * _GrassRadialBend;
-		#endif
-
-		//--------------------------------------------------------
-
-		//TEXTURESCROLL_ON && !ATLAS_ON
-		#if TEXTURESCROLL_ON && !ATLAS_ON
-			d.texcoord0.x += ((_Time.y + randomSeed) * _TextureScrollXSpeed) % 1;
-			d.texcoord0.y += ((_Time.y + randomSeed) * _TextureScrollYSpeed) % 1;
-		#endif
-		//------------------------------
-
-		//PIXELATE_ON
-		#if PIXELATE_ON
-            half aspectRatio = _MainTex_TexelSize.x / _MainTex_TexelSize.y;
-			half2 pixelSize = float2(_PixelateSize, _PixelateSize * aspectRatio);
-			d.texcoord0.xy = floor(d.texcoord0.xy * pixelSize) / pixelSize;
-		#endif
-		//--------------
-
-		half4 col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy);
-		half originalAlpha = col.a;
-		col *= d.vertexColor;
-
-		//NORMAL MAP
-		#if NORMALMAP_ON
-			half4 normalSample = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, d.texcoord0.xy);
-			half3 normalTS = UnpackNormal(normalSample);
-			normalTS.xy *= _NormalStrength;
-			o.Normal = normalTS;
-		#endif
-        float normalSign = sign(dot(d.worldSpaceViewDir, d.worldSpaceNormal));
-        o.Normal *= normalSign;
-
-
-		//GLITCH_ON
-		#if GLITCH_ON
-			half2 uvGlitch = uvRect;
-			uvGlitch.y -= 0.5;
-			half lineNoise = pow(rand2(floor(uvGlitch * half2(24., 19.) * _GlitchSize) * 4.0, randomSeed), 3.0) * _GlitchAmount
-				* pow(rand2(floor(uvGlitch * half2(38., 14.) * _GlitchSize) * 4.0, randomSeed), 3.0);
-			col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(lineNoise * 0.02 * rand2(half2(2.0, 1), randomSeed), 0)) * d.vertexColor;
-		#endif
-		//--------------------------------------
-
-		//CHROMABERR_ON
-		#if CHROMABERR_ON
-			half4 r = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(_ChromAberrAmount/10, 0))	* d.vertexColor;
-			half4 b = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-_ChromAberrAmount/10, 0)) * d.vertexColor;
-			col = half4(r.r * r.a, col.g, b.b * b.a, max(max(r.a, b.a) * _ChromAberrAlpha, col.a));
-		#endif
-
-		//--------------------------------
-
-		//BLUR_ON
-		#if BLUR_ON
+			distortUvs.x += ((shaderTime.x + seed) * _DistortTexXSpeed) % 1;
+			distortUvs.y += ((shaderTime.x + seed) * _DistortTexYSpeed) % 1;
 			#if ATLAS_ON
-				#if !BLURISHD_ON
-					col = BlurHD(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity, (_MaxXUV - _MinXUV), (_MaxYUV - _MinYUV)) * d.vertexColor;
-				#else
-					col = Blur(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity * (_MaxXUV - _MinXUV)) * d.vertexColor;
+				d.extraV2F0.xy = half2((d.extraV2F0.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.extraV2F0.y - _MinYUV) / (_MaxYUV - _MinYUV));
+			#endif
+			half distortAmnt = (SAMPLE_TEXTURE2D(_DistortTex, sampler_DistortTex, distortUvs).r - 0.5) * 0.2 * _DistortAmount;
+			d.texcoord0.x += distortAmnt;
+			d.texcoord0.y += distortAmnt;
+		#endif
+
+		#if TEXTURESCROLL_ON
+			d.texcoord0.x += (time * _TextureScrollXSpeed) % 1;
+			d.texcoord0.y += (time * _TextureScrollYSpeed) % 1;
+		#endif
+
+		#if TRAILWIDTH_ON
+            half width = pow(SAMPLE_TEXTURE2D(_TrailWidthGradient, sampler_TrailWidthGradient, d.texcoord0).r, _TrailWidthPower);
+            d.texcoord0.y = (d.texcoord0.y * 2 - 1) / width * 0.5 + 0.5;
+            clip(d.texcoord0.y);
+            clip(1 - d.texcoord0.y);
+        #endif
+
+		float2 shape1Uv = d.texcoord0.xy;
+        #if SHAPE2_ON
+			float2 shape2Uv = shape1Uv;
+        #endif
+        #if SHAPE3_ON
+			float2 shape3Uv = shape1Uv;
+        #endif
+
+        #if CAMDISTFADE_ON || SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half camDistance = distance(d.worldSpacePosition, _WorldSpaceCameraPos);
+		#endif
+		 
+		#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half2 uvOffsetPostFx = d.texcoord0.xy - originalUvs;
+			d.texcoord0.xy = d.screenPos.xy / d.screenPos.w;
+			d.texcoord0.x = d.texcoord0.x * (_ScreenParams.x / _ScreenParams.y);
+			d.texcoord0.x -= 0.5;
+			d.texcoord0.xy -= uvOffsetPostFx;
+			originalUvs += uvOffsetPostFx;
+			half distanceZoom = camDistance * 0.1;
+			half2 scaleWithDistUvs = d.texcoord0.xy * distanceZoom + ((-distanceZoom * 0.5) + 0.5);
+			#if SHAPE1SCREENUV_ON
+				shape1Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvShDistScale);
+			#else
+				shape1Uv = originalUvs;
+			#endif
+			#if SHAPE2SCREENUV_ON && SHAPE2_ON
+				shape2Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvSh2DistScale);
+			#else
+				#if SHAPE2_ON
+					shape2Uv = originalUvs;
 				#endif
+			#endif
+			#if SHAPE3SCREENUV_ON && SHAPE3_ON
+				shape3Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvSh3DistScale);
 			#else
-				#if !BLURISHD_ON
-					col = BlurHD(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity, 1, 1) * d.vertexColor;
+				#if SHAPE3_ON
+					shape3Uv = originalUvs;
+				#endif
+			#endif
+		#endif
+
+		shape1Uv = TRANSFORM_TEX(shape1Uv, _MainTex);
+		#if OFFSETSTREAM_ON
+			shape1Uv.x += i.offsetCustomData.x * _OffsetSh1;
+			shape1Uv.y += i.offsetCustomData.y * _OffsetSh1;
+		#endif
+        #if SHAPETEXOFFSET_ON
+			shape1Uv += seed * _RandomSh1Mult;
+		#endif
+        
+		#if SHAPE1DISTORT_ON
+			#if POLARUVDISTORT_ON
+				half2 sh1DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _ShapeDistortTex);
+			#else
+				half2 sh1DistortUvs = d.extraV2F1.xy;
+			#endif
+			
+			sh1DistortUvs.x += ((time + seed) * _ShapeDistortXSpeed) % 1;
+			sh1DistortUvs.y += ((time + seed) * _ShapeDistortYSpeed) % 1;
+			half distortAmount = (SAMPLE_TEXTURE2D(_ShapeDistortTex, sampler_ShapeDistortTex, sh1DistortUvs).r - 0.5) * 0.2 * _ShapeDistortAmount;
+			shape1Uv.x += distortAmount;
+			shape1Uv.y += distortAmount;
+		#endif
+		#if SHAPE1ROTATE_ON
+			shape1Uv = RotateUvs(shape1Uv, _ShapeRotationOffset + ((_ShapeRotationSpeed * time) % 6.28318530718), _MainTex_ST);
+		#endif
+
+		half4 shape1 = SampleTextureWithScroll(_MainTex, sampler_MainTex, shape1Uv, _ShapeXSpeed, _ShapeYSpeed, time);
+		#if SHAPE1SHAPECOLOR_ON
+			shape1.a = shape1.r;
+			shape1.rgb = _ShapeColor.rgb;
+		#else
+			shape1 *= _ShapeColor;
+		#endif
+		#if SHAPE1CONTRAST_ON
+			#if SHAPE1SHAPECOLOR_ON
+				shape1.a = saturate((shape1.a - 0.5) * _ShapeContrast + 0.5 + _ShapeBrightness);
+			#else
+				shape1.rgb = max(0, (shape1.rgb - half3(0.5, 0.5, 0.5)) * _ShapeContrast + half3(0.5, 0.5, 0.5) + _ShapeBrightness);
+			#endif
+        #endif
+
+		half4 shape2 = 1.0;
+		#if SHAPE2_ON
+			shape2Uv = TRANSFORM_TEX(shape2Uv, _Shape2Tex);
+			#if OFFSETSTREAM_ON
+				shape2Uv.x += i.offsetCustomData.x * _OffsetSh2;
+				shape2Uv.y += i.offsetCustomData.y * _OffsetSh2;
+			#endif
+			#if SHAPETEXOFFSET_ON
+				shape2Uv += seed * _RandomSh2Mult;
+			#endif
+			#if SHAPE2DISTORT_ON
+				#if POLARUVDISTORT_ON
+					half2 sh2DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _Shape2DistortTex);
 				#else
-					col = Blur(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity) * d.vertexColor;
+					half2 sh2DistortUvs = d.extraV2F2.xy;
+				#endif
+				sh2DistortUvs.x += ((time + seed) * _Shape2DistortXSpeed) % 1;
+				sh2DistortUvs.y += ((time + seed) * _Shape2DistortYSpeed) % 1;
+				half distortAmnt2 = (SAMPLE_TEXTURE2D(_Shape2DistortTex, sampler_Shape2DistortTex, sh2DistortUvs).r - 0.5) * 0.2 * _Shape2DistortAmount;
+				shape2Uv.x += distortAmnt2;
+				shape2Uv.y += distortAmnt2;
+			#endif
+			#if SHAPE2ROTATE_ON
+				shape2Uv = RotateUvs(shape2Uv, _Shape2RotationOffset + ((_Shape2RotationSpeed * time) % 6.28318530718), _Shape2Tex_ST);
+			#endif
+			
+			shape2 = SampleTextureWithScroll(_Shape2Tex, sampler_Shape2Tex, shape2Uv, _Shape2XSpeed, _Shape2YSpeed, time); 
+			#if SHAPE2SHAPECOLOR_ON
+				shape2.a = shape2.r;
+				shape2.rgb = _Shape2Color.rgb;
+			#else
+				shape2 *= _Shape2Color;
+			#endif
+			#if SHAPE2CONTRAST_ON
+				#if SHAPE2SHAPECOLOR_ON
+					shape2.a = max(0, (shape2.a - 0.5) * _Shape2Contrast + 0.5 + _Shape2Brightness);
+				#else
+					shape2.rgb = max(0, (shape2.rgb - half3(0.5, 0.5, 0.5)) * _Shape2Contrast + half3(0.5, 0.5, 0.5) + _Shape2Brightness);
 				#endif
 			#endif
         #endif
 
-		//--------------------
-
-		//MOTIONBLUR_ON
-		#if MOTIONBLUR_ON
-			_MotionBlurAngle = _MotionBlurAngle * 3.1415926;
-			#define rot(n) mul(n, half2x2(cos(_MotionBlurAngle), -sin(_MotionBlurAngle), sin(_MotionBlurAngle), cos(_MotionBlurAngle)))
-			_MotionBlurDist = _MotionBlurDist * 0.005;
-			#if ATLAS_ON
-				_MotionBlurDist *= (_MaxXUV - _MinXUV);
+		half4 shape3 = 1.0;
+		 #if SHAPE3_ON
+            shape3Uv = TRANSFORM_TEX(shape3Uv, _Shape3Tex);
+			
+            #if OFFSETSTREAM_ON
+				shape3Uv.x += i.offsetCustomData.x * _OffsetSh3;
+				shape3Uv.y += i.offsetCustomData.y * _OffsetSh3;
 			#endif
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist, -_MotionBlurDist)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 2, -_MotionBlurDist * 2)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 3, -_MotionBlurDist * 3)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 4, -_MotionBlurDist * 4)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist, _MotionBlurDist)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 2, _MotionBlurDist * 2)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 3, _MotionBlurDist * 3)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 4, _MotionBlurDist * 4)));
-			col.rgb = col.rgb / 9;
+            #if SHAPETEXOFFSET_ON
+				shape3Uv += seed * _RandomSh3Mult;
+			#endif
+            #if SHAPE3DISTORT_ON
+				#if POLARUVDISTORT_ON
+					half2 sh3DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _Shape3DistortTex);
+				#else
+					half2 sh3DistortUvs = d.extraV2F3.xy;
+				#endif
+				sh3DistortUvs.x += ((time + seed) * _Shape3DistortXSpeed) % 1;
+				sh3DistortUvs.y += ((time + seed) * _Shape3DistortYSpeed) % 1;
+				half distortAmnt3 = (SAMPLE_TEXTURE2D(_Shape3DistortTex, sampler_Shape3DistortTex, sh3DistortUvs).r - 0.5) * 0.3 * _Shape3DistortAmount;
+				shape3Uv.x += distortAmnt3;
+				shape3Uv.y += distortAmnt3;
+            #endif
+            #if SHAPE3ROTATE_ON
+				shape3Uv = RotateUvs(shape3Uv, _Shape3RotationOffset + ((_Shape3RotationSpeed * time) % 6.28318530718), _Shape3Tex_ST);
+            #endif
+				shape3 = SampleTextureWithScroll(_Shape3Tex, sampler_Shape3Tex, shape3Uv, _Shape3XSpeed, _Shape3YSpeed, time);
+            #if SHAPE3SHAPECOLOR_ON
+				shape3.a = shape3.r;
+				shape3.rgb = _Shape3Color.rgb;
+            #else
+				shape3 *= _Shape3Color;
+            #endif
+            #if SHAPE3CONTRAST_ON
+				#if SHAPE3SHAPECOLOR_ON
+					shape3.a = max(0, (shape3.a - 0.5) * _Shape3Contrast + 0.5 + _Shape3Brightness);
+				#else
+					shape3.rgb = max(0, (shape3.rgb - half3(0.5, 0.5, 0.5)) * _Shape3Contrast + half3(0.5, 0.5, 0.5) + _Shape3Brightness);
+				#endif
+            #endif
+		#endif
+
+		half4 col = shape1;
+		//Mix all shapes pre: change weights if custom vertex effect active
+        #if SHAPEWEIGHTS_ON
+			half shapeWeightOffset;
+			#if SHAPE2_ON
+				shapeWeightOffset = i.offsetCustomData.z * _Sh1BlendOffset;
+				_ShapeColorWeight = max(0, _ShapeColorWeight + shapeWeightOffset);
+				_ShapeAlphaWeight = max(0, _ShapeAlphaWeight + shapeWeightOffset);
+				shapeWeightOffset = i.offsetCustomData.z * _Sh2BlendOffset;
+				_Shape2ColorWeight = max(0, _Shape2ColorWeight + shapeWeightOffset);
+				_Shape2AlphaWeight = max(0, _Shape2AlphaWeight + shapeWeightOffset);
+			#endif
+			#if SHAPE3_ON
+				shapeWeightOffset = i.offsetCustomData.z * _Sh3BlendOffset;
+				_Shape3ColorWeight = max(0, _Shape3ColorWeight + shapeWeightOffset);
+				_Shape3AlphaWeight = max(0, _Shape3AlphaWeight + shapeWeightOffset);
+			#endif
+		#endif
+
+		//Mix all shapes
+        #if SHAPE2_ON
+			#if !SPLITRGBA_ON
+				_ShapeAlphaWeight = _ShapeColorWeight;
+				_Shape2AlphaWeight = _Shape2ColorWeight;
+			#endif
+			#if SHAPE3_ON //Shape3 On
+				#if !SPLITRGBA_ON
+					_Shape3AlphaWeight = _Shape3ColorWeight;
+				#endif
+			#if SHAPEADD_ON
+				col.rgb = ((shape1.rgb * _ShapeColorWeight) + (shape2.rgb * _Shape2ColorWeight)) + (shape3.rgb * _Shape3ColorWeight);
+				col.a = saturate(max(shape3.a * _Shape3AlphaWeight, max(shape1.a * _ShapeAlphaWeight, shape2.a * _Shape2AlphaWeight)));
+			#else
+				col.rgb = ((shape1.rgb * _ShapeColorWeight) * (shape2.rgb * _Shape2ColorWeight)) * (shape3.rgb * _Shape3ColorWeight);
+				col.a = saturate(((shape1.a * _ShapeAlphaWeight) * (shape2.a * _Shape2AlphaWeight)) * (shape3.a * _Shape3AlphaWeight));
+			#endif
+			#else //Shape3 Off
+				#if SHAPEADD_ON
+					col.rgb = (shape1.rgb * _ShapeColorWeight) + (shape2.rgb * _Shape2ColorWeight);
+					col.a = saturate(max(shape1.a * _ShapeAlphaWeight, shape2.a * _Shape2AlphaWeight));
+				#else
+					col.rgb = (shape1.rgb * _ShapeColorWeight) * (shape2.rgb * _Shape2ColorWeight);
+					col.a = saturate((shape1.a * _ShapeAlphaWeight) * (shape2.a * _Shape2AlphaWeight));
+				#endif
+			#endif
         #endif
-		//------------------------------------
 
-		//NEGATIVE_ON
-		#if NEGATIVE_ON
-			col.rgb = lerp(col.rgb, 1 - col.rgb, _NegativeAmount);
-		#endif
-
-		//--------------
-		half luminance = 0;
-
-		//GREYSCALE_ON && !GREYSCALEOUTLINE_ON
-		#if GREYSCALE_ON && !GREYSCALEOUTLINE_ON
+		#if SHAPE1MASK_ON
+            col = lerp(col, shape1, pow(SAMPLE_TEXTURE2D(_Shape1MaskTex, sampler_Shape1MaskTex, TRANSFORM_TEX(i.uvSeed.xy, _Shape1MaskTex)).r, _Shape1MaskPow));
+        #endif
+		
+		#if PREMULTIPLYCOLOR_ON
+			half luminance = 0;
 			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _GreyscaleLuminosity);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _GreyscaleTintColor, _GreyscaleBlend);
-		#endif
-		//------------------------------------
+			luminance *= col.a;
+			col.a = min(luminance, col.a);
+        #endif
 
-		//GHOST_ON
-		#if GHOST_ON
+		col.rgb *= _Color.rgb * d.vertexColor.rgb;
+		#if PREMULTIPLYALPHA_ON
+			col.rgb *= col.a;
+        #endif
+
+        #if !PREMULTIPLYCOLOR_ON && (COLORRAMP_ON || ALPHAFADE_ON || COLORGRADING_ON || FADE_ON || (ADDITIVECONFIG_ON && (GLOW_ON || DEPTHGLOW_ON)))
+			half luminance = 0;
 			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			half4 ghostResult;
-			ghostResult.a = saturate(luminance - _GhostTransparency) * col.a;
-			ghostResult.rgb = col.rgb * (luminance + _GhostColorBoost);
-			col = lerp(col, ghostResult, _GhostBlend);
-		#endif
-		//------------------------------------
+			luminance *= col.a;
+        #endif
 
-		//INNEROUTLINE_ON
-		#if INNEROUTLINE_ON
-			half3 innerT = abs(GetPixel(0, _InnerOutlineThickness, d.texcoord0.xy, _MainTex, sampler_MainTex) - GetPixel(0, -_InnerOutlineThickness, d.texcoord0.xy, _MainTex, sampler_MainTex));
-			innerT += abs(GetPixel(_InnerOutlineThickness, 0, d.texcoord0.xy, _MainTex, sampler_MainTex) - GetPixel(-_InnerOutlineThickness, 0, d.texcoord0.xy, _MainTex, sampler_MainTex));
-			#if !ONLYINNEROUTLINE_ON
-				innerT = (innerT / 2.0) * col.a * _InnerOutlineAlpha;
-				col.rgb += length(innerT) * _InnerOutlineColor.rgb * _InnerOutlineGlow;
+		#if (FADE_ON || ALPHAFADE_ON) && ALPHAFADEINPUTSTREAM_ON
+			col.a *= d.vertexColor.a;
+			d.vertexColor.a = d.texcoord0.w;
+        #endif
+
+		#if FADE_ON
+			half preFadeAlpha = col.a;
+			_FadeAmount = saturate(_FadeAmount + (1 - d.vertexColor.a));
+			_FadeTransition = max(0.01, _FadeTransition * EaseOutQuint(saturate(_FadeAmount)));
+			half2 fadeUv;
+			fadeUv = d.texcoord0.xy + seed;
+			fadeUv.x += (time * _FadeScrollXSpeed) % 1;
+			fadeUv.y += (time * _FadeScrollYSpeed) % 1;
+			half2 tiledUvFade1 = TRANSFORM_TEX(fadeUv, _FadeTex);
+			#if ADDITIVECONFIG_ON && !PREMULTIPLYCOLOR_ON
+				preFadeAlpha *= luminance;
+			#endif
+			_FadeAmount = saturate(pow(_FadeAmount, _FadePower));
+			#if FADEBURN_ON
+				half2 tiledUvFade2 = TRANSFORM_TEX(fadeUv, _FadeBurnTex);
+				half fadeSample = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
+				half fadeNaturalEdge = saturate(smoothstep(0.0 , _FadeTransition, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				col.a *= fadeNaturalEdge;
+				half fadeBurn = saturate(smoothstep(0.0 , _FadeTransition + _FadeBurnWidth, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				fadeBurn = fadeNaturalEdge - fadeBurn;
+				_FadeBurnColor.rgb *= _FadeBurnGlow;
+				col.rgb += fadeBurn * SAMPLE_TEXTURE2D(_FadeBurnTex, sampler_FadeBurnTex, tiledUvFade2).rgb * _FadeBurnColor.rgb * preFadeAlpha;
 			#else
-				innerT *= col.a * _InnerOutlineAlpha;
-				col.rgb = length(innerT) * _InnerOutlineColor.rgb * _InnerOutlineGlow;
-				col.a = step(0.3, col.r+col.g+col.b);
+				half fadeSample = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
+				float fade = saturate(smoothstep(0.0 , _FadeTransition, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				col.a *= fade;
+			#endif
+			#if ALPHAFADETRANSPARENCYTOO_ON
+				col.a *= 1 - _FadeAmount;
 			#endif
 		#endif
-		//-------------------------------------------------------
 
-		//HITEFFECT_ON
-		#if HITEFFECT_ON
-			col.rgb = lerp(col.rgb, _HitEffectColor.rgb * _HitEffectGlow, _HitEffectBlend);
-		#endif
-		//--------------------
-
-		//GRADIENT_ON
-		#if GRADIENT_ON
-			half2 tiledUvGrad = half2(uvRect.x / _MainTex_ST.x, uvRect.y / _MainTex_ST.y);
-			#if GRADIENT2COL_ON
-				_GradTopRightCol = _GradTopLeftCol;
-				_GradBotRightCol = _GradBotLeftCol;
-			#endif
-			#if RADIALGRADIENT_ON
-				half radialDist = 1 - length(tiledUvGrad - half2(0.5, 0.5));
-				radialDist *= (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
-				radialDist = saturate(_GradBoostX * radialDist);
-				half4 gradientResult = lerp(_GradTopLeftCol, _GradBotLeftCol, radialDist);
+		#if ALPHAFADE_ON
+			half alphaFadeLuminance;
+			_AlphaFadeAmount = saturate(_AlphaFadeAmount + (1 - d.vertexColor.a));
+			_AlphaFadeAmount = saturate(pow(_AlphaFadeAmount, _AlphaFadePow));
+			_AlphaFadeSmooth = max(0.01, _AlphaFadeSmooth * EaseOutQuint(saturate(_AlphaFadeAmount)));
+			#if ALPHAFADEUSESHAPE1_ON
+				alphaFadeLuminance = shape1.r;
 			#else
-				half gradXLerpFactor = saturate(pow(tiledUvGrad.x, _GradBoostX));
-				half4 gradientResult = lerp(lerp(_GradBotLeftCol, _GradBotRightCol, gradXLerpFactor),
-				lerp(_GradTopLeftCol, _GradTopRightCol, gradXLerpFactor), saturate(pow(tiledUvGrad.y, _GradBoostY)));
+				alphaFadeLuminance = luminance;
 			#endif
-			gradientResult = lerp(col, gradientResult, _GradBlend);
-			col.rgb = gradientResult.rgb * col.a;
-			col.a *= gradientResult.a;
-		#endif
-		//--------------------------------------------------------------------
+				alphaFadeLuminance = saturate(alphaFadeLuminance - 0.001);
+			#if ALPHAFADEUSEREDCHANNEL_ON
+				col.a *= col.r;
+			#endif
+				col.a = saturate(col.a);
+				float alphaFade = saturate(smoothstep(0.0 , _AlphaFadeSmooth, RemapFloat(1.0 - _AlphaFadeAmount, 0.0, 1.0, -1.0, 1.0) + alphaFadeLuminance));
+				col.a *= alphaFade;
+			#if ALPHAFADETRANSPARENCYTOO_ON
+				col.a *= 1 - _AlphaFadeAmount;
+			#endif
+        #endif
 
-		//CONTRAST_ON
-		#if CONTRAST_ON
-			col.rgb = (col.rgb - float3(0.5, 0.5, 0.5)) * _Contrast + float3(0.5, 0.5, 0.5);
-			col.rgb += _Brightness;
-		#endif
+		#if BACKFACETINT_ON
+			col.rgb = lerp(col.rgb * _BackFaceTint, col.rgb * _FrontFaceTint, step(0, dot(d.worldSpaceNormal, d.worldSpaceViewDir)));
+        #endif
 
-		//-------------------------------------------------------------------
+		//#if LIGHTANDSHADOW_ON
+			//half NdL = saturate(dot(d.worldSpaceNormal, -_All1VfxLightDir));
+			//col.rgb += _LightColor * _LightAmount * NdL;
+			//NdL = max(_ShadowAmount, NdL);
+            //NdL = smoothstep(_ShadowStepMin, _ShadowStepMax, NdL);
+            //col.rgb *= NdL;
+		//#endif
 
-		//COLORSWAP_ON
-		#if COLORSWAP_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			half4 swapMask = SAMPLE_TEXTURE2D(_ColorSwapTex, sampler_ColorSwapTex, d.texcoord0.xy);
-			swapMask.rgb *= swapMask.a;
-			half3 redSwap = _ColorSwapRed * swapMask.r * saturate(luminance + _ColorSwapRedLuminosity);
-			half3 greenSwap = _ColorSwapGreen * swapMask.g * saturate(luminance + _ColorSwapGreenLuminosity);
-			half3 blueSwap = _ColorSwapBlue * swapMask.b * saturate(luminance + _ColorSwapBlueLuminosity);
-			swapMask.rgb = col.rgb * saturate(1 - swapMask.r - swapMask.g - swapMask.b);
-			col.rgb = lerp(col.rgb, swapMask.rgb + redSwap + greenSwap + blueSwap, _ColorSwapBlend);
-		#endif
-		//--------------------------------------------------------------------
+		#if COLORGRADING_ON
+			col.rgb *= lerp(lerp(_ColorGradingDark, _ColorGradingMiddle, luminance/_ColorGradingMidPoint),
+			lerp(_ColorGradingMiddle, _ColorGradingLight, (luminance - _ColorGradingMidPoint)/(1.0 - _ColorGradingMidPoint)), step(_ColorGradingMidPoint, luminance));
+        #endif
 
-		//COLORRAMP_ON && !COLORRAMPOUTLINE_ON
-		#if COLORRAMP_ON && !COLORRAMPOUTLINE_ON 
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _ColorRampLuminosity);
-			#if GRADIENTCOLORRAMP_ON
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(luminance, 0)).rgb, _ColorRampBlend);
+		#if COLORRAMP_ON
+			half colorRampLuminance = saturate(luminance + _ColorRampLuminosity);
+			#if COLORRAMPGRAD_ON
+				half4 colorRampRes = SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(colorRampLuminance, 0));
 			#else
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(luminance, 0)).rgb, _ColorRampBlend);
+				half4 colorRampRes = SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(colorRampLuminance, 0));
 			#endif
-		#endif
-		//--------------------------------------------------------------------
+			col.rgb = lerp(col.rgb, colorRampRes.rgb, _ColorRampBlend);
+			col.a = lerp(col.a, saturate(col.a * colorRampRes.a), _ColorRampBlend);
+        #endif
 
-		//CHANGECOLOR_ON
-		#if CHANGECOLOR_ON
-			float3 currChangeColor = saturate(col.rgb);
-			luminance = 0.3 * currChangeColor.r + 0.59 * currChangeColor.g + 0.11 * currChangeColor.b;
-			luminance = saturate(luminance + _ColorChangeLuminosity);
-			half3 dif = abs(currChangeColor - _ColorChangeTarget.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance), 0.0));
-			#if CHANGECOLOR2_ON
-			dif = abs(currChangeColor - _ColorChangeTarget2.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol2.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance2), 0.0));
-			#endif
-			#if CHANGECOLOR3_ON
-			dif = abs(currChangeColor - _ColorChangeTarget3.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol3.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance3), 0.0));
-			#endif
-		#endif
-		//-------------------------------------------------------
-
-		//POSTERIZE_ON && !POSTERIZEOUTLINE_ON
 		#if POSTERIZE_ON && !POSTERIZEOUTLINE_ON
-			col.rgb = pow(col.rgb, _PosterizeGamma) * _PosterizeNumColors;
-			col.rgb = floor(col.rgb) / _PosterizeNumColors;
-			col.rgb = pow(col.rgb, 1.0 / _PosterizeGamma);
+			col.rgb = floor(col.rgb / (1.0 / _PosterizeNumColors)) * (1.0 / _PosterizeNumColors);
 		#endif
-		//------------------------------------
 
-		//HSV_ON
+		#if DEPTHGLOW_ON
+			half sceneDepthDiff = GetLinearEyeDepth(d.screenUV) - d.screenPos.w;
+        #endif
+
+		#if RIM_ON
+			half NdV = 1 - abs(dot(d.worldSpaceNormal, d.worldSpaceViewDir));
+			half rimFactor = saturate(_RimBias + _RimScale * pow(NdV, _RimPower));
+			half4 rimCol = _RimColor * rimFactor;
+			rimCol.rgb *= _RimIntensity;
+			col.rgb = lerp(col.rgb * (rimCol.rgb + half3(1,1,1)), col.rgb + rimCol.rgb, _RimAddAmount);
+			col.a = saturate(col.a * (1 - rimFactor * _RimErodesAlpha));
+        #endif
+
+		#if DEPTHGLOW_ON
+			half depthGlowMask = saturate(_DepthGlowDist * pow((1 - sceneDepthDiff), _DepthGlowPow));
+			col.rgb = lerp(col.rgb, _DepthGlowGlobal * col.rgb, depthGlowMask);
+			half depthGlowMult = 1;
+			#if ADDITIVECONFIG_ON
+				depthGlowMult = luminance;
+			#endif
+			col.rgb += _DepthGlowColor.rgb * _DepthGlow * depthGlowMask * col.a * depthGlowMult;
+        #endif
+
+		#if GLOW_ON
+			half glowMask = 1;
+			#if GLOWTEX_ON
+				glowMask = SAMPLE_TEXTURE2D(_GlowTex, sampler_GlowTex, TRANSFORM_TEX(d.texcoord0.xy, _GlowTex));
+			#endif
+				col.rgb *= _GlowGlobal * glowMask;
+				half glowMult = 1;
+			#if ADDITIVECONFIG_ON
+				glowMult = luminance;
+			#endif
+			
+			col.rgb += _GlowColor.rgb * _Glow * glowMask * col.a * glowMult;
+        #endif
+
 		#if HSV_ON
 			half3 resultHsv = half3(col.rgb);
 			half cosHsv = _HsvBright * _HsvSaturation * cos(_HsvShift * 3.14159265 / 180);
 			half sinHsv = _HsvBright * _HsvSaturation * sin(_HsvShift * 3.14159265 / 180);
 			resultHsv.x = (.299 * _HsvBright + .701 * cosHsv + .168 * sinHsv) * col.x
-			+ (.587 * _HsvBright - .587 * cosHsv + .330 * sinHsv) * col.y
-			+ (.114 * _HsvBright - .114 * cosHsv - .497 * sinHsv) * col.z;
+				+ (.587 * _HsvBright - .587 * cosHsv + .330 * sinHsv) * col.y
+				+ (.114 * _HsvBright - .114 * cosHsv - .497 * sinHsv) * col.z;
 			resultHsv.y = (.299 * _HsvBright - .299 * cosHsv - .328 * sinHsv) *col.x
-			+ (.587 * _HsvBright + .413 * cosHsv + .035 * sinHsv) * col.y
-			+ (.114 * _HsvBright - .114 * cosHsv + .292 * sinHsv) * col.z;
+				+ (.587 * _HsvBright + .413 * cosHsv + .035 * sinHsv) * col.y
+				+ (.114 * _HsvBright - .114 * cosHsv + .292 * sinHsv) * col.z;
 			resultHsv.z = (.299 * _HsvBright - .3 * cosHsv + 1.25 * sinHsv) * col.x
-			+ (.587 * _HsvBright - .588 * cosHsv - 1.05 * sinHsv) * col.y
-			+ (.114 * _HsvBright + .886 * cosHsv - .203 * sinHsv) * col.z;
+				+ (.587 * _HsvBright - .588 * cosHsv - 1.05 * sinHsv) * col.y
+				+ (.114 * _HsvBright + .886 * cosHsv - .203 * sinHsv) * col.z;
 			col.rgb = resultHsv;
 		#endif
-		//-------------------------------------------------------
 
-		//OVERLAY_ON
-		#if OVERLAY_ON
-			half2 overlayUvs = d.texcoord0.xy;
-			overlayUvs.x += ((_Time.y + randomSeed) * _OverlayTextureScrollXSpeed) % 1;
-			overlayUvs.y += ((_Time.y + randomSeed) * _OverlayTextureScrollYSpeed) % 1;
-			half4 overlayCol = SAMPLE_TEXTURE2D(_OverlayTex, sampler_OverlayTex, TRANSFORM_TEX(overlayUvs, _OverlayTex));
-			overlayCol.rgb *= _OverlayColor.rgb * _OverlayGlow;
-			#if !OVERLAYMULT_ON
-				overlayCol.rgb *= overlayCol.a * _OverlayColor.rgb * _OverlayColor.a * _OverlayBlend;
-				col.rgb += overlayCol.rgb;
-			#else
-				overlayCol.a *= _OverlayColor.a;
-				col = lerp(col, col * overlayCol, _OverlayBlend);
+		#if CAMDISTFADE_ON
+			col.a *= 1 - saturate(smoothstep(_CamDistFadeStepMin, _CamDistFadeStepMax, camDistance));
+			col.a *= smoothstep(0.0, _CamDistProximityFade, camDistance);
+		#endif
+
+		#if MASK_ON
+            half2 maskUv = d.texcoord0.xy;
+            #if POLARUV_ON
+				maskUv = prePolarUvs;
 			#endif
+            half4 maskSample = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, TRANSFORM_TEX(maskUv, _MaskTex));
+			half mask = pow(min(maskSample.r, maskSample.a), _MaskPow);
+			col.a *= mask;
+        #endif
+
+		#if ALPHASMOOTHSTEP_ON
+			col.a = smoothstep(_AlphaStepMin, _AlphaStepMax, col.a);
+        #endif
+
+		half4 debugColor = col;
+		#if SHAPEDEBUG_ON
+			debugColor = GetDebugColor(col, shape1, shape2, shape3);
 		#endif
 
-		//---------------------------------
+		clip(debugColor.a - _AlphaCutoffValue - 0.01);
 
-		//OUTBASE_ON
-		#if OUTBASE_ON
-			#if OUTBASEPIXELPERF_ON
-				half2 destUv = half2(_OutlinePixelWidth * _MainTex_TexelSize.x, _OutlinePixelWidth * _MainTex_TexelSize.y);
-			#else
-				half2 destUv = half2(_OutlineWidth * _MainTex_TexelSize.x * 200, _OutlineWidth * _MainTex_TexelSize.y * 200);
-			#endif
+		//#if FOG_ON
+			//UNITY_APPLY_FOG(i.fogCoord, col);
+        //#endif
+		
+		//Don't use a starting i.color.a lower than 1 unless using vertex stream dissolve when using a FADE effect
+        #if !FADE_ON && !ALPHAFADE_ON
+			col.a *= _Alpha * d.vertexColor.a;
+        #endif
+        #if FADE_ON || ALPHAFADE_ON
+			col.a *= _Alpha;
+        #endif
+        #if ADDITIVECONFIG_ON
+			col.rgb *= col.a;
+        #endif
 
-			#if OUTDIST_ON
-				d.texcoord3.x += ((_Time.x + _RandomSeed) * _OutlineDistortTexXSpeed) % 1;
-				d.texcoord3.y += ((_Time.x + _RandomSeed) * _OutlineDistortTexYSpeed) % 1;
-				#if ATLAS_ON
-					d.texcoord3 = half2((d.texcoord3.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord3.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				#endif
-				half outDistortAmnt = (SAMPLE_TEXTURE2D(_OutlineDistortTex, sampler_OutlineDistortTex, d.texcoord3).r - 0.5) * 0.2 * _OutlineDistortAmount;
-				destUv.x += outDistortAmnt;
-				destUv.y += outDistortAmnt;
-			#endif
-
-			half spriteLeft		= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, 0)).a;
-			half spriteRight	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy - half2(destUv.x, 0)).a;
-			half spriteBottom	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(0, destUv.y)).a;
-			half spriteTop		= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy - half2(0, destUv.y)).a;
-			half result = spriteLeft + spriteRight + spriteBottom + spriteTop;
-
-			#if OUTBASE8DIR_ON
-				half spriteTopLeft	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, destUv.y)).a;
-				half spriteTopRight = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-destUv.x, destUv.y)).a;
-				half spriteBotLeft	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, -destUv.y)).a;
-				half spriteBotRight = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-destUv.x, -destUv.y)).a;
-				result = result + spriteTopLeft + spriteTopRight + spriteBotLeft + spriteBotRight;
-			#endif
-					
-			result = step(0.05, saturate(result));
-
-			#if OUTTEX_ON
-				d.texcoord1.x += ((_Time.x + _RandomSeed) * _OutlineTexXSpeed) % 1;
-				d.texcoord1.y += ((_Time.x + _RandomSeed) * _OutlineTexYSpeed) % 1;
-				#if ATLAS_ON
-					d.texcoord1 = half2((d.texcoord1.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord1.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				#endif
-				half4 tempOutColor = SAMPLE_TEXTURE2D(_OutlineTex, sampler_OutlineTex, d.texcoord1);
-				tempOutColor *= _OutlineColor;
-				_OutlineColor = tempOutColor;
-			#endif
-
-			result *= (1 - originalAlpha) * _OutlineAlpha;
-
-			half4 outline = _OutlineColor * d.vertexColor.a;
-			outline.rgb *= _OutlineGlow;
-			outline.a = result;
-			#if ONLYOUTLINE_ON
-			col = outline;
-			#else
-			col = lerp(col, outline, result);
-			#endif
+		
+		#if SHAPEDEBUG_ON
+		o.Albedo = debugColor.rgb; 
+		o.Alpha = debugColor.a;
+		#else
+		o.Albedo = col.rgb; 
+		o.Alpha = col.a;
 		#endif
-		//-------------------------------------------------------
-
-		//FADE_ON
-		#if FADE_ON
-			half2 tiledUvFade1	= TRANSFORM_TEX(d.texcoord0, _FadeTex);
-			half2 tiledUvFade2	= TRANSFORM_TEX(d.texcoord0, _FadeBurnTex);
-			#if ATLAS_ON
-				tiledUvFade1 = half2((tiledUvFade1.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUvFade1.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				tiledUvFade2 = half2((tiledUvFade2.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUvFade2.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			half fadeTemp = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
-			half fade = smoothstep(_FadeAmount, _FadeAmount + _FadeBurnTransition, fadeTemp);
-			half fadeBurn = saturate(smoothstep(_FadeAmount - _FadeBurnWidth, _FadeAmount - _FadeBurnWidth + 0.1, fadeTemp) * _FadeAmount);
-			col.a *= fade;
-			_FadeBurnColor.rgb *= _FadeBurnGlow;
-			col += fadeBurn * SAMPLE_TEXTURE2D(_FadeBurnTex, sampler_FadeBurnTex, tiledUvFade2) * _FadeBurnColor * originalAlpha * (1 - col.a);
-		#endif
-		//-------------------------------------------------------
-
-		//SHADOW_ON
-		#if SHADOW_ON
-			half shadowA = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(_ShadowX, _ShadowY)).a;
-			half preMultShadowMask = 1 - (saturate(shadowA - col.a) * (1 - col.a));
-			col.rgb *= 1 - ((shadowA - col.a) * (1 - col.a));
-			col.rgb += (_ShadowColor * shadowA) * (1 - col.a);
-			col.a = max(shadowA * _ShadowAlpha * d.vertexColor.a, col.a);
-		#endif
-
-		//-------------------------------------------------------
-
-		//GLOW_ON
-		#if GLOW_ON
-			half4 emission;
-			#if GLOWTEX_ON
-				emission = SAMPLE_TEXTURE2D(_GlowTex, sampler_GlowTex, d.texcoord0);
-			#else
-				emission = col;
-			#endif
-
-			col.rgb *= _GlowGlobal;
-			emission.rgb *= emission.a * col.a * _Glow * _GlowColor;
-			col.rgb += emission.rgb;
-		#endif
-		//-------------------------------------------------------
-
-		//COLORRAMP_ON && COLORRAMPOUTLINE_ON
-		#if COLORRAMP_ON && COLORRAMPOUTLINE_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _ColorRampLuminosity);
-			#if GRADIENTCOLORRAMP_ON
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(luminance, 0)).rgb, _ColorRampBlend);
-			#else
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(luminance, 0)).rgb, _ColorRampBlend);
-			#endif
-		#endif
-		//---------------
-
-		//GREYSCALE_ON && GREYSCALEOUTLINE_ON
-		#if GREYSCALE_ON && GREYSCALEOUTLINE_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _GreyscaleLuminosity);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _GreyscaleTintColor, _GreyscaleBlend);
-		#endif
-
-		//-----------------------------------
-
-		//POSTERIZE_ON && POSTERIZEOUTLINE_ON
-		#if POSTERIZE_ON && POSTERIZEOUTLINE_ON
-			col.rgb = pow(col.rgb, _PosterizeGamma) * _PosterizeNumColors;
-			col.rgb = floor(col.rgb) / _PosterizeNumColors;
-			col.rgb = pow(col.rgb, 1.0 / _PosterizeGamma);
-		#endif
-
-		//-----------------------------------
-
-		//SHINE_ON
-		#if SHINE_ON
-			half2 uvShine = uvRect;
-			half cosAngle = cos(_ShineRotate);
-			half sinAngle = sin(_ShineRotate);
-			half2x2 rot = half2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
-			uvShine -= half2(0.5, 0.5);
-			uvShine = mul(rot, uvShine);
-			uvShine += half2(0.5, 0.5);
-			half shineMask = SAMPLE_TEXTURE2D(_ShineMask, sampler_ShineMask, d.texcoord0.xy).a;
-			half currentDistanceProjection = (uvShine.x + uvShine.y) / 2;
-			half whitePower = 1 - (abs(currentDistanceProjection - _ShineLocation) / _ShineWidth);
-			col.rgb +=  col.a * whitePower * _ShineGlow * max(sign(currentDistanceProjection - (_ShineLocation - _ShineWidth)), 0.0)
-			* max(sign((_ShineLocation + _ShineWidth) - currentDistanceProjection), 0.0) * _ShineColor * shineMask;
-		#endif
-
-		//-----------------------------------
-
-		//HOLOGRAM_ON
-		#if HOLOGRAM_ON
-			half totalHologram = _HologramStripesAmount + _HologramUnmodAmount;
-			half hologramYCoord = ((uvRect.y + (((_Time.x + randomSeed) % 1) * _HologramStripesSpeed)) % totalHologram) / totalHologram;
-			hologramYCoord = abs(hologramYCoord);
-			half alpha = RemapFloat(saturate(hologramYCoord - (_HologramUnmodAmount/totalHologram)), 0.0, 1.0, _HologramMinAlpha, saturate(_HologramMaxAlpha));
-			half hologramMask = max(sign((_HologramUnmodAmount/totalHologram) - hologramYCoord), 0.0);
-			half4 hologramResult = col;
-			hologramResult.a *= lerp(alpha, 1, hologramMask);
-			hologramResult.rgb *= max(1, _HologramMaxAlpha * max(sign(hologramYCoord - (_HologramUnmodAmount/totalHologram)), 0.0));
-			hologramMask = 1 - step(0.01,hologramMask);
-			hologramResult.rgb += hologramMask * _HologramStripeColor * col.a;
-			col = lerp(col, hologramResult, _HologramBlend);
-		#endif
-
-		//-----------------------------------
-
-		//FLICKER_ON
-		#if FLICKER_ON
-			col.a *= saturate(col.a * step(frac(0.05 + (_Time.w + randomSeed) * _FlickerFreq), 1 - _FlickerPercent) + _FlickerAlpha);
-		#endif
-		//-----------------------------------
-
-		//ALPHACUTOFF_ON
-
-		//ALPHAROUND_ON
-
-		//ALPHAOUTLINE_ON
-		#if ALPHAOUTLINE_ON
-			half alphaOutlineRes = pow(1 - col.a, max(_AlphaOutlinePower, 0.0001)) * step(_AlphaOutlineMinAlpha, col.a) * _AlphaOutlineBlend;
-			col.rgb = lerp(col.rgb, _AlphaOutlineColor.rgb * _AlphaOutlineGlow, alphaOutlineRes);
-			col.a = lerp(col.a, 1, alphaOutlineRes > 1);
-		#endif
-		//-------------------------------------------------------
-
-		//FOG_ON
-
-		//------------------
-
-        col *= _Color;
-		o.Albedo = col;
-		col.a *= _Alpha;
-        clip(col.a - _AlphaCutoffValue - 0.01);
-		o.Alpha = _Color.a;
 	}
 
 
@@ -7312,19 +6771,19 @@ ZWrite On
 
 
                  // #if %EXTRAV2F0REQUIREKEY%
-                 // v2p.extraV2F0 = d.extraV2F0;
+                  v2p.extraV2F0 = d.extraV2F0;
                  // #endif
 
                  // #if %EXTRAV2F1REQUIREKEY%
-                 // v2p.extraV2F1 = d.extraV2F1;
+                  v2p.extraV2F1 = d.extraV2F1;
                  // #endif
 
                  // #if %EXTRAV2F2REQUIREKEY%
-                 // v2p.extraV2F2 = d.extraV2F2;
+                  v2p.extraV2F2 = d.extraV2F2;
                  // #endif
 
                  // #if %EXTRAV2F3REQUIREKEY%
-                 // v2p.extraV2F3 = d.extraV2F3;
+                  v2p.extraV2F3 = d.extraV2F3;
                  // #endif
 
                  // #if %EXTRAV2F4REQUIREKEY%
@@ -7351,19 +6810,19 @@ ZWrite On
                ZERO_INITIALIZE(Blackboard, d.blackboard);
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // d.extraV2F0 = v2p.extraV2F0;
+                d.extraV2F0 = v2p.extraV2F0;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // d.extraV2F1 = v2p.extraV2F1;
+                d.extraV2F1 = v2p.extraV2F1;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // d.extraV2F2 = v2p.extraV2F2;
+                d.extraV2F2 = v2p.extraV2F2;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // d.extraV2F3 = v2p.extraV2F3;
+                d.extraV2F3 = v2p.extraV2F3;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -7415,19 +6874,19 @@ ZWrite On
                // Ext_ModifyTessellatedVertex29(v, d);
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // v2p.extraV2F0 = d.extraV2F0;
+                v2p.extraV2F0 = d.extraV2F0;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // v2p.extraV2F1 = d.extraV2F1;
+                v2p.extraV2F1 = d.extraV2F1;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // v2p.extraV2F2 = d.extraV2F2;
+                v2p.extraV2F2 = d.extraV2F2;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // v2p.extraV2F3 = d.extraV2F3;
+                v2p.extraV2F3 = d.extraV2F3;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -7547,7 +7006,7 @@ ZWrite On
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), d.worldSpaceTangent.xyz));
 
             // #if %SCREENPOSREQUIREKEY%
-            // d.screenUV = (IN.ScreenPosition.xy / max(0.01, IN.ScreenPosition.w));
+             d.screenUV = (IN.ScreenPosition.xy / max(0.01, IN.ScreenPosition.w));
             // #endif
 
             return d;
@@ -7575,11 +7034,11 @@ ZWrite On
 
             d.tangentSpaceViewDir = mul(d.TBNMatrix, d.worldSpaceViewDir);
              d.texcoord0 = i.texcoord0;
-             d.texcoord1 = i.texcoord1;
-             d.texcoord2 = i.texcoord2;
+            // d.texcoord1 = i.texcoord1;
+            // d.texcoord2 = i.texcoord2;
 
             // #if %TEXCOORD3REQUIREKEY%
-             d.texcoord3 = i.texcoord3;
+            // d.texcoord3 = i.texcoord3;
             // #endif
 
             // d.isFrontFace = facing;
@@ -7597,25 +7056,25 @@ ZWrite On
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldTangent.xyz));
 
             // #if %SCREENPOSREQUIREKEY%
-            // d.screenPos = i.screenPos;
-            // d.screenUV = (i.screenPos.xy / i.screenPos.w);
+             d.screenPos = i.screenPos;
+             d.screenUV = (i.screenPos.xy / i.screenPos.w);
             // #endif
 
 
             // #if %EXTRAV2F0REQUIREKEY%
-            // d.extraV2F0 = i.extraV2F0;
+             d.extraV2F0 = i.extraV2F0;
             // #endif
 
             // #if %EXTRAV2F1REQUIREKEY%
-            // d.extraV2F1 = i.extraV2F1;
+             d.extraV2F1 = i.extraV2F1;
             // #endif
 
             // #if %EXTRAV2F2REQUIREKEY%
-            // d.extraV2F2 = i.extraV2F2;
+             d.extraV2F2 = i.extraV2F2;
             // #endif
 
             // #if %EXTRAV2F3REQUIREKEY%
-            // d.extraV2F3 = i.extraV2F3;
+             d.extraV2F3 = i.extraV2F3;
             // #endif
 
             // #if %EXTRAV2F4REQUIREKEY%
@@ -7686,11 +7145,11 @@ ZWrite On
            #endif
 
             o.texcoord0 = v.texcoord0;
-            o.texcoord1 = v.texcoord1;
-            o.texcoord2 = v.texcoord2;
+           // o.texcoord1 = v.texcoord1;
+           // o.texcoord2 = v.texcoord2;
 
            // #if %TEXCOORD3REQUIREKEY%
-            o.texcoord3 = v.texcoord3;
+           // o.texcoord3 = v.texcoord3;
            // #endif
 
            // #if %VERTEXCOLORREQUIREKEY%
@@ -7729,14 +7188,14 @@ ZWrite On
           #endif
 
           // #if %SCREENPOSREQUIREKEY%
-          // o.screenPos = ComputeScreenPos(o.pos, _ProjectionParams.x);
+           o.screenPos = ComputeScreenPos(o.pos, _ProjectionParams.x);
           // #endif
 
           
           #if _PASSFORWARD || _PASSGBUFFER
               float2 uv1 = v.texcoord1.xy;
               OUTPUT_LIGHTMAP_UV(uv1, unity_LightmapST, o.lightmapUV);
-               o.texcoord1.xy = uv1;
+              // o.texcoord1.xy = uv1;
               #if UNITY_VERSION < 60000009
                 OUTPUT_SH(o.worldNormal, o.sh);
               #endif
@@ -7909,10 +7368,15 @@ ZWrite On
             ZWrite On
             ColorMask 0
             
-            	Tags { "RenderType" = "Opaque" "Queue" = "Geometry" "PreviewType" = "Plane" }
+            	Tags
+    {
+        "RenderType" = "Opaque" "Queue" = "Geometry" "PreviewType" = "Sphere"
+    }   
 	Cull [_CullingOption]
 	ZWrite [_ZWrite]
 	ZTest [_ZTestMode]
+	ColorMask [_ColorMask]
+Lighting Off
 
 
             HLSLPROGRAM
@@ -7929,81 +7393,81 @@ ZWrite On
             #pragma multi_compile_instancing
 
             
-	#pragma shader_feature_local GLOW_ON
-	#pragma shader_feature_local FADE_ON
-	#pragma shader_feature_local OUTBASE_ON
-	#pragma shader_feature_local ONLYOUTLINE_ON
-	#pragma shader_feature_local GRADIENT_ON
-	#pragma shader_feature_local GRADIENT2COL_ON
-	#pragma shader_feature_local RADIALGRADIENT_ON
-	#pragma shader_feature_local COLORSWAP_ON
-	#pragma shader_feature_local HSV_ON
-	#pragma shader_feature_local CHANGECOLOR_ON
-	#pragma shader_feature_local CHANGECOLOR2_ON
-	#pragma shader_feature_local CHANGECOLOR3_ON
-	#pragma shader_feature_local COLORRAMP_ON
-	#pragma shader_feature_local GRADIENTCOLORRAMP_ON
-	#pragma shader_feature_local HITEFFECT_ON
-	#pragma shader_feature_local NEGATIVE_ON
-	#pragma shader_feature_local PIXELATE_ON
-	#pragma shader_feature_local GREYSCALE_ON
-	#pragma shader_feature_local POSTERIZE_ON
-	#pragma shader_feature_local BLUR_ON
-	#pragma shader_feature_local MOTIONBLUR_ON
-	#pragma shader_feature_local GHOST_ON
-	#pragma shader_feature_local ALPHAOUTLINE_ON
-	#pragma shader_feature_local INNEROUTLINE_ON
-	#pragma shader_feature_local ONLYINNEROUTLINE_ON
-	#pragma shader_feature_local HOLOGRAM_ON
-	#pragma shader_feature_local CHROMABERR_ON
-	#pragma shader_feature_local GLITCH_ON
-	#pragma shader_feature_local FLICKER_ON
-	#pragma shader_feature_local SHADOW_ON
-	#pragma shader_feature_local SHINE_ON
-	#pragma shader_feature_local CONTRAST_ON
-	#pragma shader_feature_local OVERLAY_ON
-	#pragma shader_feature_local OVERLAYMULT_ON
-	#pragma shader_feature_local DOODLE_ON
-	#pragma shader_feature_local WIND_ON
-	#pragma shader_feature_local WAVEUV_ON
-	#pragma shader_feature_local ROUNDWAVEUV_ON
-	#pragma shader_feature_local RECTSIZE_ON
-	#pragma shader_feature_local OFFSETUV_ON
-	#pragma shader_feature_local CLIPPING_ON
-	#pragma shader_feature_local RADIALCLIPPING_ON
-	#pragma shader_feature_local TEXTURESCROLL_ON
-	#pragma shader_feature_local ZOOMUV_ON
-	#pragma shader_feature_local DISTORT_ON
-	#pragma shader_feature_local WARP_ON
-	#pragma shader_feature_local TWISTUV_ON
-	#pragma shader_feature_local ROTATEUV_ON
-	#pragma shader_feature_local POLARUV_ON
-	#pragma shader_feature_local FISHEYE_ON
-	#pragma shader_feature_local PINCH_ON
+    #pragma shader_feature_local TIMEISCUSTOM_ON
+    #pragma shader_feature_local ADDITIVECONFIG_ON
+    #pragma shader_feature_local PREMULTIPLYALPHA_ON
+    #pragma shader_feature_local PREMULTIPLYCOLOR_ON
+    #pragma shader_feature_local SPLITRGBA_ON
+    #pragma shader_feature_local SHAPEADD_ON
+
+    #pragma shader_feature_local SHAPE1SCREENUV_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local SHAPE2SCREENUV_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local SHAPE3SCREENUV_ON /////////////////Pipeline specific implementation
+
+    #pragma shader_feature_local SHAPEDEBUG_ON
+            
+    #pragma shader_feature_local SHAPE1CONTRAST_ON
+    #pragma shader_feature_local SHAPE1DISTORT_ON
+    #pragma shader_feature_local SHAPE1ROTATE_ON
+    #pragma shader_feature_local SHAPE1SHAPECOLOR_ON
+
+    #pragma shader_feature_local SHAPE2_ON
+    #pragma shader_feature_local SHAPE2CONTRAST_ON
+    #pragma shader_feature_local SHAPE2DISTORT_ON
+    #pragma shader_feature_local SHAPE2ROTATE_ON
+    #pragma shader_feature_local SHAPE2SHAPECOLOR_ON
+
+    #pragma shader_feature_local SHAPE3_ON
+    #pragma shader_feature_local SHAPE3CONTRAST_ON
+    #pragma shader_feature_local SHAPE3DISTORT_ON
+    #pragma shader_feature_local SHAPE3ROTATE_ON
+    #pragma shader_feature_local SHAPE3SHAPECOLOR_ON
+
+    #pragma shader_feature_local GLOW_ON
+    #pragma shader_feature_local GLOWTEX_ON
+    #pragma shader_feature_local DEPTHGLOW_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local MASK_ON
+    #pragma shader_feature_local COLORRAMP_ON
+    #pragma shader_feature_local COLORRAMPGRAD_ON
+    #pragma shader_feature_local COLORGRADING_ON
+    #pragma shader_feature_local HSV_ON
+    #pragma shader_feature_local POSTERIZE_ON
+    #pragma shader_feature_local PIXELATE_ON
+    #pragma shader_feature_local DISTORT_ON
 	#pragma shader_feature_local SHAKEUV_ON
-
-	#pragma shader_feature_local GLOWTEX_ON
-	#pragma shader_feature_local OUTTEX_ON
-	#pragma shader_feature_local OUTDIST_ON
-	#pragma shader_feature_local OUTBASE8DIR_ON
-	#pragma shader_feature_local OUTBASEPIXELPERF_ON
-	#pragma shader_feature_local COLORRAMPOUTLINE_ON
-	#pragma shader_feature_local GREYSCALEOUTLINE_ON
-	#pragma shader_feature_local POSTERIZEOUTLINE_ON
-	#pragma shader_feature_local BLURISHD_ON
-	#pragma shader_feature_local MANUALWIND_ON
-	#pragma shader_feature_local ATLAS_ON
-	#pragma shader_feature_local PREMULTIPLYALPHA_ON
-
-	#pragma shader_feature BILBOARD_ON
-	#pragma shader_feature BILBOARDY_ON
+    #pragma shader_feature_local WAVEUV_ON
+	#pragma shader_feature_local ROUNDWAVEUV_ON
+    #pragma shader_feature_local TWISTUV_ON
+    #pragma shader_feature_local DOODLE_ON
+    #pragma shader_feature_local OFFSETSTREAM_ON
+    #pragma shader_feature_local TEXTURESCROLL_ON
+    #pragma shader_feature_local VERTOFFSET_ON
+    #pragma shader_feature_local RIM_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local BACKFACETINT_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local POLARUV_ON
+    #pragma shader_feature_local POLARUVDISTORT_ON
+    #pragma shader_feature_local SHAPE1MASK_ON
+    #pragma shader_feature_local TRAILWIDTH_ON
+    #pragma shader_feature_local LIGHTANDSHADOW_ON
+    #pragma shader_feature_local SHAPETEXOFFSET_ON
+    #pragma shader_feature_local SHAPEWEIGHTS_ON
+            
+    #pragma shader_feature_local ALPHACUTOFF_ON
+    #pragma shader_feature_local ALPHASMOOTHSTEP_ON
+    #pragma shader_feature_local FADE_ON
+    #pragma shader_feature_local FADEBURN_ON
+    #pragma shader_feature_local ALPHAFADE_ON
+    #pragma shader_feature_local ALPHAFADEUSESHAPE1_ON
+    #pragma shader_feature_local ALPHAFADEUSEREDCHANNEL_ON
+    #pragma shader_feature_local ALPHAFADETRANSPARENCYTOO_ON
+    #pragma shader_feature_local ALPHAFADEINPUTSTREAM_ON
+    #pragma shader_feature_local CAMDISTFADE_ON
 
 	#pragma shader_feature NORMALMAP_ON
 
 
    #define _URP 1
-#define _USINGTEXCOORD1 1
-#define _USINGTEXCOORD2 1
+#define REQUIRE_DEPTH_TEXTURE
 
             // Includes
             //#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
@@ -8057,15 +7521,15 @@ ZWrite On
          float3 worldNormal : TEXCOORD1;
          float4 worldTangent : TEXCOORD2;
           float4 texcoord0 : TEXCOORD3;
-          float4 texcoord1 : TEXCOORD4;
-          float4 texcoord2 : TEXCOORD5;
+         // float4 texcoord1 : TEXCOORD4;
+         // float4 texcoord2 : TEXCOORD5;
 
          // #if %TEXCOORD3REQUIREKEY%
-          float4 texcoord3 : TEXCOORD6;
+         // float4 texcoord3 : TEXCOORD6;
          // #endif
 
          // #if %SCREENPOSREQUIREKEY%
-         // float4 screenPos : TEXCOORD7;
+          float4 screenPos : TEXCOORD7;
          // #endif
 
          // #if %VERTEXCOLORREQUIREKEY%
@@ -8092,19 +7556,19 @@ ZWrite On
          #endif
 
          // #if %EXTRAV2F0REQUIREKEY%
-         // float4 extraV2F0 : TEXCOORD13;
+          float4 extraV2F0 : TEXCOORD13;
          // #endif
 
          // #if %EXTRAV2F1REQUIREKEY%
-         // float4 extraV2F1 : TEXCOORD14;
+          float4 extraV2F1 : TEXCOORD14;
          // #endif
 
          // #if %EXTRAV2F2REQUIREKEY%
-         // float4 extraV2F2 : TEXCOORD15;
+          float4 extraV2F2 : TEXCOORD15;
          // #endif
 
          // #if %EXTRAV2F3REQUIREKEY%
-         // float4 extraV2F3 : TEXCOORD16;
+          float4 extraV2F3 : TEXCOORD16;
          // #endif
 
          // #if %EXTRAV2F4REQUIREKEY%
@@ -8269,7 +7733,7 @@ ZWrite On
                #endif
 
                // #if %TEXCOORD3REQUIREKEY%
-                float4 texcoord3 : TEXCOORD3;
+               // float4 texcoord3 : TEXCOORD3;
                // #endif
 
                // #if %VERTEXCOLORREQUIREKEY%
@@ -8296,7 +7760,7 @@ ZWrite On
                float4 texcoord2 : TEXCOORD2;
 
                // #if %TEXCOORD3REQUIREKEY%
-                float4 texcoord3 : TEXCOORD3;
+               // float4 texcoord3 : TEXCOORD3;
                // #endif
 
                // #if %VERTEXCOLORREQUIREKEY%
@@ -8304,19 +7768,19 @@ ZWrite On
                // #endif
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // float4 extraV2F0 : TEXCOORD5;
+                float4 extraV2F0 : TEXCOORD5;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // float4 extraV2F1 : TEXCOORD6;
+                float4 extraV2F1 : TEXCOORD6;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // float4 extraV2F2 : TEXCOORD7;
+                float4 extraV2F2 : TEXCOORD7;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // float4 extraV2F3 : TEXCOORD8;
+                float4 extraV2F3 : TEXCOORD8;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -8557,20 +8021,116 @@ ZWrite On
 
                
 	half4 _Color;
-	half4 _MainTex_ST, _MainTex_TexelSize;
-	half _Alpha, _AlphaCutoffValue;
+	half _Alpha;
+	half _AlphaCutoffValue;
 
-	#if ATLAS_ON
-		half _MinXUV, _MaxXUV, _MinYUV, _MaxYUV;
+	half _TimingSeed;
+
+	#if TIMEISCUSTOM_ON
+		float4 globalCustomTime;
+	#endif
+
+	half4 _MainTex_ST, _ShapeColor;
+	half _ShapeXSpeed, _ShapeYSpeed, _ShapeColorWeight, _ShapeAlphaWeight;
+	
+	#if SHAPE1CONTRAST_ON
+		half _ShapeContrast, _ShapeBrightness;
+	#endif
+	
+	#if SHAPE1DISTORT_ON
+		half4 _ShapeDistortTex_ST;
+		half _ShapeDistortAmount, _ShapeDistortXSpeed, _ShapeDistortYSpeed;
+	#endif
+	
+	#if SHAPE1ROTATE_ON
+		half _ShapeRotationOffset, _ShapeRotationSpeed;
+	#endif
+	
+	#if OFFSETSTREAM_ON
+		half _OffsetSh1;
+	#endif
+	
+	#if SHAPEWEIGHTS_ON
+		half _Sh1BlendOffset;
+	#endif
+
+	#if SHAPE2_ON
+		half4 _Shape2Tex_ST, _Shape2Color;
+		half _Shape2XSpeed, _Shape2YSpeed, _Shape2ColorWeight, _Shape2AlphaWeight;
+		#if SHAPE2CONTRAST_ON
+			half _Shape2Contrast, _Shape2Brightness;
+		#endif
+		#if SHAPE2DISTORT_ON
+			half4 _Shape2DistortTex_ST;
+			half _Shape2DistortAmount, _Shape2DistortXSpeed, _Shape2DistortYSpeed;
+		#endif
+		#if SHAPE2ROTATE_ON
+			half _Shape2RotationOffset, _Shape2RotationSpeed;
+		#endif
+		#if OFFSETSTREAM_ON
+			half _OffsetSh2;
+		#endif
+		#if SHAPEWEIGHTS_ON
+			half _Sh2BlendOffset;
+		#endif
+	#endif
+
+	#if SHAPE3_ON
+		half4 _Shape3Tex_ST, _Shape3Color;
+		half _Shape3XSpeed, _Shape3YSpeed, _Shape3ColorWeight, _Shape3AlphaWeight;
+		#if SHAPE3CONTRAST_ON
+			half _Shape3Contrast, _Shape3Brightness;
+		#endif
+		#if SHAPE3DISTORT_ON
+			half4 _Shape3DistortTex_ST;
+			half _Shape3DistortAmount, _Shape3DistortXSpeed, _Shape3DistortYSpeed;
+		#endif
+		#if SHAPE3ROTATE_ON
+			half _Shape3RotationOffset, _Shape3RotationSpeed;
+		#endif
+		#if OFFSETSTREAM_ON
+			half _OffsetSh3;
+		#endif
+		#if SHAPEWEIGHTS_ON
+			half _Sh3BlendOffset;
+		#endif
 	#endif
 
 	#if GLOW_ON
 		half4 _GlowColor;
 		half _Glow, _GlowGlobal;
+		#if GLOWTEX_ON
+			half4 _GlowTex_ST;
+		#endif
 	#endif
-	 
+
+	#if MASK_ON
+		half4 _MaskTex_ST;
+		half _MaskPow;
+	#endif
+
+	#if COLORRAMP_ON
+		half _ColorRampLuminosity, _ColorRampBlend;
+	#endif
+
+	#if ALPHASMOOTHSTEP_ON
+		half _AlphaStepMin, _AlphaStepMax;
+	#endif
+
+	#if ALPHAFADE_ON
+		half _AlphaFadeAmount, _AlphaFadeSmooth, _AlphaFadePow;
+	#endif
+
 	#if HSV_ON
 		half _HsvShift, _HsvSaturation, _HsvBright;
+	#endif
+
+	#if POSTERIZE_ON
+		half _PosterizeNumColors;
+	#endif
+
+	#if PIXELATE_ON
+		half _PixelateSize;
 	#endif
 
 	#if DISTORT_ON
@@ -8578,203 +8138,101 @@ ZWrite On
 		half _DistortTexXSpeed, _DistortTexYSpeed, _DistortAmount;
 	#endif
 
-	#if FADE_ON
-		half4 _FadeBurnColor, _FadeTex_ST, _FadeBurnTex_ST;
-		half _FadeAmount, _FadeBurnWidth, _FadeBurnTransition,_FadeBurnGlow;
-	#endif
-
-	#if OUTBASE_ON
-		half4 _OutlineColor;
-		half _OutlineAlpha, _OutlineGlow, _OutlineWidth;
-		int _OutlinePixelWidth;
-	#endif
-
-	#if OUTTEX_ON
-		half4 _OutlineTex_ST;
-		half _OutlineTexXSpeed, _OutlineTexYSpeed;
-	#endif
-
-	#if OUTDIST_ON
-		half4 _OutlineDistortTex_ST;
-		half _OutlineDistortTexXSpeed, _OutlineDistortTexYSpeed, _OutlineDistortAmount;
-	#endif
-
-	#if ALPHAOUTLINE_ON
-		half _AlphaOutlineGlow, _AlphaOutlinePower, _AlphaOutlineMinAlpha, _AlphaOutlineBlend;
-		half4 _AlphaOutlineColor;
-	#endif
-
-	#if INNEROUTLINE_ON
-		half _InnerOutlineThickness, _InnerOutlineAlpha, _InnerOutlineGlow;
-		half4 _InnerOutlineColor;
-	#endif
-
-	#if GRADIENT_ON
-		half _GradBlend, _GradBoostX, _GradBoostY;
-		half4 _GradTopRightCol, _GradTopLeftCol, _GradBotRightCol, _GradBotLeftCol;
-	#endif
-
-	#if COLORSWAP_ON
-		half4 _ColorSwapRed, _ColorSwapGreen, _ColorSwapBlue;
-		half _ColorSwapRedLuminosity, _ColorSwapGreenLuminosity, _ColorSwapBlueLuminosity, _ColorSwapBlend;
-	#endif
-
-	#if CHANGECOLOR_ON
-		half4 _ColorChangeNewCol, _ColorChangeTarget;
-		half _ColorChangeTolerance, _ColorChangeLuminosity;
-	#endif
-	#if CHANGECOLOR2_ON
-		half4 _ColorChangeNewCol2, _ColorChangeTarget2;
-		half _ColorChangeTolerance2;
-	#endif
-	#if CHANGECOLOR3_ON
-		half4 _ColorChangeNewCol3, _ColorChangeTarget3;
-		half _ColorChangeTolerance3;
-	#endif
-
-	#if COLORRAMP_ON
-		half _ColorRampLuminosity, _ColorRampBlend;
-	#endif
-
-	#if HITEFFECT_ON
-		half4 _HitEffectColor;
-		half _HitEffectGlow, _HitEffectBlend;
-	#endif
-
-	#if NEGATIVE_ON
-		half _NegativeAmount;
-	#endif
-
-	#if PIXELATE_ON
-		half _PixelateSize;
-	#endif
-
-	#if GREYSCALE_ON
-		half _GreyscaleLuminosity, _GreyscaleBlend;
-		half4 _GreyscaleTintColor;
-	#endif
-
-	#if POSTERIZE_ON
-		half _PosterizeNumColors, _PosterizeGamma;
-	#endif
-
-	#if BLUR_ON
-		half _BlurIntensity;
-	#endif
-
-	#if MOTIONBLUR_ON
-		half _MotionBlurAngle, _MotionBlurDist;
-	#endif
-
-	#if GHOST_ON
-		half _GhostColorBoost, _GhostTransparency, _GhostBlend;
-	#endif
-
-	#if HOLOGRAM_ON
-		half _HologramStripesAmount, _HologramMinAlpha, _HologramUnmodAmount, _HologramStripesSpeed, _HologramMaxAlpha, _HologramBlend;
-		half4 _HologramStripeColor;
-	#endif
-
-	#if CHROMABERR_ON
-		half _ChromAberrAmount, _ChromAberrAlpha;
-	#endif
-
-	#if GLITCH_ON
-		half _GlitchAmount, _GlitchSize;
-	#endif
-
-	#if FLICKER_ON
-		half _FlickerFreq, _FlickerPercent, _FlickerAlpha;
-	#endif
-
-	#if SHADOW_ON
-		half _ShadowX, _ShadowY, _ShadowAlpha;
-		half4 _ShadowColor;
-	#endif
-
-	#if SHINE_ON
-		half4 _ShineColor;
-		half _ShineLocation, _ShineRotate, _ShineWidth, _ShineGlow;
-	#endif
-
-	#if CONTRAST_ON
-		half _Contrast, _Brightness;
-	#endif
-
-	#if OVERLAY_ON
-		half4 _OverlayTex_ST, _OverlayColor;
-		half _OverlayGlow, _OverlayBlend, _OverlayTextureScrollXSpeed, _OverlayTextureScrollYSpeed;
-	#endif
-
-	#if DOODLE_ON
-		half _HandDrawnAmount, _HandDrawnSpeed;
-	#endif
-
-	#if WIND_ON
-		half _GrassSpeed, _GrassWind, _GrassManualAnim, _GrassRadialBend;
-	#endif
-
-	#if WAVEUV_ON
-		float _WaveAmount, _WaveSpeed, _WaveStrength, _WaveX, _WaveY;
-	#endif
-
-	#if ROUNDWAVEUV_ON
-		half _RoundWaveStrength, _RoundWaveSpeed;
-	#endif
-
-	#if RECTSIZE_ON
-		half _RectSize;
-	#endif
-
-	#if OFFSETUV_ON
-		half _OffsetUvX, _OffsetUvY;
-	#endif
-
-	#if CLIPPING_ON
-		half _ClipUvLeft, _ClipUvRight, _ClipUvUp, _ClipUvDown;
-	#endif
-
-	#if RADIALCLIPPING_ON
-		half _RadialStartAngle, _RadialClip, _RadialClip2;
-	#endif
-
 	#if TEXTURESCROLL_ON
 		half _TextureScrollXSpeed, _TextureScrollYSpeed;
-	#endif
-
-	#if ZOOMUV_ON
-		half _ZoomUvAmount;
-	#endif
-
-	#if WARP_ON
-		half _WarpStrength, _WarpSpeed, _WarpScale;
-	#endif
-
-	#if TWISTUV_ON
-		half _TwistUvAmount, _TwistUvPosX, _TwistUvPosY, _TwistUvRadius;
-	#endif
-
-	#if ROTATEUV_ON
-		half _RotateUvAmount;
-	#endif
-
-	#if FISHEYE_ON
-		half _FishEyeUvAmount;
-	#endif
-
-	#if PINCH_ON
-		half _PinchUvAmount;
 	#endif
 
 	#if SHAKEUV_ON
 		half _ShakeUvSpeed, _ShakeUvX, _ShakeUvY;
 	#endif
 
+	#if WAVEUV_ON
+		half _WaveAmount, _WaveSpeed, _WaveStrength, _WaveX, _WaveY;
+	#endif
+
+	#if ROUNDWAVEUV_ON
+		half _RoundWaveStrength, _RoundWaveSpeed;
+	#endif
+
+	#if TWISTUV_ON
+		half _TwistUvAmount, _TwistUvPosX, _TwistUvPosY, _TwistUvRadius;
+	#endif
+
+	#if DOODLE_ON
+		half _HandDrawnAmount, _HandDrawnSpeed;
+	#endif
+
+	#if ROUNDWAVEUV_ON || PIXELATE_ON
+		half4 _MainTex_TexelSize;
+	#endif
+
+	#if VERTOFFSET_ON
+		half4 _VertOffsetTex_ST;
+		half _VertOffsetAmount, _VertOffsetPower, _VertOffsetTexXSpeed, _VertOffsetTexYSpeed;
+	#endif
+
+	#if FADE_ON
+		half4 _FadeTex_ST;
+		half _FadeAmount, _FadeTransition, _FadePower, _FadeScrollXSpeed, _FadeScrollYSpeed;
+		#if FADEBURN_ON
+			half4 _FadeBurnColor, _FadeBurnTex_ST;
+			half _FadeBurnWidth, _FadeBurnGlow;
+		#endif
+	#endif
+
+	#if COLORGRADING_ON
+		half3 _ColorGradingLight, _ColorGradingMiddle, _ColorGradingDark;
+		half _ColorGradingMidPoint;
+	#endif
+            
+	#if CAMDISTFADE_ON
+		half _CamDistFadeStepMin, _CamDistFadeStepMax, _CamDistProximityFade;
+	#endif
+
+	#if RIM_ON
+		half _RimBias, _RimScale, _RimPower, _RimIntensity, _RimAddAmount, _RimErodesAlpha;
+		half4 _RimColor;
+	#endif
+
+	#if BACKFACETINT_ON
+		half4 _BackFaceTint, _FrontFaceTint;
+	#endif
+
+	#if SHAPEDEBUG_ON
+		half _DebugShape;
+	#endif
+
+	#if SHAPE1MASK_ON
+		half4 _Shape1MaskTex_ST;
+		half _Shape1MaskPow;
+	#endif
+
+	#if TRAILWIDTH_ON
+		half _TrailWidthPower;
+	#endif
+
+	#if LIGHTANDSHADOW_ON
+		half3 _All1VfxLightDir;
+		half _ShadowAmount, _ShadowStepMin, _ShadowStepMax, _LightAmount;
+		half4 _LightColor;
+	#endif
+
+	#if SHAPETEXOFFSET_ON
+		half _RandomSh1Mult, _RandomSh2Mult, _RandomSh3Mult;
+	#endif
+
+	#if DEPTHGLOW_ON
+		half _DepthGlowDist, _DepthGlowPow, _DepthGlow, _DepthGlowGlobal;
+		half4 _DepthGlowColor;
+    #endif
+
+	#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+        half _ScreenUvShDistScale,_ScreenUvSh2DistScale, _ScreenUvSh3DistScale;
+	#endif
+
 	#if NORMALMAP_ON
 		half _NormalStrength;
 	#endif
-
-	float _RandomSeed;
 
 
 
@@ -8786,58 +8244,82 @@ ZWrite On
             
 
             
-	
+
 	TEXTURE2D(_MainTex);
 	SAMPLER(sampler_MainTex);
 
+	#if SHAPE1DISTORT_ON
+		TEXTURE2D(_ShapeDistortTex);
+		SAMPLER(sampler_ShapeDistortTex);
+	#endif
+
+	#if SHAPE2_ON
+		TEXTURE2D(_Shape2Tex);
+		SAMPLER(sampler_Shape2Tex);
+		#if SHAPE2DISTORT_ON
+			TEXTURE2D(_Shape2DistortTex);
+			SAMPLER(sampler_Shape2DistortTex);
+		#endif
+	#endif
+
+	#if SHAPE3_ON
+		TEXTURE2D(_Shape3Tex);
+		SAMPLER(sampler_Shape3Tex);
+		#if SHAPE3DISTORT_ON
+			TEXTURE2D(_Shape3DistortTex);
+			SAMPLER(sampler_Shape3DistortTex);
+		#endif
+	#endif
+
 	#if GLOW_ON
-		TEXTURE2D(_GlowTex);
-		SAMPLER(sampler_GlowTex);
+		#if GLOWTEX_ON
+			TEXTURE2D(_GlowTex);
+			SAMPLER(sampler_GlowTex);
+		#endif
+	#endif
+
+	#if MASK_ON
+		TEXTURE2D(_MaskTex);
+		SAMPLER(sampler_MaskTex);
+	#endif
+
+	#if COLORRAMP_ON
+		TEXTURE2D(_ColorRampTex);
+		SAMPLER(sampler_ColorRampTex);
+	#endif
+
+	#if COLORRAMPGRAD_ON
+		TEXTURE2D(_ColorRampTexGradient);
+		SAMPLER(sampler_ColorRampTexGradient);
+	#endif
+	
+	#if DISTORT_ON
+		TEXTURE2D(_DistortTex);
+		SAMPLER(sampler_DistortTex);
+	#endif
+
+	#if VERTOFFSET_ON
+		TEXTURE2D(_VertOffsetTex);
+		SAMPLER(sampler_VertOffsetTex);
 	#endif
 
 	#if FADE_ON
 		TEXTURE2D(_FadeTex);
 		SAMPLER(sampler_FadeTex);
-
-		TEXTURE2D(_FadeBurnTex);
-		SAMPLER(sampler_FadeBurnTex);
+		#if FADEBURN_ON
+			TEXTURE2D(_FadeBurnTex);
+			SAMPLER(sampler_FadeBurnTex);
+		#endif
 	#endif
 
-	#if DISTORT_ON
-		TEXTURE2D(_DistortTex);
-		SAMPLER(sampler_DistortTex);	
+	#if SHAPE1MASK_ON
+		TEXTURE2D(_Shape1MaskTex);
+		SAMPLER(sampler_Shape1MaskTex);
 	#endif
 
-	#if OUTTEX_ON
-		TEXTURE2D(_OutlineTex);
-		SAMPLER(sampler_OutlineTex);
-	#endif
-
-	#if OUTDIST_ON
-		TEXTURE2D(_OutlineDistortTex);
-		SAMPLER(sampler_OutlineDistortTex);
-	#endif
-
-	#if COLORSWAP_ON
-		TEXTURE2D(_ColorSwapTex);
-		SAMPLER(sampler_ColorSwapTex);
-	#endif
-
-	#if COLORRAMP_ON
-		TEXTURE2D(_ColorRampTex);
-		TEXTURE2D(_ColorRampTexGradient);
-		SAMPLER(sampler_ColorRampTex);
-		SAMPLER(sampler_ColorRampTexGradient);
-	#endif
-
-	#if SHINE_ON
-		TEXTURE2D(_ShineMask);
-		SAMPLER(sampler_ShineMask);
-	#endif
-
-	#if OVERLAY_ON
-		TEXTURE2D(_OverlayTex);
-		SAMPLER(sampler_OverlayTex);
+	#if TRAILWIDTH_ON
+		TEXTURE2D(_TrailWidthGradient);
+		SAMPLER(sampler_TrailWidthGradient);
 	#endif
 
 	#if NORMALMAP_ON
@@ -8845,225 +8327,124 @@ ZWrite On
 		SAMPLER(sampler_NormalMap);
 	#endif
 
-
-	half3 GetPixel(in int offsetX, in int offsetY, in half2 uv, in Texture2D _tex, in SamplerState _sampler)
+	half4 SampleTextureWithScroll(in Texture2D _tex, in SamplerState _sampler, in float2 uv, in half scrollXSpeed, in half scrollYSpeed, in float time)
 	{
-		half2 _uv = uv + half2(offsetX * _MainTex_TexelSize.x, offsetY * _MainTex_TexelSize.y);
-		half4 col = SAMPLE_TEXTURE2D(_tex, _sampler, _uv);
-		return col.rgb;
+		half2 _uv = uv;
+		_uv.x += (time * scrollXSpeed) % 1;
+		_uv.y += (time * scrollYSpeed) % 1;
+		return SAMPLE_TEXTURE2D(_tex, _sampler, _uv);
 	}
 
-
-	//BLURS-------------------------------------------------------------------------
-	half4 Blur(half2 uv, Texture2D source, SamplerState sampler_source, half Intensity)
+	half EaseOutQuint(half x) 
 	{
-		const half2 texelSize = 1.0 / _ScreenParams.xy;
-		const half4 color = SAMPLE_TEXTURE2D(source, sampler_source, uv);
-		const half2 offset = Intensity * texelSize;
-
-		half4 accumulatedColor = color;
-		half accumulatedWeight = 1.0;
-		for (int x = -1; x <= 1; x++)
-		{
-			for (int y = -1; y <= 1; y++)
-			{
-				const half2 sampleUV = uv + half2(x, y) * offset;
-				const half4 sampleColor = SAMPLE_TEXTURE2D(source, sampler_source, sampleUV);
-
-				accumulatedColor += sampleColor;
-				accumulatedWeight += 1.0;
-			}
-		}
-
-		half4 blurredColor = accumulatedColor / accumulatedWeight;
-		return blurredColor;
+		return 1 - pow(1 - x, 5);
 	}
 
-	half BlurHD_G(half bhqp, half x)
+	half RemapFloat(half inValue, half inMin, half inMax, half outMin, half outMax)
 	{
-		return exp(-(x * x) / (2.0 * bhqp * bhqp));
-	}
-	half4 BlurHD(half2 uv, Texture2D source, SamplerState sampler_source, half BlurAmount, half xScale, half yScale)
-	{
-		int iterations = 16;
-		int halfIterations = iterations / 2;
-		half sigmaX = 0.1 + BlurAmount * 0.5;
-		half sigmaY = sigmaX;
-		half total = 0.0;
-		half4 ret = half4(0, 0, 0, 0);
-		for (int iy = 0; iy < iterations; ++iy)
-		{
-			half fy = BlurHD_G(sigmaY, half(iy) -half(halfIterations));
-			half offsetY = half(iy - halfIterations) * 0.00390625 * xScale;
-			for (int ix = 0; ix < iterations; ++ix)
-			{
-				half fx = BlurHD_G(sigmaX, half(ix) - half(halfIterations));
-				half offsetX = half(ix - halfIterations) * 0.00390625 * yScale;
-				total += fx * fy;
-				ret += SAMPLE_TEXTURE2D(source, sampler_source, uv + half2(offsetX, offsetY)) * fx * fy;
-			}
-		}
-		return ret / total;
-	}
-	//-----------------------------------------------------------------------
-
-
-	//-------------------------------------------
-	half RemapFloat(half inValue, half inMin, half inMax, half outMin, half outMax){
 		return outMin + (inValue - inMin) * (outMax - outMin) / (inMax - inMin);
 	}
-	//-------------------------------------------
 
-	//-----------------------------------------------------------------------
-	half rand(half2 seed, half offset) {
-		return (frac(sin(dot(seed, half2(12.9898, 78.233))) * 43758.5453) + offset) % 1.0;
+	float2 RotateUvs(float2 uv, half rotation, half4 scaleAndTranslate)
+	{
+		half2 center = half2(0.5 * scaleAndTranslate.x + scaleAndTranslate.z, 0.5 * scaleAndTranslate.y + scaleAndTranslate.w);
+		half cosAngle = cos(rotation);
+		half sinAngle = sin(rotation);
+		uv -= center;
+		uv = mul(half2x2(cosAngle, -sinAngle, sinAngle, cosAngle), uv);
+		uv += center;
+		return uv; 
 	}
 
-	half rand2(half2 seed, half offset) {
-		return (frac(sin(dot(seed * floor(50 + (_Time.x % 1.0) * 12.), half2(127.1, 311.7))) * 43758.5453123) + offset) % 1.0;
-	}
+	half4 GetDebugColor(float4 resColor, half4 shape1, half4 shape2, half4 shape3)
+	{
+		half4 res = resColor;
 
-	half rand2CustomTime(half2 seed, half offset, half customTime) {
-		return (frac(sin(dot(seed * floor(50 + (customTime % 1.0) * 12.), half2(127.1, 311.7))) * 43758.5453123) + offset) % 1.0;
-	}
-	//-----------------------------------------------------------------------
+		//MAKE SURE THE FOLLOWING CODE BLOCK IS UNCOMMENTED-------------------------------------------
+        #if SHAPEDEBUG_ON
+			if(_DebugShape < 1.5) return shape1;
+			#if SHAPE2_ON
+				else if (_DebugShape < 2.5) return shape2;
+			#endif
+			#if SHAPE3_ON
+				else return shape3;
+			#endif
+        #endif
 
+		return res;
+	}
 
 	void Ext_ModifyVertex0 (inout VertexData v, inout ExtraV2F d)
 	{
-		//BILBOARD_ON
-		#if BILBOARD_ON
-			half3 camRight = mul((half3x3)unity_CameraToWorld, half3(1,0,0));
-			half3 camUp = half3(0,1,0);
-			#if BILBOARDY_ON
-				camUp = mul((half3x3)unity_CameraToWorld, half3(0,1,0));
+		//uvDistTex --> extraV2F0
+		//uvSh1DistTex --> extraV2F1
+		//uvSh2DistTex --> extraV2F2
+		//uvSh3DistTex --> extraV2F3
+ 
+		#if VERTOFFSET_ON
+			#if TIMEISCUSTOM_ON
+				const half time = v.texcoord0.z + globalCustomTime.y;
+			#else
+				const half time = v.texcoord0.z + _Time.y;
 			#endif
-			half3 localPos = v.vertex.x * camRight + v.vertex.y * camUp;
-			v.vertex = half4(localPos, 1);
-		#endif
-        //-----------------------------------------------------------
-
-        v.texcoord0.xy = TRANSFORM_TEX(v.texcoord0.xy, _MainTex);
-		half2 center = half2(0.5, 0.5);
-        #if ATLAS_ON
-		    center = half2((_MaxXUV + _MinXUV) / 2.0, (_MaxYUV + _MinYUV) / 2.0);
-		#endif
-		
-		//POLARUV_ON
-		#if POLARUV_ON
-			v.texcoord0.xy = v.texcoord0.xy - center;
+				half4 offsetUv = half4(TRANSFORM_TEX(v.texcoord0.xy, _VertOffsetTex), 0, 0);
+            	offsetUv.x += (time * _VertOffsetTexXSpeed) % 1;
+				offsetUv.y += (time * _VertOffsetTexYSpeed) % 1;
+                v.vertex.xyz += v.normal * _VertOffsetAmount * pow(SAMPLE_TEXTURE2D_LOD(_VertOffsetTex, sampler_VertOffsetTex, offsetUv, 0).r, _VertOffsetPower); 
 		#endif
 
-		//----------------------------------------
-
-		//ROTATEUV_ON
-		#if ROTATEUV_ON
-			half2 uvC = v.texcoord0.xy;
-			half cosAngle = cos(_RotateUvAmount);
-			half sinAngle = sin(_RotateUvAmount);
-			half2x2 rot = half2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
-			uvC -= center;
-			v.texcoord0.xy = mul(rot, uvC);
-			v.texcoord0.xy += center;
-		#endif
-		//--------------------
-
-		#if RECTSIZE_ON
-			v.vertex.xyz += (v.vertex.xyz * (_RectSize - 1.0));
+		#if DISTORT_ON && !POLARUVDISTORT_ON
+			d.extraV2F0.xy = TRANSFORM_TEX(v.texcoord0.xy, _DistortTex);
 		#endif
 
-		#if OUTTEX_ON
-			v.texcoord1.xy = TRANSFORM_TEX(v.texcoord0.xy, _OutlineTex);
+		#if SHAPE1DISTORT_ON && !POLARUVDISTORT_ON
+			d.extraV2F1.xy = TRANSFORM_TEX(v.texcoord0.xy, _ShapeDistortTex);
+        #endif
+
+		#if SHAPE2_ON
+			#if SHAPE2DISTORT_ON && !POLARUVDISTORT_ON
+				d.extraV2F2.xy = TRANSFORM_TEX(v.texcoord0.xy, _Shape2DistortTex);;
+			#endif
 		#endif
 
-		#if OUTDIST_ON
-			v.texcoord2.xy = TRANSFORM_TEX(v.texcoord0.xy, _OutlineDistortTex);
-		#endif
-
-		#if DISTORT_ON
-			v.texcoord3.xy = TRANSFORM_TEX(v.texcoord0.xy, _DistortTex);
-		#endif
+		#if SHAPE3_ON
+			#if SHAPE3DISTORT_ON && !POLARUVDISTORT_ON
+				d.extraV2F3.xy = TRANSFORM_TEX(v.texcoord0.xy, _Shape3DistortTex);
+			#endif
+        #endif
 	}
 
 	void Ext_SurfaceFunction0 (inout Surface o, ShaderData d)
 	{
-		half randomSeed = _RandomSeed;
+		//i.uvSeed -> d.texcoord0.xy
 
-		float2 uvRect = d.texcoord0;
-		half2 center = half2(0.5, 0.5);
-		#if ATLAS_ON
-			center = half2((_MaxXUV + _MinXUV) / 2.0, (_MaxYUV + _MinYUV) / 2.0);
-			uvRect = half2((d.texcoord0.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord0.y - _MinYUV) / (_MaxYUV - _MinYUV));
+		float seed = d.texcoord0.z + _TimingSeed;
+		#if TIMEISCUSTOM_ON
+			const float4 shaderTime = globalCustomTime;
+		#else
+			const float4 shaderTime = _Time;
 		#endif
-		half2 centerTiled = half2(center.x *  _MainTex_ST.x, center.y *  _MainTex_ST.y);
+		float time = shaderTime.y + seed;
 
-		//CLIPPING_ON
-		#if CLIPPING_ON
-			half2 tiledUv = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				tiledUv = half2((tiledUv.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUv.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			clip((1 - _ClipUvUp) - tiledUv.y);
-			clip(tiledUv.y - _ClipUvDown);
-			clip((1 - _ClipUvRight) - tiledUv.x);
-			clip(tiledUv.x - _ClipUvLeft);
-		#endif
-		//----------------------------------
+		#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half2 originalUvs = d.texcoord0.xy;
+        #endif
 
-		//RADIALCLIPPING_ON
-		#if RADIALCLIPPING_ON
-			half2 tiledUv2 = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				tiledUv2 = half2((tiledUv2.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUv2.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			half startAngle = _RadialStartAngle - _RadialClip;
-			half endAngle = _RadialStartAngle + _RadialClip2;
-			half offset0 = clamp(0, 360, startAngle + 360);
-			half offset360 = clamp(0, 360, endAngle - 360);
-			half2 atan2Coord = half2(lerp(-1, 1, tiledUv2.x), lerp(-1, 1, tiledUv2.y));
-			half atanAngle = atan2(atan2Coord.y, atan2Coord.x) * 57.3; // angle in degrees
-			if(atanAngle < 0) atanAngle = 360 + atanAngle;
-			if(atanAngle >= startAngle && atanAngle <= endAngle) discard;
-			if(atanAngle <= offset360) discard;
-			if(atanAngle >= offset0) discard;
+		#if PIXELATE_ON
+			half aspectRatio = _MainTex_TexelSize.x / _MainTex_TexelSize.y;
+			half2 pixelSize = float2(_PixelateSize, _PixelateSize * aspectRatio);
+			d.texcoord0.xy = floor(d.texcoord0.xy * pixelSize) / pixelSize;
 		#endif
 
-		//-----------------------------
-
-		//TEXTURESCROLL_ON && ATLAS_ON
-		#if TEXTURESCROLL_ON && ATLAS_ON
-			d.texcoord0.xy = half2(_MinXUV + ((_MaxXUV - _MinXUV) * (abs(((_Time.y + randomSeed) * _TextureScrollXSpeed) + uvRect.x) % 1)),
-			_MinYUV + ((_MaxYUV - _MinYUV) * (abs(((_Time.y + randomSeed) * _TextureScrollYSpeed) + uvRect.y) % 1)));
-		#endif
-		//----------------------------
-
-		//OFFSETUV_ON
-		#if OFFSETUV_ON
-			#if ATLAS_ON
-				d.texcoord0.xy = half2(_MinXUV + ((_MaxXUV - _MinXUV) * (abs((_OffsetUvX + uvRect.x) % 1))),
-				_MinYUV + ((_MaxYUV - _MinYUV) * (abs(_OffsetUvY + uvRect.y) % 1)));
-			#else
-				d.texcoord0.xy += half2(_OffsetUvX, _OffsetUvY);
-			#endif
+		#if NORMALMAP_ON
+			half4 normalSample = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, d.texcoord0.xy);
+			half3 normalTS = UnpackNormal(normalSample);
+			normalTS.xy *= _NormalStrength;
+			o.Normal = normalTS;
 		#endif
 
-		//----------------------
-
-		//POLARUV_ON
-		#if POLARUV_ON
-			d.texcoord0.xy = half2(atan2(d.texcoord0.y, d.texcoord0.x) / (2.0f * 3.141592653589f), length(d.texcoord0.xy));
-			d.texcoord0.xy *= _MainTex_ST.xy;
-		#endif
-
-		//--------------------------------------
-
-		//TWISTUV_ON
 		#if TWISTUV_ON
-			#if ATLAS_ON
-				_TwistUvPosX = ((_MaxXUV - _MinXUV) * _TwistUvPosX) + _MinXUV;
-				_TwistUvPosY = ((_MaxYUV - _MinYUV) * _TwistUvPosY) + _MinYUV;
-			#endif
-			half2 tempUv = d.texcoord0.xy - half2(_TwistUvPosX *  _MainTex_ST.x, _TwistUvPosY *  _MainTex_ST.y);
+			half2 tempUv = d.texcoord0.xy - half2(_TwistUvPosX * _MainTex_ST.x, _TwistUvPosY * _MainTex_ST.y);
 			_TwistUvRadius *= (_MainTex_ST.x + _MainTex_ST.y) / 2;
 			half percent = (_TwistUvRadius - length(tempUv)) / _TwistUvRadius;
 			half theta = percent * percent * (2.0 * sin(_TwistUvAmount)) * 8.0;
@@ -9071,593 +8452,505 @@ ZWrite On
 			half c = cos(theta);
 			half beta = max(sign(_TwistUvRadius - length(tempUv)), 0.0);
 			tempUv = half2(dot(tempUv, half2(c, -s)), dot(tempUv, half2(s, c))) * beta +	tempUv * (1 - beta);
-			tempUv += half2(_TwistUvPosX *  _MainTex_ST.x, _TwistUvPosY *  _MainTex_ST.y);
+			tempUv += half2(_TwistUvPosX * _MainTex_ST.x, _TwistUvPosY * _MainTex_ST.y);
 			d.texcoord0.xy = tempUv;
 		#endif
 
-		//--------------------------------------------
-
-		//FISHEYE_ON
-		#if FISHEYE_ON
-			half bind = length(centerTiled);
-			half2 dF = d.texcoord0.xy - centerTiled;
-			half dFlen = length(dF);
-			half fishInt = (3.14159265359 / bind) * (_FishEyeUvAmount + 0.001);
-			d.texcoord0.xy = centerTiled + (dF / (max(0.0001, dFlen))) * tan(dFlen * fishInt) * bind / tan(bind * fishInt);
-		#endif
-		//---------------------------------------------
-
-		//PINCH_ON
-		#if PINCH_ON
-			half2 dP = d.texcoord0.xy - centerTiled;
-			half pinchInt = (3.141592 / length(centerTiled)) * (-_PinchUvAmount + 0.001);
-			d.texcoord0.xy = centerTiled + normalize(dP) * atan(length(dP) * -pinchInt * 10.0) * 0.5 / atan(-pinchInt * 5);
-		#endif
-
-		//---------------------------------------------
-
-		//ZOOMUV_ON
-		#if ZOOMUV_ON
-			d.texcoord0.xy -= centerTiled;
-			d.texcoord0.xy = d.texcoord0.xy * _ZoomUvAmount;
-			d.texcoord0.xy += centerTiled;
-		#endif
-
-		//-----------------------------------------------
-
-		//DOODLE_ON
 		#if DOODLE_ON
-			half2 uvCopy = uvRect;
-			_HandDrawnSpeed = (floor((_Time.x + randomSeed) * 20 * _HandDrawnSpeed) / _HandDrawnSpeed) * _HandDrawnSpeed;
+			half2 uvCopy = d.texcoord0.xy;
+			_HandDrawnSpeed = (floor((shaderTime.x + seed) * 20 * _HandDrawnSpeed) / _HandDrawnSpeed) * _HandDrawnSpeed;
 			uvCopy.x = sin((uvCopy.x * _HandDrawnAmount + _HandDrawnSpeed) * 4);
 			uvCopy.y = cos((uvCopy.y * _HandDrawnAmount + _HandDrawnSpeed) * 4);
 			d.texcoord0.xy = lerp(d.texcoord0.xy, d.texcoord0.xy + uvCopy, 0.0005 * _HandDrawnAmount);
 		#endif
 
-		//--------------------------
-
-		//SHAKEUV_ON
 		#if SHAKEUV_ON
-			half xShake = sin((_Time.x + randomSeed) * _ShakeUvSpeed * 50) * _ShakeUvX;
-			half yShake = cos((_Time.x + randomSeed) * _ShakeUvSpeed * 50) * _ShakeUvY;
+			half xShake = sin((shaderTime.x + seed) * _ShakeUvSpeed * 50) * _ShakeUvX;
+			half yShake = cos((shaderTime.x + seed) * _ShakeUvSpeed * 50) * _ShakeUvY;
 			d.texcoord0.xy += half2(xShake * 0.012, yShake * 0.01);
 		#endif
 
-		//-------------------------------------------
-
-		//RECTSIZE_ON
-		#if RECTSIZE_ON
-			d.texcoord0.xy = d.texcoord0.xy * (_RectSize).xx + (((-_RectSize * 0.5) + 0.5)).xx;
-		#endif
-
-		//-------------------------------------------
-
-		//DISTORT_ON
-		#if DISTORT_ON
-			#if ATLAS_ON
-				d.texcoord3.x = d.texcoord3.x * (1 / (_MaxXUV - _MinXUV));
-				d.texcoord3.y = d.texcoord3.y * (1 / (_MaxYUV - _MinYUV)); 
-			#endif
-
-			d.texcoord3.x += ((_Time.x + _RandomSeed) * _DistortTexXSpeed) % 1;
-			d.texcoord3.y += ((_Time.x + _RandomSeed) * _DistortTexYSpeed) % 1;
-			half distortAmnt = (SAMPLE_TEXTURE2D(_DistortTex, sampler_DistortTex, d.texcoord3.xy).r - 0.5) * 0.2 * _DistortAmount;
-			d.texcoord0.x += distortAmnt;
-			d.texcoord0.y += distortAmnt;
-		#endif
-		//-------------------------------------------------------
-
-		//WARP_ON
-		#if WARP_ON
-            half2 warpUv = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				warpUv = half2((warpUv.x - _MinXUV) / (_MaxXUV - _MinXUV), (warpUv.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			const float tau = 6.283185307179586;
-            float xWarp = (_Time.y + randomSeed) * _WarpSpeed + warpUv.x * tau / _WarpScale;
-            float yWarp = (_Time.y + randomSeed) * _WarpSpeed + warpUv.y * tau / _WarpScale;
-            float2 warp = float2(sin(xWarp), sin(yWarp)) * _WarpStrength;
-            d.texcoord0.xy += warp;
-		#endif
-
-		//-------------------------------------------------------
-
-		//WAVEUV_ON
 		#if WAVEUV_ON
-			float2 uvWave = half2(_WaveX * _MainTex_ST.x, _WaveY * _MainTex_ST.y) - d.texcoord0.xy;
-            uvWave %= 1;
+			half2 uvWave = half2(_WaveX * _MainTex_ST.x, _WaveY * _MainTex_ST.y) - d.texcoord0.xy;
 			#if ATLAS_ON
 				uvWave = half2(_WaveX, _WaveY) - uvRect;
 			#endif
 			uvWave.x *= _ScreenParams.x / _ScreenParams.y;
-            float waveTime = _Time.y + randomSeed;
-			float angWave = (sqrt(dot(uvWave, uvWave)) * _WaveAmount) - ((waveTime *  _WaveSpeed));
-			d.texcoord0.xy = d.texcoord0.xy + uvWave * sin(angWave) * (_WaveStrength / 1000.0);
+			half angWave = (sqrt(dot(uvWave, uvWave)) * _WaveAmount) - ((time * _WaveSpeed) % 360.0);
+			d.texcoord0.xy = d.texcoord0.xy + normalize(uvWave) * sin(angWave) * (_WaveStrength / 1000.0);
 		#endif
-		//----------------------------------------------------
 
-		//ROUNDWAVEUV_ON
 		#if ROUNDWAVEUV_ON
-			half xWave = ((0.5 * _MainTex_ST.x) - uvRect.x);
-			half yWave = ((0.5 * _MainTex_ST.y) - uvRect.y) * (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
+			half xWave = ((0.5 * _MainTex_ST.x) - d.texcoord0.x);
+			half yWave = ((0.5 * _MainTex_ST.y) - d.texcoord0.y) * (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
 			half ripple = -sqrt(xWave*xWave + yWave* yWave);
-			d.texcoord0.xy += (sin((ripple + (_Time.y + randomSeed) * (_RoundWaveSpeed/10.0)) / 0.015) * (_RoundWaveStrength/10.0)) % 1;
+            d.texcoord0.xy += (sin((ripple + time * (_RoundWaveSpeed/10.0)) / 0.015) * (_RoundWaveStrength/10.0)) % 1;
 		#endif
-		//----------------------------------------------------
 
+		#if POLARUV_ON
+            half2 prePolarUvs = d.texcoord0.xy;
+            d.texcoord0.xy = d.texcoord0.xy - half2(0.5, 0.5);
+			d.texcoord0.xy = half2(atan2(d.texcoord0.y, d.texcoord0.x) / (1.0 * 6.28318530718), length(d.texcoord0.xy) * 2.0);
+            d.texcoord0.xy *= _MainTex_ST.xy;
+		#endif
 
-		//WIND_ON
-		#if WIND_ON
-			half windOffset = sin((_Time.x + randomSeed) * _GrassSpeed * 10);
-			half2 windCenter = half2(0.5, 0.1);
-			#if ATLAS_ON
-				windCenter.x = ((_MaxXUV - _MinXUV) * windCenter.x) + _MinXUV;
-				windCenter.y = ((_MaxYUV - _MinYUV) * windCenter.y) + _MinYUV;
-			#endif
-			#if !MANUALWIND_ON
-				d.texcoord0.x = fmod(abs(lerp(d.texcoord0.x, d.texcoord0.x + (_GrassWind * 0.01 * windOffset), uvRect.y)), 1);
+		#if DISTORT_ON
+			#if POLARUVDISTORT_ON
+				half2 distortUvs = TRANSFORM_TEX(d.texcoord0.xy, _DistortTex);
 			#else
-				d.texcoord0.x = fmod(abs(lerp(d.texcoord0.x, d.texcoord0.x + (_GrassWind * 0.01 * _GrassManualAnim), uvRect.y)), 1);
-				windOffset = _GrassManualAnim;
+				half2 distortUvs = d.extraV2F0.xy;
 			#endif
-			half2 delta = d.texcoord0.xy - windCenter;
-			half delta2 = dot(delta.xy, delta.xy);
-			half2 delta_offset = delta2 * windOffset;
-			d.texcoord0.xy = d.texcoord0.xy + half2(delta.y, -delta.x) * delta_offset * _GrassRadialBend;
-		#endif
-
-		//--------------------------------------------------------
-
-		//TEXTURESCROLL_ON && !ATLAS_ON
-		#if TEXTURESCROLL_ON && !ATLAS_ON
-			d.texcoord0.x += ((_Time.y + randomSeed) * _TextureScrollXSpeed) % 1;
-			d.texcoord0.y += ((_Time.y + randomSeed) * _TextureScrollYSpeed) % 1;
-		#endif
-		//------------------------------
-
-		//PIXELATE_ON
-		#if PIXELATE_ON
-            half aspectRatio = _MainTex_TexelSize.x / _MainTex_TexelSize.y;
-			half2 pixelSize = float2(_PixelateSize, _PixelateSize * aspectRatio);
-			d.texcoord0.xy = floor(d.texcoord0.xy * pixelSize) / pixelSize;
-		#endif
-		//--------------
-
-		half4 col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy);
-		half originalAlpha = col.a;
-		col *= d.vertexColor;
-
-		//NORMAL MAP
-		#if NORMALMAP_ON
-			half4 normalSample = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, d.texcoord0.xy);
-			half3 normalTS = UnpackNormal(normalSample);
-			normalTS.xy *= _NormalStrength;
-			o.Normal = normalTS;
-		#endif
-        float normalSign = sign(dot(d.worldSpaceViewDir, d.worldSpaceNormal));
-        o.Normal *= normalSign;
-
-
-		//GLITCH_ON
-		#if GLITCH_ON
-			half2 uvGlitch = uvRect;
-			uvGlitch.y -= 0.5;
-			half lineNoise = pow(rand2(floor(uvGlitch * half2(24., 19.) * _GlitchSize) * 4.0, randomSeed), 3.0) * _GlitchAmount
-				* pow(rand2(floor(uvGlitch * half2(38., 14.) * _GlitchSize) * 4.0, randomSeed), 3.0);
-			col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(lineNoise * 0.02 * rand2(half2(2.0, 1), randomSeed), 0)) * d.vertexColor;
-		#endif
-		//--------------------------------------
-
-		//CHROMABERR_ON
-		#if CHROMABERR_ON
-			half4 r = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(_ChromAberrAmount/10, 0))	* d.vertexColor;
-			half4 b = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-_ChromAberrAmount/10, 0)) * d.vertexColor;
-			col = half4(r.r * r.a, col.g, b.b * b.a, max(max(r.a, b.a) * _ChromAberrAlpha, col.a));
-		#endif
-
-		//--------------------------------
-
-		//BLUR_ON
-		#if BLUR_ON
+			distortUvs.x += ((shaderTime.x + seed) * _DistortTexXSpeed) % 1;
+			distortUvs.y += ((shaderTime.x + seed) * _DistortTexYSpeed) % 1;
 			#if ATLAS_ON
-				#if !BLURISHD_ON
-					col = BlurHD(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity, (_MaxXUV - _MinXUV), (_MaxYUV - _MinYUV)) * d.vertexColor;
-				#else
-					col = Blur(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity * (_MaxXUV - _MinXUV)) * d.vertexColor;
+				d.extraV2F0.xy = half2((d.extraV2F0.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.extraV2F0.y - _MinYUV) / (_MaxYUV - _MinYUV));
+			#endif
+			half distortAmnt = (SAMPLE_TEXTURE2D(_DistortTex, sampler_DistortTex, distortUvs).r - 0.5) * 0.2 * _DistortAmount;
+			d.texcoord0.x += distortAmnt;
+			d.texcoord0.y += distortAmnt;
+		#endif
+
+		#if TEXTURESCROLL_ON
+			d.texcoord0.x += (time * _TextureScrollXSpeed) % 1;
+			d.texcoord0.y += (time * _TextureScrollYSpeed) % 1;
+		#endif
+
+		#if TRAILWIDTH_ON
+            half width = pow(SAMPLE_TEXTURE2D(_TrailWidthGradient, sampler_TrailWidthGradient, d.texcoord0).r, _TrailWidthPower);
+            d.texcoord0.y = (d.texcoord0.y * 2 - 1) / width * 0.5 + 0.5;
+            clip(d.texcoord0.y);
+            clip(1 - d.texcoord0.y);
+        #endif
+
+		float2 shape1Uv = d.texcoord0.xy;
+        #if SHAPE2_ON
+			float2 shape2Uv = shape1Uv;
+        #endif
+        #if SHAPE3_ON
+			float2 shape3Uv = shape1Uv;
+        #endif
+
+        #if CAMDISTFADE_ON || SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half camDistance = distance(d.worldSpacePosition, _WorldSpaceCameraPos);
+		#endif
+		 
+		#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half2 uvOffsetPostFx = d.texcoord0.xy - originalUvs;
+			d.texcoord0.xy = d.screenPos.xy / d.screenPos.w;
+			d.texcoord0.x = d.texcoord0.x * (_ScreenParams.x / _ScreenParams.y);
+			d.texcoord0.x -= 0.5;
+			d.texcoord0.xy -= uvOffsetPostFx;
+			originalUvs += uvOffsetPostFx;
+			half distanceZoom = camDistance * 0.1;
+			half2 scaleWithDistUvs = d.texcoord0.xy * distanceZoom + ((-distanceZoom * 0.5) + 0.5);
+			#if SHAPE1SCREENUV_ON
+				shape1Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvShDistScale);
+			#else
+				shape1Uv = originalUvs;
+			#endif
+			#if SHAPE2SCREENUV_ON && SHAPE2_ON
+				shape2Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvSh2DistScale);
+			#else
+				#if SHAPE2_ON
+					shape2Uv = originalUvs;
 				#endif
+			#endif
+			#if SHAPE3SCREENUV_ON && SHAPE3_ON
+				shape3Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvSh3DistScale);
 			#else
-				#if !BLURISHD_ON
-					col = BlurHD(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity, 1, 1) * d.vertexColor;
+				#if SHAPE3_ON
+					shape3Uv = originalUvs;
+				#endif
+			#endif
+		#endif
+
+		shape1Uv = TRANSFORM_TEX(shape1Uv, _MainTex);
+		#if OFFSETSTREAM_ON
+			shape1Uv.x += i.offsetCustomData.x * _OffsetSh1;
+			shape1Uv.y += i.offsetCustomData.y * _OffsetSh1;
+		#endif
+        #if SHAPETEXOFFSET_ON
+			shape1Uv += seed * _RandomSh1Mult;
+		#endif
+        
+		#if SHAPE1DISTORT_ON
+			#if POLARUVDISTORT_ON
+				half2 sh1DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _ShapeDistortTex);
+			#else
+				half2 sh1DistortUvs = d.extraV2F1.xy;
+			#endif
+			
+			sh1DistortUvs.x += ((time + seed) * _ShapeDistortXSpeed) % 1;
+			sh1DistortUvs.y += ((time + seed) * _ShapeDistortYSpeed) % 1;
+			half distortAmount = (SAMPLE_TEXTURE2D(_ShapeDistortTex, sampler_ShapeDistortTex, sh1DistortUvs).r - 0.5) * 0.2 * _ShapeDistortAmount;
+			shape1Uv.x += distortAmount;
+			shape1Uv.y += distortAmount;
+		#endif
+		#if SHAPE1ROTATE_ON
+			shape1Uv = RotateUvs(shape1Uv, _ShapeRotationOffset + ((_ShapeRotationSpeed * time) % 6.28318530718), _MainTex_ST);
+		#endif
+
+		half4 shape1 = SampleTextureWithScroll(_MainTex, sampler_MainTex, shape1Uv, _ShapeXSpeed, _ShapeYSpeed, time);
+		#if SHAPE1SHAPECOLOR_ON
+			shape1.a = shape1.r;
+			shape1.rgb = _ShapeColor.rgb;
+		#else
+			shape1 *= _ShapeColor;
+		#endif
+		#if SHAPE1CONTRAST_ON
+			#if SHAPE1SHAPECOLOR_ON
+				shape1.a = saturate((shape1.a - 0.5) * _ShapeContrast + 0.5 + _ShapeBrightness);
+			#else
+				shape1.rgb = max(0, (shape1.rgb - half3(0.5, 0.5, 0.5)) * _ShapeContrast + half3(0.5, 0.5, 0.5) + _ShapeBrightness);
+			#endif
+        #endif
+
+		half4 shape2 = 1.0;
+		#if SHAPE2_ON
+			shape2Uv = TRANSFORM_TEX(shape2Uv, _Shape2Tex);
+			#if OFFSETSTREAM_ON
+				shape2Uv.x += i.offsetCustomData.x * _OffsetSh2;
+				shape2Uv.y += i.offsetCustomData.y * _OffsetSh2;
+			#endif
+			#if SHAPETEXOFFSET_ON
+				shape2Uv += seed * _RandomSh2Mult;
+			#endif
+			#if SHAPE2DISTORT_ON
+				#if POLARUVDISTORT_ON
+					half2 sh2DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _Shape2DistortTex);
 				#else
-					col = Blur(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity) * d.vertexColor;
+					half2 sh2DistortUvs = d.extraV2F2.xy;
+				#endif
+				sh2DistortUvs.x += ((time + seed) * _Shape2DistortXSpeed) % 1;
+				sh2DistortUvs.y += ((time + seed) * _Shape2DistortYSpeed) % 1;
+				half distortAmnt2 = (SAMPLE_TEXTURE2D(_Shape2DistortTex, sampler_Shape2DistortTex, sh2DistortUvs).r - 0.5) * 0.2 * _Shape2DistortAmount;
+				shape2Uv.x += distortAmnt2;
+				shape2Uv.y += distortAmnt2;
+			#endif
+			#if SHAPE2ROTATE_ON
+				shape2Uv = RotateUvs(shape2Uv, _Shape2RotationOffset + ((_Shape2RotationSpeed * time) % 6.28318530718), _Shape2Tex_ST);
+			#endif
+			
+			shape2 = SampleTextureWithScroll(_Shape2Tex, sampler_Shape2Tex, shape2Uv, _Shape2XSpeed, _Shape2YSpeed, time); 
+			#if SHAPE2SHAPECOLOR_ON
+				shape2.a = shape2.r;
+				shape2.rgb = _Shape2Color.rgb;
+			#else
+				shape2 *= _Shape2Color;
+			#endif
+			#if SHAPE2CONTRAST_ON
+				#if SHAPE2SHAPECOLOR_ON
+					shape2.a = max(0, (shape2.a - 0.5) * _Shape2Contrast + 0.5 + _Shape2Brightness);
+				#else
+					shape2.rgb = max(0, (shape2.rgb - half3(0.5, 0.5, 0.5)) * _Shape2Contrast + half3(0.5, 0.5, 0.5) + _Shape2Brightness);
 				#endif
 			#endif
         #endif
 
-		//--------------------
-
-		//MOTIONBLUR_ON
-		#if MOTIONBLUR_ON
-			_MotionBlurAngle = _MotionBlurAngle * 3.1415926;
-			#define rot(n) mul(n, half2x2(cos(_MotionBlurAngle), -sin(_MotionBlurAngle), sin(_MotionBlurAngle), cos(_MotionBlurAngle)))
-			_MotionBlurDist = _MotionBlurDist * 0.005;
-			#if ATLAS_ON
-				_MotionBlurDist *= (_MaxXUV - _MinXUV);
+		half4 shape3 = 1.0;
+		 #if SHAPE3_ON
+            shape3Uv = TRANSFORM_TEX(shape3Uv, _Shape3Tex);
+			
+            #if OFFSETSTREAM_ON
+				shape3Uv.x += i.offsetCustomData.x * _OffsetSh3;
+				shape3Uv.y += i.offsetCustomData.y * _OffsetSh3;
 			#endif
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist, -_MotionBlurDist)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 2, -_MotionBlurDist * 2)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 3, -_MotionBlurDist * 3)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 4, -_MotionBlurDist * 4)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist, _MotionBlurDist)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 2, _MotionBlurDist * 2)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 3, _MotionBlurDist * 3)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 4, _MotionBlurDist * 4)));
-			col.rgb = col.rgb / 9;
+            #if SHAPETEXOFFSET_ON
+				shape3Uv += seed * _RandomSh3Mult;
+			#endif
+            #if SHAPE3DISTORT_ON
+				#if POLARUVDISTORT_ON
+					half2 sh3DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _Shape3DistortTex);
+				#else
+					half2 sh3DistortUvs = d.extraV2F3.xy;
+				#endif
+				sh3DistortUvs.x += ((time + seed) * _Shape3DistortXSpeed) % 1;
+				sh3DistortUvs.y += ((time + seed) * _Shape3DistortYSpeed) % 1;
+				half distortAmnt3 = (SAMPLE_TEXTURE2D(_Shape3DistortTex, sampler_Shape3DistortTex, sh3DistortUvs).r - 0.5) * 0.3 * _Shape3DistortAmount;
+				shape3Uv.x += distortAmnt3;
+				shape3Uv.y += distortAmnt3;
+            #endif
+            #if SHAPE3ROTATE_ON
+				shape3Uv = RotateUvs(shape3Uv, _Shape3RotationOffset + ((_Shape3RotationSpeed * time) % 6.28318530718), _Shape3Tex_ST);
+            #endif
+				shape3 = SampleTextureWithScroll(_Shape3Tex, sampler_Shape3Tex, shape3Uv, _Shape3XSpeed, _Shape3YSpeed, time);
+            #if SHAPE3SHAPECOLOR_ON
+				shape3.a = shape3.r;
+				shape3.rgb = _Shape3Color.rgb;
+            #else
+				shape3 *= _Shape3Color;
+            #endif
+            #if SHAPE3CONTRAST_ON
+				#if SHAPE3SHAPECOLOR_ON
+					shape3.a = max(0, (shape3.a - 0.5) * _Shape3Contrast + 0.5 + _Shape3Brightness);
+				#else
+					shape3.rgb = max(0, (shape3.rgb - half3(0.5, 0.5, 0.5)) * _Shape3Contrast + half3(0.5, 0.5, 0.5) + _Shape3Brightness);
+				#endif
+            #endif
+		#endif
+
+		half4 col = shape1;
+		//Mix all shapes pre: change weights if custom vertex effect active
+        #if SHAPEWEIGHTS_ON
+			half shapeWeightOffset;
+			#if SHAPE2_ON
+				shapeWeightOffset = i.offsetCustomData.z * _Sh1BlendOffset;
+				_ShapeColorWeight = max(0, _ShapeColorWeight + shapeWeightOffset);
+				_ShapeAlphaWeight = max(0, _ShapeAlphaWeight + shapeWeightOffset);
+				shapeWeightOffset = i.offsetCustomData.z * _Sh2BlendOffset;
+				_Shape2ColorWeight = max(0, _Shape2ColorWeight + shapeWeightOffset);
+				_Shape2AlphaWeight = max(0, _Shape2AlphaWeight + shapeWeightOffset);
+			#endif
+			#if SHAPE3_ON
+				shapeWeightOffset = i.offsetCustomData.z * _Sh3BlendOffset;
+				_Shape3ColorWeight = max(0, _Shape3ColorWeight + shapeWeightOffset);
+				_Shape3AlphaWeight = max(0, _Shape3AlphaWeight + shapeWeightOffset);
+			#endif
+		#endif
+
+		//Mix all shapes
+        #if SHAPE2_ON
+			#if !SPLITRGBA_ON
+				_ShapeAlphaWeight = _ShapeColorWeight;
+				_Shape2AlphaWeight = _Shape2ColorWeight;
+			#endif
+			#if SHAPE3_ON //Shape3 On
+				#if !SPLITRGBA_ON
+					_Shape3AlphaWeight = _Shape3ColorWeight;
+				#endif
+			#if SHAPEADD_ON
+				col.rgb = ((shape1.rgb * _ShapeColorWeight) + (shape2.rgb * _Shape2ColorWeight)) + (shape3.rgb * _Shape3ColorWeight);
+				col.a = saturate(max(shape3.a * _Shape3AlphaWeight, max(shape1.a * _ShapeAlphaWeight, shape2.a * _Shape2AlphaWeight)));
+			#else
+				col.rgb = ((shape1.rgb * _ShapeColorWeight) * (shape2.rgb * _Shape2ColorWeight)) * (shape3.rgb * _Shape3ColorWeight);
+				col.a = saturate(((shape1.a * _ShapeAlphaWeight) * (shape2.a * _Shape2AlphaWeight)) * (shape3.a * _Shape3AlphaWeight));
+			#endif
+			#else //Shape3 Off
+				#if SHAPEADD_ON
+					col.rgb = (shape1.rgb * _ShapeColorWeight) + (shape2.rgb * _Shape2ColorWeight);
+					col.a = saturate(max(shape1.a * _ShapeAlphaWeight, shape2.a * _Shape2AlphaWeight));
+				#else
+					col.rgb = (shape1.rgb * _ShapeColorWeight) * (shape2.rgb * _Shape2ColorWeight);
+					col.a = saturate((shape1.a * _ShapeAlphaWeight) * (shape2.a * _Shape2AlphaWeight));
+				#endif
+			#endif
         #endif
-		//------------------------------------
 
-		//NEGATIVE_ON
-		#if NEGATIVE_ON
-			col.rgb = lerp(col.rgb, 1 - col.rgb, _NegativeAmount);
-		#endif
-
-		//--------------
-		half luminance = 0;
-
-		//GREYSCALE_ON && !GREYSCALEOUTLINE_ON
-		#if GREYSCALE_ON && !GREYSCALEOUTLINE_ON
+		#if SHAPE1MASK_ON
+            col = lerp(col, shape1, pow(SAMPLE_TEXTURE2D(_Shape1MaskTex, sampler_Shape1MaskTex, TRANSFORM_TEX(i.uvSeed.xy, _Shape1MaskTex)).r, _Shape1MaskPow));
+        #endif
+		
+		#if PREMULTIPLYCOLOR_ON
+			half luminance = 0;
 			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _GreyscaleLuminosity);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _GreyscaleTintColor, _GreyscaleBlend);
-		#endif
-		//------------------------------------
+			luminance *= col.a;
+			col.a = min(luminance, col.a);
+        #endif
 
-		//GHOST_ON
-		#if GHOST_ON
+		col.rgb *= _Color.rgb * d.vertexColor.rgb;
+		#if PREMULTIPLYALPHA_ON
+			col.rgb *= col.a;
+        #endif
+
+        #if !PREMULTIPLYCOLOR_ON && (COLORRAMP_ON || ALPHAFADE_ON || COLORGRADING_ON || FADE_ON || (ADDITIVECONFIG_ON && (GLOW_ON || DEPTHGLOW_ON)))
+			half luminance = 0;
 			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			half4 ghostResult;
-			ghostResult.a = saturate(luminance - _GhostTransparency) * col.a;
-			ghostResult.rgb = col.rgb * (luminance + _GhostColorBoost);
-			col = lerp(col, ghostResult, _GhostBlend);
-		#endif
-		//------------------------------------
+			luminance *= col.a;
+        #endif
 
-		//INNEROUTLINE_ON
-		#if INNEROUTLINE_ON
-			half3 innerT = abs(GetPixel(0, _InnerOutlineThickness, d.texcoord0.xy, _MainTex, sampler_MainTex) - GetPixel(0, -_InnerOutlineThickness, d.texcoord0.xy, _MainTex, sampler_MainTex));
-			innerT += abs(GetPixel(_InnerOutlineThickness, 0, d.texcoord0.xy, _MainTex, sampler_MainTex) - GetPixel(-_InnerOutlineThickness, 0, d.texcoord0.xy, _MainTex, sampler_MainTex));
-			#if !ONLYINNEROUTLINE_ON
-				innerT = (innerT / 2.0) * col.a * _InnerOutlineAlpha;
-				col.rgb += length(innerT) * _InnerOutlineColor.rgb * _InnerOutlineGlow;
+		#if (FADE_ON || ALPHAFADE_ON) && ALPHAFADEINPUTSTREAM_ON
+			col.a *= d.vertexColor.a;
+			d.vertexColor.a = d.texcoord0.w;
+        #endif
+
+		#if FADE_ON
+			half preFadeAlpha = col.a;
+			_FadeAmount = saturate(_FadeAmount + (1 - d.vertexColor.a));
+			_FadeTransition = max(0.01, _FadeTransition * EaseOutQuint(saturate(_FadeAmount)));
+			half2 fadeUv;
+			fadeUv = d.texcoord0.xy + seed;
+			fadeUv.x += (time * _FadeScrollXSpeed) % 1;
+			fadeUv.y += (time * _FadeScrollYSpeed) % 1;
+			half2 tiledUvFade1 = TRANSFORM_TEX(fadeUv, _FadeTex);
+			#if ADDITIVECONFIG_ON && !PREMULTIPLYCOLOR_ON
+				preFadeAlpha *= luminance;
+			#endif
+			_FadeAmount = saturate(pow(_FadeAmount, _FadePower));
+			#if FADEBURN_ON
+				half2 tiledUvFade2 = TRANSFORM_TEX(fadeUv, _FadeBurnTex);
+				half fadeSample = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
+				half fadeNaturalEdge = saturate(smoothstep(0.0 , _FadeTransition, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				col.a *= fadeNaturalEdge;
+				half fadeBurn = saturate(smoothstep(0.0 , _FadeTransition + _FadeBurnWidth, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				fadeBurn = fadeNaturalEdge - fadeBurn;
+				_FadeBurnColor.rgb *= _FadeBurnGlow;
+				col.rgb += fadeBurn * SAMPLE_TEXTURE2D(_FadeBurnTex, sampler_FadeBurnTex, tiledUvFade2).rgb * _FadeBurnColor.rgb * preFadeAlpha;
 			#else
-				innerT *= col.a * _InnerOutlineAlpha;
-				col.rgb = length(innerT) * _InnerOutlineColor.rgb * _InnerOutlineGlow;
-				col.a = step(0.3, col.r+col.g+col.b);
+				half fadeSample = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
+				float fade = saturate(smoothstep(0.0 , _FadeTransition, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				col.a *= fade;
+			#endif
+			#if ALPHAFADETRANSPARENCYTOO_ON
+				col.a *= 1 - _FadeAmount;
 			#endif
 		#endif
-		//-------------------------------------------------------
 
-		//HITEFFECT_ON
-		#if HITEFFECT_ON
-			col.rgb = lerp(col.rgb, _HitEffectColor.rgb * _HitEffectGlow, _HitEffectBlend);
-		#endif
-		//--------------------
-
-		//GRADIENT_ON
-		#if GRADIENT_ON
-			half2 tiledUvGrad = half2(uvRect.x / _MainTex_ST.x, uvRect.y / _MainTex_ST.y);
-			#if GRADIENT2COL_ON
-				_GradTopRightCol = _GradTopLeftCol;
-				_GradBotRightCol = _GradBotLeftCol;
-			#endif
-			#if RADIALGRADIENT_ON
-				half radialDist = 1 - length(tiledUvGrad - half2(0.5, 0.5));
-				radialDist *= (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
-				radialDist = saturate(_GradBoostX * radialDist);
-				half4 gradientResult = lerp(_GradTopLeftCol, _GradBotLeftCol, radialDist);
+		#if ALPHAFADE_ON
+			half alphaFadeLuminance;
+			_AlphaFadeAmount = saturate(_AlphaFadeAmount + (1 - d.vertexColor.a));
+			_AlphaFadeAmount = saturate(pow(_AlphaFadeAmount, _AlphaFadePow));
+			_AlphaFadeSmooth = max(0.01, _AlphaFadeSmooth * EaseOutQuint(saturate(_AlphaFadeAmount)));
+			#if ALPHAFADEUSESHAPE1_ON
+				alphaFadeLuminance = shape1.r;
 			#else
-				half gradXLerpFactor = saturate(pow(tiledUvGrad.x, _GradBoostX));
-				half4 gradientResult = lerp(lerp(_GradBotLeftCol, _GradBotRightCol, gradXLerpFactor),
-				lerp(_GradTopLeftCol, _GradTopRightCol, gradXLerpFactor), saturate(pow(tiledUvGrad.y, _GradBoostY)));
+				alphaFadeLuminance = luminance;
 			#endif
-			gradientResult = lerp(col, gradientResult, _GradBlend);
-			col.rgb = gradientResult.rgb * col.a;
-			col.a *= gradientResult.a;
-		#endif
-		//--------------------------------------------------------------------
+				alphaFadeLuminance = saturate(alphaFadeLuminance - 0.001);
+			#if ALPHAFADEUSEREDCHANNEL_ON
+				col.a *= col.r;
+			#endif
+				col.a = saturate(col.a);
+				float alphaFade = saturate(smoothstep(0.0 , _AlphaFadeSmooth, RemapFloat(1.0 - _AlphaFadeAmount, 0.0, 1.0, -1.0, 1.0) + alphaFadeLuminance));
+				col.a *= alphaFade;
+			#if ALPHAFADETRANSPARENCYTOO_ON
+				col.a *= 1 - _AlphaFadeAmount;
+			#endif
+        #endif
 
-		//CONTRAST_ON
-		#if CONTRAST_ON
-			col.rgb = (col.rgb - float3(0.5, 0.5, 0.5)) * _Contrast + float3(0.5, 0.5, 0.5);
-			col.rgb += _Brightness;
-		#endif
+		#if BACKFACETINT_ON
+			col.rgb = lerp(col.rgb * _BackFaceTint, col.rgb * _FrontFaceTint, step(0, dot(d.worldSpaceNormal, d.worldSpaceViewDir)));
+        #endif
 
-		//-------------------------------------------------------------------
+		//#if LIGHTANDSHADOW_ON
+			//half NdL = saturate(dot(d.worldSpaceNormal, -_All1VfxLightDir));
+			//col.rgb += _LightColor * _LightAmount * NdL;
+			//NdL = max(_ShadowAmount, NdL);
+            //NdL = smoothstep(_ShadowStepMin, _ShadowStepMax, NdL);
+            //col.rgb *= NdL;
+		//#endif
 
-		//COLORSWAP_ON
-		#if COLORSWAP_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			half4 swapMask = SAMPLE_TEXTURE2D(_ColorSwapTex, sampler_ColorSwapTex, d.texcoord0.xy);
-			swapMask.rgb *= swapMask.a;
-			half3 redSwap = _ColorSwapRed * swapMask.r * saturate(luminance + _ColorSwapRedLuminosity);
-			half3 greenSwap = _ColorSwapGreen * swapMask.g * saturate(luminance + _ColorSwapGreenLuminosity);
-			half3 blueSwap = _ColorSwapBlue * swapMask.b * saturate(luminance + _ColorSwapBlueLuminosity);
-			swapMask.rgb = col.rgb * saturate(1 - swapMask.r - swapMask.g - swapMask.b);
-			col.rgb = lerp(col.rgb, swapMask.rgb + redSwap + greenSwap + blueSwap, _ColorSwapBlend);
-		#endif
-		//--------------------------------------------------------------------
+		#if COLORGRADING_ON
+			col.rgb *= lerp(lerp(_ColorGradingDark, _ColorGradingMiddle, luminance/_ColorGradingMidPoint),
+			lerp(_ColorGradingMiddle, _ColorGradingLight, (luminance - _ColorGradingMidPoint)/(1.0 - _ColorGradingMidPoint)), step(_ColorGradingMidPoint, luminance));
+        #endif
 
-		//COLORRAMP_ON && !COLORRAMPOUTLINE_ON
-		#if COLORRAMP_ON && !COLORRAMPOUTLINE_ON 
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _ColorRampLuminosity);
-			#if GRADIENTCOLORRAMP_ON
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(luminance, 0)).rgb, _ColorRampBlend);
+		#if COLORRAMP_ON
+			half colorRampLuminance = saturate(luminance + _ColorRampLuminosity);
+			#if COLORRAMPGRAD_ON
+				half4 colorRampRes = SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(colorRampLuminance, 0));
 			#else
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(luminance, 0)).rgb, _ColorRampBlend);
+				half4 colorRampRes = SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(colorRampLuminance, 0));
 			#endif
-		#endif
-		//--------------------------------------------------------------------
+			col.rgb = lerp(col.rgb, colorRampRes.rgb, _ColorRampBlend);
+			col.a = lerp(col.a, saturate(col.a * colorRampRes.a), _ColorRampBlend);
+        #endif
 
-		//CHANGECOLOR_ON
-		#if CHANGECOLOR_ON
-			float3 currChangeColor = saturate(col.rgb);
-			luminance = 0.3 * currChangeColor.r + 0.59 * currChangeColor.g + 0.11 * currChangeColor.b;
-			luminance = saturate(luminance + _ColorChangeLuminosity);
-			half3 dif = abs(currChangeColor - _ColorChangeTarget.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance), 0.0));
-			#if CHANGECOLOR2_ON
-			dif = abs(currChangeColor - _ColorChangeTarget2.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol2.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance2), 0.0));
-			#endif
-			#if CHANGECOLOR3_ON
-			dif = abs(currChangeColor - _ColorChangeTarget3.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol3.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance3), 0.0));
-			#endif
-		#endif
-		//-------------------------------------------------------
-
-		//POSTERIZE_ON && !POSTERIZEOUTLINE_ON
 		#if POSTERIZE_ON && !POSTERIZEOUTLINE_ON
-			col.rgb = pow(col.rgb, _PosterizeGamma) * _PosterizeNumColors;
-			col.rgb = floor(col.rgb) / _PosterizeNumColors;
-			col.rgb = pow(col.rgb, 1.0 / _PosterizeGamma);
+			col.rgb = floor(col.rgb / (1.0 / _PosterizeNumColors)) * (1.0 / _PosterizeNumColors);
 		#endif
-		//------------------------------------
 
-		//HSV_ON
+		#if DEPTHGLOW_ON
+			half sceneDepthDiff = GetLinearEyeDepth(d.screenUV) - d.screenPos.w;
+        #endif
+
+		#if RIM_ON
+			half NdV = 1 - abs(dot(d.worldSpaceNormal, d.worldSpaceViewDir));
+			half rimFactor = saturate(_RimBias + _RimScale * pow(NdV, _RimPower));
+			half4 rimCol = _RimColor * rimFactor;
+			rimCol.rgb *= _RimIntensity;
+			col.rgb = lerp(col.rgb * (rimCol.rgb + half3(1,1,1)), col.rgb + rimCol.rgb, _RimAddAmount);
+			col.a = saturate(col.a * (1 - rimFactor * _RimErodesAlpha));
+        #endif
+
+		#if DEPTHGLOW_ON
+			half depthGlowMask = saturate(_DepthGlowDist * pow((1 - sceneDepthDiff), _DepthGlowPow));
+			col.rgb = lerp(col.rgb, _DepthGlowGlobal * col.rgb, depthGlowMask);
+			half depthGlowMult = 1;
+			#if ADDITIVECONFIG_ON
+				depthGlowMult = luminance;
+			#endif
+			col.rgb += _DepthGlowColor.rgb * _DepthGlow * depthGlowMask * col.a * depthGlowMult;
+        #endif
+
+		#if GLOW_ON
+			half glowMask = 1;
+			#if GLOWTEX_ON
+				glowMask = SAMPLE_TEXTURE2D(_GlowTex, sampler_GlowTex, TRANSFORM_TEX(d.texcoord0.xy, _GlowTex));
+			#endif
+				col.rgb *= _GlowGlobal * glowMask;
+				half glowMult = 1;
+			#if ADDITIVECONFIG_ON
+				glowMult = luminance;
+			#endif
+			
+			col.rgb += _GlowColor.rgb * _Glow * glowMask * col.a * glowMult;
+        #endif
+
 		#if HSV_ON
 			half3 resultHsv = half3(col.rgb);
 			half cosHsv = _HsvBright * _HsvSaturation * cos(_HsvShift * 3.14159265 / 180);
 			half sinHsv = _HsvBright * _HsvSaturation * sin(_HsvShift * 3.14159265 / 180);
 			resultHsv.x = (.299 * _HsvBright + .701 * cosHsv + .168 * sinHsv) * col.x
-			+ (.587 * _HsvBright - .587 * cosHsv + .330 * sinHsv) * col.y
-			+ (.114 * _HsvBright - .114 * cosHsv - .497 * sinHsv) * col.z;
+				+ (.587 * _HsvBright - .587 * cosHsv + .330 * sinHsv) * col.y
+				+ (.114 * _HsvBright - .114 * cosHsv - .497 * sinHsv) * col.z;
 			resultHsv.y = (.299 * _HsvBright - .299 * cosHsv - .328 * sinHsv) *col.x
-			+ (.587 * _HsvBright + .413 * cosHsv + .035 * sinHsv) * col.y
-			+ (.114 * _HsvBright - .114 * cosHsv + .292 * sinHsv) * col.z;
+				+ (.587 * _HsvBright + .413 * cosHsv + .035 * sinHsv) * col.y
+				+ (.114 * _HsvBright - .114 * cosHsv + .292 * sinHsv) * col.z;
 			resultHsv.z = (.299 * _HsvBright - .3 * cosHsv + 1.25 * sinHsv) * col.x
-			+ (.587 * _HsvBright - .588 * cosHsv - 1.05 * sinHsv) * col.y
-			+ (.114 * _HsvBright + .886 * cosHsv - .203 * sinHsv) * col.z;
+				+ (.587 * _HsvBright - .588 * cosHsv - 1.05 * sinHsv) * col.y
+				+ (.114 * _HsvBright + .886 * cosHsv - .203 * sinHsv) * col.z;
 			col.rgb = resultHsv;
 		#endif
-		//-------------------------------------------------------
 
-		//OVERLAY_ON
-		#if OVERLAY_ON
-			half2 overlayUvs = d.texcoord0.xy;
-			overlayUvs.x += ((_Time.y + randomSeed) * _OverlayTextureScrollXSpeed) % 1;
-			overlayUvs.y += ((_Time.y + randomSeed) * _OverlayTextureScrollYSpeed) % 1;
-			half4 overlayCol = SAMPLE_TEXTURE2D(_OverlayTex, sampler_OverlayTex, TRANSFORM_TEX(overlayUvs, _OverlayTex));
-			overlayCol.rgb *= _OverlayColor.rgb * _OverlayGlow;
-			#if !OVERLAYMULT_ON
-				overlayCol.rgb *= overlayCol.a * _OverlayColor.rgb * _OverlayColor.a * _OverlayBlend;
-				col.rgb += overlayCol.rgb;
-			#else
-				overlayCol.a *= _OverlayColor.a;
-				col = lerp(col, col * overlayCol, _OverlayBlend);
+		#if CAMDISTFADE_ON
+			col.a *= 1 - saturate(smoothstep(_CamDistFadeStepMin, _CamDistFadeStepMax, camDistance));
+			col.a *= smoothstep(0.0, _CamDistProximityFade, camDistance);
+		#endif
+
+		#if MASK_ON
+            half2 maskUv = d.texcoord0.xy;
+            #if POLARUV_ON
+				maskUv = prePolarUvs;
 			#endif
+            half4 maskSample = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, TRANSFORM_TEX(maskUv, _MaskTex));
+			half mask = pow(min(maskSample.r, maskSample.a), _MaskPow);
+			col.a *= mask;
+        #endif
+
+		#if ALPHASMOOTHSTEP_ON
+			col.a = smoothstep(_AlphaStepMin, _AlphaStepMax, col.a);
+        #endif
+
+		half4 debugColor = col;
+		#if SHAPEDEBUG_ON
+			debugColor = GetDebugColor(col, shape1, shape2, shape3);
 		#endif
 
-		//---------------------------------
+		clip(debugColor.a - _AlphaCutoffValue - 0.01);
 
-		//OUTBASE_ON
-		#if OUTBASE_ON
-			#if OUTBASEPIXELPERF_ON
-				half2 destUv = half2(_OutlinePixelWidth * _MainTex_TexelSize.x, _OutlinePixelWidth * _MainTex_TexelSize.y);
-			#else
-				half2 destUv = half2(_OutlineWidth * _MainTex_TexelSize.x * 200, _OutlineWidth * _MainTex_TexelSize.y * 200);
-			#endif
+		//#if FOG_ON
+			//UNITY_APPLY_FOG(i.fogCoord, col);
+        //#endif
+		
+		//Don't use a starting i.color.a lower than 1 unless using vertex stream dissolve when using a FADE effect
+        #if !FADE_ON && !ALPHAFADE_ON
+			col.a *= _Alpha * d.vertexColor.a;
+        #endif
+        #if FADE_ON || ALPHAFADE_ON
+			col.a *= _Alpha;
+        #endif
+        #if ADDITIVECONFIG_ON
+			col.rgb *= col.a;
+        #endif
 
-			#if OUTDIST_ON
-				d.texcoord3.x += ((_Time.x + _RandomSeed) * _OutlineDistortTexXSpeed) % 1;
-				d.texcoord3.y += ((_Time.x + _RandomSeed) * _OutlineDistortTexYSpeed) % 1;
-				#if ATLAS_ON
-					d.texcoord3 = half2((d.texcoord3.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord3.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				#endif
-				half outDistortAmnt = (SAMPLE_TEXTURE2D(_OutlineDistortTex, sampler_OutlineDistortTex, d.texcoord3).r - 0.5) * 0.2 * _OutlineDistortAmount;
-				destUv.x += outDistortAmnt;
-				destUv.y += outDistortAmnt;
-			#endif
-
-			half spriteLeft		= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, 0)).a;
-			half spriteRight	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy - half2(destUv.x, 0)).a;
-			half spriteBottom	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(0, destUv.y)).a;
-			half spriteTop		= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy - half2(0, destUv.y)).a;
-			half result = spriteLeft + spriteRight + spriteBottom + spriteTop;
-
-			#if OUTBASE8DIR_ON
-				half spriteTopLeft	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, destUv.y)).a;
-				half spriteTopRight = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-destUv.x, destUv.y)).a;
-				half spriteBotLeft	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, -destUv.y)).a;
-				half spriteBotRight = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-destUv.x, -destUv.y)).a;
-				result = result + spriteTopLeft + spriteTopRight + spriteBotLeft + spriteBotRight;
-			#endif
-					
-			result = step(0.05, saturate(result));
-
-			#if OUTTEX_ON
-				d.texcoord1.x += ((_Time.x + _RandomSeed) * _OutlineTexXSpeed) % 1;
-				d.texcoord1.y += ((_Time.x + _RandomSeed) * _OutlineTexYSpeed) % 1;
-				#if ATLAS_ON
-					d.texcoord1 = half2((d.texcoord1.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord1.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				#endif
-				half4 tempOutColor = SAMPLE_TEXTURE2D(_OutlineTex, sampler_OutlineTex, d.texcoord1);
-				tempOutColor *= _OutlineColor;
-				_OutlineColor = tempOutColor;
-			#endif
-
-			result *= (1 - originalAlpha) * _OutlineAlpha;
-
-			half4 outline = _OutlineColor * d.vertexColor.a;
-			outline.rgb *= _OutlineGlow;
-			outline.a = result;
-			#if ONLYOUTLINE_ON
-			col = outline;
-			#else
-			col = lerp(col, outline, result);
-			#endif
+		
+		#if SHAPEDEBUG_ON
+		o.Albedo = debugColor.rgb; 
+		o.Alpha = debugColor.a;
+		#else
+		o.Albedo = col.rgb; 
+		o.Alpha = col.a;
 		#endif
-		//-------------------------------------------------------
-
-		//FADE_ON
-		#if FADE_ON
-			half2 tiledUvFade1	= TRANSFORM_TEX(d.texcoord0, _FadeTex);
-			half2 tiledUvFade2	= TRANSFORM_TEX(d.texcoord0, _FadeBurnTex);
-			#if ATLAS_ON
-				tiledUvFade1 = half2((tiledUvFade1.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUvFade1.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				tiledUvFade2 = half2((tiledUvFade2.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUvFade2.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			half fadeTemp = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
-			half fade = smoothstep(_FadeAmount, _FadeAmount + _FadeBurnTransition, fadeTemp);
-			half fadeBurn = saturate(smoothstep(_FadeAmount - _FadeBurnWidth, _FadeAmount - _FadeBurnWidth + 0.1, fadeTemp) * _FadeAmount);
-			col.a *= fade;
-			_FadeBurnColor.rgb *= _FadeBurnGlow;
-			col += fadeBurn * SAMPLE_TEXTURE2D(_FadeBurnTex, sampler_FadeBurnTex, tiledUvFade2) * _FadeBurnColor * originalAlpha * (1 - col.a);
-		#endif
-		//-------------------------------------------------------
-
-		//SHADOW_ON
-		#if SHADOW_ON
-			half shadowA = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(_ShadowX, _ShadowY)).a;
-			half preMultShadowMask = 1 - (saturate(shadowA - col.a) * (1 - col.a));
-			col.rgb *= 1 - ((shadowA - col.a) * (1 - col.a));
-			col.rgb += (_ShadowColor * shadowA) * (1 - col.a);
-			col.a = max(shadowA * _ShadowAlpha * d.vertexColor.a, col.a);
-		#endif
-
-		//-------------------------------------------------------
-
-		//GLOW_ON
-		#if GLOW_ON
-			half4 emission;
-			#if GLOWTEX_ON
-				emission = SAMPLE_TEXTURE2D(_GlowTex, sampler_GlowTex, d.texcoord0);
-			#else
-				emission = col;
-			#endif
-
-			col.rgb *= _GlowGlobal;
-			emission.rgb *= emission.a * col.a * _Glow * _GlowColor;
-			col.rgb += emission.rgb;
-		#endif
-		//-------------------------------------------------------
-
-		//COLORRAMP_ON && COLORRAMPOUTLINE_ON
-		#if COLORRAMP_ON && COLORRAMPOUTLINE_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _ColorRampLuminosity);
-			#if GRADIENTCOLORRAMP_ON
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(luminance, 0)).rgb, _ColorRampBlend);
-			#else
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(luminance, 0)).rgb, _ColorRampBlend);
-			#endif
-		#endif
-		//---------------
-
-		//GREYSCALE_ON && GREYSCALEOUTLINE_ON
-		#if GREYSCALE_ON && GREYSCALEOUTLINE_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _GreyscaleLuminosity);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _GreyscaleTintColor, _GreyscaleBlend);
-		#endif
-
-		//-----------------------------------
-
-		//POSTERIZE_ON && POSTERIZEOUTLINE_ON
-		#if POSTERIZE_ON && POSTERIZEOUTLINE_ON
-			col.rgb = pow(col.rgb, _PosterizeGamma) * _PosterizeNumColors;
-			col.rgb = floor(col.rgb) / _PosterizeNumColors;
-			col.rgb = pow(col.rgb, 1.0 / _PosterizeGamma);
-		#endif
-
-		//-----------------------------------
-
-		//SHINE_ON
-		#if SHINE_ON
-			half2 uvShine = uvRect;
-			half cosAngle = cos(_ShineRotate);
-			half sinAngle = sin(_ShineRotate);
-			half2x2 rot = half2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
-			uvShine -= half2(0.5, 0.5);
-			uvShine = mul(rot, uvShine);
-			uvShine += half2(0.5, 0.5);
-			half shineMask = SAMPLE_TEXTURE2D(_ShineMask, sampler_ShineMask, d.texcoord0.xy).a;
-			half currentDistanceProjection = (uvShine.x + uvShine.y) / 2;
-			half whitePower = 1 - (abs(currentDistanceProjection - _ShineLocation) / _ShineWidth);
-			col.rgb +=  col.a * whitePower * _ShineGlow * max(sign(currentDistanceProjection - (_ShineLocation - _ShineWidth)), 0.0)
-			* max(sign((_ShineLocation + _ShineWidth) - currentDistanceProjection), 0.0) * _ShineColor * shineMask;
-		#endif
-
-		//-----------------------------------
-
-		//HOLOGRAM_ON
-		#if HOLOGRAM_ON
-			half totalHologram = _HologramStripesAmount + _HologramUnmodAmount;
-			half hologramYCoord = ((uvRect.y + (((_Time.x + randomSeed) % 1) * _HologramStripesSpeed)) % totalHologram) / totalHologram;
-			hologramYCoord = abs(hologramYCoord);
-			half alpha = RemapFloat(saturate(hologramYCoord - (_HologramUnmodAmount/totalHologram)), 0.0, 1.0, _HologramMinAlpha, saturate(_HologramMaxAlpha));
-			half hologramMask = max(sign((_HologramUnmodAmount/totalHologram) - hologramYCoord), 0.0);
-			half4 hologramResult = col;
-			hologramResult.a *= lerp(alpha, 1, hologramMask);
-			hologramResult.rgb *= max(1, _HologramMaxAlpha * max(sign(hologramYCoord - (_HologramUnmodAmount/totalHologram)), 0.0));
-			hologramMask = 1 - step(0.01,hologramMask);
-			hologramResult.rgb += hologramMask * _HologramStripeColor * col.a;
-			col = lerp(col, hologramResult, _HologramBlend);
-		#endif
-
-		//-----------------------------------
-
-		//FLICKER_ON
-		#if FLICKER_ON
-			col.a *= saturate(col.a * step(frac(0.05 + (_Time.w + randomSeed) * _FlickerFreq), 1 - _FlickerPercent) + _FlickerAlpha);
-		#endif
-		//-----------------------------------
-
-		//ALPHACUTOFF_ON
-
-		//ALPHAROUND_ON
-
-		//ALPHAOUTLINE_ON
-		#if ALPHAOUTLINE_ON
-			half alphaOutlineRes = pow(1 - col.a, max(_AlphaOutlinePower, 0.0001)) * step(_AlphaOutlineMinAlpha, col.a) * _AlphaOutlineBlend;
-			col.rgb = lerp(col.rgb, _AlphaOutlineColor.rgb * _AlphaOutlineGlow, alphaOutlineRes);
-			col.a = lerp(col.a, 1, alphaOutlineRes > 1);
-		#endif
-		//-------------------------------------------------------
-
-		//FOG_ON
-
-		//------------------
-
-        col *= _Color;
-		o.Albedo = col;
-		col.a *= _Alpha;
-        clip(col.a - _AlphaCutoffValue - 0.01);
-		o.Alpha = _Color.a;
 	}
 
 
@@ -9744,19 +9037,19 @@ ZWrite On
 
 
                  // #if %EXTRAV2F0REQUIREKEY%
-                 // v2p.extraV2F0 = d.extraV2F0;
+                  v2p.extraV2F0 = d.extraV2F0;
                  // #endif
 
                  // #if %EXTRAV2F1REQUIREKEY%
-                 // v2p.extraV2F1 = d.extraV2F1;
+                  v2p.extraV2F1 = d.extraV2F1;
                  // #endif
 
                  // #if %EXTRAV2F2REQUIREKEY%
-                 // v2p.extraV2F2 = d.extraV2F2;
+                  v2p.extraV2F2 = d.extraV2F2;
                  // #endif
 
                  // #if %EXTRAV2F3REQUIREKEY%
-                 // v2p.extraV2F3 = d.extraV2F3;
+                  v2p.extraV2F3 = d.extraV2F3;
                  // #endif
 
                  // #if %EXTRAV2F4REQUIREKEY%
@@ -9783,19 +9076,19 @@ ZWrite On
                ZERO_INITIALIZE(Blackboard, d.blackboard);
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // d.extraV2F0 = v2p.extraV2F0;
+                d.extraV2F0 = v2p.extraV2F0;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // d.extraV2F1 = v2p.extraV2F1;
+                d.extraV2F1 = v2p.extraV2F1;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // d.extraV2F2 = v2p.extraV2F2;
+                d.extraV2F2 = v2p.extraV2F2;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // d.extraV2F3 = v2p.extraV2F3;
+                d.extraV2F3 = v2p.extraV2F3;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -9847,19 +9140,19 @@ ZWrite On
                // Ext_ModifyTessellatedVertex29(v, d);
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // v2p.extraV2F0 = d.extraV2F0;
+                v2p.extraV2F0 = d.extraV2F0;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // v2p.extraV2F1 = d.extraV2F1;
+                v2p.extraV2F1 = d.extraV2F1;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // v2p.extraV2F2 = d.extraV2F2;
+                v2p.extraV2F2 = d.extraV2F2;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // v2p.extraV2F3 = d.extraV2F3;
+                v2p.extraV2F3 = d.extraV2F3;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -9979,7 +9272,7 @@ ZWrite On
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), d.worldSpaceTangent.xyz));
 
             // #if %SCREENPOSREQUIREKEY%
-            // d.screenUV = (IN.ScreenPosition.xy / max(0.01, IN.ScreenPosition.w));
+             d.screenUV = (IN.ScreenPosition.xy / max(0.01, IN.ScreenPosition.w));
             // #endif
 
             return d;
@@ -10007,11 +9300,11 @@ ZWrite On
 
             d.tangentSpaceViewDir = mul(d.TBNMatrix, d.worldSpaceViewDir);
              d.texcoord0 = i.texcoord0;
-             d.texcoord1 = i.texcoord1;
-             d.texcoord2 = i.texcoord2;
+            // d.texcoord1 = i.texcoord1;
+            // d.texcoord2 = i.texcoord2;
 
             // #if %TEXCOORD3REQUIREKEY%
-             d.texcoord3 = i.texcoord3;
+            // d.texcoord3 = i.texcoord3;
             // #endif
 
             // d.isFrontFace = facing;
@@ -10029,25 +9322,25 @@ ZWrite On
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldTangent.xyz));
 
             // #if %SCREENPOSREQUIREKEY%
-            // d.screenPos = i.screenPos;
-            // d.screenUV = (i.screenPos.xy / i.screenPos.w);
+             d.screenPos = i.screenPos;
+             d.screenUV = (i.screenPos.xy / i.screenPos.w);
             // #endif
 
 
             // #if %EXTRAV2F0REQUIREKEY%
-            // d.extraV2F0 = i.extraV2F0;
+             d.extraV2F0 = i.extraV2F0;
             // #endif
 
             // #if %EXTRAV2F1REQUIREKEY%
-            // d.extraV2F1 = i.extraV2F1;
+             d.extraV2F1 = i.extraV2F1;
             // #endif
 
             // #if %EXTRAV2F2REQUIREKEY%
-            // d.extraV2F2 = i.extraV2F2;
+             d.extraV2F2 = i.extraV2F2;
             // #endif
 
             // #if %EXTRAV2F3REQUIREKEY%
-            // d.extraV2F3 = i.extraV2F3;
+             d.extraV2F3 = i.extraV2F3;
             // #endif
 
             // #if %EXTRAV2F4REQUIREKEY%
@@ -10118,11 +9411,11 @@ ZWrite On
            #endif
 
             o.texcoord0 = v.texcoord0;
-            o.texcoord1 = v.texcoord1;
-            o.texcoord2 = v.texcoord2;
+           // o.texcoord1 = v.texcoord1;
+           // o.texcoord2 = v.texcoord2;
 
            // #if %TEXCOORD3REQUIREKEY%
-            o.texcoord3 = v.texcoord3;
+           // o.texcoord3 = v.texcoord3;
            // #endif
 
            // #if %VERTEXCOLORREQUIREKEY%
@@ -10161,14 +9454,14 @@ ZWrite On
           #endif
 
           // #if %SCREENPOSREQUIREKEY%
-          // o.screenPos = ComputeScreenPos(o.pos, _ProjectionParams.x);
+           o.screenPos = ComputeScreenPos(o.pos, _ProjectionParams.x);
           // #endif
 
           
           #if _PASSFORWARD || _PASSGBUFFER
               float2 uv1 = v.texcoord1.xy;
               OUTPUT_LIGHTMAP_UV(uv1, unity_LightmapST, o.lightmapUV);
-               o.texcoord1.xy = uv1;
+              // o.texcoord1.xy = uv1;
               #if UNITY_VERSION < 60000009
                 OUTPUT_SH(o.worldNormal, o.sh);
               #endif
@@ -10338,10 +9631,15 @@ ZWrite On
             Cull Off
             
 
-            	Tags { "RenderType" = "Opaque" "Queue" = "Geometry" "PreviewType" = "Plane" }
+            	Tags
+    {
+        "RenderType" = "Opaque" "Queue" = "Geometry" "PreviewType" = "Sphere"
+    }   
 	Cull [_CullingOption]
 	ZWrite [_ZWrite]
 	ZTest [_ZTestMode]
+	ColorMask [_ColorMask]
+Lighting Off
 
 
             HLSLPROGRAM
@@ -10359,81 +9657,81 @@ ZWrite On
 
 
             
-	#pragma shader_feature_local GLOW_ON
-	#pragma shader_feature_local FADE_ON
-	#pragma shader_feature_local OUTBASE_ON
-	#pragma shader_feature_local ONLYOUTLINE_ON
-	#pragma shader_feature_local GRADIENT_ON
-	#pragma shader_feature_local GRADIENT2COL_ON
-	#pragma shader_feature_local RADIALGRADIENT_ON
-	#pragma shader_feature_local COLORSWAP_ON
-	#pragma shader_feature_local HSV_ON
-	#pragma shader_feature_local CHANGECOLOR_ON
-	#pragma shader_feature_local CHANGECOLOR2_ON
-	#pragma shader_feature_local CHANGECOLOR3_ON
-	#pragma shader_feature_local COLORRAMP_ON
-	#pragma shader_feature_local GRADIENTCOLORRAMP_ON
-	#pragma shader_feature_local HITEFFECT_ON
-	#pragma shader_feature_local NEGATIVE_ON
-	#pragma shader_feature_local PIXELATE_ON
-	#pragma shader_feature_local GREYSCALE_ON
-	#pragma shader_feature_local POSTERIZE_ON
-	#pragma shader_feature_local BLUR_ON
-	#pragma shader_feature_local MOTIONBLUR_ON
-	#pragma shader_feature_local GHOST_ON
-	#pragma shader_feature_local ALPHAOUTLINE_ON
-	#pragma shader_feature_local INNEROUTLINE_ON
-	#pragma shader_feature_local ONLYINNEROUTLINE_ON
-	#pragma shader_feature_local HOLOGRAM_ON
-	#pragma shader_feature_local CHROMABERR_ON
-	#pragma shader_feature_local GLITCH_ON
-	#pragma shader_feature_local FLICKER_ON
-	#pragma shader_feature_local SHADOW_ON
-	#pragma shader_feature_local SHINE_ON
-	#pragma shader_feature_local CONTRAST_ON
-	#pragma shader_feature_local OVERLAY_ON
-	#pragma shader_feature_local OVERLAYMULT_ON
-	#pragma shader_feature_local DOODLE_ON
-	#pragma shader_feature_local WIND_ON
-	#pragma shader_feature_local WAVEUV_ON
-	#pragma shader_feature_local ROUNDWAVEUV_ON
-	#pragma shader_feature_local RECTSIZE_ON
-	#pragma shader_feature_local OFFSETUV_ON
-	#pragma shader_feature_local CLIPPING_ON
-	#pragma shader_feature_local RADIALCLIPPING_ON
-	#pragma shader_feature_local TEXTURESCROLL_ON
-	#pragma shader_feature_local ZOOMUV_ON
-	#pragma shader_feature_local DISTORT_ON
-	#pragma shader_feature_local WARP_ON
-	#pragma shader_feature_local TWISTUV_ON
-	#pragma shader_feature_local ROTATEUV_ON
-	#pragma shader_feature_local POLARUV_ON
-	#pragma shader_feature_local FISHEYE_ON
-	#pragma shader_feature_local PINCH_ON
+    #pragma shader_feature_local TIMEISCUSTOM_ON
+    #pragma shader_feature_local ADDITIVECONFIG_ON
+    #pragma shader_feature_local PREMULTIPLYALPHA_ON
+    #pragma shader_feature_local PREMULTIPLYCOLOR_ON
+    #pragma shader_feature_local SPLITRGBA_ON
+    #pragma shader_feature_local SHAPEADD_ON
+
+    #pragma shader_feature_local SHAPE1SCREENUV_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local SHAPE2SCREENUV_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local SHAPE3SCREENUV_ON /////////////////Pipeline specific implementation
+
+    #pragma shader_feature_local SHAPEDEBUG_ON
+            
+    #pragma shader_feature_local SHAPE1CONTRAST_ON
+    #pragma shader_feature_local SHAPE1DISTORT_ON
+    #pragma shader_feature_local SHAPE1ROTATE_ON
+    #pragma shader_feature_local SHAPE1SHAPECOLOR_ON
+
+    #pragma shader_feature_local SHAPE2_ON
+    #pragma shader_feature_local SHAPE2CONTRAST_ON
+    #pragma shader_feature_local SHAPE2DISTORT_ON
+    #pragma shader_feature_local SHAPE2ROTATE_ON
+    #pragma shader_feature_local SHAPE2SHAPECOLOR_ON
+
+    #pragma shader_feature_local SHAPE3_ON
+    #pragma shader_feature_local SHAPE3CONTRAST_ON
+    #pragma shader_feature_local SHAPE3DISTORT_ON
+    #pragma shader_feature_local SHAPE3ROTATE_ON
+    #pragma shader_feature_local SHAPE3SHAPECOLOR_ON
+
+    #pragma shader_feature_local GLOW_ON
+    #pragma shader_feature_local GLOWTEX_ON
+    #pragma shader_feature_local DEPTHGLOW_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local MASK_ON
+    #pragma shader_feature_local COLORRAMP_ON
+    #pragma shader_feature_local COLORRAMPGRAD_ON
+    #pragma shader_feature_local COLORGRADING_ON
+    #pragma shader_feature_local HSV_ON
+    #pragma shader_feature_local POSTERIZE_ON
+    #pragma shader_feature_local PIXELATE_ON
+    #pragma shader_feature_local DISTORT_ON
 	#pragma shader_feature_local SHAKEUV_ON
-
-	#pragma shader_feature_local GLOWTEX_ON
-	#pragma shader_feature_local OUTTEX_ON
-	#pragma shader_feature_local OUTDIST_ON
-	#pragma shader_feature_local OUTBASE8DIR_ON
-	#pragma shader_feature_local OUTBASEPIXELPERF_ON
-	#pragma shader_feature_local COLORRAMPOUTLINE_ON
-	#pragma shader_feature_local GREYSCALEOUTLINE_ON
-	#pragma shader_feature_local POSTERIZEOUTLINE_ON
-	#pragma shader_feature_local BLURISHD_ON
-	#pragma shader_feature_local MANUALWIND_ON
-	#pragma shader_feature_local ATLAS_ON
-	#pragma shader_feature_local PREMULTIPLYALPHA_ON
-
-	#pragma shader_feature BILBOARD_ON
-	#pragma shader_feature BILBOARDY_ON
+    #pragma shader_feature_local WAVEUV_ON
+	#pragma shader_feature_local ROUNDWAVEUV_ON
+    #pragma shader_feature_local TWISTUV_ON
+    #pragma shader_feature_local DOODLE_ON
+    #pragma shader_feature_local OFFSETSTREAM_ON
+    #pragma shader_feature_local TEXTURESCROLL_ON
+    #pragma shader_feature_local VERTOFFSET_ON
+    #pragma shader_feature_local RIM_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local BACKFACETINT_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local POLARUV_ON
+    #pragma shader_feature_local POLARUVDISTORT_ON
+    #pragma shader_feature_local SHAPE1MASK_ON
+    #pragma shader_feature_local TRAILWIDTH_ON
+    #pragma shader_feature_local LIGHTANDSHADOW_ON
+    #pragma shader_feature_local SHAPETEXOFFSET_ON
+    #pragma shader_feature_local SHAPEWEIGHTS_ON
+            
+    #pragma shader_feature_local ALPHACUTOFF_ON
+    #pragma shader_feature_local ALPHASMOOTHSTEP_ON
+    #pragma shader_feature_local FADE_ON
+    #pragma shader_feature_local FADEBURN_ON
+    #pragma shader_feature_local ALPHAFADE_ON
+    #pragma shader_feature_local ALPHAFADEUSESHAPE1_ON
+    #pragma shader_feature_local ALPHAFADEUSEREDCHANNEL_ON
+    #pragma shader_feature_local ALPHAFADETRANSPARENCYTOO_ON
+    #pragma shader_feature_local ALPHAFADEINPUTSTREAM_ON
+    #pragma shader_feature_local CAMDISTFADE_ON
 
 	#pragma shader_feature NORMALMAP_ON
 
 
    #define _URP 1
-#define _USINGTEXCOORD1 1
-#define _USINGTEXCOORD2 1
+#define REQUIRE_DEPTH_TEXTURE
 
 
 
@@ -10488,15 +9786,15 @@ ZWrite On
          float3 worldNormal : TEXCOORD1;
          float4 worldTangent : TEXCOORD2;
           float4 texcoord0 : TEXCOORD3;
-          float4 texcoord1 : TEXCOORD4;
-          float4 texcoord2 : TEXCOORD5;
+         // float4 texcoord1 : TEXCOORD4;
+         // float4 texcoord2 : TEXCOORD5;
 
          // #if %TEXCOORD3REQUIREKEY%
-          float4 texcoord3 : TEXCOORD6;
+         // float4 texcoord3 : TEXCOORD6;
          // #endif
 
          // #if %SCREENPOSREQUIREKEY%
-         // float4 screenPos : TEXCOORD7;
+          float4 screenPos : TEXCOORD7;
          // #endif
 
          // #if %VERTEXCOLORREQUIREKEY%
@@ -10523,19 +9821,19 @@ ZWrite On
          #endif
 
          // #if %EXTRAV2F0REQUIREKEY%
-         // float4 extraV2F0 : TEXCOORD13;
+          float4 extraV2F0 : TEXCOORD13;
          // #endif
 
          // #if %EXTRAV2F1REQUIREKEY%
-         // float4 extraV2F1 : TEXCOORD14;
+          float4 extraV2F1 : TEXCOORD14;
          // #endif
 
          // #if %EXTRAV2F2REQUIREKEY%
-         // float4 extraV2F2 : TEXCOORD15;
+          float4 extraV2F2 : TEXCOORD15;
          // #endif
 
          // #if %EXTRAV2F3REQUIREKEY%
-         // float4 extraV2F3 : TEXCOORD16;
+          float4 extraV2F3 : TEXCOORD16;
          // #endif
 
          // #if %EXTRAV2F4REQUIREKEY%
@@ -10700,7 +9998,7 @@ ZWrite On
                #endif
 
                // #if %TEXCOORD3REQUIREKEY%
-                float4 texcoord3 : TEXCOORD3;
+               // float4 texcoord3 : TEXCOORD3;
                // #endif
 
                // #if %VERTEXCOLORREQUIREKEY%
@@ -10727,7 +10025,7 @@ ZWrite On
                float4 texcoord2 : TEXCOORD2;
 
                // #if %TEXCOORD3REQUIREKEY%
-                float4 texcoord3 : TEXCOORD3;
+               // float4 texcoord3 : TEXCOORD3;
                // #endif
 
                // #if %VERTEXCOLORREQUIREKEY%
@@ -10735,19 +10033,19 @@ ZWrite On
                // #endif
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // float4 extraV2F0 : TEXCOORD5;
+                float4 extraV2F0 : TEXCOORD5;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // float4 extraV2F1 : TEXCOORD6;
+                float4 extraV2F1 : TEXCOORD6;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // float4 extraV2F2 : TEXCOORD7;
+                float4 extraV2F2 : TEXCOORD7;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // float4 extraV2F3 : TEXCOORD8;
+                float4 extraV2F3 : TEXCOORD8;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -10988,20 +10286,116 @@ ZWrite On
 
                
 	half4 _Color;
-	half4 _MainTex_ST, _MainTex_TexelSize;
-	half _Alpha, _AlphaCutoffValue;
+	half _Alpha;
+	half _AlphaCutoffValue;
 
-	#if ATLAS_ON
-		half _MinXUV, _MaxXUV, _MinYUV, _MaxYUV;
+	half _TimingSeed;
+
+	#if TIMEISCUSTOM_ON
+		float4 globalCustomTime;
+	#endif
+
+	half4 _MainTex_ST, _ShapeColor;
+	half _ShapeXSpeed, _ShapeYSpeed, _ShapeColorWeight, _ShapeAlphaWeight;
+	
+	#if SHAPE1CONTRAST_ON
+		half _ShapeContrast, _ShapeBrightness;
+	#endif
+	
+	#if SHAPE1DISTORT_ON
+		half4 _ShapeDistortTex_ST;
+		half _ShapeDistortAmount, _ShapeDistortXSpeed, _ShapeDistortYSpeed;
+	#endif
+	
+	#if SHAPE1ROTATE_ON
+		half _ShapeRotationOffset, _ShapeRotationSpeed;
+	#endif
+	
+	#if OFFSETSTREAM_ON
+		half _OffsetSh1;
+	#endif
+	
+	#if SHAPEWEIGHTS_ON
+		half _Sh1BlendOffset;
+	#endif
+
+	#if SHAPE2_ON
+		half4 _Shape2Tex_ST, _Shape2Color;
+		half _Shape2XSpeed, _Shape2YSpeed, _Shape2ColorWeight, _Shape2AlphaWeight;
+		#if SHAPE2CONTRAST_ON
+			half _Shape2Contrast, _Shape2Brightness;
+		#endif
+		#if SHAPE2DISTORT_ON
+			half4 _Shape2DistortTex_ST;
+			half _Shape2DistortAmount, _Shape2DistortXSpeed, _Shape2DistortYSpeed;
+		#endif
+		#if SHAPE2ROTATE_ON
+			half _Shape2RotationOffset, _Shape2RotationSpeed;
+		#endif
+		#if OFFSETSTREAM_ON
+			half _OffsetSh2;
+		#endif
+		#if SHAPEWEIGHTS_ON
+			half _Sh2BlendOffset;
+		#endif
+	#endif
+
+	#if SHAPE3_ON
+		half4 _Shape3Tex_ST, _Shape3Color;
+		half _Shape3XSpeed, _Shape3YSpeed, _Shape3ColorWeight, _Shape3AlphaWeight;
+		#if SHAPE3CONTRAST_ON
+			half _Shape3Contrast, _Shape3Brightness;
+		#endif
+		#if SHAPE3DISTORT_ON
+			half4 _Shape3DistortTex_ST;
+			half _Shape3DistortAmount, _Shape3DistortXSpeed, _Shape3DistortYSpeed;
+		#endif
+		#if SHAPE3ROTATE_ON
+			half _Shape3RotationOffset, _Shape3RotationSpeed;
+		#endif
+		#if OFFSETSTREAM_ON
+			half _OffsetSh3;
+		#endif
+		#if SHAPEWEIGHTS_ON
+			half _Sh3BlendOffset;
+		#endif
 	#endif
 
 	#if GLOW_ON
 		half4 _GlowColor;
 		half _Glow, _GlowGlobal;
+		#if GLOWTEX_ON
+			half4 _GlowTex_ST;
+		#endif
 	#endif
-	 
+
+	#if MASK_ON
+		half4 _MaskTex_ST;
+		half _MaskPow;
+	#endif
+
+	#if COLORRAMP_ON
+		half _ColorRampLuminosity, _ColorRampBlend;
+	#endif
+
+	#if ALPHASMOOTHSTEP_ON
+		half _AlphaStepMin, _AlphaStepMax;
+	#endif
+
+	#if ALPHAFADE_ON
+		half _AlphaFadeAmount, _AlphaFadeSmooth, _AlphaFadePow;
+	#endif
+
 	#if HSV_ON
 		half _HsvShift, _HsvSaturation, _HsvBright;
+	#endif
+
+	#if POSTERIZE_ON
+		half _PosterizeNumColors;
+	#endif
+
+	#if PIXELATE_ON
+		half _PixelateSize;
 	#endif
 
 	#if DISTORT_ON
@@ -11009,203 +10403,101 @@ ZWrite On
 		half _DistortTexXSpeed, _DistortTexYSpeed, _DistortAmount;
 	#endif
 
-	#if FADE_ON
-		half4 _FadeBurnColor, _FadeTex_ST, _FadeBurnTex_ST;
-		half _FadeAmount, _FadeBurnWidth, _FadeBurnTransition,_FadeBurnGlow;
-	#endif
-
-	#if OUTBASE_ON
-		half4 _OutlineColor;
-		half _OutlineAlpha, _OutlineGlow, _OutlineWidth;
-		int _OutlinePixelWidth;
-	#endif
-
-	#if OUTTEX_ON
-		half4 _OutlineTex_ST;
-		half _OutlineTexXSpeed, _OutlineTexYSpeed;
-	#endif
-
-	#if OUTDIST_ON
-		half4 _OutlineDistortTex_ST;
-		half _OutlineDistortTexXSpeed, _OutlineDistortTexYSpeed, _OutlineDistortAmount;
-	#endif
-
-	#if ALPHAOUTLINE_ON
-		half _AlphaOutlineGlow, _AlphaOutlinePower, _AlphaOutlineMinAlpha, _AlphaOutlineBlend;
-		half4 _AlphaOutlineColor;
-	#endif
-
-	#if INNEROUTLINE_ON
-		half _InnerOutlineThickness, _InnerOutlineAlpha, _InnerOutlineGlow;
-		half4 _InnerOutlineColor;
-	#endif
-
-	#if GRADIENT_ON
-		half _GradBlend, _GradBoostX, _GradBoostY;
-		half4 _GradTopRightCol, _GradTopLeftCol, _GradBotRightCol, _GradBotLeftCol;
-	#endif
-
-	#if COLORSWAP_ON
-		half4 _ColorSwapRed, _ColorSwapGreen, _ColorSwapBlue;
-		half _ColorSwapRedLuminosity, _ColorSwapGreenLuminosity, _ColorSwapBlueLuminosity, _ColorSwapBlend;
-	#endif
-
-	#if CHANGECOLOR_ON
-		half4 _ColorChangeNewCol, _ColorChangeTarget;
-		half _ColorChangeTolerance, _ColorChangeLuminosity;
-	#endif
-	#if CHANGECOLOR2_ON
-		half4 _ColorChangeNewCol2, _ColorChangeTarget2;
-		half _ColorChangeTolerance2;
-	#endif
-	#if CHANGECOLOR3_ON
-		half4 _ColorChangeNewCol3, _ColorChangeTarget3;
-		half _ColorChangeTolerance3;
-	#endif
-
-	#if COLORRAMP_ON
-		half _ColorRampLuminosity, _ColorRampBlend;
-	#endif
-
-	#if HITEFFECT_ON
-		half4 _HitEffectColor;
-		half _HitEffectGlow, _HitEffectBlend;
-	#endif
-
-	#if NEGATIVE_ON
-		half _NegativeAmount;
-	#endif
-
-	#if PIXELATE_ON
-		half _PixelateSize;
-	#endif
-
-	#if GREYSCALE_ON
-		half _GreyscaleLuminosity, _GreyscaleBlend;
-		half4 _GreyscaleTintColor;
-	#endif
-
-	#if POSTERIZE_ON
-		half _PosterizeNumColors, _PosterizeGamma;
-	#endif
-
-	#if BLUR_ON
-		half _BlurIntensity;
-	#endif
-
-	#if MOTIONBLUR_ON
-		half _MotionBlurAngle, _MotionBlurDist;
-	#endif
-
-	#if GHOST_ON
-		half _GhostColorBoost, _GhostTransparency, _GhostBlend;
-	#endif
-
-	#if HOLOGRAM_ON
-		half _HologramStripesAmount, _HologramMinAlpha, _HologramUnmodAmount, _HologramStripesSpeed, _HologramMaxAlpha, _HologramBlend;
-		half4 _HologramStripeColor;
-	#endif
-
-	#if CHROMABERR_ON
-		half _ChromAberrAmount, _ChromAberrAlpha;
-	#endif
-
-	#if GLITCH_ON
-		half _GlitchAmount, _GlitchSize;
-	#endif
-
-	#if FLICKER_ON
-		half _FlickerFreq, _FlickerPercent, _FlickerAlpha;
-	#endif
-
-	#if SHADOW_ON
-		half _ShadowX, _ShadowY, _ShadowAlpha;
-		half4 _ShadowColor;
-	#endif
-
-	#if SHINE_ON
-		half4 _ShineColor;
-		half _ShineLocation, _ShineRotate, _ShineWidth, _ShineGlow;
-	#endif
-
-	#if CONTRAST_ON
-		half _Contrast, _Brightness;
-	#endif
-
-	#if OVERLAY_ON
-		half4 _OverlayTex_ST, _OverlayColor;
-		half _OverlayGlow, _OverlayBlend, _OverlayTextureScrollXSpeed, _OverlayTextureScrollYSpeed;
-	#endif
-
-	#if DOODLE_ON
-		half _HandDrawnAmount, _HandDrawnSpeed;
-	#endif
-
-	#if WIND_ON
-		half _GrassSpeed, _GrassWind, _GrassManualAnim, _GrassRadialBend;
-	#endif
-
-	#if WAVEUV_ON
-		float _WaveAmount, _WaveSpeed, _WaveStrength, _WaveX, _WaveY;
-	#endif
-
-	#if ROUNDWAVEUV_ON
-		half _RoundWaveStrength, _RoundWaveSpeed;
-	#endif
-
-	#if RECTSIZE_ON
-		half _RectSize;
-	#endif
-
-	#if OFFSETUV_ON
-		half _OffsetUvX, _OffsetUvY;
-	#endif
-
-	#if CLIPPING_ON
-		half _ClipUvLeft, _ClipUvRight, _ClipUvUp, _ClipUvDown;
-	#endif
-
-	#if RADIALCLIPPING_ON
-		half _RadialStartAngle, _RadialClip, _RadialClip2;
-	#endif
-
 	#if TEXTURESCROLL_ON
 		half _TextureScrollXSpeed, _TextureScrollYSpeed;
-	#endif
-
-	#if ZOOMUV_ON
-		half _ZoomUvAmount;
-	#endif
-
-	#if WARP_ON
-		half _WarpStrength, _WarpSpeed, _WarpScale;
-	#endif
-
-	#if TWISTUV_ON
-		half _TwistUvAmount, _TwistUvPosX, _TwistUvPosY, _TwistUvRadius;
-	#endif
-
-	#if ROTATEUV_ON
-		half _RotateUvAmount;
-	#endif
-
-	#if FISHEYE_ON
-		half _FishEyeUvAmount;
-	#endif
-
-	#if PINCH_ON
-		half _PinchUvAmount;
 	#endif
 
 	#if SHAKEUV_ON
 		half _ShakeUvSpeed, _ShakeUvX, _ShakeUvY;
 	#endif
 
+	#if WAVEUV_ON
+		half _WaveAmount, _WaveSpeed, _WaveStrength, _WaveX, _WaveY;
+	#endif
+
+	#if ROUNDWAVEUV_ON
+		half _RoundWaveStrength, _RoundWaveSpeed;
+	#endif
+
+	#if TWISTUV_ON
+		half _TwistUvAmount, _TwistUvPosX, _TwistUvPosY, _TwistUvRadius;
+	#endif
+
+	#if DOODLE_ON
+		half _HandDrawnAmount, _HandDrawnSpeed;
+	#endif
+
+	#if ROUNDWAVEUV_ON || PIXELATE_ON
+		half4 _MainTex_TexelSize;
+	#endif
+
+	#if VERTOFFSET_ON
+		half4 _VertOffsetTex_ST;
+		half _VertOffsetAmount, _VertOffsetPower, _VertOffsetTexXSpeed, _VertOffsetTexYSpeed;
+	#endif
+
+	#if FADE_ON
+		half4 _FadeTex_ST;
+		half _FadeAmount, _FadeTransition, _FadePower, _FadeScrollXSpeed, _FadeScrollYSpeed;
+		#if FADEBURN_ON
+			half4 _FadeBurnColor, _FadeBurnTex_ST;
+			half _FadeBurnWidth, _FadeBurnGlow;
+		#endif
+	#endif
+
+	#if COLORGRADING_ON
+		half3 _ColorGradingLight, _ColorGradingMiddle, _ColorGradingDark;
+		half _ColorGradingMidPoint;
+	#endif
+            
+	#if CAMDISTFADE_ON
+		half _CamDistFadeStepMin, _CamDistFadeStepMax, _CamDistProximityFade;
+	#endif
+
+	#if RIM_ON
+		half _RimBias, _RimScale, _RimPower, _RimIntensity, _RimAddAmount, _RimErodesAlpha;
+		half4 _RimColor;
+	#endif
+
+	#if BACKFACETINT_ON
+		half4 _BackFaceTint, _FrontFaceTint;
+	#endif
+
+	#if SHAPEDEBUG_ON
+		half _DebugShape;
+	#endif
+
+	#if SHAPE1MASK_ON
+		half4 _Shape1MaskTex_ST;
+		half _Shape1MaskPow;
+	#endif
+
+	#if TRAILWIDTH_ON
+		half _TrailWidthPower;
+	#endif
+
+	#if LIGHTANDSHADOW_ON
+		half3 _All1VfxLightDir;
+		half _ShadowAmount, _ShadowStepMin, _ShadowStepMax, _LightAmount;
+		half4 _LightColor;
+	#endif
+
+	#if SHAPETEXOFFSET_ON
+		half _RandomSh1Mult, _RandomSh2Mult, _RandomSh3Mult;
+	#endif
+
+	#if DEPTHGLOW_ON
+		half _DepthGlowDist, _DepthGlowPow, _DepthGlow, _DepthGlowGlobal;
+		half4 _DepthGlowColor;
+    #endif
+
+	#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+        half _ScreenUvShDistScale,_ScreenUvSh2DistScale, _ScreenUvSh3DistScale;
+	#endif
+
 	#if NORMALMAP_ON
 		half _NormalStrength;
 	#endif
-
-	float _RandomSeed;
 
 
 
@@ -11217,58 +10509,82 @@ ZWrite On
             
 
             
-	
+
 	TEXTURE2D(_MainTex);
 	SAMPLER(sampler_MainTex);
 
+	#if SHAPE1DISTORT_ON
+		TEXTURE2D(_ShapeDistortTex);
+		SAMPLER(sampler_ShapeDistortTex);
+	#endif
+
+	#if SHAPE2_ON
+		TEXTURE2D(_Shape2Tex);
+		SAMPLER(sampler_Shape2Tex);
+		#if SHAPE2DISTORT_ON
+			TEXTURE2D(_Shape2DistortTex);
+			SAMPLER(sampler_Shape2DistortTex);
+		#endif
+	#endif
+
+	#if SHAPE3_ON
+		TEXTURE2D(_Shape3Tex);
+		SAMPLER(sampler_Shape3Tex);
+		#if SHAPE3DISTORT_ON
+			TEXTURE2D(_Shape3DistortTex);
+			SAMPLER(sampler_Shape3DistortTex);
+		#endif
+	#endif
+
 	#if GLOW_ON
-		TEXTURE2D(_GlowTex);
-		SAMPLER(sampler_GlowTex);
+		#if GLOWTEX_ON
+			TEXTURE2D(_GlowTex);
+			SAMPLER(sampler_GlowTex);
+		#endif
+	#endif
+
+	#if MASK_ON
+		TEXTURE2D(_MaskTex);
+		SAMPLER(sampler_MaskTex);
+	#endif
+
+	#if COLORRAMP_ON
+		TEXTURE2D(_ColorRampTex);
+		SAMPLER(sampler_ColorRampTex);
+	#endif
+
+	#if COLORRAMPGRAD_ON
+		TEXTURE2D(_ColorRampTexGradient);
+		SAMPLER(sampler_ColorRampTexGradient);
+	#endif
+	
+	#if DISTORT_ON
+		TEXTURE2D(_DistortTex);
+		SAMPLER(sampler_DistortTex);
+	#endif
+
+	#if VERTOFFSET_ON
+		TEXTURE2D(_VertOffsetTex);
+		SAMPLER(sampler_VertOffsetTex);
 	#endif
 
 	#if FADE_ON
 		TEXTURE2D(_FadeTex);
 		SAMPLER(sampler_FadeTex);
-
-		TEXTURE2D(_FadeBurnTex);
-		SAMPLER(sampler_FadeBurnTex);
+		#if FADEBURN_ON
+			TEXTURE2D(_FadeBurnTex);
+			SAMPLER(sampler_FadeBurnTex);
+		#endif
 	#endif
 
-	#if DISTORT_ON
-		TEXTURE2D(_DistortTex);
-		SAMPLER(sampler_DistortTex);	
+	#if SHAPE1MASK_ON
+		TEXTURE2D(_Shape1MaskTex);
+		SAMPLER(sampler_Shape1MaskTex);
 	#endif
 
-	#if OUTTEX_ON
-		TEXTURE2D(_OutlineTex);
-		SAMPLER(sampler_OutlineTex);
-	#endif
-
-	#if OUTDIST_ON
-		TEXTURE2D(_OutlineDistortTex);
-		SAMPLER(sampler_OutlineDistortTex);
-	#endif
-
-	#if COLORSWAP_ON
-		TEXTURE2D(_ColorSwapTex);
-		SAMPLER(sampler_ColorSwapTex);
-	#endif
-
-	#if COLORRAMP_ON
-		TEXTURE2D(_ColorRampTex);
-		TEXTURE2D(_ColorRampTexGradient);
-		SAMPLER(sampler_ColorRampTex);
-		SAMPLER(sampler_ColorRampTexGradient);
-	#endif
-
-	#if SHINE_ON
-		TEXTURE2D(_ShineMask);
-		SAMPLER(sampler_ShineMask);
-	#endif
-
-	#if OVERLAY_ON
-		TEXTURE2D(_OverlayTex);
-		SAMPLER(sampler_OverlayTex);
+	#if TRAILWIDTH_ON
+		TEXTURE2D(_TrailWidthGradient);
+		SAMPLER(sampler_TrailWidthGradient);
 	#endif
 
 	#if NORMALMAP_ON
@@ -11276,225 +10592,124 @@ ZWrite On
 		SAMPLER(sampler_NormalMap);
 	#endif
 
-
-	half3 GetPixel(in int offsetX, in int offsetY, in half2 uv, in Texture2D _tex, in SamplerState _sampler)
+	half4 SampleTextureWithScroll(in Texture2D _tex, in SamplerState _sampler, in float2 uv, in half scrollXSpeed, in half scrollYSpeed, in float time)
 	{
-		half2 _uv = uv + half2(offsetX * _MainTex_TexelSize.x, offsetY * _MainTex_TexelSize.y);
-		half4 col = SAMPLE_TEXTURE2D(_tex, _sampler, _uv);
-		return col.rgb;
+		half2 _uv = uv;
+		_uv.x += (time * scrollXSpeed) % 1;
+		_uv.y += (time * scrollYSpeed) % 1;
+		return SAMPLE_TEXTURE2D(_tex, _sampler, _uv);
 	}
 
-
-	//BLURS-------------------------------------------------------------------------
-	half4 Blur(half2 uv, Texture2D source, SamplerState sampler_source, half Intensity)
+	half EaseOutQuint(half x) 
 	{
-		const half2 texelSize = 1.0 / _ScreenParams.xy;
-		const half4 color = SAMPLE_TEXTURE2D(source, sampler_source, uv);
-		const half2 offset = Intensity * texelSize;
-
-		half4 accumulatedColor = color;
-		half accumulatedWeight = 1.0;
-		for (int x = -1; x <= 1; x++)
-		{
-			for (int y = -1; y <= 1; y++)
-			{
-				const half2 sampleUV = uv + half2(x, y) * offset;
-				const half4 sampleColor = SAMPLE_TEXTURE2D(source, sampler_source, sampleUV);
-
-				accumulatedColor += sampleColor;
-				accumulatedWeight += 1.0;
-			}
-		}
-
-		half4 blurredColor = accumulatedColor / accumulatedWeight;
-		return blurredColor;
+		return 1 - pow(1 - x, 5);
 	}
 
-	half BlurHD_G(half bhqp, half x)
+	half RemapFloat(half inValue, half inMin, half inMax, half outMin, half outMax)
 	{
-		return exp(-(x * x) / (2.0 * bhqp * bhqp));
-	}
-	half4 BlurHD(half2 uv, Texture2D source, SamplerState sampler_source, half BlurAmount, half xScale, half yScale)
-	{
-		int iterations = 16;
-		int halfIterations = iterations / 2;
-		half sigmaX = 0.1 + BlurAmount * 0.5;
-		half sigmaY = sigmaX;
-		half total = 0.0;
-		half4 ret = half4(0, 0, 0, 0);
-		for (int iy = 0; iy < iterations; ++iy)
-		{
-			half fy = BlurHD_G(sigmaY, half(iy) -half(halfIterations));
-			half offsetY = half(iy - halfIterations) * 0.00390625 * xScale;
-			for (int ix = 0; ix < iterations; ++ix)
-			{
-				half fx = BlurHD_G(sigmaX, half(ix) - half(halfIterations));
-				half offsetX = half(ix - halfIterations) * 0.00390625 * yScale;
-				total += fx * fy;
-				ret += SAMPLE_TEXTURE2D(source, sampler_source, uv + half2(offsetX, offsetY)) * fx * fy;
-			}
-		}
-		return ret / total;
-	}
-	//-----------------------------------------------------------------------
-
-
-	//-------------------------------------------
-	half RemapFloat(half inValue, half inMin, half inMax, half outMin, half outMax){
 		return outMin + (inValue - inMin) * (outMax - outMin) / (inMax - inMin);
 	}
-	//-------------------------------------------
 
-	//-----------------------------------------------------------------------
-	half rand(half2 seed, half offset) {
-		return (frac(sin(dot(seed, half2(12.9898, 78.233))) * 43758.5453) + offset) % 1.0;
+	float2 RotateUvs(float2 uv, half rotation, half4 scaleAndTranslate)
+	{
+		half2 center = half2(0.5 * scaleAndTranslate.x + scaleAndTranslate.z, 0.5 * scaleAndTranslate.y + scaleAndTranslate.w);
+		half cosAngle = cos(rotation);
+		half sinAngle = sin(rotation);
+		uv -= center;
+		uv = mul(half2x2(cosAngle, -sinAngle, sinAngle, cosAngle), uv);
+		uv += center;
+		return uv; 
 	}
 
-	half rand2(half2 seed, half offset) {
-		return (frac(sin(dot(seed * floor(50 + (_Time.x % 1.0) * 12.), half2(127.1, 311.7))) * 43758.5453123) + offset) % 1.0;
-	}
+	half4 GetDebugColor(float4 resColor, half4 shape1, half4 shape2, half4 shape3)
+	{
+		half4 res = resColor;
 
-	half rand2CustomTime(half2 seed, half offset, half customTime) {
-		return (frac(sin(dot(seed * floor(50 + (customTime % 1.0) * 12.), half2(127.1, 311.7))) * 43758.5453123) + offset) % 1.0;
-	}
-	//-----------------------------------------------------------------------
+		//MAKE SURE THE FOLLOWING CODE BLOCK IS UNCOMMENTED-------------------------------------------
+        #if SHAPEDEBUG_ON
+			if(_DebugShape < 1.5) return shape1;
+			#if SHAPE2_ON
+				else if (_DebugShape < 2.5) return shape2;
+			#endif
+			#if SHAPE3_ON
+				else return shape3;
+			#endif
+        #endif
 
+		return res;
+	}
 
 	void Ext_ModifyVertex0 (inout VertexData v, inout ExtraV2F d)
 	{
-		//BILBOARD_ON
-		#if BILBOARD_ON
-			half3 camRight = mul((half3x3)unity_CameraToWorld, half3(1,0,0));
-			half3 camUp = half3(0,1,0);
-			#if BILBOARDY_ON
-				camUp = mul((half3x3)unity_CameraToWorld, half3(0,1,0));
+		//uvDistTex --> extraV2F0
+		//uvSh1DistTex --> extraV2F1
+		//uvSh2DistTex --> extraV2F2
+		//uvSh3DistTex --> extraV2F3
+ 
+		#if VERTOFFSET_ON
+			#if TIMEISCUSTOM_ON
+				const half time = v.texcoord0.z + globalCustomTime.y;
+			#else
+				const half time = v.texcoord0.z + _Time.y;
 			#endif
-			half3 localPos = v.vertex.x * camRight + v.vertex.y * camUp;
-			v.vertex = half4(localPos, 1);
-		#endif
-        //-----------------------------------------------------------
-
-        v.texcoord0.xy = TRANSFORM_TEX(v.texcoord0.xy, _MainTex);
-		half2 center = half2(0.5, 0.5);
-        #if ATLAS_ON
-		    center = half2((_MaxXUV + _MinXUV) / 2.0, (_MaxYUV + _MinYUV) / 2.0);
-		#endif
-		
-		//POLARUV_ON
-		#if POLARUV_ON
-			v.texcoord0.xy = v.texcoord0.xy - center;
+				half4 offsetUv = half4(TRANSFORM_TEX(v.texcoord0.xy, _VertOffsetTex), 0, 0);
+            	offsetUv.x += (time * _VertOffsetTexXSpeed) % 1;
+				offsetUv.y += (time * _VertOffsetTexYSpeed) % 1;
+                v.vertex.xyz += v.normal * _VertOffsetAmount * pow(SAMPLE_TEXTURE2D_LOD(_VertOffsetTex, sampler_VertOffsetTex, offsetUv, 0).r, _VertOffsetPower); 
 		#endif
 
-		//----------------------------------------
-
-		//ROTATEUV_ON
-		#if ROTATEUV_ON
-			half2 uvC = v.texcoord0.xy;
-			half cosAngle = cos(_RotateUvAmount);
-			half sinAngle = sin(_RotateUvAmount);
-			half2x2 rot = half2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
-			uvC -= center;
-			v.texcoord0.xy = mul(rot, uvC);
-			v.texcoord0.xy += center;
-		#endif
-		//--------------------
-
-		#if RECTSIZE_ON
-			v.vertex.xyz += (v.vertex.xyz * (_RectSize - 1.0));
+		#if DISTORT_ON && !POLARUVDISTORT_ON
+			d.extraV2F0.xy = TRANSFORM_TEX(v.texcoord0.xy, _DistortTex);
 		#endif
 
-		#if OUTTEX_ON
-			v.texcoord1.xy = TRANSFORM_TEX(v.texcoord0.xy, _OutlineTex);
+		#if SHAPE1DISTORT_ON && !POLARUVDISTORT_ON
+			d.extraV2F1.xy = TRANSFORM_TEX(v.texcoord0.xy, _ShapeDistortTex);
+        #endif
+
+		#if SHAPE2_ON
+			#if SHAPE2DISTORT_ON && !POLARUVDISTORT_ON
+				d.extraV2F2.xy = TRANSFORM_TEX(v.texcoord0.xy, _Shape2DistortTex);;
+			#endif
 		#endif
 
-		#if OUTDIST_ON
-			v.texcoord2.xy = TRANSFORM_TEX(v.texcoord0.xy, _OutlineDistortTex);
-		#endif
-
-		#if DISTORT_ON
-			v.texcoord3.xy = TRANSFORM_TEX(v.texcoord0.xy, _DistortTex);
-		#endif
+		#if SHAPE3_ON
+			#if SHAPE3DISTORT_ON && !POLARUVDISTORT_ON
+				d.extraV2F3.xy = TRANSFORM_TEX(v.texcoord0.xy, _Shape3DistortTex);
+			#endif
+        #endif
 	}
 
 	void Ext_SurfaceFunction0 (inout Surface o, ShaderData d)
 	{
-		half randomSeed = _RandomSeed;
+		//i.uvSeed -> d.texcoord0.xy
 
-		float2 uvRect = d.texcoord0;
-		half2 center = half2(0.5, 0.5);
-		#if ATLAS_ON
-			center = half2((_MaxXUV + _MinXUV) / 2.0, (_MaxYUV + _MinYUV) / 2.0);
-			uvRect = half2((d.texcoord0.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord0.y - _MinYUV) / (_MaxYUV - _MinYUV));
+		float seed = d.texcoord0.z + _TimingSeed;
+		#if TIMEISCUSTOM_ON
+			const float4 shaderTime = globalCustomTime;
+		#else
+			const float4 shaderTime = _Time;
 		#endif
-		half2 centerTiled = half2(center.x *  _MainTex_ST.x, center.y *  _MainTex_ST.y);
+		float time = shaderTime.y + seed;
 
-		//CLIPPING_ON
-		#if CLIPPING_ON
-			half2 tiledUv = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				tiledUv = half2((tiledUv.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUv.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			clip((1 - _ClipUvUp) - tiledUv.y);
-			clip(tiledUv.y - _ClipUvDown);
-			clip((1 - _ClipUvRight) - tiledUv.x);
-			clip(tiledUv.x - _ClipUvLeft);
-		#endif
-		//----------------------------------
+		#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half2 originalUvs = d.texcoord0.xy;
+        #endif
 
-		//RADIALCLIPPING_ON
-		#if RADIALCLIPPING_ON
-			half2 tiledUv2 = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				tiledUv2 = half2((tiledUv2.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUv2.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			half startAngle = _RadialStartAngle - _RadialClip;
-			half endAngle = _RadialStartAngle + _RadialClip2;
-			half offset0 = clamp(0, 360, startAngle + 360);
-			half offset360 = clamp(0, 360, endAngle - 360);
-			half2 atan2Coord = half2(lerp(-1, 1, tiledUv2.x), lerp(-1, 1, tiledUv2.y));
-			half atanAngle = atan2(atan2Coord.y, atan2Coord.x) * 57.3; // angle in degrees
-			if(atanAngle < 0) atanAngle = 360 + atanAngle;
-			if(atanAngle >= startAngle && atanAngle <= endAngle) discard;
-			if(atanAngle <= offset360) discard;
-			if(atanAngle >= offset0) discard;
+		#if PIXELATE_ON
+			half aspectRatio = _MainTex_TexelSize.x / _MainTex_TexelSize.y;
+			half2 pixelSize = float2(_PixelateSize, _PixelateSize * aspectRatio);
+			d.texcoord0.xy = floor(d.texcoord0.xy * pixelSize) / pixelSize;
 		#endif
 
-		//-----------------------------
-
-		//TEXTURESCROLL_ON && ATLAS_ON
-		#if TEXTURESCROLL_ON && ATLAS_ON
-			d.texcoord0.xy = half2(_MinXUV + ((_MaxXUV - _MinXUV) * (abs(((_Time.y + randomSeed) * _TextureScrollXSpeed) + uvRect.x) % 1)),
-			_MinYUV + ((_MaxYUV - _MinYUV) * (abs(((_Time.y + randomSeed) * _TextureScrollYSpeed) + uvRect.y) % 1)));
-		#endif
-		//----------------------------
-
-		//OFFSETUV_ON
-		#if OFFSETUV_ON
-			#if ATLAS_ON
-				d.texcoord0.xy = half2(_MinXUV + ((_MaxXUV - _MinXUV) * (abs((_OffsetUvX + uvRect.x) % 1))),
-				_MinYUV + ((_MaxYUV - _MinYUV) * (abs(_OffsetUvY + uvRect.y) % 1)));
-			#else
-				d.texcoord0.xy += half2(_OffsetUvX, _OffsetUvY);
-			#endif
+		#if NORMALMAP_ON
+			half4 normalSample = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, d.texcoord0.xy);
+			half3 normalTS = UnpackNormal(normalSample);
+			normalTS.xy *= _NormalStrength;
+			o.Normal = normalTS;
 		#endif
 
-		//----------------------
-
-		//POLARUV_ON
-		#if POLARUV_ON
-			d.texcoord0.xy = half2(atan2(d.texcoord0.y, d.texcoord0.x) / (2.0f * 3.141592653589f), length(d.texcoord0.xy));
-			d.texcoord0.xy *= _MainTex_ST.xy;
-		#endif
-
-		//--------------------------------------
-
-		//TWISTUV_ON
 		#if TWISTUV_ON
-			#if ATLAS_ON
-				_TwistUvPosX = ((_MaxXUV - _MinXUV) * _TwistUvPosX) + _MinXUV;
-				_TwistUvPosY = ((_MaxYUV - _MinYUV) * _TwistUvPosY) + _MinYUV;
-			#endif
-			half2 tempUv = d.texcoord0.xy - half2(_TwistUvPosX *  _MainTex_ST.x, _TwistUvPosY *  _MainTex_ST.y);
+			half2 tempUv = d.texcoord0.xy - half2(_TwistUvPosX * _MainTex_ST.x, _TwistUvPosY * _MainTex_ST.y);
 			_TwistUvRadius *= (_MainTex_ST.x + _MainTex_ST.y) / 2;
 			half percent = (_TwistUvRadius - length(tempUv)) / _TwistUvRadius;
 			half theta = percent * percent * (2.0 * sin(_TwistUvAmount)) * 8.0;
@@ -11502,593 +10717,505 @@ ZWrite On
 			half c = cos(theta);
 			half beta = max(sign(_TwistUvRadius - length(tempUv)), 0.0);
 			tempUv = half2(dot(tempUv, half2(c, -s)), dot(tempUv, half2(s, c))) * beta +	tempUv * (1 - beta);
-			tempUv += half2(_TwistUvPosX *  _MainTex_ST.x, _TwistUvPosY *  _MainTex_ST.y);
+			tempUv += half2(_TwistUvPosX * _MainTex_ST.x, _TwistUvPosY * _MainTex_ST.y);
 			d.texcoord0.xy = tempUv;
 		#endif
 
-		//--------------------------------------------
-
-		//FISHEYE_ON
-		#if FISHEYE_ON
-			half bind = length(centerTiled);
-			half2 dF = d.texcoord0.xy - centerTiled;
-			half dFlen = length(dF);
-			half fishInt = (3.14159265359 / bind) * (_FishEyeUvAmount + 0.001);
-			d.texcoord0.xy = centerTiled + (dF / (max(0.0001, dFlen))) * tan(dFlen * fishInt) * bind / tan(bind * fishInt);
-		#endif
-		//---------------------------------------------
-
-		//PINCH_ON
-		#if PINCH_ON
-			half2 dP = d.texcoord0.xy - centerTiled;
-			half pinchInt = (3.141592 / length(centerTiled)) * (-_PinchUvAmount + 0.001);
-			d.texcoord0.xy = centerTiled + normalize(dP) * atan(length(dP) * -pinchInt * 10.0) * 0.5 / atan(-pinchInt * 5);
-		#endif
-
-		//---------------------------------------------
-
-		//ZOOMUV_ON
-		#if ZOOMUV_ON
-			d.texcoord0.xy -= centerTiled;
-			d.texcoord0.xy = d.texcoord0.xy * _ZoomUvAmount;
-			d.texcoord0.xy += centerTiled;
-		#endif
-
-		//-----------------------------------------------
-
-		//DOODLE_ON
 		#if DOODLE_ON
-			half2 uvCopy = uvRect;
-			_HandDrawnSpeed = (floor((_Time.x + randomSeed) * 20 * _HandDrawnSpeed) / _HandDrawnSpeed) * _HandDrawnSpeed;
+			half2 uvCopy = d.texcoord0.xy;
+			_HandDrawnSpeed = (floor((shaderTime.x + seed) * 20 * _HandDrawnSpeed) / _HandDrawnSpeed) * _HandDrawnSpeed;
 			uvCopy.x = sin((uvCopy.x * _HandDrawnAmount + _HandDrawnSpeed) * 4);
 			uvCopy.y = cos((uvCopy.y * _HandDrawnAmount + _HandDrawnSpeed) * 4);
 			d.texcoord0.xy = lerp(d.texcoord0.xy, d.texcoord0.xy + uvCopy, 0.0005 * _HandDrawnAmount);
 		#endif
 
-		//--------------------------
-
-		//SHAKEUV_ON
 		#if SHAKEUV_ON
-			half xShake = sin((_Time.x + randomSeed) * _ShakeUvSpeed * 50) * _ShakeUvX;
-			half yShake = cos((_Time.x + randomSeed) * _ShakeUvSpeed * 50) * _ShakeUvY;
+			half xShake = sin((shaderTime.x + seed) * _ShakeUvSpeed * 50) * _ShakeUvX;
+			half yShake = cos((shaderTime.x + seed) * _ShakeUvSpeed * 50) * _ShakeUvY;
 			d.texcoord0.xy += half2(xShake * 0.012, yShake * 0.01);
 		#endif
 
-		//-------------------------------------------
-
-		//RECTSIZE_ON
-		#if RECTSIZE_ON
-			d.texcoord0.xy = d.texcoord0.xy * (_RectSize).xx + (((-_RectSize * 0.5) + 0.5)).xx;
-		#endif
-
-		//-------------------------------------------
-
-		//DISTORT_ON
-		#if DISTORT_ON
-			#if ATLAS_ON
-				d.texcoord3.x = d.texcoord3.x * (1 / (_MaxXUV - _MinXUV));
-				d.texcoord3.y = d.texcoord3.y * (1 / (_MaxYUV - _MinYUV)); 
-			#endif
-
-			d.texcoord3.x += ((_Time.x + _RandomSeed) * _DistortTexXSpeed) % 1;
-			d.texcoord3.y += ((_Time.x + _RandomSeed) * _DistortTexYSpeed) % 1;
-			half distortAmnt = (SAMPLE_TEXTURE2D(_DistortTex, sampler_DistortTex, d.texcoord3.xy).r - 0.5) * 0.2 * _DistortAmount;
-			d.texcoord0.x += distortAmnt;
-			d.texcoord0.y += distortAmnt;
-		#endif
-		//-------------------------------------------------------
-
-		//WARP_ON
-		#if WARP_ON
-            half2 warpUv = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				warpUv = half2((warpUv.x - _MinXUV) / (_MaxXUV - _MinXUV), (warpUv.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			const float tau = 6.283185307179586;
-            float xWarp = (_Time.y + randomSeed) * _WarpSpeed + warpUv.x * tau / _WarpScale;
-            float yWarp = (_Time.y + randomSeed) * _WarpSpeed + warpUv.y * tau / _WarpScale;
-            float2 warp = float2(sin(xWarp), sin(yWarp)) * _WarpStrength;
-            d.texcoord0.xy += warp;
-		#endif
-
-		//-------------------------------------------------------
-
-		//WAVEUV_ON
 		#if WAVEUV_ON
-			float2 uvWave = half2(_WaveX * _MainTex_ST.x, _WaveY * _MainTex_ST.y) - d.texcoord0.xy;
-            uvWave %= 1;
+			half2 uvWave = half2(_WaveX * _MainTex_ST.x, _WaveY * _MainTex_ST.y) - d.texcoord0.xy;
 			#if ATLAS_ON
 				uvWave = half2(_WaveX, _WaveY) - uvRect;
 			#endif
 			uvWave.x *= _ScreenParams.x / _ScreenParams.y;
-            float waveTime = _Time.y + randomSeed;
-			float angWave = (sqrt(dot(uvWave, uvWave)) * _WaveAmount) - ((waveTime *  _WaveSpeed));
-			d.texcoord0.xy = d.texcoord0.xy + uvWave * sin(angWave) * (_WaveStrength / 1000.0);
+			half angWave = (sqrt(dot(uvWave, uvWave)) * _WaveAmount) - ((time * _WaveSpeed) % 360.0);
+			d.texcoord0.xy = d.texcoord0.xy + normalize(uvWave) * sin(angWave) * (_WaveStrength / 1000.0);
 		#endif
-		//----------------------------------------------------
 
-		//ROUNDWAVEUV_ON
 		#if ROUNDWAVEUV_ON
-			half xWave = ((0.5 * _MainTex_ST.x) - uvRect.x);
-			half yWave = ((0.5 * _MainTex_ST.y) - uvRect.y) * (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
+			half xWave = ((0.5 * _MainTex_ST.x) - d.texcoord0.x);
+			half yWave = ((0.5 * _MainTex_ST.y) - d.texcoord0.y) * (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
 			half ripple = -sqrt(xWave*xWave + yWave* yWave);
-			d.texcoord0.xy += (sin((ripple + (_Time.y + randomSeed) * (_RoundWaveSpeed/10.0)) / 0.015) * (_RoundWaveStrength/10.0)) % 1;
+            d.texcoord0.xy += (sin((ripple + time * (_RoundWaveSpeed/10.0)) / 0.015) * (_RoundWaveStrength/10.0)) % 1;
 		#endif
-		//----------------------------------------------------
 
+		#if POLARUV_ON
+            half2 prePolarUvs = d.texcoord0.xy;
+            d.texcoord0.xy = d.texcoord0.xy - half2(0.5, 0.5);
+			d.texcoord0.xy = half2(atan2(d.texcoord0.y, d.texcoord0.x) / (1.0 * 6.28318530718), length(d.texcoord0.xy) * 2.0);
+            d.texcoord0.xy *= _MainTex_ST.xy;
+		#endif
 
-		//WIND_ON
-		#if WIND_ON
-			half windOffset = sin((_Time.x + randomSeed) * _GrassSpeed * 10);
-			half2 windCenter = half2(0.5, 0.1);
-			#if ATLAS_ON
-				windCenter.x = ((_MaxXUV - _MinXUV) * windCenter.x) + _MinXUV;
-				windCenter.y = ((_MaxYUV - _MinYUV) * windCenter.y) + _MinYUV;
-			#endif
-			#if !MANUALWIND_ON
-				d.texcoord0.x = fmod(abs(lerp(d.texcoord0.x, d.texcoord0.x + (_GrassWind * 0.01 * windOffset), uvRect.y)), 1);
+		#if DISTORT_ON
+			#if POLARUVDISTORT_ON
+				half2 distortUvs = TRANSFORM_TEX(d.texcoord0.xy, _DistortTex);
 			#else
-				d.texcoord0.x = fmod(abs(lerp(d.texcoord0.x, d.texcoord0.x + (_GrassWind * 0.01 * _GrassManualAnim), uvRect.y)), 1);
-				windOffset = _GrassManualAnim;
+				half2 distortUvs = d.extraV2F0.xy;
 			#endif
-			half2 delta = d.texcoord0.xy - windCenter;
-			half delta2 = dot(delta.xy, delta.xy);
-			half2 delta_offset = delta2 * windOffset;
-			d.texcoord0.xy = d.texcoord0.xy + half2(delta.y, -delta.x) * delta_offset * _GrassRadialBend;
-		#endif
-
-		//--------------------------------------------------------
-
-		//TEXTURESCROLL_ON && !ATLAS_ON
-		#if TEXTURESCROLL_ON && !ATLAS_ON
-			d.texcoord0.x += ((_Time.y + randomSeed) * _TextureScrollXSpeed) % 1;
-			d.texcoord0.y += ((_Time.y + randomSeed) * _TextureScrollYSpeed) % 1;
-		#endif
-		//------------------------------
-
-		//PIXELATE_ON
-		#if PIXELATE_ON
-            half aspectRatio = _MainTex_TexelSize.x / _MainTex_TexelSize.y;
-			half2 pixelSize = float2(_PixelateSize, _PixelateSize * aspectRatio);
-			d.texcoord0.xy = floor(d.texcoord0.xy * pixelSize) / pixelSize;
-		#endif
-		//--------------
-
-		half4 col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy);
-		half originalAlpha = col.a;
-		col *= d.vertexColor;
-
-		//NORMAL MAP
-		#if NORMALMAP_ON
-			half4 normalSample = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, d.texcoord0.xy);
-			half3 normalTS = UnpackNormal(normalSample);
-			normalTS.xy *= _NormalStrength;
-			o.Normal = normalTS;
-		#endif
-        float normalSign = sign(dot(d.worldSpaceViewDir, d.worldSpaceNormal));
-        o.Normal *= normalSign;
-
-
-		//GLITCH_ON
-		#if GLITCH_ON
-			half2 uvGlitch = uvRect;
-			uvGlitch.y -= 0.5;
-			half lineNoise = pow(rand2(floor(uvGlitch * half2(24., 19.) * _GlitchSize) * 4.0, randomSeed), 3.0) * _GlitchAmount
-				* pow(rand2(floor(uvGlitch * half2(38., 14.) * _GlitchSize) * 4.0, randomSeed), 3.0);
-			col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(lineNoise * 0.02 * rand2(half2(2.0, 1), randomSeed), 0)) * d.vertexColor;
-		#endif
-		//--------------------------------------
-
-		//CHROMABERR_ON
-		#if CHROMABERR_ON
-			half4 r = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(_ChromAberrAmount/10, 0))	* d.vertexColor;
-			half4 b = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-_ChromAberrAmount/10, 0)) * d.vertexColor;
-			col = half4(r.r * r.a, col.g, b.b * b.a, max(max(r.a, b.a) * _ChromAberrAlpha, col.a));
-		#endif
-
-		//--------------------------------
-
-		//BLUR_ON
-		#if BLUR_ON
+			distortUvs.x += ((shaderTime.x + seed) * _DistortTexXSpeed) % 1;
+			distortUvs.y += ((shaderTime.x + seed) * _DistortTexYSpeed) % 1;
 			#if ATLAS_ON
-				#if !BLURISHD_ON
-					col = BlurHD(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity, (_MaxXUV - _MinXUV), (_MaxYUV - _MinYUV)) * d.vertexColor;
-				#else
-					col = Blur(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity * (_MaxXUV - _MinXUV)) * d.vertexColor;
+				d.extraV2F0.xy = half2((d.extraV2F0.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.extraV2F0.y - _MinYUV) / (_MaxYUV - _MinYUV));
+			#endif
+			half distortAmnt = (SAMPLE_TEXTURE2D(_DistortTex, sampler_DistortTex, distortUvs).r - 0.5) * 0.2 * _DistortAmount;
+			d.texcoord0.x += distortAmnt;
+			d.texcoord0.y += distortAmnt;
+		#endif
+
+		#if TEXTURESCROLL_ON
+			d.texcoord0.x += (time * _TextureScrollXSpeed) % 1;
+			d.texcoord0.y += (time * _TextureScrollYSpeed) % 1;
+		#endif
+
+		#if TRAILWIDTH_ON
+            half width = pow(SAMPLE_TEXTURE2D(_TrailWidthGradient, sampler_TrailWidthGradient, d.texcoord0).r, _TrailWidthPower);
+            d.texcoord0.y = (d.texcoord0.y * 2 - 1) / width * 0.5 + 0.5;
+            clip(d.texcoord0.y);
+            clip(1 - d.texcoord0.y);
+        #endif
+
+		float2 shape1Uv = d.texcoord0.xy;
+        #if SHAPE2_ON
+			float2 shape2Uv = shape1Uv;
+        #endif
+        #if SHAPE3_ON
+			float2 shape3Uv = shape1Uv;
+        #endif
+
+        #if CAMDISTFADE_ON || SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half camDistance = distance(d.worldSpacePosition, _WorldSpaceCameraPos);
+		#endif
+		 
+		#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half2 uvOffsetPostFx = d.texcoord0.xy - originalUvs;
+			d.texcoord0.xy = d.screenPos.xy / d.screenPos.w;
+			d.texcoord0.x = d.texcoord0.x * (_ScreenParams.x / _ScreenParams.y);
+			d.texcoord0.x -= 0.5;
+			d.texcoord0.xy -= uvOffsetPostFx;
+			originalUvs += uvOffsetPostFx;
+			half distanceZoom = camDistance * 0.1;
+			half2 scaleWithDistUvs = d.texcoord0.xy * distanceZoom + ((-distanceZoom * 0.5) + 0.5);
+			#if SHAPE1SCREENUV_ON
+				shape1Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvShDistScale);
+			#else
+				shape1Uv = originalUvs;
+			#endif
+			#if SHAPE2SCREENUV_ON && SHAPE2_ON
+				shape2Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvSh2DistScale);
+			#else
+				#if SHAPE2_ON
+					shape2Uv = originalUvs;
 				#endif
+			#endif
+			#if SHAPE3SCREENUV_ON && SHAPE3_ON
+				shape3Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvSh3DistScale);
 			#else
-				#if !BLURISHD_ON
-					col = BlurHD(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity, 1, 1) * d.vertexColor;
+				#if SHAPE3_ON
+					shape3Uv = originalUvs;
+				#endif
+			#endif
+		#endif
+
+		shape1Uv = TRANSFORM_TEX(shape1Uv, _MainTex);
+		#if OFFSETSTREAM_ON
+			shape1Uv.x += i.offsetCustomData.x * _OffsetSh1;
+			shape1Uv.y += i.offsetCustomData.y * _OffsetSh1;
+		#endif
+        #if SHAPETEXOFFSET_ON
+			shape1Uv += seed * _RandomSh1Mult;
+		#endif
+        
+		#if SHAPE1DISTORT_ON
+			#if POLARUVDISTORT_ON
+				half2 sh1DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _ShapeDistortTex);
+			#else
+				half2 sh1DistortUvs = d.extraV2F1.xy;
+			#endif
+			
+			sh1DistortUvs.x += ((time + seed) * _ShapeDistortXSpeed) % 1;
+			sh1DistortUvs.y += ((time + seed) * _ShapeDistortYSpeed) % 1;
+			half distortAmount = (SAMPLE_TEXTURE2D(_ShapeDistortTex, sampler_ShapeDistortTex, sh1DistortUvs).r - 0.5) * 0.2 * _ShapeDistortAmount;
+			shape1Uv.x += distortAmount;
+			shape1Uv.y += distortAmount;
+		#endif
+		#if SHAPE1ROTATE_ON
+			shape1Uv = RotateUvs(shape1Uv, _ShapeRotationOffset + ((_ShapeRotationSpeed * time) % 6.28318530718), _MainTex_ST);
+		#endif
+
+		half4 shape1 = SampleTextureWithScroll(_MainTex, sampler_MainTex, shape1Uv, _ShapeXSpeed, _ShapeYSpeed, time);
+		#if SHAPE1SHAPECOLOR_ON
+			shape1.a = shape1.r;
+			shape1.rgb = _ShapeColor.rgb;
+		#else
+			shape1 *= _ShapeColor;
+		#endif
+		#if SHAPE1CONTRAST_ON
+			#if SHAPE1SHAPECOLOR_ON
+				shape1.a = saturate((shape1.a - 0.5) * _ShapeContrast + 0.5 + _ShapeBrightness);
+			#else
+				shape1.rgb = max(0, (shape1.rgb - half3(0.5, 0.5, 0.5)) * _ShapeContrast + half3(0.5, 0.5, 0.5) + _ShapeBrightness);
+			#endif
+        #endif
+
+		half4 shape2 = 1.0;
+		#if SHAPE2_ON
+			shape2Uv = TRANSFORM_TEX(shape2Uv, _Shape2Tex);
+			#if OFFSETSTREAM_ON
+				shape2Uv.x += i.offsetCustomData.x * _OffsetSh2;
+				shape2Uv.y += i.offsetCustomData.y * _OffsetSh2;
+			#endif
+			#if SHAPETEXOFFSET_ON
+				shape2Uv += seed * _RandomSh2Mult;
+			#endif
+			#if SHAPE2DISTORT_ON
+				#if POLARUVDISTORT_ON
+					half2 sh2DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _Shape2DistortTex);
 				#else
-					col = Blur(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity) * d.vertexColor;
+					half2 sh2DistortUvs = d.extraV2F2.xy;
+				#endif
+				sh2DistortUvs.x += ((time + seed) * _Shape2DistortXSpeed) % 1;
+				sh2DistortUvs.y += ((time + seed) * _Shape2DistortYSpeed) % 1;
+				half distortAmnt2 = (SAMPLE_TEXTURE2D(_Shape2DistortTex, sampler_Shape2DistortTex, sh2DistortUvs).r - 0.5) * 0.2 * _Shape2DistortAmount;
+				shape2Uv.x += distortAmnt2;
+				shape2Uv.y += distortAmnt2;
+			#endif
+			#if SHAPE2ROTATE_ON
+				shape2Uv = RotateUvs(shape2Uv, _Shape2RotationOffset + ((_Shape2RotationSpeed * time) % 6.28318530718), _Shape2Tex_ST);
+			#endif
+			
+			shape2 = SampleTextureWithScroll(_Shape2Tex, sampler_Shape2Tex, shape2Uv, _Shape2XSpeed, _Shape2YSpeed, time); 
+			#if SHAPE2SHAPECOLOR_ON
+				shape2.a = shape2.r;
+				shape2.rgb = _Shape2Color.rgb;
+			#else
+				shape2 *= _Shape2Color;
+			#endif
+			#if SHAPE2CONTRAST_ON
+				#if SHAPE2SHAPECOLOR_ON
+					shape2.a = max(0, (shape2.a - 0.5) * _Shape2Contrast + 0.5 + _Shape2Brightness);
+				#else
+					shape2.rgb = max(0, (shape2.rgb - half3(0.5, 0.5, 0.5)) * _Shape2Contrast + half3(0.5, 0.5, 0.5) + _Shape2Brightness);
 				#endif
 			#endif
         #endif
 
-		//--------------------
-
-		//MOTIONBLUR_ON
-		#if MOTIONBLUR_ON
-			_MotionBlurAngle = _MotionBlurAngle * 3.1415926;
-			#define rot(n) mul(n, half2x2(cos(_MotionBlurAngle), -sin(_MotionBlurAngle), sin(_MotionBlurAngle), cos(_MotionBlurAngle)))
-			_MotionBlurDist = _MotionBlurDist * 0.005;
-			#if ATLAS_ON
-				_MotionBlurDist *= (_MaxXUV - _MinXUV);
+		half4 shape3 = 1.0;
+		 #if SHAPE3_ON
+            shape3Uv = TRANSFORM_TEX(shape3Uv, _Shape3Tex);
+			
+            #if OFFSETSTREAM_ON
+				shape3Uv.x += i.offsetCustomData.x * _OffsetSh3;
+				shape3Uv.y += i.offsetCustomData.y * _OffsetSh3;
 			#endif
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist, -_MotionBlurDist)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 2, -_MotionBlurDist * 2)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 3, -_MotionBlurDist * 3)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 4, -_MotionBlurDist * 4)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist, _MotionBlurDist)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 2, _MotionBlurDist * 2)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 3, _MotionBlurDist * 3)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 4, _MotionBlurDist * 4)));
-			col.rgb = col.rgb / 9;
+            #if SHAPETEXOFFSET_ON
+				shape3Uv += seed * _RandomSh3Mult;
+			#endif
+            #if SHAPE3DISTORT_ON
+				#if POLARUVDISTORT_ON
+					half2 sh3DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _Shape3DistortTex);
+				#else
+					half2 sh3DistortUvs = d.extraV2F3.xy;
+				#endif
+				sh3DistortUvs.x += ((time + seed) * _Shape3DistortXSpeed) % 1;
+				sh3DistortUvs.y += ((time + seed) * _Shape3DistortYSpeed) % 1;
+				half distortAmnt3 = (SAMPLE_TEXTURE2D(_Shape3DistortTex, sampler_Shape3DistortTex, sh3DistortUvs).r - 0.5) * 0.3 * _Shape3DistortAmount;
+				shape3Uv.x += distortAmnt3;
+				shape3Uv.y += distortAmnt3;
+            #endif
+            #if SHAPE3ROTATE_ON
+				shape3Uv = RotateUvs(shape3Uv, _Shape3RotationOffset + ((_Shape3RotationSpeed * time) % 6.28318530718), _Shape3Tex_ST);
+            #endif
+				shape3 = SampleTextureWithScroll(_Shape3Tex, sampler_Shape3Tex, shape3Uv, _Shape3XSpeed, _Shape3YSpeed, time);
+            #if SHAPE3SHAPECOLOR_ON
+				shape3.a = shape3.r;
+				shape3.rgb = _Shape3Color.rgb;
+            #else
+				shape3 *= _Shape3Color;
+            #endif
+            #if SHAPE3CONTRAST_ON
+				#if SHAPE3SHAPECOLOR_ON
+					shape3.a = max(0, (shape3.a - 0.5) * _Shape3Contrast + 0.5 + _Shape3Brightness);
+				#else
+					shape3.rgb = max(0, (shape3.rgb - half3(0.5, 0.5, 0.5)) * _Shape3Contrast + half3(0.5, 0.5, 0.5) + _Shape3Brightness);
+				#endif
+            #endif
+		#endif
+
+		half4 col = shape1;
+		//Mix all shapes pre: change weights if custom vertex effect active
+        #if SHAPEWEIGHTS_ON
+			half shapeWeightOffset;
+			#if SHAPE2_ON
+				shapeWeightOffset = i.offsetCustomData.z * _Sh1BlendOffset;
+				_ShapeColorWeight = max(0, _ShapeColorWeight + shapeWeightOffset);
+				_ShapeAlphaWeight = max(0, _ShapeAlphaWeight + shapeWeightOffset);
+				shapeWeightOffset = i.offsetCustomData.z * _Sh2BlendOffset;
+				_Shape2ColorWeight = max(0, _Shape2ColorWeight + shapeWeightOffset);
+				_Shape2AlphaWeight = max(0, _Shape2AlphaWeight + shapeWeightOffset);
+			#endif
+			#if SHAPE3_ON
+				shapeWeightOffset = i.offsetCustomData.z * _Sh3BlendOffset;
+				_Shape3ColorWeight = max(0, _Shape3ColorWeight + shapeWeightOffset);
+				_Shape3AlphaWeight = max(0, _Shape3AlphaWeight + shapeWeightOffset);
+			#endif
+		#endif
+
+		//Mix all shapes
+        #if SHAPE2_ON
+			#if !SPLITRGBA_ON
+				_ShapeAlphaWeight = _ShapeColorWeight;
+				_Shape2AlphaWeight = _Shape2ColorWeight;
+			#endif
+			#if SHAPE3_ON //Shape3 On
+				#if !SPLITRGBA_ON
+					_Shape3AlphaWeight = _Shape3ColorWeight;
+				#endif
+			#if SHAPEADD_ON
+				col.rgb = ((shape1.rgb * _ShapeColorWeight) + (shape2.rgb * _Shape2ColorWeight)) + (shape3.rgb * _Shape3ColorWeight);
+				col.a = saturate(max(shape3.a * _Shape3AlphaWeight, max(shape1.a * _ShapeAlphaWeight, shape2.a * _Shape2AlphaWeight)));
+			#else
+				col.rgb = ((shape1.rgb * _ShapeColorWeight) * (shape2.rgb * _Shape2ColorWeight)) * (shape3.rgb * _Shape3ColorWeight);
+				col.a = saturate(((shape1.a * _ShapeAlphaWeight) * (shape2.a * _Shape2AlphaWeight)) * (shape3.a * _Shape3AlphaWeight));
+			#endif
+			#else //Shape3 Off
+				#if SHAPEADD_ON
+					col.rgb = (shape1.rgb * _ShapeColorWeight) + (shape2.rgb * _Shape2ColorWeight);
+					col.a = saturate(max(shape1.a * _ShapeAlphaWeight, shape2.a * _Shape2AlphaWeight));
+				#else
+					col.rgb = (shape1.rgb * _ShapeColorWeight) * (shape2.rgb * _Shape2ColorWeight);
+					col.a = saturate((shape1.a * _ShapeAlphaWeight) * (shape2.a * _Shape2AlphaWeight));
+				#endif
+			#endif
         #endif
-		//------------------------------------
 
-		//NEGATIVE_ON
-		#if NEGATIVE_ON
-			col.rgb = lerp(col.rgb, 1 - col.rgb, _NegativeAmount);
-		#endif
-
-		//--------------
-		half luminance = 0;
-
-		//GREYSCALE_ON && !GREYSCALEOUTLINE_ON
-		#if GREYSCALE_ON && !GREYSCALEOUTLINE_ON
+		#if SHAPE1MASK_ON
+            col = lerp(col, shape1, pow(SAMPLE_TEXTURE2D(_Shape1MaskTex, sampler_Shape1MaskTex, TRANSFORM_TEX(i.uvSeed.xy, _Shape1MaskTex)).r, _Shape1MaskPow));
+        #endif
+		
+		#if PREMULTIPLYCOLOR_ON
+			half luminance = 0;
 			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _GreyscaleLuminosity);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _GreyscaleTintColor, _GreyscaleBlend);
-		#endif
-		//------------------------------------
+			luminance *= col.a;
+			col.a = min(luminance, col.a);
+        #endif
 
-		//GHOST_ON
-		#if GHOST_ON
+		col.rgb *= _Color.rgb * d.vertexColor.rgb;
+		#if PREMULTIPLYALPHA_ON
+			col.rgb *= col.a;
+        #endif
+
+        #if !PREMULTIPLYCOLOR_ON && (COLORRAMP_ON || ALPHAFADE_ON || COLORGRADING_ON || FADE_ON || (ADDITIVECONFIG_ON && (GLOW_ON || DEPTHGLOW_ON)))
+			half luminance = 0;
 			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			half4 ghostResult;
-			ghostResult.a = saturate(luminance - _GhostTransparency) * col.a;
-			ghostResult.rgb = col.rgb * (luminance + _GhostColorBoost);
-			col = lerp(col, ghostResult, _GhostBlend);
-		#endif
-		//------------------------------------
+			luminance *= col.a;
+        #endif
 
-		//INNEROUTLINE_ON
-		#if INNEROUTLINE_ON
-			half3 innerT = abs(GetPixel(0, _InnerOutlineThickness, d.texcoord0.xy, _MainTex, sampler_MainTex) - GetPixel(0, -_InnerOutlineThickness, d.texcoord0.xy, _MainTex, sampler_MainTex));
-			innerT += abs(GetPixel(_InnerOutlineThickness, 0, d.texcoord0.xy, _MainTex, sampler_MainTex) - GetPixel(-_InnerOutlineThickness, 0, d.texcoord0.xy, _MainTex, sampler_MainTex));
-			#if !ONLYINNEROUTLINE_ON
-				innerT = (innerT / 2.0) * col.a * _InnerOutlineAlpha;
-				col.rgb += length(innerT) * _InnerOutlineColor.rgb * _InnerOutlineGlow;
+		#if (FADE_ON || ALPHAFADE_ON) && ALPHAFADEINPUTSTREAM_ON
+			col.a *= d.vertexColor.a;
+			d.vertexColor.a = d.texcoord0.w;
+        #endif
+
+		#if FADE_ON
+			half preFadeAlpha = col.a;
+			_FadeAmount = saturate(_FadeAmount + (1 - d.vertexColor.a));
+			_FadeTransition = max(0.01, _FadeTransition * EaseOutQuint(saturate(_FadeAmount)));
+			half2 fadeUv;
+			fadeUv = d.texcoord0.xy + seed;
+			fadeUv.x += (time * _FadeScrollXSpeed) % 1;
+			fadeUv.y += (time * _FadeScrollYSpeed) % 1;
+			half2 tiledUvFade1 = TRANSFORM_TEX(fadeUv, _FadeTex);
+			#if ADDITIVECONFIG_ON && !PREMULTIPLYCOLOR_ON
+				preFadeAlpha *= luminance;
+			#endif
+			_FadeAmount = saturate(pow(_FadeAmount, _FadePower));
+			#if FADEBURN_ON
+				half2 tiledUvFade2 = TRANSFORM_TEX(fadeUv, _FadeBurnTex);
+				half fadeSample = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
+				half fadeNaturalEdge = saturate(smoothstep(0.0 , _FadeTransition, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				col.a *= fadeNaturalEdge;
+				half fadeBurn = saturate(smoothstep(0.0 , _FadeTransition + _FadeBurnWidth, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				fadeBurn = fadeNaturalEdge - fadeBurn;
+				_FadeBurnColor.rgb *= _FadeBurnGlow;
+				col.rgb += fadeBurn * SAMPLE_TEXTURE2D(_FadeBurnTex, sampler_FadeBurnTex, tiledUvFade2).rgb * _FadeBurnColor.rgb * preFadeAlpha;
 			#else
-				innerT *= col.a * _InnerOutlineAlpha;
-				col.rgb = length(innerT) * _InnerOutlineColor.rgb * _InnerOutlineGlow;
-				col.a = step(0.3, col.r+col.g+col.b);
+				half fadeSample = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
+				float fade = saturate(smoothstep(0.0 , _FadeTransition, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				col.a *= fade;
+			#endif
+			#if ALPHAFADETRANSPARENCYTOO_ON
+				col.a *= 1 - _FadeAmount;
 			#endif
 		#endif
-		//-------------------------------------------------------
 
-		//HITEFFECT_ON
-		#if HITEFFECT_ON
-			col.rgb = lerp(col.rgb, _HitEffectColor.rgb * _HitEffectGlow, _HitEffectBlend);
-		#endif
-		//--------------------
-
-		//GRADIENT_ON
-		#if GRADIENT_ON
-			half2 tiledUvGrad = half2(uvRect.x / _MainTex_ST.x, uvRect.y / _MainTex_ST.y);
-			#if GRADIENT2COL_ON
-				_GradTopRightCol = _GradTopLeftCol;
-				_GradBotRightCol = _GradBotLeftCol;
-			#endif
-			#if RADIALGRADIENT_ON
-				half radialDist = 1 - length(tiledUvGrad - half2(0.5, 0.5));
-				radialDist *= (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
-				radialDist = saturate(_GradBoostX * radialDist);
-				half4 gradientResult = lerp(_GradTopLeftCol, _GradBotLeftCol, radialDist);
+		#if ALPHAFADE_ON
+			half alphaFadeLuminance;
+			_AlphaFadeAmount = saturate(_AlphaFadeAmount + (1 - d.vertexColor.a));
+			_AlphaFadeAmount = saturate(pow(_AlphaFadeAmount, _AlphaFadePow));
+			_AlphaFadeSmooth = max(0.01, _AlphaFadeSmooth * EaseOutQuint(saturate(_AlphaFadeAmount)));
+			#if ALPHAFADEUSESHAPE1_ON
+				alphaFadeLuminance = shape1.r;
 			#else
-				half gradXLerpFactor = saturate(pow(tiledUvGrad.x, _GradBoostX));
-				half4 gradientResult = lerp(lerp(_GradBotLeftCol, _GradBotRightCol, gradXLerpFactor),
-				lerp(_GradTopLeftCol, _GradTopRightCol, gradXLerpFactor), saturate(pow(tiledUvGrad.y, _GradBoostY)));
+				alphaFadeLuminance = luminance;
 			#endif
-			gradientResult = lerp(col, gradientResult, _GradBlend);
-			col.rgb = gradientResult.rgb * col.a;
-			col.a *= gradientResult.a;
-		#endif
-		//--------------------------------------------------------------------
+				alphaFadeLuminance = saturate(alphaFadeLuminance - 0.001);
+			#if ALPHAFADEUSEREDCHANNEL_ON
+				col.a *= col.r;
+			#endif
+				col.a = saturate(col.a);
+				float alphaFade = saturate(smoothstep(0.0 , _AlphaFadeSmooth, RemapFloat(1.0 - _AlphaFadeAmount, 0.0, 1.0, -1.0, 1.0) + alphaFadeLuminance));
+				col.a *= alphaFade;
+			#if ALPHAFADETRANSPARENCYTOO_ON
+				col.a *= 1 - _AlphaFadeAmount;
+			#endif
+        #endif
 
-		//CONTRAST_ON
-		#if CONTRAST_ON
-			col.rgb = (col.rgb - float3(0.5, 0.5, 0.5)) * _Contrast + float3(0.5, 0.5, 0.5);
-			col.rgb += _Brightness;
-		#endif
+		#if BACKFACETINT_ON
+			col.rgb = lerp(col.rgb * _BackFaceTint, col.rgb * _FrontFaceTint, step(0, dot(d.worldSpaceNormal, d.worldSpaceViewDir)));
+        #endif
 
-		//-------------------------------------------------------------------
+		//#if LIGHTANDSHADOW_ON
+			//half NdL = saturate(dot(d.worldSpaceNormal, -_All1VfxLightDir));
+			//col.rgb += _LightColor * _LightAmount * NdL;
+			//NdL = max(_ShadowAmount, NdL);
+            //NdL = smoothstep(_ShadowStepMin, _ShadowStepMax, NdL);
+            //col.rgb *= NdL;
+		//#endif
 
-		//COLORSWAP_ON
-		#if COLORSWAP_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			half4 swapMask = SAMPLE_TEXTURE2D(_ColorSwapTex, sampler_ColorSwapTex, d.texcoord0.xy);
-			swapMask.rgb *= swapMask.a;
-			half3 redSwap = _ColorSwapRed * swapMask.r * saturate(luminance + _ColorSwapRedLuminosity);
-			half3 greenSwap = _ColorSwapGreen * swapMask.g * saturate(luminance + _ColorSwapGreenLuminosity);
-			half3 blueSwap = _ColorSwapBlue * swapMask.b * saturate(luminance + _ColorSwapBlueLuminosity);
-			swapMask.rgb = col.rgb * saturate(1 - swapMask.r - swapMask.g - swapMask.b);
-			col.rgb = lerp(col.rgb, swapMask.rgb + redSwap + greenSwap + blueSwap, _ColorSwapBlend);
-		#endif
-		//--------------------------------------------------------------------
+		#if COLORGRADING_ON
+			col.rgb *= lerp(lerp(_ColorGradingDark, _ColorGradingMiddle, luminance/_ColorGradingMidPoint),
+			lerp(_ColorGradingMiddle, _ColorGradingLight, (luminance - _ColorGradingMidPoint)/(1.0 - _ColorGradingMidPoint)), step(_ColorGradingMidPoint, luminance));
+        #endif
 
-		//COLORRAMP_ON && !COLORRAMPOUTLINE_ON
-		#if COLORRAMP_ON && !COLORRAMPOUTLINE_ON 
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _ColorRampLuminosity);
-			#if GRADIENTCOLORRAMP_ON
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(luminance, 0)).rgb, _ColorRampBlend);
+		#if COLORRAMP_ON
+			half colorRampLuminance = saturate(luminance + _ColorRampLuminosity);
+			#if COLORRAMPGRAD_ON
+				half4 colorRampRes = SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(colorRampLuminance, 0));
 			#else
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(luminance, 0)).rgb, _ColorRampBlend);
+				half4 colorRampRes = SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(colorRampLuminance, 0));
 			#endif
-		#endif
-		//--------------------------------------------------------------------
+			col.rgb = lerp(col.rgb, colorRampRes.rgb, _ColorRampBlend);
+			col.a = lerp(col.a, saturate(col.a * colorRampRes.a), _ColorRampBlend);
+        #endif
 
-		//CHANGECOLOR_ON
-		#if CHANGECOLOR_ON
-			float3 currChangeColor = saturate(col.rgb);
-			luminance = 0.3 * currChangeColor.r + 0.59 * currChangeColor.g + 0.11 * currChangeColor.b;
-			luminance = saturate(luminance + _ColorChangeLuminosity);
-			half3 dif = abs(currChangeColor - _ColorChangeTarget.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance), 0.0));
-			#if CHANGECOLOR2_ON
-			dif = abs(currChangeColor - _ColorChangeTarget2.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol2.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance2), 0.0));
-			#endif
-			#if CHANGECOLOR3_ON
-			dif = abs(currChangeColor - _ColorChangeTarget3.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol3.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance3), 0.0));
-			#endif
-		#endif
-		//-------------------------------------------------------
-
-		//POSTERIZE_ON && !POSTERIZEOUTLINE_ON
 		#if POSTERIZE_ON && !POSTERIZEOUTLINE_ON
-			col.rgb = pow(col.rgb, _PosterizeGamma) * _PosterizeNumColors;
-			col.rgb = floor(col.rgb) / _PosterizeNumColors;
-			col.rgb = pow(col.rgb, 1.0 / _PosterizeGamma);
+			col.rgb = floor(col.rgb / (1.0 / _PosterizeNumColors)) * (1.0 / _PosterizeNumColors);
 		#endif
-		//------------------------------------
 
-		//HSV_ON
+		#if DEPTHGLOW_ON
+			half sceneDepthDiff = GetLinearEyeDepth(d.screenUV) - d.screenPos.w;
+        #endif
+
+		#if RIM_ON
+			half NdV = 1 - abs(dot(d.worldSpaceNormal, d.worldSpaceViewDir));
+			half rimFactor = saturate(_RimBias + _RimScale * pow(NdV, _RimPower));
+			half4 rimCol = _RimColor * rimFactor;
+			rimCol.rgb *= _RimIntensity;
+			col.rgb = lerp(col.rgb * (rimCol.rgb + half3(1,1,1)), col.rgb + rimCol.rgb, _RimAddAmount);
+			col.a = saturate(col.a * (1 - rimFactor * _RimErodesAlpha));
+        #endif
+
+		#if DEPTHGLOW_ON
+			half depthGlowMask = saturate(_DepthGlowDist * pow((1 - sceneDepthDiff), _DepthGlowPow));
+			col.rgb = lerp(col.rgb, _DepthGlowGlobal * col.rgb, depthGlowMask);
+			half depthGlowMult = 1;
+			#if ADDITIVECONFIG_ON
+				depthGlowMult = luminance;
+			#endif
+			col.rgb += _DepthGlowColor.rgb * _DepthGlow * depthGlowMask * col.a * depthGlowMult;
+        #endif
+
+		#if GLOW_ON
+			half glowMask = 1;
+			#if GLOWTEX_ON
+				glowMask = SAMPLE_TEXTURE2D(_GlowTex, sampler_GlowTex, TRANSFORM_TEX(d.texcoord0.xy, _GlowTex));
+			#endif
+				col.rgb *= _GlowGlobal * glowMask;
+				half glowMult = 1;
+			#if ADDITIVECONFIG_ON
+				glowMult = luminance;
+			#endif
+			
+			col.rgb += _GlowColor.rgb * _Glow * glowMask * col.a * glowMult;
+        #endif
+
 		#if HSV_ON
 			half3 resultHsv = half3(col.rgb);
 			half cosHsv = _HsvBright * _HsvSaturation * cos(_HsvShift * 3.14159265 / 180);
 			half sinHsv = _HsvBright * _HsvSaturation * sin(_HsvShift * 3.14159265 / 180);
 			resultHsv.x = (.299 * _HsvBright + .701 * cosHsv + .168 * sinHsv) * col.x
-			+ (.587 * _HsvBright - .587 * cosHsv + .330 * sinHsv) * col.y
-			+ (.114 * _HsvBright - .114 * cosHsv - .497 * sinHsv) * col.z;
+				+ (.587 * _HsvBright - .587 * cosHsv + .330 * sinHsv) * col.y
+				+ (.114 * _HsvBright - .114 * cosHsv - .497 * sinHsv) * col.z;
 			resultHsv.y = (.299 * _HsvBright - .299 * cosHsv - .328 * sinHsv) *col.x
-			+ (.587 * _HsvBright + .413 * cosHsv + .035 * sinHsv) * col.y
-			+ (.114 * _HsvBright - .114 * cosHsv + .292 * sinHsv) * col.z;
+				+ (.587 * _HsvBright + .413 * cosHsv + .035 * sinHsv) * col.y
+				+ (.114 * _HsvBright - .114 * cosHsv + .292 * sinHsv) * col.z;
 			resultHsv.z = (.299 * _HsvBright - .3 * cosHsv + 1.25 * sinHsv) * col.x
-			+ (.587 * _HsvBright - .588 * cosHsv - 1.05 * sinHsv) * col.y
-			+ (.114 * _HsvBright + .886 * cosHsv - .203 * sinHsv) * col.z;
+				+ (.587 * _HsvBright - .588 * cosHsv - 1.05 * sinHsv) * col.y
+				+ (.114 * _HsvBright + .886 * cosHsv - .203 * sinHsv) * col.z;
 			col.rgb = resultHsv;
 		#endif
-		//-------------------------------------------------------
 
-		//OVERLAY_ON
-		#if OVERLAY_ON
-			half2 overlayUvs = d.texcoord0.xy;
-			overlayUvs.x += ((_Time.y + randomSeed) * _OverlayTextureScrollXSpeed) % 1;
-			overlayUvs.y += ((_Time.y + randomSeed) * _OverlayTextureScrollYSpeed) % 1;
-			half4 overlayCol = SAMPLE_TEXTURE2D(_OverlayTex, sampler_OverlayTex, TRANSFORM_TEX(overlayUvs, _OverlayTex));
-			overlayCol.rgb *= _OverlayColor.rgb * _OverlayGlow;
-			#if !OVERLAYMULT_ON
-				overlayCol.rgb *= overlayCol.a * _OverlayColor.rgb * _OverlayColor.a * _OverlayBlend;
-				col.rgb += overlayCol.rgb;
-			#else
-				overlayCol.a *= _OverlayColor.a;
-				col = lerp(col, col * overlayCol, _OverlayBlend);
+		#if CAMDISTFADE_ON
+			col.a *= 1 - saturate(smoothstep(_CamDistFadeStepMin, _CamDistFadeStepMax, camDistance));
+			col.a *= smoothstep(0.0, _CamDistProximityFade, camDistance);
+		#endif
+
+		#if MASK_ON
+            half2 maskUv = d.texcoord0.xy;
+            #if POLARUV_ON
+				maskUv = prePolarUvs;
 			#endif
+            half4 maskSample = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, TRANSFORM_TEX(maskUv, _MaskTex));
+			half mask = pow(min(maskSample.r, maskSample.a), _MaskPow);
+			col.a *= mask;
+        #endif
+
+		#if ALPHASMOOTHSTEP_ON
+			col.a = smoothstep(_AlphaStepMin, _AlphaStepMax, col.a);
+        #endif
+
+		half4 debugColor = col;
+		#if SHAPEDEBUG_ON
+			debugColor = GetDebugColor(col, shape1, shape2, shape3);
 		#endif
 
-		//---------------------------------
+		clip(debugColor.a - _AlphaCutoffValue - 0.01);
 
-		//OUTBASE_ON
-		#if OUTBASE_ON
-			#if OUTBASEPIXELPERF_ON
-				half2 destUv = half2(_OutlinePixelWidth * _MainTex_TexelSize.x, _OutlinePixelWidth * _MainTex_TexelSize.y);
-			#else
-				half2 destUv = half2(_OutlineWidth * _MainTex_TexelSize.x * 200, _OutlineWidth * _MainTex_TexelSize.y * 200);
-			#endif
+		//#if FOG_ON
+			//UNITY_APPLY_FOG(i.fogCoord, col);
+        //#endif
+		
+		//Don't use a starting i.color.a lower than 1 unless using vertex stream dissolve when using a FADE effect
+        #if !FADE_ON && !ALPHAFADE_ON
+			col.a *= _Alpha * d.vertexColor.a;
+        #endif
+        #if FADE_ON || ALPHAFADE_ON
+			col.a *= _Alpha;
+        #endif
+        #if ADDITIVECONFIG_ON
+			col.rgb *= col.a;
+        #endif
 
-			#if OUTDIST_ON
-				d.texcoord3.x += ((_Time.x + _RandomSeed) * _OutlineDistortTexXSpeed) % 1;
-				d.texcoord3.y += ((_Time.x + _RandomSeed) * _OutlineDistortTexYSpeed) % 1;
-				#if ATLAS_ON
-					d.texcoord3 = half2((d.texcoord3.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord3.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				#endif
-				half outDistortAmnt = (SAMPLE_TEXTURE2D(_OutlineDistortTex, sampler_OutlineDistortTex, d.texcoord3).r - 0.5) * 0.2 * _OutlineDistortAmount;
-				destUv.x += outDistortAmnt;
-				destUv.y += outDistortAmnt;
-			#endif
-
-			half spriteLeft		= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, 0)).a;
-			half spriteRight	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy - half2(destUv.x, 0)).a;
-			half spriteBottom	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(0, destUv.y)).a;
-			half spriteTop		= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy - half2(0, destUv.y)).a;
-			half result = spriteLeft + spriteRight + spriteBottom + spriteTop;
-
-			#if OUTBASE8DIR_ON
-				half spriteTopLeft	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, destUv.y)).a;
-				half spriteTopRight = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-destUv.x, destUv.y)).a;
-				half spriteBotLeft	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, -destUv.y)).a;
-				half spriteBotRight = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-destUv.x, -destUv.y)).a;
-				result = result + spriteTopLeft + spriteTopRight + spriteBotLeft + spriteBotRight;
-			#endif
-					
-			result = step(0.05, saturate(result));
-
-			#if OUTTEX_ON
-				d.texcoord1.x += ((_Time.x + _RandomSeed) * _OutlineTexXSpeed) % 1;
-				d.texcoord1.y += ((_Time.x + _RandomSeed) * _OutlineTexYSpeed) % 1;
-				#if ATLAS_ON
-					d.texcoord1 = half2((d.texcoord1.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord1.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				#endif
-				half4 tempOutColor = SAMPLE_TEXTURE2D(_OutlineTex, sampler_OutlineTex, d.texcoord1);
-				tempOutColor *= _OutlineColor;
-				_OutlineColor = tempOutColor;
-			#endif
-
-			result *= (1 - originalAlpha) * _OutlineAlpha;
-
-			half4 outline = _OutlineColor * d.vertexColor.a;
-			outline.rgb *= _OutlineGlow;
-			outline.a = result;
-			#if ONLYOUTLINE_ON
-			col = outline;
-			#else
-			col = lerp(col, outline, result);
-			#endif
+		
+		#if SHAPEDEBUG_ON
+		o.Albedo = debugColor.rgb; 
+		o.Alpha = debugColor.a;
+		#else
+		o.Albedo = col.rgb; 
+		o.Alpha = col.a;
 		#endif
-		//-------------------------------------------------------
-
-		//FADE_ON
-		#if FADE_ON
-			half2 tiledUvFade1	= TRANSFORM_TEX(d.texcoord0, _FadeTex);
-			half2 tiledUvFade2	= TRANSFORM_TEX(d.texcoord0, _FadeBurnTex);
-			#if ATLAS_ON
-				tiledUvFade1 = half2((tiledUvFade1.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUvFade1.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				tiledUvFade2 = half2((tiledUvFade2.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUvFade2.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			half fadeTemp = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
-			half fade = smoothstep(_FadeAmount, _FadeAmount + _FadeBurnTransition, fadeTemp);
-			half fadeBurn = saturate(smoothstep(_FadeAmount - _FadeBurnWidth, _FadeAmount - _FadeBurnWidth + 0.1, fadeTemp) * _FadeAmount);
-			col.a *= fade;
-			_FadeBurnColor.rgb *= _FadeBurnGlow;
-			col += fadeBurn * SAMPLE_TEXTURE2D(_FadeBurnTex, sampler_FadeBurnTex, tiledUvFade2) * _FadeBurnColor * originalAlpha * (1 - col.a);
-		#endif
-		//-------------------------------------------------------
-
-		//SHADOW_ON
-		#if SHADOW_ON
-			half shadowA = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(_ShadowX, _ShadowY)).a;
-			half preMultShadowMask = 1 - (saturate(shadowA - col.a) * (1 - col.a));
-			col.rgb *= 1 - ((shadowA - col.a) * (1 - col.a));
-			col.rgb += (_ShadowColor * shadowA) * (1 - col.a);
-			col.a = max(shadowA * _ShadowAlpha * d.vertexColor.a, col.a);
-		#endif
-
-		//-------------------------------------------------------
-
-		//GLOW_ON
-		#if GLOW_ON
-			half4 emission;
-			#if GLOWTEX_ON
-				emission = SAMPLE_TEXTURE2D(_GlowTex, sampler_GlowTex, d.texcoord0);
-			#else
-				emission = col;
-			#endif
-
-			col.rgb *= _GlowGlobal;
-			emission.rgb *= emission.a * col.a * _Glow * _GlowColor;
-			col.rgb += emission.rgb;
-		#endif
-		//-------------------------------------------------------
-
-		//COLORRAMP_ON && COLORRAMPOUTLINE_ON
-		#if COLORRAMP_ON && COLORRAMPOUTLINE_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _ColorRampLuminosity);
-			#if GRADIENTCOLORRAMP_ON
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(luminance, 0)).rgb, _ColorRampBlend);
-			#else
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(luminance, 0)).rgb, _ColorRampBlend);
-			#endif
-		#endif
-		//---------------
-
-		//GREYSCALE_ON && GREYSCALEOUTLINE_ON
-		#if GREYSCALE_ON && GREYSCALEOUTLINE_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _GreyscaleLuminosity);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _GreyscaleTintColor, _GreyscaleBlend);
-		#endif
-
-		//-----------------------------------
-
-		//POSTERIZE_ON && POSTERIZEOUTLINE_ON
-		#if POSTERIZE_ON && POSTERIZEOUTLINE_ON
-			col.rgb = pow(col.rgb, _PosterizeGamma) * _PosterizeNumColors;
-			col.rgb = floor(col.rgb) / _PosterizeNumColors;
-			col.rgb = pow(col.rgb, 1.0 / _PosterizeGamma);
-		#endif
-
-		//-----------------------------------
-
-		//SHINE_ON
-		#if SHINE_ON
-			half2 uvShine = uvRect;
-			half cosAngle = cos(_ShineRotate);
-			half sinAngle = sin(_ShineRotate);
-			half2x2 rot = half2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
-			uvShine -= half2(0.5, 0.5);
-			uvShine = mul(rot, uvShine);
-			uvShine += half2(0.5, 0.5);
-			half shineMask = SAMPLE_TEXTURE2D(_ShineMask, sampler_ShineMask, d.texcoord0.xy).a;
-			half currentDistanceProjection = (uvShine.x + uvShine.y) / 2;
-			half whitePower = 1 - (abs(currentDistanceProjection - _ShineLocation) / _ShineWidth);
-			col.rgb +=  col.a * whitePower * _ShineGlow * max(sign(currentDistanceProjection - (_ShineLocation - _ShineWidth)), 0.0)
-			* max(sign((_ShineLocation + _ShineWidth) - currentDistanceProjection), 0.0) * _ShineColor * shineMask;
-		#endif
-
-		//-----------------------------------
-
-		//HOLOGRAM_ON
-		#if HOLOGRAM_ON
-			half totalHologram = _HologramStripesAmount + _HologramUnmodAmount;
-			half hologramYCoord = ((uvRect.y + (((_Time.x + randomSeed) % 1) * _HologramStripesSpeed)) % totalHologram) / totalHologram;
-			hologramYCoord = abs(hologramYCoord);
-			half alpha = RemapFloat(saturate(hologramYCoord - (_HologramUnmodAmount/totalHologram)), 0.0, 1.0, _HologramMinAlpha, saturate(_HologramMaxAlpha));
-			half hologramMask = max(sign((_HologramUnmodAmount/totalHologram) - hologramYCoord), 0.0);
-			half4 hologramResult = col;
-			hologramResult.a *= lerp(alpha, 1, hologramMask);
-			hologramResult.rgb *= max(1, _HologramMaxAlpha * max(sign(hologramYCoord - (_HologramUnmodAmount/totalHologram)), 0.0));
-			hologramMask = 1 - step(0.01,hologramMask);
-			hologramResult.rgb += hologramMask * _HologramStripeColor * col.a;
-			col = lerp(col, hologramResult, _HologramBlend);
-		#endif
-
-		//-----------------------------------
-
-		//FLICKER_ON
-		#if FLICKER_ON
-			col.a *= saturate(col.a * step(frac(0.05 + (_Time.w + randomSeed) * _FlickerFreq), 1 - _FlickerPercent) + _FlickerAlpha);
-		#endif
-		//-----------------------------------
-
-		//ALPHACUTOFF_ON
-
-		//ALPHAROUND_ON
-
-		//ALPHAOUTLINE_ON
-		#if ALPHAOUTLINE_ON
-			half alphaOutlineRes = pow(1 - col.a, max(_AlphaOutlinePower, 0.0001)) * step(_AlphaOutlineMinAlpha, col.a) * _AlphaOutlineBlend;
-			col.rgb = lerp(col.rgb, _AlphaOutlineColor.rgb * _AlphaOutlineGlow, alphaOutlineRes);
-			col.a = lerp(col.a, 1, alphaOutlineRes > 1);
-		#endif
-		//-------------------------------------------------------
-
-		//FOG_ON
-
-		//------------------
-
-        col *= _Color;
-		o.Albedo = col;
-		col.a *= _Alpha;
-        clip(col.a - _AlphaCutoffValue - 0.01);
-		o.Alpha = _Color.a;
 	}
 
 
@@ -12175,19 +11302,19 @@ ZWrite On
 
 
                  // #if %EXTRAV2F0REQUIREKEY%
-                 // v2p.extraV2F0 = d.extraV2F0;
+                  v2p.extraV2F0 = d.extraV2F0;
                  // #endif
 
                  // #if %EXTRAV2F1REQUIREKEY%
-                 // v2p.extraV2F1 = d.extraV2F1;
+                  v2p.extraV2F1 = d.extraV2F1;
                  // #endif
 
                  // #if %EXTRAV2F2REQUIREKEY%
-                 // v2p.extraV2F2 = d.extraV2F2;
+                  v2p.extraV2F2 = d.extraV2F2;
                  // #endif
 
                  // #if %EXTRAV2F3REQUIREKEY%
-                 // v2p.extraV2F3 = d.extraV2F3;
+                  v2p.extraV2F3 = d.extraV2F3;
                  // #endif
 
                  // #if %EXTRAV2F4REQUIREKEY%
@@ -12214,19 +11341,19 @@ ZWrite On
                ZERO_INITIALIZE(Blackboard, d.blackboard);
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // d.extraV2F0 = v2p.extraV2F0;
+                d.extraV2F0 = v2p.extraV2F0;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // d.extraV2F1 = v2p.extraV2F1;
+                d.extraV2F1 = v2p.extraV2F1;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // d.extraV2F2 = v2p.extraV2F2;
+                d.extraV2F2 = v2p.extraV2F2;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // d.extraV2F3 = v2p.extraV2F3;
+                d.extraV2F3 = v2p.extraV2F3;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -12278,19 +11405,19 @@ ZWrite On
                // Ext_ModifyTessellatedVertex29(v, d);
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // v2p.extraV2F0 = d.extraV2F0;
+                v2p.extraV2F0 = d.extraV2F0;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // v2p.extraV2F1 = d.extraV2F1;
+                v2p.extraV2F1 = d.extraV2F1;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // v2p.extraV2F2 = d.extraV2F2;
+                v2p.extraV2F2 = d.extraV2F2;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // v2p.extraV2F3 = d.extraV2F3;
+                v2p.extraV2F3 = d.extraV2F3;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -12410,7 +11537,7 @@ ZWrite On
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), d.worldSpaceTangent.xyz));
 
             // #if %SCREENPOSREQUIREKEY%
-            // d.screenUV = (IN.ScreenPosition.xy / max(0.01, IN.ScreenPosition.w));
+             d.screenUV = (IN.ScreenPosition.xy / max(0.01, IN.ScreenPosition.w));
             // #endif
 
             return d;
@@ -12438,11 +11565,11 @@ ZWrite On
 
             d.tangentSpaceViewDir = mul(d.TBNMatrix, d.worldSpaceViewDir);
              d.texcoord0 = i.texcoord0;
-             d.texcoord1 = i.texcoord1;
-             d.texcoord2 = i.texcoord2;
+            // d.texcoord1 = i.texcoord1;
+            // d.texcoord2 = i.texcoord2;
 
             // #if %TEXCOORD3REQUIREKEY%
-             d.texcoord3 = i.texcoord3;
+            // d.texcoord3 = i.texcoord3;
             // #endif
 
             // d.isFrontFace = facing;
@@ -12460,25 +11587,25 @@ ZWrite On
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldTangent.xyz));
 
             // #if %SCREENPOSREQUIREKEY%
-            // d.screenPos = i.screenPos;
-            // d.screenUV = (i.screenPos.xy / i.screenPos.w);
+             d.screenPos = i.screenPos;
+             d.screenUV = (i.screenPos.xy / i.screenPos.w);
             // #endif
 
 
             // #if %EXTRAV2F0REQUIREKEY%
-            // d.extraV2F0 = i.extraV2F0;
+             d.extraV2F0 = i.extraV2F0;
             // #endif
 
             // #if %EXTRAV2F1REQUIREKEY%
-            // d.extraV2F1 = i.extraV2F1;
+             d.extraV2F1 = i.extraV2F1;
             // #endif
 
             // #if %EXTRAV2F2REQUIREKEY%
-            // d.extraV2F2 = i.extraV2F2;
+             d.extraV2F2 = i.extraV2F2;
             // #endif
 
             // #if %EXTRAV2F3REQUIREKEY%
-            // d.extraV2F3 = i.extraV2F3;
+             d.extraV2F3 = i.extraV2F3;
             // #endif
 
             // #if %EXTRAV2F4REQUIREKEY%
@@ -12549,11 +11676,11 @@ ZWrite On
            #endif
 
             o.texcoord0 = v.texcoord0;
-            o.texcoord1 = v.texcoord1;
-            o.texcoord2 = v.texcoord2;
+           // o.texcoord1 = v.texcoord1;
+           // o.texcoord2 = v.texcoord2;
 
            // #if %TEXCOORD3REQUIREKEY%
-            o.texcoord3 = v.texcoord3;
+           // o.texcoord3 = v.texcoord3;
            // #endif
 
            // #if %VERTEXCOLORREQUIREKEY%
@@ -12592,14 +11719,14 @@ ZWrite On
           #endif
 
           // #if %SCREENPOSREQUIREKEY%
-          // o.screenPos = ComputeScreenPos(o.pos, _ProjectionParams.x);
+           o.screenPos = ComputeScreenPos(o.pos, _ProjectionParams.x);
           // #endif
 
           
           #if _PASSFORWARD || _PASSGBUFFER
               float2 uv1 = v.texcoord1.xy;
               OUTPUT_LIGHTMAP_UV(uv1, unity_LightmapST, o.lightmapUV);
-               o.texcoord1.xy = uv1;
+              // o.texcoord1.xy = uv1;
               #if UNITY_VERSION < 60000009
                 OUTPUT_SH(o.worldNormal, o.sh);
               #endif
@@ -12760,10 +11887,15 @@ ZWrite On
                 ZTest LEqual
                 ZWrite On
 
-            	Tags { "RenderType" = "Opaque" "Queue" = "Geometry" "PreviewType" = "Plane" }
+            	Tags
+    {
+        "RenderType" = "Opaque" "Queue" = "Geometry" "PreviewType" = "Sphere"
+    }   
 	Cull [_CullingOption]
 	ZWrite [_ZWrite]
 	ZTest [_ZTestMode]
+	ColorMask [_ColorMask]
+Lighting Off
 
 
             HLSLPROGRAM
@@ -12786,81 +11918,81 @@ ZWrite On
 
 
             
-	#pragma shader_feature_local GLOW_ON
-	#pragma shader_feature_local FADE_ON
-	#pragma shader_feature_local OUTBASE_ON
-	#pragma shader_feature_local ONLYOUTLINE_ON
-	#pragma shader_feature_local GRADIENT_ON
-	#pragma shader_feature_local GRADIENT2COL_ON
-	#pragma shader_feature_local RADIALGRADIENT_ON
-	#pragma shader_feature_local COLORSWAP_ON
-	#pragma shader_feature_local HSV_ON
-	#pragma shader_feature_local CHANGECOLOR_ON
-	#pragma shader_feature_local CHANGECOLOR2_ON
-	#pragma shader_feature_local CHANGECOLOR3_ON
-	#pragma shader_feature_local COLORRAMP_ON
-	#pragma shader_feature_local GRADIENTCOLORRAMP_ON
-	#pragma shader_feature_local HITEFFECT_ON
-	#pragma shader_feature_local NEGATIVE_ON
-	#pragma shader_feature_local PIXELATE_ON
-	#pragma shader_feature_local GREYSCALE_ON
-	#pragma shader_feature_local POSTERIZE_ON
-	#pragma shader_feature_local BLUR_ON
-	#pragma shader_feature_local MOTIONBLUR_ON
-	#pragma shader_feature_local GHOST_ON
-	#pragma shader_feature_local ALPHAOUTLINE_ON
-	#pragma shader_feature_local INNEROUTLINE_ON
-	#pragma shader_feature_local ONLYINNEROUTLINE_ON
-	#pragma shader_feature_local HOLOGRAM_ON
-	#pragma shader_feature_local CHROMABERR_ON
-	#pragma shader_feature_local GLITCH_ON
-	#pragma shader_feature_local FLICKER_ON
-	#pragma shader_feature_local SHADOW_ON
-	#pragma shader_feature_local SHINE_ON
-	#pragma shader_feature_local CONTRAST_ON
-	#pragma shader_feature_local OVERLAY_ON
-	#pragma shader_feature_local OVERLAYMULT_ON
-	#pragma shader_feature_local DOODLE_ON
-	#pragma shader_feature_local WIND_ON
-	#pragma shader_feature_local WAVEUV_ON
-	#pragma shader_feature_local ROUNDWAVEUV_ON
-	#pragma shader_feature_local RECTSIZE_ON
-	#pragma shader_feature_local OFFSETUV_ON
-	#pragma shader_feature_local CLIPPING_ON
-	#pragma shader_feature_local RADIALCLIPPING_ON
-	#pragma shader_feature_local TEXTURESCROLL_ON
-	#pragma shader_feature_local ZOOMUV_ON
-	#pragma shader_feature_local DISTORT_ON
-	#pragma shader_feature_local WARP_ON
-	#pragma shader_feature_local TWISTUV_ON
-	#pragma shader_feature_local ROTATEUV_ON
-	#pragma shader_feature_local POLARUV_ON
-	#pragma shader_feature_local FISHEYE_ON
-	#pragma shader_feature_local PINCH_ON
+    #pragma shader_feature_local TIMEISCUSTOM_ON
+    #pragma shader_feature_local ADDITIVECONFIG_ON
+    #pragma shader_feature_local PREMULTIPLYALPHA_ON
+    #pragma shader_feature_local PREMULTIPLYCOLOR_ON
+    #pragma shader_feature_local SPLITRGBA_ON
+    #pragma shader_feature_local SHAPEADD_ON
+
+    #pragma shader_feature_local SHAPE1SCREENUV_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local SHAPE2SCREENUV_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local SHAPE3SCREENUV_ON /////////////////Pipeline specific implementation
+
+    #pragma shader_feature_local SHAPEDEBUG_ON
+            
+    #pragma shader_feature_local SHAPE1CONTRAST_ON
+    #pragma shader_feature_local SHAPE1DISTORT_ON
+    #pragma shader_feature_local SHAPE1ROTATE_ON
+    #pragma shader_feature_local SHAPE1SHAPECOLOR_ON
+
+    #pragma shader_feature_local SHAPE2_ON
+    #pragma shader_feature_local SHAPE2CONTRAST_ON
+    #pragma shader_feature_local SHAPE2DISTORT_ON
+    #pragma shader_feature_local SHAPE2ROTATE_ON
+    #pragma shader_feature_local SHAPE2SHAPECOLOR_ON
+
+    #pragma shader_feature_local SHAPE3_ON
+    #pragma shader_feature_local SHAPE3CONTRAST_ON
+    #pragma shader_feature_local SHAPE3DISTORT_ON
+    #pragma shader_feature_local SHAPE3ROTATE_ON
+    #pragma shader_feature_local SHAPE3SHAPECOLOR_ON
+
+    #pragma shader_feature_local GLOW_ON
+    #pragma shader_feature_local GLOWTEX_ON
+    #pragma shader_feature_local DEPTHGLOW_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local MASK_ON
+    #pragma shader_feature_local COLORRAMP_ON
+    #pragma shader_feature_local COLORRAMPGRAD_ON
+    #pragma shader_feature_local COLORGRADING_ON
+    #pragma shader_feature_local HSV_ON
+    #pragma shader_feature_local POSTERIZE_ON
+    #pragma shader_feature_local PIXELATE_ON
+    #pragma shader_feature_local DISTORT_ON
 	#pragma shader_feature_local SHAKEUV_ON
-
-	#pragma shader_feature_local GLOWTEX_ON
-	#pragma shader_feature_local OUTTEX_ON
-	#pragma shader_feature_local OUTDIST_ON
-	#pragma shader_feature_local OUTBASE8DIR_ON
-	#pragma shader_feature_local OUTBASEPIXELPERF_ON
-	#pragma shader_feature_local COLORRAMPOUTLINE_ON
-	#pragma shader_feature_local GREYSCALEOUTLINE_ON
-	#pragma shader_feature_local POSTERIZEOUTLINE_ON
-	#pragma shader_feature_local BLURISHD_ON
-	#pragma shader_feature_local MANUALWIND_ON
-	#pragma shader_feature_local ATLAS_ON
-	#pragma shader_feature_local PREMULTIPLYALPHA_ON
-
-	#pragma shader_feature BILBOARD_ON
-	#pragma shader_feature BILBOARDY_ON
+    #pragma shader_feature_local WAVEUV_ON
+	#pragma shader_feature_local ROUNDWAVEUV_ON
+    #pragma shader_feature_local TWISTUV_ON
+    #pragma shader_feature_local DOODLE_ON
+    #pragma shader_feature_local OFFSETSTREAM_ON
+    #pragma shader_feature_local TEXTURESCROLL_ON
+    #pragma shader_feature_local VERTOFFSET_ON
+    #pragma shader_feature_local RIM_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local BACKFACETINT_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local POLARUV_ON
+    #pragma shader_feature_local POLARUVDISTORT_ON
+    #pragma shader_feature_local SHAPE1MASK_ON
+    #pragma shader_feature_local TRAILWIDTH_ON
+    #pragma shader_feature_local LIGHTANDSHADOW_ON
+    #pragma shader_feature_local SHAPETEXOFFSET_ON
+    #pragma shader_feature_local SHAPEWEIGHTS_ON
+            
+    #pragma shader_feature_local ALPHACUTOFF_ON
+    #pragma shader_feature_local ALPHASMOOTHSTEP_ON
+    #pragma shader_feature_local FADE_ON
+    #pragma shader_feature_local FADEBURN_ON
+    #pragma shader_feature_local ALPHAFADE_ON
+    #pragma shader_feature_local ALPHAFADEUSESHAPE1_ON
+    #pragma shader_feature_local ALPHAFADEUSEREDCHANNEL_ON
+    #pragma shader_feature_local ALPHAFADETRANSPARENCYTOO_ON
+    #pragma shader_feature_local ALPHAFADEINPUTSTREAM_ON
+    #pragma shader_feature_local CAMDISTFADE_ON
 
 	#pragma shader_feature NORMALMAP_ON
 
 
    #define _URP 1
-#define _USINGTEXCOORD1 1
-#define _USINGTEXCOORD2 1
+#define REQUIRE_DEPTH_TEXTURE
 
 
             // this has to be here or specular color will be ignored. Not in SG code
@@ -12926,15 +12058,15 @@ ZWrite On
          float3 worldNormal : TEXCOORD1;
          float4 worldTangent : TEXCOORD2;
           float4 texcoord0 : TEXCOORD3;
-          float4 texcoord1 : TEXCOORD4;
-          float4 texcoord2 : TEXCOORD5;
+         // float4 texcoord1 : TEXCOORD4;
+         // float4 texcoord2 : TEXCOORD5;
 
          // #if %TEXCOORD3REQUIREKEY%
-          float4 texcoord3 : TEXCOORD6;
+         // float4 texcoord3 : TEXCOORD6;
          // #endif
 
          // #if %SCREENPOSREQUIREKEY%
-         // float4 screenPos : TEXCOORD7;
+          float4 screenPos : TEXCOORD7;
          // #endif
 
          // #if %VERTEXCOLORREQUIREKEY%
@@ -12961,19 +12093,19 @@ ZWrite On
          #endif
 
          // #if %EXTRAV2F0REQUIREKEY%
-         // float4 extraV2F0 : TEXCOORD13;
+          float4 extraV2F0 : TEXCOORD13;
          // #endif
 
          // #if %EXTRAV2F1REQUIREKEY%
-         // float4 extraV2F1 : TEXCOORD14;
+          float4 extraV2F1 : TEXCOORD14;
          // #endif
 
          // #if %EXTRAV2F2REQUIREKEY%
-         // float4 extraV2F2 : TEXCOORD15;
+          float4 extraV2F2 : TEXCOORD15;
          // #endif
 
          // #if %EXTRAV2F3REQUIREKEY%
-         // float4 extraV2F3 : TEXCOORD16;
+          float4 extraV2F3 : TEXCOORD16;
          // #endif
 
          // #if %EXTRAV2F4REQUIREKEY%
@@ -13138,7 +12270,7 @@ ZWrite On
                #endif
 
                // #if %TEXCOORD3REQUIREKEY%
-                float4 texcoord3 : TEXCOORD3;
+               // float4 texcoord3 : TEXCOORD3;
                // #endif
 
                // #if %VERTEXCOLORREQUIREKEY%
@@ -13165,7 +12297,7 @@ ZWrite On
                float4 texcoord2 : TEXCOORD2;
 
                // #if %TEXCOORD3REQUIREKEY%
-                float4 texcoord3 : TEXCOORD3;
+               // float4 texcoord3 : TEXCOORD3;
                // #endif
 
                // #if %VERTEXCOLORREQUIREKEY%
@@ -13173,19 +12305,19 @@ ZWrite On
                // #endif
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // float4 extraV2F0 : TEXCOORD5;
+                float4 extraV2F0 : TEXCOORD5;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // float4 extraV2F1 : TEXCOORD6;
+                float4 extraV2F1 : TEXCOORD6;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // float4 extraV2F2 : TEXCOORD7;
+                float4 extraV2F2 : TEXCOORD7;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // float4 extraV2F3 : TEXCOORD8;
+                float4 extraV2F3 : TEXCOORD8;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -13426,20 +12558,116 @@ ZWrite On
 
             
 	half4 _Color;
-	half4 _MainTex_ST, _MainTex_TexelSize;
-	half _Alpha, _AlphaCutoffValue;
+	half _Alpha;
+	half _AlphaCutoffValue;
 
-	#if ATLAS_ON
-		half _MinXUV, _MaxXUV, _MinYUV, _MaxYUV;
+	half _TimingSeed;
+
+	#if TIMEISCUSTOM_ON
+		float4 globalCustomTime;
+	#endif
+
+	half4 _MainTex_ST, _ShapeColor;
+	half _ShapeXSpeed, _ShapeYSpeed, _ShapeColorWeight, _ShapeAlphaWeight;
+	
+	#if SHAPE1CONTRAST_ON
+		half _ShapeContrast, _ShapeBrightness;
+	#endif
+	
+	#if SHAPE1DISTORT_ON
+		half4 _ShapeDistortTex_ST;
+		half _ShapeDistortAmount, _ShapeDistortXSpeed, _ShapeDistortYSpeed;
+	#endif
+	
+	#if SHAPE1ROTATE_ON
+		half _ShapeRotationOffset, _ShapeRotationSpeed;
+	#endif
+	
+	#if OFFSETSTREAM_ON
+		half _OffsetSh1;
+	#endif
+	
+	#if SHAPEWEIGHTS_ON
+		half _Sh1BlendOffset;
+	#endif
+
+	#if SHAPE2_ON
+		half4 _Shape2Tex_ST, _Shape2Color;
+		half _Shape2XSpeed, _Shape2YSpeed, _Shape2ColorWeight, _Shape2AlphaWeight;
+		#if SHAPE2CONTRAST_ON
+			half _Shape2Contrast, _Shape2Brightness;
+		#endif
+		#if SHAPE2DISTORT_ON
+			half4 _Shape2DistortTex_ST;
+			half _Shape2DistortAmount, _Shape2DistortXSpeed, _Shape2DistortYSpeed;
+		#endif
+		#if SHAPE2ROTATE_ON
+			half _Shape2RotationOffset, _Shape2RotationSpeed;
+		#endif
+		#if OFFSETSTREAM_ON
+			half _OffsetSh2;
+		#endif
+		#if SHAPEWEIGHTS_ON
+			half _Sh2BlendOffset;
+		#endif
+	#endif
+
+	#if SHAPE3_ON
+		half4 _Shape3Tex_ST, _Shape3Color;
+		half _Shape3XSpeed, _Shape3YSpeed, _Shape3ColorWeight, _Shape3AlphaWeight;
+		#if SHAPE3CONTRAST_ON
+			half _Shape3Contrast, _Shape3Brightness;
+		#endif
+		#if SHAPE3DISTORT_ON
+			half4 _Shape3DistortTex_ST;
+			half _Shape3DistortAmount, _Shape3DistortXSpeed, _Shape3DistortYSpeed;
+		#endif
+		#if SHAPE3ROTATE_ON
+			half _Shape3RotationOffset, _Shape3RotationSpeed;
+		#endif
+		#if OFFSETSTREAM_ON
+			half _OffsetSh3;
+		#endif
+		#if SHAPEWEIGHTS_ON
+			half _Sh3BlendOffset;
+		#endif
 	#endif
 
 	#if GLOW_ON
 		half4 _GlowColor;
 		half _Glow, _GlowGlobal;
+		#if GLOWTEX_ON
+			half4 _GlowTex_ST;
+		#endif
 	#endif
-	 
+
+	#if MASK_ON
+		half4 _MaskTex_ST;
+		half _MaskPow;
+	#endif
+
+	#if COLORRAMP_ON
+		half _ColorRampLuminosity, _ColorRampBlend;
+	#endif
+
+	#if ALPHASMOOTHSTEP_ON
+		half _AlphaStepMin, _AlphaStepMax;
+	#endif
+
+	#if ALPHAFADE_ON
+		half _AlphaFadeAmount, _AlphaFadeSmooth, _AlphaFadePow;
+	#endif
+
 	#if HSV_ON
 		half _HsvShift, _HsvSaturation, _HsvBright;
+	#endif
+
+	#if POSTERIZE_ON
+		half _PosterizeNumColors;
+	#endif
+
+	#if PIXELATE_ON
+		half _PixelateSize;
 	#endif
 
 	#if DISTORT_ON
@@ -13447,203 +12675,101 @@ ZWrite On
 		half _DistortTexXSpeed, _DistortTexYSpeed, _DistortAmount;
 	#endif
 
-	#if FADE_ON
-		half4 _FadeBurnColor, _FadeTex_ST, _FadeBurnTex_ST;
-		half _FadeAmount, _FadeBurnWidth, _FadeBurnTransition,_FadeBurnGlow;
-	#endif
-
-	#if OUTBASE_ON
-		half4 _OutlineColor;
-		half _OutlineAlpha, _OutlineGlow, _OutlineWidth;
-		int _OutlinePixelWidth;
-	#endif
-
-	#if OUTTEX_ON
-		half4 _OutlineTex_ST;
-		half _OutlineTexXSpeed, _OutlineTexYSpeed;
-	#endif
-
-	#if OUTDIST_ON
-		half4 _OutlineDistortTex_ST;
-		half _OutlineDistortTexXSpeed, _OutlineDistortTexYSpeed, _OutlineDistortAmount;
-	#endif
-
-	#if ALPHAOUTLINE_ON
-		half _AlphaOutlineGlow, _AlphaOutlinePower, _AlphaOutlineMinAlpha, _AlphaOutlineBlend;
-		half4 _AlphaOutlineColor;
-	#endif
-
-	#if INNEROUTLINE_ON
-		half _InnerOutlineThickness, _InnerOutlineAlpha, _InnerOutlineGlow;
-		half4 _InnerOutlineColor;
-	#endif
-
-	#if GRADIENT_ON
-		half _GradBlend, _GradBoostX, _GradBoostY;
-		half4 _GradTopRightCol, _GradTopLeftCol, _GradBotRightCol, _GradBotLeftCol;
-	#endif
-
-	#if COLORSWAP_ON
-		half4 _ColorSwapRed, _ColorSwapGreen, _ColorSwapBlue;
-		half _ColorSwapRedLuminosity, _ColorSwapGreenLuminosity, _ColorSwapBlueLuminosity, _ColorSwapBlend;
-	#endif
-
-	#if CHANGECOLOR_ON
-		half4 _ColorChangeNewCol, _ColorChangeTarget;
-		half _ColorChangeTolerance, _ColorChangeLuminosity;
-	#endif
-	#if CHANGECOLOR2_ON
-		half4 _ColorChangeNewCol2, _ColorChangeTarget2;
-		half _ColorChangeTolerance2;
-	#endif
-	#if CHANGECOLOR3_ON
-		half4 _ColorChangeNewCol3, _ColorChangeTarget3;
-		half _ColorChangeTolerance3;
-	#endif
-
-	#if COLORRAMP_ON
-		half _ColorRampLuminosity, _ColorRampBlend;
-	#endif
-
-	#if HITEFFECT_ON
-		half4 _HitEffectColor;
-		half _HitEffectGlow, _HitEffectBlend;
-	#endif
-
-	#if NEGATIVE_ON
-		half _NegativeAmount;
-	#endif
-
-	#if PIXELATE_ON
-		half _PixelateSize;
-	#endif
-
-	#if GREYSCALE_ON
-		half _GreyscaleLuminosity, _GreyscaleBlend;
-		half4 _GreyscaleTintColor;
-	#endif
-
-	#if POSTERIZE_ON
-		half _PosterizeNumColors, _PosterizeGamma;
-	#endif
-
-	#if BLUR_ON
-		half _BlurIntensity;
-	#endif
-
-	#if MOTIONBLUR_ON
-		half _MotionBlurAngle, _MotionBlurDist;
-	#endif
-
-	#if GHOST_ON
-		half _GhostColorBoost, _GhostTransparency, _GhostBlend;
-	#endif
-
-	#if HOLOGRAM_ON
-		half _HologramStripesAmount, _HologramMinAlpha, _HologramUnmodAmount, _HologramStripesSpeed, _HologramMaxAlpha, _HologramBlend;
-		half4 _HologramStripeColor;
-	#endif
-
-	#if CHROMABERR_ON
-		half _ChromAberrAmount, _ChromAberrAlpha;
-	#endif
-
-	#if GLITCH_ON
-		half _GlitchAmount, _GlitchSize;
-	#endif
-
-	#if FLICKER_ON
-		half _FlickerFreq, _FlickerPercent, _FlickerAlpha;
-	#endif
-
-	#if SHADOW_ON
-		half _ShadowX, _ShadowY, _ShadowAlpha;
-		half4 _ShadowColor;
-	#endif
-
-	#if SHINE_ON
-		half4 _ShineColor;
-		half _ShineLocation, _ShineRotate, _ShineWidth, _ShineGlow;
-	#endif
-
-	#if CONTRAST_ON
-		half _Contrast, _Brightness;
-	#endif
-
-	#if OVERLAY_ON
-		half4 _OverlayTex_ST, _OverlayColor;
-		half _OverlayGlow, _OverlayBlend, _OverlayTextureScrollXSpeed, _OverlayTextureScrollYSpeed;
-	#endif
-
-	#if DOODLE_ON
-		half _HandDrawnAmount, _HandDrawnSpeed;
-	#endif
-
-	#if WIND_ON
-		half _GrassSpeed, _GrassWind, _GrassManualAnim, _GrassRadialBend;
-	#endif
-
-	#if WAVEUV_ON
-		float _WaveAmount, _WaveSpeed, _WaveStrength, _WaveX, _WaveY;
-	#endif
-
-	#if ROUNDWAVEUV_ON
-		half _RoundWaveStrength, _RoundWaveSpeed;
-	#endif
-
-	#if RECTSIZE_ON
-		half _RectSize;
-	#endif
-
-	#if OFFSETUV_ON
-		half _OffsetUvX, _OffsetUvY;
-	#endif
-
-	#if CLIPPING_ON
-		half _ClipUvLeft, _ClipUvRight, _ClipUvUp, _ClipUvDown;
-	#endif
-
-	#if RADIALCLIPPING_ON
-		half _RadialStartAngle, _RadialClip, _RadialClip2;
-	#endif
-
 	#if TEXTURESCROLL_ON
 		half _TextureScrollXSpeed, _TextureScrollYSpeed;
-	#endif
-
-	#if ZOOMUV_ON
-		half _ZoomUvAmount;
-	#endif
-
-	#if WARP_ON
-		half _WarpStrength, _WarpSpeed, _WarpScale;
-	#endif
-
-	#if TWISTUV_ON
-		half _TwistUvAmount, _TwistUvPosX, _TwistUvPosY, _TwistUvRadius;
-	#endif
-
-	#if ROTATEUV_ON
-		half _RotateUvAmount;
-	#endif
-
-	#if FISHEYE_ON
-		half _FishEyeUvAmount;
-	#endif
-
-	#if PINCH_ON
-		half _PinchUvAmount;
 	#endif
 
 	#if SHAKEUV_ON
 		half _ShakeUvSpeed, _ShakeUvX, _ShakeUvY;
 	#endif
 
+	#if WAVEUV_ON
+		half _WaveAmount, _WaveSpeed, _WaveStrength, _WaveX, _WaveY;
+	#endif
+
+	#if ROUNDWAVEUV_ON
+		half _RoundWaveStrength, _RoundWaveSpeed;
+	#endif
+
+	#if TWISTUV_ON
+		half _TwistUvAmount, _TwistUvPosX, _TwistUvPosY, _TwistUvRadius;
+	#endif
+
+	#if DOODLE_ON
+		half _HandDrawnAmount, _HandDrawnSpeed;
+	#endif
+
+	#if ROUNDWAVEUV_ON || PIXELATE_ON
+		half4 _MainTex_TexelSize;
+	#endif
+
+	#if VERTOFFSET_ON
+		half4 _VertOffsetTex_ST;
+		half _VertOffsetAmount, _VertOffsetPower, _VertOffsetTexXSpeed, _VertOffsetTexYSpeed;
+	#endif
+
+	#if FADE_ON
+		half4 _FadeTex_ST;
+		half _FadeAmount, _FadeTransition, _FadePower, _FadeScrollXSpeed, _FadeScrollYSpeed;
+		#if FADEBURN_ON
+			half4 _FadeBurnColor, _FadeBurnTex_ST;
+			half _FadeBurnWidth, _FadeBurnGlow;
+		#endif
+	#endif
+
+	#if COLORGRADING_ON
+		half3 _ColorGradingLight, _ColorGradingMiddle, _ColorGradingDark;
+		half _ColorGradingMidPoint;
+	#endif
+            
+	#if CAMDISTFADE_ON
+		half _CamDistFadeStepMin, _CamDistFadeStepMax, _CamDistProximityFade;
+	#endif
+
+	#if RIM_ON
+		half _RimBias, _RimScale, _RimPower, _RimIntensity, _RimAddAmount, _RimErodesAlpha;
+		half4 _RimColor;
+	#endif
+
+	#if BACKFACETINT_ON
+		half4 _BackFaceTint, _FrontFaceTint;
+	#endif
+
+	#if SHAPEDEBUG_ON
+		half _DebugShape;
+	#endif
+
+	#if SHAPE1MASK_ON
+		half4 _Shape1MaskTex_ST;
+		half _Shape1MaskPow;
+	#endif
+
+	#if TRAILWIDTH_ON
+		half _TrailWidthPower;
+	#endif
+
+	#if LIGHTANDSHADOW_ON
+		half3 _All1VfxLightDir;
+		half _ShadowAmount, _ShadowStepMin, _ShadowStepMax, _LightAmount;
+		half4 _LightColor;
+	#endif
+
+	#if SHAPETEXOFFSET_ON
+		half _RandomSh1Mult, _RandomSh2Mult, _RandomSh3Mult;
+	#endif
+
+	#if DEPTHGLOW_ON
+		half _DepthGlowDist, _DepthGlowPow, _DepthGlow, _DepthGlowGlobal;
+		half4 _DepthGlowColor;
+    #endif
+
+	#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+        half _ScreenUvShDistScale,_ScreenUvSh2DistScale, _ScreenUvSh3DistScale;
+	#endif
+
 	#if NORMALMAP_ON
 		half _NormalStrength;
 	#endif
-
-	float _RandomSeed;
 
 
 
@@ -13655,58 +12781,82 @@ ZWrite On
          
 
          
-	
+
 	TEXTURE2D(_MainTex);
 	SAMPLER(sampler_MainTex);
 
+	#if SHAPE1DISTORT_ON
+		TEXTURE2D(_ShapeDistortTex);
+		SAMPLER(sampler_ShapeDistortTex);
+	#endif
+
+	#if SHAPE2_ON
+		TEXTURE2D(_Shape2Tex);
+		SAMPLER(sampler_Shape2Tex);
+		#if SHAPE2DISTORT_ON
+			TEXTURE2D(_Shape2DistortTex);
+			SAMPLER(sampler_Shape2DistortTex);
+		#endif
+	#endif
+
+	#if SHAPE3_ON
+		TEXTURE2D(_Shape3Tex);
+		SAMPLER(sampler_Shape3Tex);
+		#if SHAPE3DISTORT_ON
+			TEXTURE2D(_Shape3DistortTex);
+			SAMPLER(sampler_Shape3DistortTex);
+		#endif
+	#endif
+
 	#if GLOW_ON
-		TEXTURE2D(_GlowTex);
-		SAMPLER(sampler_GlowTex);
+		#if GLOWTEX_ON
+			TEXTURE2D(_GlowTex);
+			SAMPLER(sampler_GlowTex);
+		#endif
+	#endif
+
+	#if MASK_ON
+		TEXTURE2D(_MaskTex);
+		SAMPLER(sampler_MaskTex);
+	#endif
+
+	#if COLORRAMP_ON
+		TEXTURE2D(_ColorRampTex);
+		SAMPLER(sampler_ColorRampTex);
+	#endif
+
+	#if COLORRAMPGRAD_ON
+		TEXTURE2D(_ColorRampTexGradient);
+		SAMPLER(sampler_ColorRampTexGradient);
+	#endif
+	
+	#if DISTORT_ON
+		TEXTURE2D(_DistortTex);
+		SAMPLER(sampler_DistortTex);
+	#endif
+
+	#if VERTOFFSET_ON
+		TEXTURE2D(_VertOffsetTex);
+		SAMPLER(sampler_VertOffsetTex);
 	#endif
 
 	#if FADE_ON
 		TEXTURE2D(_FadeTex);
 		SAMPLER(sampler_FadeTex);
-
-		TEXTURE2D(_FadeBurnTex);
-		SAMPLER(sampler_FadeBurnTex);
+		#if FADEBURN_ON
+			TEXTURE2D(_FadeBurnTex);
+			SAMPLER(sampler_FadeBurnTex);
+		#endif
 	#endif
 
-	#if DISTORT_ON
-		TEXTURE2D(_DistortTex);
-		SAMPLER(sampler_DistortTex);	
+	#if SHAPE1MASK_ON
+		TEXTURE2D(_Shape1MaskTex);
+		SAMPLER(sampler_Shape1MaskTex);
 	#endif
 
-	#if OUTTEX_ON
-		TEXTURE2D(_OutlineTex);
-		SAMPLER(sampler_OutlineTex);
-	#endif
-
-	#if OUTDIST_ON
-		TEXTURE2D(_OutlineDistortTex);
-		SAMPLER(sampler_OutlineDistortTex);
-	#endif
-
-	#if COLORSWAP_ON
-		TEXTURE2D(_ColorSwapTex);
-		SAMPLER(sampler_ColorSwapTex);
-	#endif
-
-	#if COLORRAMP_ON
-		TEXTURE2D(_ColorRampTex);
-		TEXTURE2D(_ColorRampTexGradient);
-		SAMPLER(sampler_ColorRampTex);
-		SAMPLER(sampler_ColorRampTexGradient);
-	#endif
-
-	#if SHINE_ON
-		TEXTURE2D(_ShineMask);
-		SAMPLER(sampler_ShineMask);
-	#endif
-
-	#if OVERLAY_ON
-		TEXTURE2D(_OverlayTex);
-		SAMPLER(sampler_OverlayTex);
+	#if TRAILWIDTH_ON
+		TEXTURE2D(_TrailWidthGradient);
+		SAMPLER(sampler_TrailWidthGradient);
 	#endif
 
 	#if NORMALMAP_ON
@@ -13714,225 +12864,124 @@ ZWrite On
 		SAMPLER(sampler_NormalMap);
 	#endif
 
-
-	half3 GetPixel(in int offsetX, in int offsetY, in half2 uv, in Texture2D _tex, in SamplerState _sampler)
+	half4 SampleTextureWithScroll(in Texture2D _tex, in SamplerState _sampler, in float2 uv, in half scrollXSpeed, in half scrollYSpeed, in float time)
 	{
-		half2 _uv = uv + half2(offsetX * _MainTex_TexelSize.x, offsetY * _MainTex_TexelSize.y);
-		half4 col = SAMPLE_TEXTURE2D(_tex, _sampler, _uv);
-		return col.rgb;
+		half2 _uv = uv;
+		_uv.x += (time * scrollXSpeed) % 1;
+		_uv.y += (time * scrollYSpeed) % 1;
+		return SAMPLE_TEXTURE2D(_tex, _sampler, _uv);
 	}
 
-
-	//BLURS-------------------------------------------------------------------------
-	half4 Blur(half2 uv, Texture2D source, SamplerState sampler_source, half Intensity)
+	half EaseOutQuint(half x) 
 	{
-		const half2 texelSize = 1.0 / _ScreenParams.xy;
-		const half4 color = SAMPLE_TEXTURE2D(source, sampler_source, uv);
-		const half2 offset = Intensity * texelSize;
-
-		half4 accumulatedColor = color;
-		half accumulatedWeight = 1.0;
-		for (int x = -1; x <= 1; x++)
-		{
-			for (int y = -1; y <= 1; y++)
-			{
-				const half2 sampleUV = uv + half2(x, y) * offset;
-				const half4 sampleColor = SAMPLE_TEXTURE2D(source, sampler_source, sampleUV);
-
-				accumulatedColor += sampleColor;
-				accumulatedWeight += 1.0;
-			}
-		}
-
-		half4 blurredColor = accumulatedColor / accumulatedWeight;
-		return blurredColor;
+		return 1 - pow(1 - x, 5);
 	}
 
-	half BlurHD_G(half bhqp, half x)
+	half RemapFloat(half inValue, half inMin, half inMax, half outMin, half outMax)
 	{
-		return exp(-(x * x) / (2.0 * bhqp * bhqp));
-	}
-	half4 BlurHD(half2 uv, Texture2D source, SamplerState sampler_source, half BlurAmount, half xScale, half yScale)
-	{
-		int iterations = 16;
-		int halfIterations = iterations / 2;
-		half sigmaX = 0.1 + BlurAmount * 0.5;
-		half sigmaY = sigmaX;
-		half total = 0.0;
-		half4 ret = half4(0, 0, 0, 0);
-		for (int iy = 0; iy < iterations; ++iy)
-		{
-			half fy = BlurHD_G(sigmaY, half(iy) -half(halfIterations));
-			half offsetY = half(iy - halfIterations) * 0.00390625 * xScale;
-			for (int ix = 0; ix < iterations; ++ix)
-			{
-				half fx = BlurHD_G(sigmaX, half(ix) - half(halfIterations));
-				half offsetX = half(ix - halfIterations) * 0.00390625 * yScale;
-				total += fx * fy;
-				ret += SAMPLE_TEXTURE2D(source, sampler_source, uv + half2(offsetX, offsetY)) * fx * fy;
-			}
-		}
-		return ret / total;
-	}
-	//-----------------------------------------------------------------------
-
-
-	//-------------------------------------------
-	half RemapFloat(half inValue, half inMin, half inMax, half outMin, half outMax){
 		return outMin + (inValue - inMin) * (outMax - outMin) / (inMax - inMin);
 	}
-	//-------------------------------------------
 
-	//-----------------------------------------------------------------------
-	half rand(half2 seed, half offset) {
-		return (frac(sin(dot(seed, half2(12.9898, 78.233))) * 43758.5453) + offset) % 1.0;
+	float2 RotateUvs(float2 uv, half rotation, half4 scaleAndTranslate)
+	{
+		half2 center = half2(0.5 * scaleAndTranslate.x + scaleAndTranslate.z, 0.5 * scaleAndTranslate.y + scaleAndTranslate.w);
+		half cosAngle = cos(rotation);
+		half sinAngle = sin(rotation);
+		uv -= center;
+		uv = mul(half2x2(cosAngle, -sinAngle, sinAngle, cosAngle), uv);
+		uv += center;
+		return uv; 
 	}
 
-	half rand2(half2 seed, half offset) {
-		return (frac(sin(dot(seed * floor(50 + (_Time.x % 1.0) * 12.), half2(127.1, 311.7))) * 43758.5453123) + offset) % 1.0;
-	}
+	half4 GetDebugColor(float4 resColor, half4 shape1, half4 shape2, half4 shape3)
+	{
+		half4 res = resColor;
 
-	half rand2CustomTime(half2 seed, half offset, half customTime) {
-		return (frac(sin(dot(seed * floor(50 + (customTime % 1.0) * 12.), half2(127.1, 311.7))) * 43758.5453123) + offset) % 1.0;
-	}
-	//-----------------------------------------------------------------------
+		//MAKE SURE THE FOLLOWING CODE BLOCK IS UNCOMMENTED-------------------------------------------
+        #if SHAPEDEBUG_ON
+			if(_DebugShape < 1.5) return shape1;
+			#if SHAPE2_ON
+				else if (_DebugShape < 2.5) return shape2;
+			#endif
+			#if SHAPE3_ON
+				else return shape3;
+			#endif
+        #endif
 
+		return res;
+	}
 
 	void Ext_ModifyVertex0 (inout VertexData v, inout ExtraV2F d)
 	{
-		//BILBOARD_ON
-		#if BILBOARD_ON
-			half3 camRight = mul((half3x3)unity_CameraToWorld, half3(1,0,0));
-			half3 camUp = half3(0,1,0);
-			#if BILBOARDY_ON
-				camUp = mul((half3x3)unity_CameraToWorld, half3(0,1,0));
+		//uvDistTex --> extraV2F0
+		//uvSh1DistTex --> extraV2F1
+		//uvSh2DistTex --> extraV2F2
+		//uvSh3DistTex --> extraV2F3
+ 
+		#if VERTOFFSET_ON
+			#if TIMEISCUSTOM_ON
+				const half time = v.texcoord0.z + globalCustomTime.y;
+			#else
+				const half time = v.texcoord0.z + _Time.y;
 			#endif
-			half3 localPos = v.vertex.x * camRight + v.vertex.y * camUp;
-			v.vertex = half4(localPos, 1);
-		#endif
-        //-----------------------------------------------------------
-
-        v.texcoord0.xy = TRANSFORM_TEX(v.texcoord0.xy, _MainTex);
-		half2 center = half2(0.5, 0.5);
-        #if ATLAS_ON
-		    center = half2((_MaxXUV + _MinXUV) / 2.0, (_MaxYUV + _MinYUV) / 2.0);
-		#endif
-		
-		//POLARUV_ON
-		#if POLARUV_ON
-			v.texcoord0.xy = v.texcoord0.xy - center;
+				half4 offsetUv = half4(TRANSFORM_TEX(v.texcoord0.xy, _VertOffsetTex), 0, 0);
+            	offsetUv.x += (time * _VertOffsetTexXSpeed) % 1;
+				offsetUv.y += (time * _VertOffsetTexYSpeed) % 1;
+                v.vertex.xyz += v.normal * _VertOffsetAmount * pow(SAMPLE_TEXTURE2D_LOD(_VertOffsetTex, sampler_VertOffsetTex, offsetUv, 0).r, _VertOffsetPower); 
 		#endif
 
-		//----------------------------------------
-
-		//ROTATEUV_ON
-		#if ROTATEUV_ON
-			half2 uvC = v.texcoord0.xy;
-			half cosAngle = cos(_RotateUvAmount);
-			half sinAngle = sin(_RotateUvAmount);
-			half2x2 rot = half2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
-			uvC -= center;
-			v.texcoord0.xy = mul(rot, uvC);
-			v.texcoord0.xy += center;
-		#endif
-		//--------------------
-
-		#if RECTSIZE_ON
-			v.vertex.xyz += (v.vertex.xyz * (_RectSize - 1.0));
+		#if DISTORT_ON && !POLARUVDISTORT_ON
+			d.extraV2F0.xy = TRANSFORM_TEX(v.texcoord0.xy, _DistortTex);
 		#endif
 
-		#if OUTTEX_ON
-			v.texcoord1.xy = TRANSFORM_TEX(v.texcoord0.xy, _OutlineTex);
+		#if SHAPE1DISTORT_ON && !POLARUVDISTORT_ON
+			d.extraV2F1.xy = TRANSFORM_TEX(v.texcoord0.xy, _ShapeDistortTex);
+        #endif
+
+		#if SHAPE2_ON
+			#if SHAPE2DISTORT_ON && !POLARUVDISTORT_ON
+				d.extraV2F2.xy = TRANSFORM_TEX(v.texcoord0.xy, _Shape2DistortTex);;
+			#endif
 		#endif
 
-		#if OUTDIST_ON
-			v.texcoord2.xy = TRANSFORM_TEX(v.texcoord0.xy, _OutlineDistortTex);
-		#endif
-
-		#if DISTORT_ON
-			v.texcoord3.xy = TRANSFORM_TEX(v.texcoord0.xy, _DistortTex);
-		#endif
+		#if SHAPE3_ON
+			#if SHAPE3DISTORT_ON && !POLARUVDISTORT_ON
+				d.extraV2F3.xy = TRANSFORM_TEX(v.texcoord0.xy, _Shape3DistortTex);
+			#endif
+        #endif
 	}
 
 	void Ext_SurfaceFunction0 (inout Surface o, ShaderData d)
 	{
-		half randomSeed = _RandomSeed;
+		//i.uvSeed -> d.texcoord0.xy
 
-		float2 uvRect = d.texcoord0;
-		half2 center = half2(0.5, 0.5);
-		#if ATLAS_ON
-			center = half2((_MaxXUV + _MinXUV) / 2.0, (_MaxYUV + _MinYUV) / 2.0);
-			uvRect = half2((d.texcoord0.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord0.y - _MinYUV) / (_MaxYUV - _MinYUV));
+		float seed = d.texcoord0.z + _TimingSeed;
+		#if TIMEISCUSTOM_ON
+			const float4 shaderTime = globalCustomTime;
+		#else
+			const float4 shaderTime = _Time;
 		#endif
-		half2 centerTiled = half2(center.x *  _MainTex_ST.x, center.y *  _MainTex_ST.y);
+		float time = shaderTime.y + seed;
 
-		//CLIPPING_ON
-		#if CLIPPING_ON
-			half2 tiledUv = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				tiledUv = half2((tiledUv.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUv.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			clip((1 - _ClipUvUp) - tiledUv.y);
-			clip(tiledUv.y - _ClipUvDown);
-			clip((1 - _ClipUvRight) - tiledUv.x);
-			clip(tiledUv.x - _ClipUvLeft);
-		#endif
-		//----------------------------------
+		#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half2 originalUvs = d.texcoord0.xy;
+        #endif
 
-		//RADIALCLIPPING_ON
-		#if RADIALCLIPPING_ON
-			half2 tiledUv2 = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				tiledUv2 = half2((tiledUv2.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUv2.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			half startAngle = _RadialStartAngle - _RadialClip;
-			half endAngle = _RadialStartAngle + _RadialClip2;
-			half offset0 = clamp(0, 360, startAngle + 360);
-			half offset360 = clamp(0, 360, endAngle - 360);
-			half2 atan2Coord = half2(lerp(-1, 1, tiledUv2.x), lerp(-1, 1, tiledUv2.y));
-			half atanAngle = atan2(atan2Coord.y, atan2Coord.x) * 57.3; // angle in degrees
-			if(atanAngle < 0) atanAngle = 360 + atanAngle;
-			if(atanAngle >= startAngle && atanAngle <= endAngle) discard;
-			if(atanAngle <= offset360) discard;
-			if(atanAngle >= offset0) discard;
+		#if PIXELATE_ON
+			half aspectRatio = _MainTex_TexelSize.x / _MainTex_TexelSize.y;
+			half2 pixelSize = float2(_PixelateSize, _PixelateSize * aspectRatio);
+			d.texcoord0.xy = floor(d.texcoord0.xy * pixelSize) / pixelSize;
 		#endif
 
-		//-----------------------------
-
-		//TEXTURESCROLL_ON && ATLAS_ON
-		#if TEXTURESCROLL_ON && ATLAS_ON
-			d.texcoord0.xy = half2(_MinXUV + ((_MaxXUV - _MinXUV) * (abs(((_Time.y + randomSeed) * _TextureScrollXSpeed) + uvRect.x) % 1)),
-			_MinYUV + ((_MaxYUV - _MinYUV) * (abs(((_Time.y + randomSeed) * _TextureScrollYSpeed) + uvRect.y) % 1)));
-		#endif
-		//----------------------------
-
-		//OFFSETUV_ON
-		#if OFFSETUV_ON
-			#if ATLAS_ON
-				d.texcoord0.xy = half2(_MinXUV + ((_MaxXUV - _MinXUV) * (abs((_OffsetUvX + uvRect.x) % 1))),
-				_MinYUV + ((_MaxYUV - _MinYUV) * (abs(_OffsetUvY + uvRect.y) % 1)));
-			#else
-				d.texcoord0.xy += half2(_OffsetUvX, _OffsetUvY);
-			#endif
+		#if NORMALMAP_ON
+			half4 normalSample = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, d.texcoord0.xy);
+			half3 normalTS = UnpackNormal(normalSample);
+			normalTS.xy *= _NormalStrength;
+			o.Normal = normalTS;
 		#endif
 
-		//----------------------
-
-		//POLARUV_ON
-		#if POLARUV_ON
-			d.texcoord0.xy = half2(atan2(d.texcoord0.y, d.texcoord0.x) / (2.0f * 3.141592653589f), length(d.texcoord0.xy));
-			d.texcoord0.xy *= _MainTex_ST.xy;
-		#endif
-
-		//--------------------------------------
-
-		//TWISTUV_ON
 		#if TWISTUV_ON
-			#if ATLAS_ON
-				_TwistUvPosX = ((_MaxXUV - _MinXUV) * _TwistUvPosX) + _MinXUV;
-				_TwistUvPosY = ((_MaxYUV - _MinYUV) * _TwistUvPosY) + _MinYUV;
-			#endif
-			half2 tempUv = d.texcoord0.xy - half2(_TwistUvPosX *  _MainTex_ST.x, _TwistUvPosY *  _MainTex_ST.y);
+			half2 tempUv = d.texcoord0.xy - half2(_TwistUvPosX * _MainTex_ST.x, _TwistUvPosY * _MainTex_ST.y);
 			_TwistUvRadius *= (_MainTex_ST.x + _MainTex_ST.y) / 2;
 			half percent = (_TwistUvRadius - length(tempUv)) / _TwistUvRadius;
 			half theta = percent * percent * (2.0 * sin(_TwistUvAmount)) * 8.0;
@@ -13940,593 +12989,505 @@ ZWrite On
 			half c = cos(theta);
 			half beta = max(sign(_TwistUvRadius - length(tempUv)), 0.0);
 			tempUv = half2(dot(tempUv, half2(c, -s)), dot(tempUv, half2(s, c))) * beta +	tempUv * (1 - beta);
-			tempUv += half2(_TwistUvPosX *  _MainTex_ST.x, _TwistUvPosY *  _MainTex_ST.y);
+			tempUv += half2(_TwistUvPosX * _MainTex_ST.x, _TwistUvPosY * _MainTex_ST.y);
 			d.texcoord0.xy = tempUv;
 		#endif
 
-		//--------------------------------------------
-
-		//FISHEYE_ON
-		#if FISHEYE_ON
-			half bind = length(centerTiled);
-			half2 dF = d.texcoord0.xy - centerTiled;
-			half dFlen = length(dF);
-			half fishInt = (3.14159265359 / bind) * (_FishEyeUvAmount + 0.001);
-			d.texcoord0.xy = centerTiled + (dF / (max(0.0001, dFlen))) * tan(dFlen * fishInt) * bind / tan(bind * fishInt);
-		#endif
-		//---------------------------------------------
-
-		//PINCH_ON
-		#if PINCH_ON
-			half2 dP = d.texcoord0.xy - centerTiled;
-			half pinchInt = (3.141592 / length(centerTiled)) * (-_PinchUvAmount + 0.001);
-			d.texcoord0.xy = centerTiled + normalize(dP) * atan(length(dP) * -pinchInt * 10.0) * 0.5 / atan(-pinchInt * 5);
-		#endif
-
-		//---------------------------------------------
-
-		//ZOOMUV_ON
-		#if ZOOMUV_ON
-			d.texcoord0.xy -= centerTiled;
-			d.texcoord0.xy = d.texcoord0.xy * _ZoomUvAmount;
-			d.texcoord0.xy += centerTiled;
-		#endif
-
-		//-----------------------------------------------
-
-		//DOODLE_ON
 		#if DOODLE_ON
-			half2 uvCopy = uvRect;
-			_HandDrawnSpeed = (floor((_Time.x + randomSeed) * 20 * _HandDrawnSpeed) / _HandDrawnSpeed) * _HandDrawnSpeed;
+			half2 uvCopy = d.texcoord0.xy;
+			_HandDrawnSpeed = (floor((shaderTime.x + seed) * 20 * _HandDrawnSpeed) / _HandDrawnSpeed) * _HandDrawnSpeed;
 			uvCopy.x = sin((uvCopy.x * _HandDrawnAmount + _HandDrawnSpeed) * 4);
 			uvCopy.y = cos((uvCopy.y * _HandDrawnAmount + _HandDrawnSpeed) * 4);
 			d.texcoord0.xy = lerp(d.texcoord0.xy, d.texcoord0.xy + uvCopy, 0.0005 * _HandDrawnAmount);
 		#endif
 
-		//--------------------------
-
-		//SHAKEUV_ON
 		#if SHAKEUV_ON
-			half xShake = sin((_Time.x + randomSeed) * _ShakeUvSpeed * 50) * _ShakeUvX;
-			half yShake = cos((_Time.x + randomSeed) * _ShakeUvSpeed * 50) * _ShakeUvY;
+			half xShake = sin((shaderTime.x + seed) * _ShakeUvSpeed * 50) * _ShakeUvX;
+			half yShake = cos((shaderTime.x + seed) * _ShakeUvSpeed * 50) * _ShakeUvY;
 			d.texcoord0.xy += half2(xShake * 0.012, yShake * 0.01);
 		#endif
 
-		//-------------------------------------------
-
-		//RECTSIZE_ON
-		#if RECTSIZE_ON
-			d.texcoord0.xy = d.texcoord0.xy * (_RectSize).xx + (((-_RectSize * 0.5) + 0.5)).xx;
-		#endif
-
-		//-------------------------------------------
-
-		//DISTORT_ON
-		#if DISTORT_ON
-			#if ATLAS_ON
-				d.texcoord3.x = d.texcoord3.x * (1 / (_MaxXUV - _MinXUV));
-				d.texcoord3.y = d.texcoord3.y * (1 / (_MaxYUV - _MinYUV)); 
-			#endif
-
-			d.texcoord3.x += ((_Time.x + _RandomSeed) * _DistortTexXSpeed) % 1;
-			d.texcoord3.y += ((_Time.x + _RandomSeed) * _DistortTexYSpeed) % 1;
-			half distortAmnt = (SAMPLE_TEXTURE2D(_DistortTex, sampler_DistortTex, d.texcoord3.xy).r - 0.5) * 0.2 * _DistortAmount;
-			d.texcoord0.x += distortAmnt;
-			d.texcoord0.y += distortAmnt;
-		#endif
-		//-------------------------------------------------------
-
-		//WARP_ON
-		#if WARP_ON
-            half2 warpUv = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				warpUv = half2((warpUv.x - _MinXUV) / (_MaxXUV - _MinXUV), (warpUv.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			const float tau = 6.283185307179586;
-            float xWarp = (_Time.y + randomSeed) * _WarpSpeed + warpUv.x * tau / _WarpScale;
-            float yWarp = (_Time.y + randomSeed) * _WarpSpeed + warpUv.y * tau / _WarpScale;
-            float2 warp = float2(sin(xWarp), sin(yWarp)) * _WarpStrength;
-            d.texcoord0.xy += warp;
-		#endif
-
-		//-------------------------------------------------------
-
-		//WAVEUV_ON
 		#if WAVEUV_ON
-			float2 uvWave = half2(_WaveX * _MainTex_ST.x, _WaveY * _MainTex_ST.y) - d.texcoord0.xy;
-            uvWave %= 1;
+			half2 uvWave = half2(_WaveX * _MainTex_ST.x, _WaveY * _MainTex_ST.y) - d.texcoord0.xy;
 			#if ATLAS_ON
 				uvWave = half2(_WaveX, _WaveY) - uvRect;
 			#endif
 			uvWave.x *= _ScreenParams.x / _ScreenParams.y;
-            float waveTime = _Time.y + randomSeed;
-			float angWave = (sqrt(dot(uvWave, uvWave)) * _WaveAmount) - ((waveTime *  _WaveSpeed));
-			d.texcoord0.xy = d.texcoord0.xy + uvWave * sin(angWave) * (_WaveStrength / 1000.0);
+			half angWave = (sqrt(dot(uvWave, uvWave)) * _WaveAmount) - ((time * _WaveSpeed) % 360.0);
+			d.texcoord0.xy = d.texcoord0.xy + normalize(uvWave) * sin(angWave) * (_WaveStrength / 1000.0);
 		#endif
-		//----------------------------------------------------
 
-		//ROUNDWAVEUV_ON
 		#if ROUNDWAVEUV_ON
-			half xWave = ((0.5 * _MainTex_ST.x) - uvRect.x);
-			half yWave = ((0.5 * _MainTex_ST.y) - uvRect.y) * (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
+			half xWave = ((0.5 * _MainTex_ST.x) - d.texcoord0.x);
+			half yWave = ((0.5 * _MainTex_ST.y) - d.texcoord0.y) * (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
 			half ripple = -sqrt(xWave*xWave + yWave* yWave);
-			d.texcoord0.xy += (sin((ripple + (_Time.y + randomSeed) * (_RoundWaveSpeed/10.0)) / 0.015) * (_RoundWaveStrength/10.0)) % 1;
+            d.texcoord0.xy += (sin((ripple + time * (_RoundWaveSpeed/10.0)) / 0.015) * (_RoundWaveStrength/10.0)) % 1;
 		#endif
-		//----------------------------------------------------
 
+		#if POLARUV_ON
+            half2 prePolarUvs = d.texcoord0.xy;
+            d.texcoord0.xy = d.texcoord0.xy - half2(0.5, 0.5);
+			d.texcoord0.xy = half2(atan2(d.texcoord0.y, d.texcoord0.x) / (1.0 * 6.28318530718), length(d.texcoord0.xy) * 2.0);
+            d.texcoord0.xy *= _MainTex_ST.xy;
+		#endif
 
-		//WIND_ON
-		#if WIND_ON
-			half windOffset = sin((_Time.x + randomSeed) * _GrassSpeed * 10);
-			half2 windCenter = half2(0.5, 0.1);
-			#if ATLAS_ON
-				windCenter.x = ((_MaxXUV - _MinXUV) * windCenter.x) + _MinXUV;
-				windCenter.y = ((_MaxYUV - _MinYUV) * windCenter.y) + _MinYUV;
-			#endif
-			#if !MANUALWIND_ON
-				d.texcoord0.x = fmod(abs(lerp(d.texcoord0.x, d.texcoord0.x + (_GrassWind * 0.01 * windOffset), uvRect.y)), 1);
+		#if DISTORT_ON
+			#if POLARUVDISTORT_ON
+				half2 distortUvs = TRANSFORM_TEX(d.texcoord0.xy, _DistortTex);
 			#else
-				d.texcoord0.x = fmod(abs(lerp(d.texcoord0.x, d.texcoord0.x + (_GrassWind * 0.01 * _GrassManualAnim), uvRect.y)), 1);
-				windOffset = _GrassManualAnim;
+				half2 distortUvs = d.extraV2F0.xy;
 			#endif
-			half2 delta = d.texcoord0.xy - windCenter;
-			half delta2 = dot(delta.xy, delta.xy);
-			half2 delta_offset = delta2 * windOffset;
-			d.texcoord0.xy = d.texcoord0.xy + half2(delta.y, -delta.x) * delta_offset * _GrassRadialBend;
-		#endif
-
-		//--------------------------------------------------------
-
-		//TEXTURESCROLL_ON && !ATLAS_ON
-		#if TEXTURESCROLL_ON && !ATLAS_ON
-			d.texcoord0.x += ((_Time.y + randomSeed) * _TextureScrollXSpeed) % 1;
-			d.texcoord0.y += ((_Time.y + randomSeed) * _TextureScrollYSpeed) % 1;
-		#endif
-		//------------------------------
-
-		//PIXELATE_ON
-		#if PIXELATE_ON
-            half aspectRatio = _MainTex_TexelSize.x / _MainTex_TexelSize.y;
-			half2 pixelSize = float2(_PixelateSize, _PixelateSize * aspectRatio);
-			d.texcoord0.xy = floor(d.texcoord0.xy * pixelSize) / pixelSize;
-		#endif
-		//--------------
-
-		half4 col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy);
-		half originalAlpha = col.a;
-		col *= d.vertexColor;
-
-		//NORMAL MAP
-		#if NORMALMAP_ON
-			half4 normalSample = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, d.texcoord0.xy);
-			half3 normalTS = UnpackNormal(normalSample);
-			normalTS.xy *= _NormalStrength;
-			o.Normal = normalTS;
-		#endif
-        float normalSign = sign(dot(d.worldSpaceViewDir, d.worldSpaceNormal));
-        o.Normal *= normalSign;
-
-
-		//GLITCH_ON
-		#if GLITCH_ON
-			half2 uvGlitch = uvRect;
-			uvGlitch.y -= 0.5;
-			half lineNoise = pow(rand2(floor(uvGlitch * half2(24., 19.) * _GlitchSize) * 4.0, randomSeed), 3.0) * _GlitchAmount
-				* pow(rand2(floor(uvGlitch * half2(38., 14.) * _GlitchSize) * 4.0, randomSeed), 3.0);
-			col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(lineNoise * 0.02 * rand2(half2(2.0, 1), randomSeed), 0)) * d.vertexColor;
-		#endif
-		//--------------------------------------
-
-		//CHROMABERR_ON
-		#if CHROMABERR_ON
-			half4 r = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(_ChromAberrAmount/10, 0))	* d.vertexColor;
-			half4 b = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-_ChromAberrAmount/10, 0)) * d.vertexColor;
-			col = half4(r.r * r.a, col.g, b.b * b.a, max(max(r.a, b.a) * _ChromAberrAlpha, col.a));
-		#endif
-
-		//--------------------------------
-
-		//BLUR_ON
-		#if BLUR_ON
+			distortUvs.x += ((shaderTime.x + seed) * _DistortTexXSpeed) % 1;
+			distortUvs.y += ((shaderTime.x + seed) * _DistortTexYSpeed) % 1;
 			#if ATLAS_ON
-				#if !BLURISHD_ON
-					col = BlurHD(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity, (_MaxXUV - _MinXUV), (_MaxYUV - _MinYUV)) * d.vertexColor;
-				#else
-					col = Blur(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity * (_MaxXUV - _MinXUV)) * d.vertexColor;
+				d.extraV2F0.xy = half2((d.extraV2F0.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.extraV2F0.y - _MinYUV) / (_MaxYUV - _MinYUV));
+			#endif
+			half distortAmnt = (SAMPLE_TEXTURE2D(_DistortTex, sampler_DistortTex, distortUvs).r - 0.5) * 0.2 * _DistortAmount;
+			d.texcoord0.x += distortAmnt;
+			d.texcoord0.y += distortAmnt;
+		#endif
+
+		#if TEXTURESCROLL_ON
+			d.texcoord0.x += (time * _TextureScrollXSpeed) % 1;
+			d.texcoord0.y += (time * _TextureScrollYSpeed) % 1;
+		#endif
+
+		#if TRAILWIDTH_ON
+            half width = pow(SAMPLE_TEXTURE2D(_TrailWidthGradient, sampler_TrailWidthGradient, d.texcoord0).r, _TrailWidthPower);
+            d.texcoord0.y = (d.texcoord0.y * 2 - 1) / width * 0.5 + 0.5;
+            clip(d.texcoord0.y);
+            clip(1 - d.texcoord0.y);
+        #endif
+
+		float2 shape1Uv = d.texcoord0.xy;
+        #if SHAPE2_ON
+			float2 shape2Uv = shape1Uv;
+        #endif
+        #if SHAPE3_ON
+			float2 shape3Uv = shape1Uv;
+        #endif
+
+        #if CAMDISTFADE_ON || SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half camDistance = distance(d.worldSpacePosition, _WorldSpaceCameraPos);
+		#endif
+		 
+		#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half2 uvOffsetPostFx = d.texcoord0.xy - originalUvs;
+			d.texcoord0.xy = d.screenPos.xy / d.screenPos.w;
+			d.texcoord0.x = d.texcoord0.x * (_ScreenParams.x / _ScreenParams.y);
+			d.texcoord0.x -= 0.5;
+			d.texcoord0.xy -= uvOffsetPostFx;
+			originalUvs += uvOffsetPostFx;
+			half distanceZoom = camDistance * 0.1;
+			half2 scaleWithDistUvs = d.texcoord0.xy * distanceZoom + ((-distanceZoom * 0.5) + 0.5);
+			#if SHAPE1SCREENUV_ON
+				shape1Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvShDistScale);
+			#else
+				shape1Uv = originalUvs;
+			#endif
+			#if SHAPE2SCREENUV_ON && SHAPE2_ON
+				shape2Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvSh2DistScale);
+			#else
+				#if SHAPE2_ON
+					shape2Uv = originalUvs;
 				#endif
+			#endif
+			#if SHAPE3SCREENUV_ON && SHAPE3_ON
+				shape3Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvSh3DistScale);
 			#else
-				#if !BLURISHD_ON
-					col = BlurHD(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity, 1, 1) * d.vertexColor;
+				#if SHAPE3_ON
+					shape3Uv = originalUvs;
+				#endif
+			#endif
+		#endif
+
+		shape1Uv = TRANSFORM_TEX(shape1Uv, _MainTex);
+		#if OFFSETSTREAM_ON
+			shape1Uv.x += i.offsetCustomData.x * _OffsetSh1;
+			shape1Uv.y += i.offsetCustomData.y * _OffsetSh1;
+		#endif
+        #if SHAPETEXOFFSET_ON
+			shape1Uv += seed * _RandomSh1Mult;
+		#endif
+        
+		#if SHAPE1DISTORT_ON
+			#if POLARUVDISTORT_ON
+				half2 sh1DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _ShapeDistortTex);
+			#else
+				half2 sh1DistortUvs = d.extraV2F1.xy;
+			#endif
+			
+			sh1DistortUvs.x += ((time + seed) * _ShapeDistortXSpeed) % 1;
+			sh1DistortUvs.y += ((time + seed) * _ShapeDistortYSpeed) % 1;
+			half distortAmount = (SAMPLE_TEXTURE2D(_ShapeDistortTex, sampler_ShapeDistortTex, sh1DistortUvs).r - 0.5) * 0.2 * _ShapeDistortAmount;
+			shape1Uv.x += distortAmount;
+			shape1Uv.y += distortAmount;
+		#endif
+		#if SHAPE1ROTATE_ON
+			shape1Uv = RotateUvs(shape1Uv, _ShapeRotationOffset + ((_ShapeRotationSpeed * time) % 6.28318530718), _MainTex_ST);
+		#endif
+
+		half4 shape1 = SampleTextureWithScroll(_MainTex, sampler_MainTex, shape1Uv, _ShapeXSpeed, _ShapeYSpeed, time);
+		#if SHAPE1SHAPECOLOR_ON
+			shape1.a = shape1.r;
+			shape1.rgb = _ShapeColor.rgb;
+		#else
+			shape1 *= _ShapeColor;
+		#endif
+		#if SHAPE1CONTRAST_ON
+			#if SHAPE1SHAPECOLOR_ON
+				shape1.a = saturate((shape1.a - 0.5) * _ShapeContrast + 0.5 + _ShapeBrightness);
+			#else
+				shape1.rgb = max(0, (shape1.rgb - half3(0.5, 0.5, 0.5)) * _ShapeContrast + half3(0.5, 0.5, 0.5) + _ShapeBrightness);
+			#endif
+        #endif
+
+		half4 shape2 = 1.0;
+		#if SHAPE2_ON
+			shape2Uv = TRANSFORM_TEX(shape2Uv, _Shape2Tex);
+			#if OFFSETSTREAM_ON
+				shape2Uv.x += i.offsetCustomData.x * _OffsetSh2;
+				shape2Uv.y += i.offsetCustomData.y * _OffsetSh2;
+			#endif
+			#if SHAPETEXOFFSET_ON
+				shape2Uv += seed * _RandomSh2Mult;
+			#endif
+			#if SHAPE2DISTORT_ON
+				#if POLARUVDISTORT_ON
+					half2 sh2DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _Shape2DistortTex);
 				#else
-					col = Blur(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity) * d.vertexColor;
+					half2 sh2DistortUvs = d.extraV2F2.xy;
+				#endif
+				sh2DistortUvs.x += ((time + seed) * _Shape2DistortXSpeed) % 1;
+				sh2DistortUvs.y += ((time + seed) * _Shape2DistortYSpeed) % 1;
+				half distortAmnt2 = (SAMPLE_TEXTURE2D(_Shape2DistortTex, sampler_Shape2DistortTex, sh2DistortUvs).r - 0.5) * 0.2 * _Shape2DistortAmount;
+				shape2Uv.x += distortAmnt2;
+				shape2Uv.y += distortAmnt2;
+			#endif
+			#if SHAPE2ROTATE_ON
+				shape2Uv = RotateUvs(shape2Uv, _Shape2RotationOffset + ((_Shape2RotationSpeed * time) % 6.28318530718), _Shape2Tex_ST);
+			#endif
+			
+			shape2 = SampleTextureWithScroll(_Shape2Tex, sampler_Shape2Tex, shape2Uv, _Shape2XSpeed, _Shape2YSpeed, time); 
+			#if SHAPE2SHAPECOLOR_ON
+				shape2.a = shape2.r;
+				shape2.rgb = _Shape2Color.rgb;
+			#else
+				shape2 *= _Shape2Color;
+			#endif
+			#if SHAPE2CONTRAST_ON
+				#if SHAPE2SHAPECOLOR_ON
+					shape2.a = max(0, (shape2.a - 0.5) * _Shape2Contrast + 0.5 + _Shape2Brightness);
+				#else
+					shape2.rgb = max(0, (shape2.rgb - half3(0.5, 0.5, 0.5)) * _Shape2Contrast + half3(0.5, 0.5, 0.5) + _Shape2Brightness);
 				#endif
 			#endif
         #endif
 
-		//--------------------
-
-		//MOTIONBLUR_ON
-		#if MOTIONBLUR_ON
-			_MotionBlurAngle = _MotionBlurAngle * 3.1415926;
-			#define rot(n) mul(n, half2x2(cos(_MotionBlurAngle), -sin(_MotionBlurAngle), sin(_MotionBlurAngle), cos(_MotionBlurAngle)))
-			_MotionBlurDist = _MotionBlurDist * 0.005;
-			#if ATLAS_ON
-				_MotionBlurDist *= (_MaxXUV - _MinXUV);
+		half4 shape3 = 1.0;
+		 #if SHAPE3_ON
+            shape3Uv = TRANSFORM_TEX(shape3Uv, _Shape3Tex);
+			
+            #if OFFSETSTREAM_ON
+				shape3Uv.x += i.offsetCustomData.x * _OffsetSh3;
+				shape3Uv.y += i.offsetCustomData.y * _OffsetSh3;
 			#endif
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist, -_MotionBlurDist)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 2, -_MotionBlurDist * 2)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 3, -_MotionBlurDist * 3)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 4, -_MotionBlurDist * 4)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist, _MotionBlurDist)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 2, _MotionBlurDist * 2)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 3, _MotionBlurDist * 3)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 4, _MotionBlurDist * 4)));
-			col.rgb = col.rgb / 9;
+            #if SHAPETEXOFFSET_ON
+				shape3Uv += seed * _RandomSh3Mult;
+			#endif
+            #if SHAPE3DISTORT_ON
+				#if POLARUVDISTORT_ON
+					half2 sh3DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _Shape3DistortTex);
+				#else
+					half2 sh3DistortUvs = d.extraV2F3.xy;
+				#endif
+				sh3DistortUvs.x += ((time + seed) * _Shape3DistortXSpeed) % 1;
+				sh3DistortUvs.y += ((time + seed) * _Shape3DistortYSpeed) % 1;
+				half distortAmnt3 = (SAMPLE_TEXTURE2D(_Shape3DistortTex, sampler_Shape3DistortTex, sh3DistortUvs).r - 0.5) * 0.3 * _Shape3DistortAmount;
+				shape3Uv.x += distortAmnt3;
+				shape3Uv.y += distortAmnt3;
+            #endif
+            #if SHAPE3ROTATE_ON
+				shape3Uv = RotateUvs(shape3Uv, _Shape3RotationOffset + ((_Shape3RotationSpeed * time) % 6.28318530718), _Shape3Tex_ST);
+            #endif
+				shape3 = SampleTextureWithScroll(_Shape3Tex, sampler_Shape3Tex, shape3Uv, _Shape3XSpeed, _Shape3YSpeed, time);
+            #if SHAPE3SHAPECOLOR_ON
+				shape3.a = shape3.r;
+				shape3.rgb = _Shape3Color.rgb;
+            #else
+				shape3 *= _Shape3Color;
+            #endif
+            #if SHAPE3CONTRAST_ON
+				#if SHAPE3SHAPECOLOR_ON
+					shape3.a = max(0, (shape3.a - 0.5) * _Shape3Contrast + 0.5 + _Shape3Brightness);
+				#else
+					shape3.rgb = max(0, (shape3.rgb - half3(0.5, 0.5, 0.5)) * _Shape3Contrast + half3(0.5, 0.5, 0.5) + _Shape3Brightness);
+				#endif
+            #endif
+		#endif
+
+		half4 col = shape1;
+		//Mix all shapes pre: change weights if custom vertex effect active
+        #if SHAPEWEIGHTS_ON
+			half shapeWeightOffset;
+			#if SHAPE2_ON
+				shapeWeightOffset = i.offsetCustomData.z * _Sh1BlendOffset;
+				_ShapeColorWeight = max(0, _ShapeColorWeight + shapeWeightOffset);
+				_ShapeAlphaWeight = max(0, _ShapeAlphaWeight + shapeWeightOffset);
+				shapeWeightOffset = i.offsetCustomData.z * _Sh2BlendOffset;
+				_Shape2ColorWeight = max(0, _Shape2ColorWeight + shapeWeightOffset);
+				_Shape2AlphaWeight = max(0, _Shape2AlphaWeight + shapeWeightOffset);
+			#endif
+			#if SHAPE3_ON
+				shapeWeightOffset = i.offsetCustomData.z * _Sh3BlendOffset;
+				_Shape3ColorWeight = max(0, _Shape3ColorWeight + shapeWeightOffset);
+				_Shape3AlphaWeight = max(0, _Shape3AlphaWeight + shapeWeightOffset);
+			#endif
+		#endif
+
+		//Mix all shapes
+        #if SHAPE2_ON
+			#if !SPLITRGBA_ON
+				_ShapeAlphaWeight = _ShapeColorWeight;
+				_Shape2AlphaWeight = _Shape2ColorWeight;
+			#endif
+			#if SHAPE3_ON //Shape3 On
+				#if !SPLITRGBA_ON
+					_Shape3AlphaWeight = _Shape3ColorWeight;
+				#endif
+			#if SHAPEADD_ON
+				col.rgb = ((shape1.rgb * _ShapeColorWeight) + (shape2.rgb * _Shape2ColorWeight)) + (shape3.rgb * _Shape3ColorWeight);
+				col.a = saturate(max(shape3.a * _Shape3AlphaWeight, max(shape1.a * _ShapeAlphaWeight, shape2.a * _Shape2AlphaWeight)));
+			#else
+				col.rgb = ((shape1.rgb * _ShapeColorWeight) * (shape2.rgb * _Shape2ColorWeight)) * (shape3.rgb * _Shape3ColorWeight);
+				col.a = saturate(((shape1.a * _ShapeAlphaWeight) * (shape2.a * _Shape2AlphaWeight)) * (shape3.a * _Shape3AlphaWeight));
+			#endif
+			#else //Shape3 Off
+				#if SHAPEADD_ON
+					col.rgb = (shape1.rgb * _ShapeColorWeight) + (shape2.rgb * _Shape2ColorWeight);
+					col.a = saturate(max(shape1.a * _ShapeAlphaWeight, shape2.a * _Shape2AlphaWeight));
+				#else
+					col.rgb = (shape1.rgb * _ShapeColorWeight) * (shape2.rgb * _Shape2ColorWeight);
+					col.a = saturate((shape1.a * _ShapeAlphaWeight) * (shape2.a * _Shape2AlphaWeight));
+				#endif
+			#endif
         #endif
-		//------------------------------------
 
-		//NEGATIVE_ON
-		#if NEGATIVE_ON
-			col.rgb = lerp(col.rgb, 1 - col.rgb, _NegativeAmount);
-		#endif
-
-		//--------------
-		half luminance = 0;
-
-		//GREYSCALE_ON && !GREYSCALEOUTLINE_ON
-		#if GREYSCALE_ON && !GREYSCALEOUTLINE_ON
+		#if SHAPE1MASK_ON
+            col = lerp(col, shape1, pow(SAMPLE_TEXTURE2D(_Shape1MaskTex, sampler_Shape1MaskTex, TRANSFORM_TEX(i.uvSeed.xy, _Shape1MaskTex)).r, _Shape1MaskPow));
+        #endif
+		
+		#if PREMULTIPLYCOLOR_ON
+			half luminance = 0;
 			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _GreyscaleLuminosity);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _GreyscaleTintColor, _GreyscaleBlend);
-		#endif
-		//------------------------------------
+			luminance *= col.a;
+			col.a = min(luminance, col.a);
+        #endif
 
-		//GHOST_ON
-		#if GHOST_ON
+		col.rgb *= _Color.rgb * d.vertexColor.rgb;
+		#if PREMULTIPLYALPHA_ON
+			col.rgb *= col.a;
+        #endif
+
+        #if !PREMULTIPLYCOLOR_ON && (COLORRAMP_ON || ALPHAFADE_ON || COLORGRADING_ON || FADE_ON || (ADDITIVECONFIG_ON && (GLOW_ON || DEPTHGLOW_ON)))
+			half luminance = 0;
 			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			half4 ghostResult;
-			ghostResult.a = saturate(luminance - _GhostTransparency) * col.a;
-			ghostResult.rgb = col.rgb * (luminance + _GhostColorBoost);
-			col = lerp(col, ghostResult, _GhostBlend);
-		#endif
-		//------------------------------------
+			luminance *= col.a;
+        #endif
 
-		//INNEROUTLINE_ON
-		#if INNEROUTLINE_ON
-			half3 innerT = abs(GetPixel(0, _InnerOutlineThickness, d.texcoord0.xy, _MainTex, sampler_MainTex) - GetPixel(0, -_InnerOutlineThickness, d.texcoord0.xy, _MainTex, sampler_MainTex));
-			innerT += abs(GetPixel(_InnerOutlineThickness, 0, d.texcoord0.xy, _MainTex, sampler_MainTex) - GetPixel(-_InnerOutlineThickness, 0, d.texcoord0.xy, _MainTex, sampler_MainTex));
-			#if !ONLYINNEROUTLINE_ON
-				innerT = (innerT / 2.0) * col.a * _InnerOutlineAlpha;
-				col.rgb += length(innerT) * _InnerOutlineColor.rgb * _InnerOutlineGlow;
+		#if (FADE_ON || ALPHAFADE_ON) && ALPHAFADEINPUTSTREAM_ON
+			col.a *= d.vertexColor.a;
+			d.vertexColor.a = d.texcoord0.w;
+        #endif
+
+		#if FADE_ON
+			half preFadeAlpha = col.a;
+			_FadeAmount = saturate(_FadeAmount + (1 - d.vertexColor.a));
+			_FadeTransition = max(0.01, _FadeTransition * EaseOutQuint(saturate(_FadeAmount)));
+			half2 fadeUv;
+			fadeUv = d.texcoord0.xy + seed;
+			fadeUv.x += (time * _FadeScrollXSpeed) % 1;
+			fadeUv.y += (time * _FadeScrollYSpeed) % 1;
+			half2 tiledUvFade1 = TRANSFORM_TEX(fadeUv, _FadeTex);
+			#if ADDITIVECONFIG_ON && !PREMULTIPLYCOLOR_ON
+				preFadeAlpha *= luminance;
+			#endif
+			_FadeAmount = saturate(pow(_FadeAmount, _FadePower));
+			#if FADEBURN_ON
+				half2 tiledUvFade2 = TRANSFORM_TEX(fadeUv, _FadeBurnTex);
+				half fadeSample = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
+				half fadeNaturalEdge = saturate(smoothstep(0.0 , _FadeTransition, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				col.a *= fadeNaturalEdge;
+				half fadeBurn = saturate(smoothstep(0.0 , _FadeTransition + _FadeBurnWidth, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				fadeBurn = fadeNaturalEdge - fadeBurn;
+				_FadeBurnColor.rgb *= _FadeBurnGlow;
+				col.rgb += fadeBurn * SAMPLE_TEXTURE2D(_FadeBurnTex, sampler_FadeBurnTex, tiledUvFade2).rgb * _FadeBurnColor.rgb * preFadeAlpha;
 			#else
-				innerT *= col.a * _InnerOutlineAlpha;
-				col.rgb = length(innerT) * _InnerOutlineColor.rgb * _InnerOutlineGlow;
-				col.a = step(0.3, col.r+col.g+col.b);
+				half fadeSample = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
+				float fade = saturate(smoothstep(0.0 , _FadeTransition, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				col.a *= fade;
+			#endif
+			#if ALPHAFADETRANSPARENCYTOO_ON
+				col.a *= 1 - _FadeAmount;
 			#endif
 		#endif
-		//-------------------------------------------------------
 
-		//HITEFFECT_ON
-		#if HITEFFECT_ON
-			col.rgb = lerp(col.rgb, _HitEffectColor.rgb * _HitEffectGlow, _HitEffectBlend);
-		#endif
-		//--------------------
-
-		//GRADIENT_ON
-		#if GRADIENT_ON
-			half2 tiledUvGrad = half2(uvRect.x / _MainTex_ST.x, uvRect.y / _MainTex_ST.y);
-			#if GRADIENT2COL_ON
-				_GradTopRightCol = _GradTopLeftCol;
-				_GradBotRightCol = _GradBotLeftCol;
-			#endif
-			#if RADIALGRADIENT_ON
-				half radialDist = 1 - length(tiledUvGrad - half2(0.5, 0.5));
-				radialDist *= (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
-				radialDist = saturate(_GradBoostX * radialDist);
-				half4 gradientResult = lerp(_GradTopLeftCol, _GradBotLeftCol, radialDist);
+		#if ALPHAFADE_ON
+			half alphaFadeLuminance;
+			_AlphaFadeAmount = saturate(_AlphaFadeAmount + (1 - d.vertexColor.a));
+			_AlphaFadeAmount = saturate(pow(_AlphaFadeAmount, _AlphaFadePow));
+			_AlphaFadeSmooth = max(0.01, _AlphaFadeSmooth * EaseOutQuint(saturate(_AlphaFadeAmount)));
+			#if ALPHAFADEUSESHAPE1_ON
+				alphaFadeLuminance = shape1.r;
 			#else
-				half gradXLerpFactor = saturate(pow(tiledUvGrad.x, _GradBoostX));
-				half4 gradientResult = lerp(lerp(_GradBotLeftCol, _GradBotRightCol, gradXLerpFactor),
-				lerp(_GradTopLeftCol, _GradTopRightCol, gradXLerpFactor), saturate(pow(tiledUvGrad.y, _GradBoostY)));
+				alphaFadeLuminance = luminance;
 			#endif
-			gradientResult = lerp(col, gradientResult, _GradBlend);
-			col.rgb = gradientResult.rgb * col.a;
-			col.a *= gradientResult.a;
-		#endif
-		//--------------------------------------------------------------------
+				alphaFadeLuminance = saturate(alphaFadeLuminance - 0.001);
+			#if ALPHAFADEUSEREDCHANNEL_ON
+				col.a *= col.r;
+			#endif
+				col.a = saturate(col.a);
+				float alphaFade = saturate(smoothstep(0.0 , _AlphaFadeSmooth, RemapFloat(1.0 - _AlphaFadeAmount, 0.0, 1.0, -1.0, 1.0) + alphaFadeLuminance));
+				col.a *= alphaFade;
+			#if ALPHAFADETRANSPARENCYTOO_ON
+				col.a *= 1 - _AlphaFadeAmount;
+			#endif
+        #endif
 
-		//CONTRAST_ON
-		#if CONTRAST_ON
-			col.rgb = (col.rgb - float3(0.5, 0.5, 0.5)) * _Contrast + float3(0.5, 0.5, 0.5);
-			col.rgb += _Brightness;
-		#endif
+		#if BACKFACETINT_ON
+			col.rgb = lerp(col.rgb * _BackFaceTint, col.rgb * _FrontFaceTint, step(0, dot(d.worldSpaceNormal, d.worldSpaceViewDir)));
+        #endif
 
-		//-------------------------------------------------------------------
+		//#if LIGHTANDSHADOW_ON
+			//half NdL = saturate(dot(d.worldSpaceNormal, -_All1VfxLightDir));
+			//col.rgb += _LightColor * _LightAmount * NdL;
+			//NdL = max(_ShadowAmount, NdL);
+            //NdL = smoothstep(_ShadowStepMin, _ShadowStepMax, NdL);
+            //col.rgb *= NdL;
+		//#endif
 
-		//COLORSWAP_ON
-		#if COLORSWAP_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			half4 swapMask = SAMPLE_TEXTURE2D(_ColorSwapTex, sampler_ColorSwapTex, d.texcoord0.xy);
-			swapMask.rgb *= swapMask.a;
-			half3 redSwap = _ColorSwapRed * swapMask.r * saturate(luminance + _ColorSwapRedLuminosity);
-			half3 greenSwap = _ColorSwapGreen * swapMask.g * saturate(luminance + _ColorSwapGreenLuminosity);
-			half3 blueSwap = _ColorSwapBlue * swapMask.b * saturate(luminance + _ColorSwapBlueLuminosity);
-			swapMask.rgb = col.rgb * saturate(1 - swapMask.r - swapMask.g - swapMask.b);
-			col.rgb = lerp(col.rgb, swapMask.rgb + redSwap + greenSwap + blueSwap, _ColorSwapBlend);
-		#endif
-		//--------------------------------------------------------------------
+		#if COLORGRADING_ON
+			col.rgb *= lerp(lerp(_ColorGradingDark, _ColorGradingMiddle, luminance/_ColorGradingMidPoint),
+			lerp(_ColorGradingMiddle, _ColorGradingLight, (luminance - _ColorGradingMidPoint)/(1.0 - _ColorGradingMidPoint)), step(_ColorGradingMidPoint, luminance));
+        #endif
 
-		//COLORRAMP_ON && !COLORRAMPOUTLINE_ON
-		#if COLORRAMP_ON && !COLORRAMPOUTLINE_ON 
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _ColorRampLuminosity);
-			#if GRADIENTCOLORRAMP_ON
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(luminance, 0)).rgb, _ColorRampBlend);
+		#if COLORRAMP_ON
+			half colorRampLuminance = saturate(luminance + _ColorRampLuminosity);
+			#if COLORRAMPGRAD_ON
+				half4 colorRampRes = SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(colorRampLuminance, 0));
 			#else
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(luminance, 0)).rgb, _ColorRampBlend);
+				half4 colorRampRes = SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(colorRampLuminance, 0));
 			#endif
-		#endif
-		//--------------------------------------------------------------------
+			col.rgb = lerp(col.rgb, colorRampRes.rgb, _ColorRampBlend);
+			col.a = lerp(col.a, saturate(col.a * colorRampRes.a), _ColorRampBlend);
+        #endif
 
-		//CHANGECOLOR_ON
-		#if CHANGECOLOR_ON
-			float3 currChangeColor = saturate(col.rgb);
-			luminance = 0.3 * currChangeColor.r + 0.59 * currChangeColor.g + 0.11 * currChangeColor.b;
-			luminance = saturate(luminance + _ColorChangeLuminosity);
-			half3 dif = abs(currChangeColor - _ColorChangeTarget.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance), 0.0));
-			#if CHANGECOLOR2_ON
-			dif = abs(currChangeColor - _ColorChangeTarget2.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol2.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance2), 0.0));
-			#endif
-			#if CHANGECOLOR3_ON
-			dif = abs(currChangeColor - _ColorChangeTarget3.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol3.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance3), 0.0));
-			#endif
-		#endif
-		//-------------------------------------------------------
-
-		//POSTERIZE_ON && !POSTERIZEOUTLINE_ON
 		#if POSTERIZE_ON && !POSTERIZEOUTLINE_ON
-			col.rgb = pow(col.rgb, _PosterizeGamma) * _PosterizeNumColors;
-			col.rgb = floor(col.rgb) / _PosterizeNumColors;
-			col.rgb = pow(col.rgb, 1.0 / _PosterizeGamma);
+			col.rgb = floor(col.rgb / (1.0 / _PosterizeNumColors)) * (1.0 / _PosterizeNumColors);
 		#endif
-		//------------------------------------
 
-		//HSV_ON
+		#if DEPTHGLOW_ON
+			half sceneDepthDiff = GetLinearEyeDepth(d.screenUV) - d.screenPos.w;
+        #endif
+
+		#if RIM_ON
+			half NdV = 1 - abs(dot(d.worldSpaceNormal, d.worldSpaceViewDir));
+			half rimFactor = saturate(_RimBias + _RimScale * pow(NdV, _RimPower));
+			half4 rimCol = _RimColor * rimFactor;
+			rimCol.rgb *= _RimIntensity;
+			col.rgb = lerp(col.rgb * (rimCol.rgb + half3(1,1,1)), col.rgb + rimCol.rgb, _RimAddAmount);
+			col.a = saturate(col.a * (1 - rimFactor * _RimErodesAlpha));
+        #endif
+
+		#if DEPTHGLOW_ON
+			half depthGlowMask = saturate(_DepthGlowDist * pow((1 - sceneDepthDiff), _DepthGlowPow));
+			col.rgb = lerp(col.rgb, _DepthGlowGlobal * col.rgb, depthGlowMask);
+			half depthGlowMult = 1;
+			#if ADDITIVECONFIG_ON
+				depthGlowMult = luminance;
+			#endif
+			col.rgb += _DepthGlowColor.rgb * _DepthGlow * depthGlowMask * col.a * depthGlowMult;
+        #endif
+
+		#if GLOW_ON
+			half glowMask = 1;
+			#if GLOWTEX_ON
+				glowMask = SAMPLE_TEXTURE2D(_GlowTex, sampler_GlowTex, TRANSFORM_TEX(d.texcoord0.xy, _GlowTex));
+			#endif
+				col.rgb *= _GlowGlobal * glowMask;
+				half glowMult = 1;
+			#if ADDITIVECONFIG_ON
+				glowMult = luminance;
+			#endif
+			
+			col.rgb += _GlowColor.rgb * _Glow * glowMask * col.a * glowMult;
+        #endif
+
 		#if HSV_ON
 			half3 resultHsv = half3(col.rgb);
 			half cosHsv = _HsvBright * _HsvSaturation * cos(_HsvShift * 3.14159265 / 180);
 			half sinHsv = _HsvBright * _HsvSaturation * sin(_HsvShift * 3.14159265 / 180);
 			resultHsv.x = (.299 * _HsvBright + .701 * cosHsv + .168 * sinHsv) * col.x
-			+ (.587 * _HsvBright - .587 * cosHsv + .330 * sinHsv) * col.y
-			+ (.114 * _HsvBright - .114 * cosHsv - .497 * sinHsv) * col.z;
+				+ (.587 * _HsvBright - .587 * cosHsv + .330 * sinHsv) * col.y
+				+ (.114 * _HsvBright - .114 * cosHsv - .497 * sinHsv) * col.z;
 			resultHsv.y = (.299 * _HsvBright - .299 * cosHsv - .328 * sinHsv) *col.x
-			+ (.587 * _HsvBright + .413 * cosHsv + .035 * sinHsv) * col.y
-			+ (.114 * _HsvBright - .114 * cosHsv + .292 * sinHsv) * col.z;
+				+ (.587 * _HsvBright + .413 * cosHsv + .035 * sinHsv) * col.y
+				+ (.114 * _HsvBright - .114 * cosHsv + .292 * sinHsv) * col.z;
 			resultHsv.z = (.299 * _HsvBright - .3 * cosHsv + 1.25 * sinHsv) * col.x
-			+ (.587 * _HsvBright - .588 * cosHsv - 1.05 * sinHsv) * col.y
-			+ (.114 * _HsvBright + .886 * cosHsv - .203 * sinHsv) * col.z;
+				+ (.587 * _HsvBright - .588 * cosHsv - 1.05 * sinHsv) * col.y
+				+ (.114 * _HsvBright + .886 * cosHsv - .203 * sinHsv) * col.z;
 			col.rgb = resultHsv;
 		#endif
-		//-------------------------------------------------------
 
-		//OVERLAY_ON
-		#if OVERLAY_ON
-			half2 overlayUvs = d.texcoord0.xy;
-			overlayUvs.x += ((_Time.y + randomSeed) * _OverlayTextureScrollXSpeed) % 1;
-			overlayUvs.y += ((_Time.y + randomSeed) * _OverlayTextureScrollYSpeed) % 1;
-			half4 overlayCol = SAMPLE_TEXTURE2D(_OverlayTex, sampler_OverlayTex, TRANSFORM_TEX(overlayUvs, _OverlayTex));
-			overlayCol.rgb *= _OverlayColor.rgb * _OverlayGlow;
-			#if !OVERLAYMULT_ON
-				overlayCol.rgb *= overlayCol.a * _OverlayColor.rgb * _OverlayColor.a * _OverlayBlend;
-				col.rgb += overlayCol.rgb;
-			#else
-				overlayCol.a *= _OverlayColor.a;
-				col = lerp(col, col * overlayCol, _OverlayBlend);
+		#if CAMDISTFADE_ON
+			col.a *= 1 - saturate(smoothstep(_CamDistFadeStepMin, _CamDistFadeStepMax, camDistance));
+			col.a *= smoothstep(0.0, _CamDistProximityFade, camDistance);
+		#endif
+
+		#if MASK_ON
+            half2 maskUv = d.texcoord0.xy;
+            #if POLARUV_ON
+				maskUv = prePolarUvs;
 			#endif
+            half4 maskSample = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, TRANSFORM_TEX(maskUv, _MaskTex));
+			half mask = pow(min(maskSample.r, maskSample.a), _MaskPow);
+			col.a *= mask;
+        #endif
+
+		#if ALPHASMOOTHSTEP_ON
+			col.a = smoothstep(_AlphaStepMin, _AlphaStepMax, col.a);
+        #endif
+
+		half4 debugColor = col;
+		#if SHAPEDEBUG_ON
+			debugColor = GetDebugColor(col, shape1, shape2, shape3);
 		#endif
 
-		//---------------------------------
+		clip(debugColor.a - _AlphaCutoffValue - 0.01);
 
-		//OUTBASE_ON
-		#if OUTBASE_ON
-			#if OUTBASEPIXELPERF_ON
-				half2 destUv = half2(_OutlinePixelWidth * _MainTex_TexelSize.x, _OutlinePixelWidth * _MainTex_TexelSize.y);
-			#else
-				half2 destUv = half2(_OutlineWidth * _MainTex_TexelSize.x * 200, _OutlineWidth * _MainTex_TexelSize.y * 200);
-			#endif
+		//#if FOG_ON
+			//UNITY_APPLY_FOG(i.fogCoord, col);
+        //#endif
+		
+		//Don't use a starting i.color.a lower than 1 unless using vertex stream dissolve when using a FADE effect
+        #if !FADE_ON && !ALPHAFADE_ON
+			col.a *= _Alpha * d.vertexColor.a;
+        #endif
+        #if FADE_ON || ALPHAFADE_ON
+			col.a *= _Alpha;
+        #endif
+        #if ADDITIVECONFIG_ON
+			col.rgb *= col.a;
+        #endif
 
-			#if OUTDIST_ON
-				d.texcoord3.x += ((_Time.x + _RandomSeed) * _OutlineDistortTexXSpeed) % 1;
-				d.texcoord3.y += ((_Time.x + _RandomSeed) * _OutlineDistortTexYSpeed) % 1;
-				#if ATLAS_ON
-					d.texcoord3 = half2((d.texcoord3.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord3.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				#endif
-				half outDistortAmnt = (SAMPLE_TEXTURE2D(_OutlineDistortTex, sampler_OutlineDistortTex, d.texcoord3).r - 0.5) * 0.2 * _OutlineDistortAmount;
-				destUv.x += outDistortAmnt;
-				destUv.y += outDistortAmnt;
-			#endif
-
-			half spriteLeft		= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, 0)).a;
-			half spriteRight	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy - half2(destUv.x, 0)).a;
-			half spriteBottom	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(0, destUv.y)).a;
-			half spriteTop		= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy - half2(0, destUv.y)).a;
-			half result = spriteLeft + spriteRight + spriteBottom + spriteTop;
-
-			#if OUTBASE8DIR_ON
-				half spriteTopLeft	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, destUv.y)).a;
-				half spriteTopRight = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-destUv.x, destUv.y)).a;
-				half spriteBotLeft	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, -destUv.y)).a;
-				half spriteBotRight = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-destUv.x, -destUv.y)).a;
-				result = result + spriteTopLeft + spriteTopRight + spriteBotLeft + spriteBotRight;
-			#endif
-					
-			result = step(0.05, saturate(result));
-
-			#if OUTTEX_ON
-				d.texcoord1.x += ((_Time.x + _RandomSeed) * _OutlineTexXSpeed) % 1;
-				d.texcoord1.y += ((_Time.x + _RandomSeed) * _OutlineTexYSpeed) % 1;
-				#if ATLAS_ON
-					d.texcoord1 = half2((d.texcoord1.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord1.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				#endif
-				half4 tempOutColor = SAMPLE_TEXTURE2D(_OutlineTex, sampler_OutlineTex, d.texcoord1);
-				tempOutColor *= _OutlineColor;
-				_OutlineColor = tempOutColor;
-			#endif
-
-			result *= (1 - originalAlpha) * _OutlineAlpha;
-
-			half4 outline = _OutlineColor * d.vertexColor.a;
-			outline.rgb *= _OutlineGlow;
-			outline.a = result;
-			#if ONLYOUTLINE_ON
-			col = outline;
-			#else
-			col = lerp(col, outline, result);
-			#endif
+		
+		#if SHAPEDEBUG_ON
+		o.Albedo = debugColor.rgb; 
+		o.Alpha = debugColor.a;
+		#else
+		o.Albedo = col.rgb; 
+		o.Alpha = col.a;
 		#endif
-		//-------------------------------------------------------
-
-		//FADE_ON
-		#if FADE_ON
-			half2 tiledUvFade1	= TRANSFORM_TEX(d.texcoord0, _FadeTex);
-			half2 tiledUvFade2	= TRANSFORM_TEX(d.texcoord0, _FadeBurnTex);
-			#if ATLAS_ON
-				tiledUvFade1 = half2((tiledUvFade1.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUvFade1.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				tiledUvFade2 = half2((tiledUvFade2.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUvFade2.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			half fadeTemp = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
-			half fade = smoothstep(_FadeAmount, _FadeAmount + _FadeBurnTransition, fadeTemp);
-			half fadeBurn = saturate(smoothstep(_FadeAmount - _FadeBurnWidth, _FadeAmount - _FadeBurnWidth + 0.1, fadeTemp) * _FadeAmount);
-			col.a *= fade;
-			_FadeBurnColor.rgb *= _FadeBurnGlow;
-			col += fadeBurn * SAMPLE_TEXTURE2D(_FadeBurnTex, sampler_FadeBurnTex, tiledUvFade2) * _FadeBurnColor * originalAlpha * (1 - col.a);
-		#endif
-		//-------------------------------------------------------
-
-		//SHADOW_ON
-		#if SHADOW_ON
-			half shadowA = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(_ShadowX, _ShadowY)).a;
-			half preMultShadowMask = 1 - (saturate(shadowA - col.a) * (1 - col.a));
-			col.rgb *= 1 - ((shadowA - col.a) * (1 - col.a));
-			col.rgb += (_ShadowColor * shadowA) * (1 - col.a);
-			col.a = max(shadowA * _ShadowAlpha * d.vertexColor.a, col.a);
-		#endif
-
-		//-------------------------------------------------------
-
-		//GLOW_ON
-		#if GLOW_ON
-			half4 emission;
-			#if GLOWTEX_ON
-				emission = SAMPLE_TEXTURE2D(_GlowTex, sampler_GlowTex, d.texcoord0);
-			#else
-				emission = col;
-			#endif
-
-			col.rgb *= _GlowGlobal;
-			emission.rgb *= emission.a * col.a * _Glow * _GlowColor;
-			col.rgb += emission.rgb;
-		#endif
-		//-------------------------------------------------------
-
-		//COLORRAMP_ON && COLORRAMPOUTLINE_ON
-		#if COLORRAMP_ON && COLORRAMPOUTLINE_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _ColorRampLuminosity);
-			#if GRADIENTCOLORRAMP_ON
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(luminance, 0)).rgb, _ColorRampBlend);
-			#else
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(luminance, 0)).rgb, _ColorRampBlend);
-			#endif
-		#endif
-		//---------------
-
-		//GREYSCALE_ON && GREYSCALEOUTLINE_ON
-		#if GREYSCALE_ON && GREYSCALEOUTLINE_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _GreyscaleLuminosity);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _GreyscaleTintColor, _GreyscaleBlend);
-		#endif
-
-		//-----------------------------------
-
-		//POSTERIZE_ON && POSTERIZEOUTLINE_ON
-		#if POSTERIZE_ON && POSTERIZEOUTLINE_ON
-			col.rgb = pow(col.rgb, _PosterizeGamma) * _PosterizeNumColors;
-			col.rgb = floor(col.rgb) / _PosterizeNumColors;
-			col.rgb = pow(col.rgb, 1.0 / _PosterizeGamma);
-		#endif
-
-		//-----------------------------------
-
-		//SHINE_ON
-		#if SHINE_ON
-			half2 uvShine = uvRect;
-			half cosAngle = cos(_ShineRotate);
-			half sinAngle = sin(_ShineRotate);
-			half2x2 rot = half2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
-			uvShine -= half2(0.5, 0.5);
-			uvShine = mul(rot, uvShine);
-			uvShine += half2(0.5, 0.5);
-			half shineMask = SAMPLE_TEXTURE2D(_ShineMask, sampler_ShineMask, d.texcoord0.xy).a;
-			half currentDistanceProjection = (uvShine.x + uvShine.y) / 2;
-			half whitePower = 1 - (abs(currentDistanceProjection - _ShineLocation) / _ShineWidth);
-			col.rgb +=  col.a * whitePower * _ShineGlow * max(sign(currentDistanceProjection - (_ShineLocation - _ShineWidth)), 0.0)
-			* max(sign((_ShineLocation + _ShineWidth) - currentDistanceProjection), 0.0) * _ShineColor * shineMask;
-		#endif
-
-		//-----------------------------------
-
-		//HOLOGRAM_ON
-		#if HOLOGRAM_ON
-			half totalHologram = _HologramStripesAmount + _HologramUnmodAmount;
-			half hologramYCoord = ((uvRect.y + (((_Time.x + randomSeed) % 1) * _HologramStripesSpeed)) % totalHologram) / totalHologram;
-			hologramYCoord = abs(hologramYCoord);
-			half alpha = RemapFloat(saturate(hologramYCoord - (_HologramUnmodAmount/totalHologram)), 0.0, 1.0, _HologramMinAlpha, saturate(_HologramMaxAlpha));
-			half hologramMask = max(sign((_HologramUnmodAmount/totalHologram) - hologramYCoord), 0.0);
-			half4 hologramResult = col;
-			hologramResult.a *= lerp(alpha, 1, hologramMask);
-			hologramResult.rgb *= max(1, _HologramMaxAlpha * max(sign(hologramYCoord - (_HologramUnmodAmount/totalHologram)), 0.0));
-			hologramMask = 1 - step(0.01,hologramMask);
-			hologramResult.rgb += hologramMask * _HologramStripeColor * col.a;
-			col = lerp(col, hologramResult, _HologramBlend);
-		#endif
-
-		//-----------------------------------
-
-		//FLICKER_ON
-		#if FLICKER_ON
-			col.a *= saturate(col.a * step(frac(0.05 + (_Time.w + randomSeed) * _FlickerFreq), 1 - _FlickerPercent) + _FlickerAlpha);
-		#endif
-		//-----------------------------------
-
-		//ALPHACUTOFF_ON
-
-		//ALPHAROUND_ON
-
-		//ALPHAOUTLINE_ON
-		#if ALPHAOUTLINE_ON
-			half alphaOutlineRes = pow(1 - col.a, max(_AlphaOutlinePower, 0.0001)) * step(_AlphaOutlineMinAlpha, col.a) * _AlphaOutlineBlend;
-			col.rgb = lerp(col.rgb, _AlphaOutlineColor.rgb * _AlphaOutlineGlow, alphaOutlineRes);
-			col.a = lerp(col.a, 1, alphaOutlineRes > 1);
-		#endif
-		//-------------------------------------------------------
-
-		//FOG_ON
-
-		//------------------
-
-        col *= _Color;
-		o.Albedo = col;
-		col.a *= _Alpha;
-        clip(col.a - _AlphaCutoffValue - 0.01);
-		o.Alpha = _Color.a;
 	}
 
 
@@ -14613,19 +13574,19 @@ ZWrite On
 
 
                  // #if %EXTRAV2F0REQUIREKEY%
-                 // v2p.extraV2F0 = d.extraV2F0;
+                  v2p.extraV2F0 = d.extraV2F0;
                  // #endif
 
                  // #if %EXTRAV2F1REQUIREKEY%
-                 // v2p.extraV2F1 = d.extraV2F1;
+                  v2p.extraV2F1 = d.extraV2F1;
                  // #endif
 
                  // #if %EXTRAV2F2REQUIREKEY%
-                 // v2p.extraV2F2 = d.extraV2F2;
+                  v2p.extraV2F2 = d.extraV2F2;
                  // #endif
 
                  // #if %EXTRAV2F3REQUIREKEY%
-                 // v2p.extraV2F3 = d.extraV2F3;
+                  v2p.extraV2F3 = d.extraV2F3;
                  // #endif
 
                  // #if %EXTRAV2F4REQUIREKEY%
@@ -14652,19 +13613,19 @@ ZWrite On
                ZERO_INITIALIZE(Blackboard, d.blackboard);
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // d.extraV2F0 = v2p.extraV2F0;
+                d.extraV2F0 = v2p.extraV2F0;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // d.extraV2F1 = v2p.extraV2F1;
+                d.extraV2F1 = v2p.extraV2F1;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // d.extraV2F2 = v2p.extraV2F2;
+                d.extraV2F2 = v2p.extraV2F2;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // d.extraV2F3 = v2p.extraV2F3;
+                d.extraV2F3 = v2p.extraV2F3;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -14716,19 +13677,19 @@ ZWrite On
                // Ext_ModifyTessellatedVertex29(v, d);
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // v2p.extraV2F0 = d.extraV2F0;
+                v2p.extraV2F0 = d.extraV2F0;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // v2p.extraV2F1 = d.extraV2F1;
+                v2p.extraV2F1 = d.extraV2F1;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // v2p.extraV2F2 = d.extraV2F2;
+                v2p.extraV2F2 = d.extraV2F2;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // v2p.extraV2F3 = d.extraV2F3;
+                v2p.extraV2F3 = d.extraV2F3;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -14848,7 +13809,7 @@ ZWrite On
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), d.worldSpaceTangent.xyz));
 
             // #if %SCREENPOSREQUIREKEY%
-            // d.screenUV = (IN.ScreenPosition.xy / max(0.01, IN.ScreenPosition.w));
+             d.screenUV = (IN.ScreenPosition.xy / max(0.01, IN.ScreenPosition.w));
             // #endif
 
             return d;
@@ -14876,11 +13837,11 @@ ZWrite On
 
             d.tangentSpaceViewDir = mul(d.TBNMatrix, d.worldSpaceViewDir);
              d.texcoord0 = i.texcoord0;
-             d.texcoord1 = i.texcoord1;
-             d.texcoord2 = i.texcoord2;
+            // d.texcoord1 = i.texcoord1;
+            // d.texcoord2 = i.texcoord2;
 
             // #if %TEXCOORD3REQUIREKEY%
-             d.texcoord3 = i.texcoord3;
+            // d.texcoord3 = i.texcoord3;
             // #endif
 
             // d.isFrontFace = facing;
@@ -14898,25 +13859,25 @@ ZWrite On
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldTangent.xyz));
 
             // #if %SCREENPOSREQUIREKEY%
-            // d.screenPos = i.screenPos;
-            // d.screenUV = (i.screenPos.xy / i.screenPos.w);
+             d.screenPos = i.screenPos;
+             d.screenUV = (i.screenPos.xy / i.screenPos.w);
             // #endif
 
 
             // #if %EXTRAV2F0REQUIREKEY%
-            // d.extraV2F0 = i.extraV2F0;
+             d.extraV2F0 = i.extraV2F0;
             // #endif
 
             // #if %EXTRAV2F1REQUIREKEY%
-            // d.extraV2F1 = i.extraV2F1;
+             d.extraV2F1 = i.extraV2F1;
             // #endif
 
             // #if %EXTRAV2F2REQUIREKEY%
-            // d.extraV2F2 = i.extraV2F2;
+             d.extraV2F2 = i.extraV2F2;
             // #endif
 
             // #if %EXTRAV2F3REQUIREKEY%
-            // d.extraV2F3 = i.extraV2F3;
+             d.extraV2F3 = i.extraV2F3;
             // #endif
 
             // #if %EXTRAV2F4REQUIREKEY%
@@ -14987,11 +13948,11 @@ ZWrite On
            #endif
 
             o.texcoord0 = v.texcoord0;
-            o.texcoord1 = v.texcoord1;
-            o.texcoord2 = v.texcoord2;
+           // o.texcoord1 = v.texcoord1;
+           // o.texcoord2 = v.texcoord2;
 
            // #if %TEXCOORD3REQUIREKEY%
-            o.texcoord3 = v.texcoord3;
+           // o.texcoord3 = v.texcoord3;
            // #endif
 
            // #if %VERTEXCOLORREQUIREKEY%
@@ -15030,14 +13991,14 @@ ZWrite On
           #endif
 
           // #if %SCREENPOSREQUIREKEY%
-          // o.screenPos = ComputeScreenPos(o.pos, _ProjectionParams.x);
+           o.screenPos = ComputeScreenPos(o.pos, _ProjectionParams.x);
           // #endif
 
           
           #if _PASSFORWARD || _PASSGBUFFER
               float2 uv1 = v.texcoord1.xy;
               OUTPUT_LIGHTMAP_UV(uv1, unity_LightmapST, o.lightmapUV);
-               o.texcoord1.xy = uv1;
+              // o.texcoord1.xy = uv1;
               #if UNITY_VERSION < 60000009
                 OUTPUT_SH(o.worldNormal, o.sh);
               #endif
@@ -15232,10 +14193,15 @@ ZWrite On
         ZWrite On
         ColorMask RG
 
-        	Tags { "RenderType" = "Opaque" "Queue" = "Geometry" "PreviewType" = "Plane" }
+        	Tags
+    {
+        "RenderType" = "Opaque" "Queue" = "Geometry" "PreviewType" = "Sphere"
+    }   
 	Cull [_CullingOption]
 	ZWrite [_ZWrite]
 	ZTest [_ZTestMode]
+	ColorMask [_ColorMask]
+Lighting Off
 
 
         HLSLPROGRAM
@@ -15256,81 +14222,81 @@ ZWrite On
         #define _PASSMOTIONVECTOR 1
         
         
-	#pragma shader_feature_local GLOW_ON
-	#pragma shader_feature_local FADE_ON
-	#pragma shader_feature_local OUTBASE_ON
-	#pragma shader_feature_local ONLYOUTLINE_ON
-	#pragma shader_feature_local GRADIENT_ON
-	#pragma shader_feature_local GRADIENT2COL_ON
-	#pragma shader_feature_local RADIALGRADIENT_ON
-	#pragma shader_feature_local COLORSWAP_ON
-	#pragma shader_feature_local HSV_ON
-	#pragma shader_feature_local CHANGECOLOR_ON
-	#pragma shader_feature_local CHANGECOLOR2_ON
-	#pragma shader_feature_local CHANGECOLOR3_ON
-	#pragma shader_feature_local COLORRAMP_ON
-	#pragma shader_feature_local GRADIENTCOLORRAMP_ON
-	#pragma shader_feature_local HITEFFECT_ON
-	#pragma shader_feature_local NEGATIVE_ON
-	#pragma shader_feature_local PIXELATE_ON
-	#pragma shader_feature_local GREYSCALE_ON
-	#pragma shader_feature_local POSTERIZE_ON
-	#pragma shader_feature_local BLUR_ON
-	#pragma shader_feature_local MOTIONBLUR_ON
-	#pragma shader_feature_local GHOST_ON
-	#pragma shader_feature_local ALPHAOUTLINE_ON
-	#pragma shader_feature_local INNEROUTLINE_ON
-	#pragma shader_feature_local ONLYINNEROUTLINE_ON
-	#pragma shader_feature_local HOLOGRAM_ON
-	#pragma shader_feature_local CHROMABERR_ON
-	#pragma shader_feature_local GLITCH_ON
-	#pragma shader_feature_local FLICKER_ON
-	#pragma shader_feature_local SHADOW_ON
-	#pragma shader_feature_local SHINE_ON
-	#pragma shader_feature_local CONTRAST_ON
-	#pragma shader_feature_local OVERLAY_ON
-	#pragma shader_feature_local OVERLAYMULT_ON
-	#pragma shader_feature_local DOODLE_ON
-	#pragma shader_feature_local WIND_ON
-	#pragma shader_feature_local WAVEUV_ON
-	#pragma shader_feature_local ROUNDWAVEUV_ON
-	#pragma shader_feature_local RECTSIZE_ON
-	#pragma shader_feature_local OFFSETUV_ON
-	#pragma shader_feature_local CLIPPING_ON
-	#pragma shader_feature_local RADIALCLIPPING_ON
-	#pragma shader_feature_local TEXTURESCROLL_ON
-	#pragma shader_feature_local ZOOMUV_ON
-	#pragma shader_feature_local DISTORT_ON
-	#pragma shader_feature_local WARP_ON
-	#pragma shader_feature_local TWISTUV_ON
-	#pragma shader_feature_local ROTATEUV_ON
-	#pragma shader_feature_local POLARUV_ON
-	#pragma shader_feature_local FISHEYE_ON
-	#pragma shader_feature_local PINCH_ON
+    #pragma shader_feature_local TIMEISCUSTOM_ON
+    #pragma shader_feature_local ADDITIVECONFIG_ON
+    #pragma shader_feature_local PREMULTIPLYALPHA_ON
+    #pragma shader_feature_local PREMULTIPLYCOLOR_ON
+    #pragma shader_feature_local SPLITRGBA_ON
+    #pragma shader_feature_local SHAPEADD_ON
+
+    #pragma shader_feature_local SHAPE1SCREENUV_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local SHAPE2SCREENUV_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local SHAPE3SCREENUV_ON /////////////////Pipeline specific implementation
+
+    #pragma shader_feature_local SHAPEDEBUG_ON
+            
+    #pragma shader_feature_local SHAPE1CONTRAST_ON
+    #pragma shader_feature_local SHAPE1DISTORT_ON
+    #pragma shader_feature_local SHAPE1ROTATE_ON
+    #pragma shader_feature_local SHAPE1SHAPECOLOR_ON
+
+    #pragma shader_feature_local SHAPE2_ON
+    #pragma shader_feature_local SHAPE2CONTRAST_ON
+    #pragma shader_feature_local SHAPE2DISTORT_ON
+    #pragma shader_feature_local SHAPE2ROTATE_ON
+    #pragma shader_feature_local SHAPE2SHAPECOLOR_ON
+
+    #pragma shader_feature_local SHAPE3_ON
+    #pragma shader_feature_local SHAPE3CONTRAST_ON
+    #pragma shader_feature_local SHAPE3DISTORT_ON
+    #pragma shader_feature_local SHAPE3ROTATE_ON
+    #pragma shader_feature_local SHAPE3SHAPECOLOR_ON
+
+    #pragma shader_feature_local GLOW_ON
+    #pragma shader_feature_local GLOWTEX_ON
+    #pragma shader_feature_local DEPTHGLOW_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local MASK_ON
+    #pragma shader_feature_local COLORRAMP_ON
+    #pragma shader_feature_local COLORRAMPGRAD_ON
+    #pragma shader_feature_local COLORGRADING_ON
+    #pragma shader_feature_local HSV_ON
+    #pragma shader_feature_local POSTERIZE_ON
+    #pragma shader_feature_local PIXELATE_ON
+    #pragma shader_feature_local DISTORT_ON
 	#pragma shader_feature_local SHAKEUV_ON
-
-	#pragma shader_feature_local GLOWTEX_ON
-	#pragma shader_feature_local OUTTEX_ON
-	#pragma shader_feature_local OUTDIST_ON
-	#pragma shader_feature_local OUTBASE8DIR_ON
-	#pragma shader_feature_local OUTBASEPIXELPERF_ON
-	#pragma shader_feature_local COLORRAMPOUTLINE_ON
-	#pragma shader_feature_local GREYSCALEOUTLINE_ON
-	#pragma shader_feature_local POSTERIZEOUTLINE_ON
-	#pragma shader_feature_local BLURISHD_ON
-	#pragma shader_feature_local MANUALWIND_ON
-	#pragma shader_feature_local ATLAS_ON
-	#pragma shader_feature_local PREMULTIPLYALPHA_ON
-
-	#pragma shader_feature BILBOARD_ON
-	#pragma shader_feature BILBOARDY_ON
+    #pragma shader_feature_local WAVEUV_ON
+	#pragma shader_feature_local ROUNDWAVEUV_ON
+    #pragma shader_feature_local TWISTUV_ON
+    #pragma shader_feature_local DOODLE_ON
+    #pragma shader_feature_local OFFSETSTREAM_ON
+    #pragma shader_feature_local TEXTURESCROLL_ON
+    #pragma shader_feature_local VERTOFFSET_ON
+    #pragma shader_feature_local RIM_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local BACKFACETINT_ON /////////////////Pipeline specific implementation
+    #pragma shader_feature_local POLARUV_ON
+    #pragma shader_feature_local POLARUVDISTORT_ON
+    #pragma shader_feature_local SHAPE1MASK_ON
+    #pragma shader_feature_local TRAILWIDTH_ON
+    #pragma shader_feature_local LIGHTANDSHADOW_ON
+    #pragma shader_feature_local SHAPETEXOFFSET_ON
+    #pragma shader_feature_local SHAPEWEIGHTS_ON
+            
+    #pragma shader_feature_local ALPHACUTOFF_ON
+    #pragma shader_feature_local ALPHASMOOTHSTEP_ON
+    #pragma shader_feature_local FADE_ON
+    #pragma shader_feature_local FADEBURN_ON
+    #pragma shader_feature_local ALPHAFADE_ON
+    #pragma shader_feature_local ALPHAFADEUSESHAPE1_ON
+    #pragma shader_feature_local ALPHAFADEUSEREDCHANNEL_ON
+    #pragma shader_feature_local ALPHAFADETRANSPARENCYTOO_ON
+    #pragma shader_feature_local ALPHAFADEINPUTSTREAM_ON
+    #pragma shader_feature_local CAMDISTFADE_ON
 
 	#pragma shader_feature NORMALMAP_ON
 
 
    #define _URP 1
-#define _USINGTEXCOORD1 1
-#define _USINGTEXCOORD2 1
+#define REQUIRE_DEPTH_TEXTURE
 
 
         #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
@@ -15385,15 +14351,15 @@ ZWrite On
          float3 worldNormal : TEXCOORD1;
          float4 worldTangent : TEXCOORD2;
           float4 texcoord0 : TEXCOORD3;
-          float4 texcoord1 : TEXCOORD4;
-          float4 texcoord2 : TEXCOORD5;
+         // float4 texcoord1 : TEXCOORD4;
+         // float4 texcoord2 : TEXCOORD5;
 
          // #if %TEXCOORD3REQUIREKEY%
-          float4 texcoord3 : TEXCOORD6;
+         // float4 texcoord3 : TEXCOORD6;
          // #endif
 
          // #if %SCREENPOSREQUIREKEY%
-         // float4 screenPos : TEXCOORD7;
+          float4 screenPos : TEXCOORD7;
          // #endif
 
          // #if %VERTEXCOLORREQUIREKEY%
@@ -15420,19 +14386,19 @@ ZWrite On
          #endif
 
          // #if %EXTRAV2F0REQUIREKEY%
-         // float4 extraV2F0 : TEXCOORD13;
+          float4 extraV2F0 : TEXCOORD13;
          // #endif
 
          // #if %EXTRAV2F1REQUIREKEY%
-         // float4 extraV2F1 : TEXCOORD14;
+          float4 extraV2F1 : TEXCOORD14;
          // #endif
 
          // #if %EXTRAV2F2REQUIREKEY%
-         // float4 extraV2F2 : TEXCOORD15;
+          float4 extraV2F2 : TEXCOORD15;
          // #endif
 
          // #if %EXTRAV2F3REQUIREKEY%
-         // float4 extraV2F3 : TEXCOORD16;
+          float4 extraV2F3 : TEXCOORD16;
          // #endif
 
          // #if %EXTRAV2F4REQUIREKEY%
@@ -15597,7 +14563,7 @@ ZWrite On
                #endif
 
                // #if %TEXCOORD3REQUIREKEY%
-                float4 texcoord3 : TEXCOORD3;
+               // float4 texcoord3 : TEXCOORD3;
                // #endif
 
                // #if %VERTEXCOLORREQUIREKEY%
@@ -15624,7 +14590,7 @@ ZWrite On
                float4 texcoord2 : TEXCOORD2;
 
                // #if %TEXCOORD3REQUIREKEY%
-                float4 texcoord3 : TEXCOORD3;
+               // float4 texcoord3 : TEXCOORD3;
                // #endif
 
                // #if %VERTEXCOLORREQUIREKEY%
@@ -15632,19 +14598,19 @@ ZWrite On
                // #endif
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // float4 extraV2F0 : TEXCOORD5;
+                float4 extraV2F0 : TEXCOORD5;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // float4 extraV2F1 : TEXCOORD6;
+                float4 extraV2F1 : TEXCOORD6;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // float4 extraV2F2 : TEXCOORD7;
+                float4 extraV2F2 : TEXCOORD7;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // float4 extraV2F3 : TEXCOORD8;
+                float4 extraV2F3 : TEXCOORD8;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -15885,20 +14851,116 @@ ZWrite On
 
                
 	half4 _Color;
-	half4 _MainTex_ST, _MainTex_TexelSize;
-	half _Alpha, _AlphaCutoffValue;
+	half _Alpha;
+	half _AlphaCutoffValue;
 
-	#if ATLAS_ON
-		half _MinXUV, _MaxXUV, _MinYUV, _MaxYUV;
+	half _TimingSeed;
+
+	#if TIMEISCUSTOM_ON
+		float4 globalCustomTime;
+	#endif
+
+	half4 _MainTex_ST, _ShapeColor;
+	half _ShapeXSpeed, _ShapeYSpeed, _ShapeColorWeight, _ShapeAlphaWeight;
+	
+	#if SHAPE1CONTRAST_ON
+		half _ShapeContrast, _ShapeBrightness;
+	#endif
+	
+	#if SHAPE1DISTORT_ON
+		half4 _ShapeDistortTex_ST;
+		half _ShapeDistortAmount, _ShapeDistortXSpeed, _ShapeDistortYSpeed;
+	#endif
+	
+	#if SHAPE1ROTATE_ON
+		half _ShapeRotationOffset, _ShapeRotationSpeed;
+	#endif
+	
+	#if OFFSETSTREAM_ON
+		half _OffsetSh1;
+	#endif
+	
+	#if SHAPEWEIGHTS_ON
+		half _Sh1BlendOffset;
+	#endif
+
+	#if SHAPE2_ON
+		half4 _Shape2Tex_ST, _Shape2Color;
+		half _Shape2XSpeed, _Shape2YSpeed, _Shape2ColorWeight, _Shape2AlphaWeight;
+		#if SHAPE2CONTRAST_ON
+			half _Shape2Contrast, _Shape2Brightness;
+		#endif
+		#if SHAPE2DISTORT_ON
+			half4 _Shape2DistortTex_ST;
+			half _Shape2DistortAmount, _Shape2DistortXSpeed, _Shape2DistortYSpeed;
+		#endif
+		#if SHAPE2ROTATE_ON
+			half _Shape2RotationOffset, _Shape2RotationSpeed;
+		#endif
+		#if OFFSETSTREAM_ON
+			half _OffsetSh2;
+		#endif
+		#if SHAPEWEIGHTS_ON
+			half _Sh2BlendOffset;
+		#endif
+	#endif
+
+	#if SHAPE3_ON
+		half4 _Shape3Tex_ST, _Shape3Color;
+		half _Shape3XSpeed, _Shape3YSpeed, _Shape3ColorWeight, _Shape3AlphaWeight;
+		#if SHAPE3CONTRAST_ON
+			half _Shape3Contrast, _Shape3Brightness;
+		#endif
+		#if SHAPE3DISTORT_ON
+			half4 _Shape3DistortTex_ST;
+			half _Shape3DistortAmount, _Shape3DistortXSpeed, _Shape3DistortYSpeed;
+		#endif
+		#if SHAPE3ROTATE_ON
+			half _Shape3RotationOffset, _Shape3RotationSpeed;
+		#endif
+		#if OFFSETSTREAM_ON
+			half _OffsetSh3;
+		#endif
+		#if SHAPEWEIGHTS_ON
+			half _Sh3BlendOffset;
+		#endif
 	#endif
 
 	#if GLOW_ON
 		half4 _GlowColor;
 		half _Glow, _GlowGlobal;
+		#if GLOWTEX_ON
+			half4 _GlowTex_ST;
+		#endif
 	#endif
-	 
+
+	#if MASK_ON
+		half4 _MaskTex_ST;
+		half _MaskPow;
+	#endif
+
+	#if COLORRAMP_ON
+		half _ColorRampLuminosity, _ColorRampBlend;
+	#endif
+
+	#if ALPHASMOOTHSTEP_ON
+		half _AlphaStepMin, _AlphaStepMax;
+	#endif
+
+	#if ALPHAFADE_ON
+		half _AlphaFadeAmount, _AlphaFadeSmooth, _AlphaFadePow;
+	#endif
+
 	#if HSV_ON
 		half _HsvShift, _HsvSaturation, _HsvBright;
+	#endif
+
+	#if POSTERIZE_ON
+		half _PosterizeNumColors;
+	#endif
+
+	#if PIXELATE_ON
+		half _PixelateSize;
 	#endif
 
 	#if DISTORT_ON
@@ -15906,203 +14968,101 @@ ZWrite On
 		half _DistortTexXSpeed, _DistortTexYSpeed, _DistortAmount;
 	#endif
 
-	#if FADE_ON
-		half4 _FadeBurnColor, _FadeTex_ST, _FadeBurnTex_ST;
-		half _FadeAmount, _FadeBurnWidth, _FadeBurnTransition,_FadeBurnGlow;
-	#endif
-
-	#if OUTBASE_ON
-		half4 _OutlineColor;
-		half _OutlineAlpha, _OutlineGlow, _OutlineWidth;
-		int _OutlinePixelWidth;
-	#endif
-
-	#if OUTTEX_ON
-		half4 _OutlineTex_ST;
-		half _OutlineTexXSpeed, _OutlineTexYSpeed;
-	#endif
-
-	#if OUTDIST_ON
-		half4 _OutlineDistortTex_ST;
-		half _OutlineDistortTexXSpeed, _OutlineDistortTexYSpeed, _OutlineDistortAmount;
-	#endif
-
-	#if ALPHAOUTLINE_ON
-		half _AlphaOutlineGlow, _AlphaOutlinePower, _AlphaOutlineMinAlpha, _AlphaOutlineBlend;
-		half4 _AlphaOutlineColor;
-	#endif
-
-	#if INNEROUTLINE_ON
-		half _InnerOutlineThickness, _InnerOutlineAlpha, _InnerOutlineGlow;
-		half4 _InnerOutlineColor;
-	#endif
-
-	#if GRADIENT_ON
-		half _GradBlend, _GradBoostX, _GradBoostY;
-		half4 _GradTopRightCol, _GradTopLeftCol, _GradBotRightCol, _GradBotLeftCol;
-	#endif
-
-	#if COLORSWAP_ON
-		half4 _ColorSwapRed, _ColorSwapGreen, _ColorSwapBlue;
-		half _ColorSwapRedLuminosity, _ColorSwapGreenLuminosity, _ColorSwapBlueLuminosity, _ColorSwapBlend;
-	#endif
-
-	#if CHANGECOLOR_ON
-		half4 _ColorChangeNewCol, _ColorChangeTarget;
-		half _ColorChangeTolerance, _ColorChangeLuminosity;
-	#endif
-	#if CHANGECOLOR2_ON
-		half4 _ColorChangeNewCol2, _ColorChangeTarget2;
-		half _ColorChangeTolerance2;
-	#endif
-	#if CHANGECOLOR3_ON
-		half4 _ColorChangeNewCol3, _ColorChangeTarget3;
-		half _ColorChangeTolerance3;
-	#endif
-
-	#if COLORRAMP_ON
-		half _ColorRampLuminosity, _ColorRampBlend;
-	#endif
-
-	#if HITEFFECT_ON
-		half4 _HitEffectColor;
-		half _HitEffectGlow, _HitEffectBlend;
-	#endif
-
-	#if NEGATIVE_ON
-		half _NegativeAmount;
-	#endif
-
-	#if PIXELATE_ON
-		half _PixelateSize;
-	#endif
-
-	#if GREYSCALE_ON
-		half _GreyscaleLuminosity, _GreyscaleBlend;
-		half4 _GreyscaleTintColor;
-	#endif
-
-	#if POSTERIZE_ON
-		half _PosterizeNumColors, _PosterizeGamma;
-	#endif
-
-	#if BLUR_ON
-		half _BlurIntensity;
-	#endif
-
-	#if MOTIONBLUR_ON
-		half _MotionBlurAngle, _MotionBlurDist;
-	#endif
-
-	#if GHOST_ON
-		half _GhostColorBoost, _GhostTransparency, _GhostBlend;
-	#endif
-
-	#if HOLOGRAM_ON
-		half _HologramStripesAmount, _HologramMinAlpha, _HologramUnmodAmount, _HologramStripesSpeed, _HologramMaxAlpha, _HologramBlend;
-		half4 _HologramStripeColor;
-	#endif
-
-	#if CHROMABERR_ON
-		half _ChromAberrAmount, _ChromAberrAlpha;
-	#endif
-
-	#if GLITCH_ON
-		half _GlitchAmount, _GlitchSize;
-	#endif
-
-	#if FLICKER_ON
-		half _FlickerFreq, _FlickerPercent, _FlickerAlpha;
-	#endif
-
-	#if SHADOW_ON
-		half _ShadowX, _ShadowY, _ShadowAlpha;
-		half4 _ShadowColor;
-	#endif
-
-	#if SHINE_ON
-		half4 _ShineColor;
-		half _ShineLocation, _ShineRotate, _ShineWidth, _ShineGlow;
-	#endif
-
-	#if CONTRAST_ON
-		half _Contrast, _Brightness;
-	#endif
-
-	#if OVERLAY_ON
-		half4 _OverlayTex_ST, _OverlayColor;
-		half _OverlayGlow, _OverlayBlend, _OverlayTextureScrollXSpeed, _OverlayTextureScrollYSpeed;
-	#endif
-
-	#if DOODLE_ON
-		half _HandDrawnAmount, _HandDrawnSpeed;
-	#endif
-
-	#if WIND_ON
-		half _GrassSpeed, _GrassWind, _GrassManualAnim, _GrassRadialBend;
-	#endif
-
-	#if WAVEUV_ON
-		float _WaveAmount, _WaveSpeed, _WaveStrength, _WaveX, _WaveY;
-	#endif
-
-	#if ROUNDWAVEUV_ON
-		half _RoundWaveStrength, _RoundWaveSpeed;
-	#endif
-
-	#if RECTSIZE_ON
-		half _RectSize;
-	#endif
-
-	#if OFFSETUV_ON
-		half _OffsetUvX, _OffsetUvY;
-	#endif
-
-	#if CLIPPING_ON
-		half _ClipUvLeft, _ClipUvRight, _ClipUvUp, _ClipUvDown;
-	#endif
-
-	#if RADIALCLIPPING_ON
-		half _RadialStartAngle, _RadialClip, _RadialClip2;
-	#endif
-
 	#if TEXTURESCROLL_ON
 		half _TextureScrollXSpeed, _TextureScrollYSpeed;
-	#endif
-
-	#if ZOOMUV_ON
-		half _ZoomUvAmount;
-	#endif
-
-	#if WARP_ON
-		half _WarpStrength, _WarpSpeed, _WarpScale;
-	#endif
-
-	#if TWISTUV_ON
-		half _TwistUvAmount, _TwistUvPosX, _TwistUvPosY, _TwistUvRadius;
-	#endif
-
-	#if ROTATEUV_ON
-		half _RotateUvAmount;
-	#endif
-
-	#if FISHEYE_ON
-		half _FishEyeUvAmount;
-	#endif
-
-	#if PINCH_ON
-		half _PinchUvAmount;
 	#endif
 
 	#if SHAKEUV_ON
 		half _ShakeUvSpeed, _ShakeUvX, _ShakeUvY;
 	#endif
 
+	#if WAVEUV_ON
+		half _WaveAmount, _WaveSpeed, _WaveStrength, _WaveX, _WaveY;
+	#endif
+
+	#if ROUNDWAVEUV_ON
+		half _RoundWaveStrength, _RoundWaveSpeed;
+	#endif
+
+	#if TWISTUV_ON
+		half _TwistUvAmount, _TwistUvPosX, _TwistUvPosY, _TwistUvRadius;
+	#endif
+
+	#if DOODLE_ON
+		half _HandDrawnAmount, _HandDrawnSpeed;
+	#endif
+
+	#if ROUNDWAVEUV_ON || PIXELATE_ON
+		half4 _MainTex_TexelSize;
+	#endif
+
+	#if VERTOFFSET_ON
+		half4 _VertOffsetTex_ST;
+		half _VertOffsetAmount, _VertOffsetPower, _VertOffsetTexXSpeed, _VertOffsetTexYSpeed;
+	#endif
+
+	#if FADE_ON
+		half4 _FadeTex_ST;
+		half _FadeAmount, _FadeTransition, _FadePower, _FadeScrollXSpeed, _FadeScrollYSpeed;
+		#if FADEBURN_ON
+			half4 _FadeBurnColor, _FadeBurnTex_ST;
+			half _FadeBurnWidth, _FadeBurnGlow;
+		#endif
+	#endif
+
+	#if COLORGRADING_ON
+		half3 _ColorGradingLight, _ColorGradingMiddle, _ColorGradingDark;
+		half _ColorGradingMidPoint;
+	#endif
+            
+	#if CAMDISTFADE_ON
+		half _CamDistFadeStepMin, _CamDistFadeStepMax, _CamDistProximityFade;
+	#endif
+
+	#if RIM_ON
+		half _RimBias, _RimScale, _RimPower, _RimIntensity, _RimAddAmount, _RimErodesAlpha;
+		half4 _RimColor;
+	#endif
+
+	#if BACKFACETINT_ON
+		half4 _BackFaceTint, _FrontFaceTint;
+	#endif
+
+	#if SHAPEDEBUG_ON
+		half _DebugShape;
+	#endif
+
+	#if SHAPE1MASK_ON
+		half4 _Shape1MaskTex_ST;
+		half _Shape1MaskPow;
+	#endif
+
+	#if TRAILWIDTH_ON
+		half _TrailWidthPower;
+	#endif
+
+	#if LIGHTANDSHADOW_ON
+		half3 _All1VfxLightDir;
+		half _ShadowAmount, _ShadowStepMin, _ShadowStepMax, _LightAmount;
+		half4 _LightColor;
+	#endif
+
+	#if SHAPETEXOFFSET_ON
+		half _RandomSh1Mult, _RandomSh2Mult, _RandomSh3Mult;
+	#endif
+
+	#if DEPTHGLOW_ON
+		half _DepthGlowDist, _DepthGlowPow, _DepthGlow, _DepthGlowGlobal;
+		half4 _DepthGlowColor;
+    #endif
+
+	#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+        half _ScreenUvShDistScale,_ScreenUvSh2DistScale, _ScreenUvSh3DistScale;
+	#endif
+
 	#if NORMALMAP_ON
 		half _NormalStrength;
 	#endif
-
-	float _RandomSeed;
 
 
 
@@ -16114,58 +15074,82 @@ ZWrite On
         
 
         
-	
+
 	TEXTURE2D(_MainTex);
 	SAMPLER(sampler_MainTex);
 
+	#if SHAPE1DISTORT_ON
+		TEXTURE2D(_ShapeDistortTex);
+		SAMPLER(sampler_ShapeDistortTex);
+	#endif
+
+	#if SHAPE2_ON
+		TEXTURE2D(_Shape2Tex);
+		SAMPLER(sampler_Shape2Tex);
+		#if SHAPE2DISTORT_ON
+			TEXTURE2D(_Shape2DistortTex);
+			SAMPLER(sampler_Shape2DistortTex);
+		#endif
+	#endif
+
+	#if SHAPE3_ON
+		TEXTURE2D(_Shape3Tex);
+		SAMPLER(sampler_Shape3Tex);
+		#if SHAPE3DISTORT_ON
+			TEXTURE2D(_Shape3DistortTex);
+			SAMPLER(sampler_Shape3DistortTex);
+		#endif
+	#endif
+
 	#if GLOW_ON
-		TEXTURE2D(_GlowTex);
-		SAMPLER(sampler_GlowTex);
+		#if GLOWTEX_ON
+			TEXTURE2D(_GlowTex);
+			SAMPLER(sampler_GlowTex);
+		#endif
+	#endif
+
+	#if MASK_ON
+		TEXTURE2D(_MaskTex);
+		SAMPLER(sampler_MaskTex);
+	#endif
+
+	#if COLORRAMP_ON
+		TEXTURE2D(_ColorRampTex);
+		SAMPLER(sampler_ColorRampTex);
+	#endif
+
+	#if COLORRAMPGRAD_ON
+		TEXTURE2D(_ColorRampTexGradient);
+		SAMPLER(sampler_ColorRampTexGradient);
+	#endif
+	
+	#if DISTORT_ON
+		TEXTURE2D(_DistortTex);
+		SAMPLER(sampler_DistortTex);
+	#endif
+
+	#if VERTOFFSET_ON
+		TEXTURE2D(_VertOffsetTex);
+		SAMPLER(sampler_VertOffsetTex);
 	#endif
 
 	#if FADE_ON
 		TEXTURE2D(_FadeTex);
 		SAMPLER(sampler_FadeTex);
-
-		TEXTURE2D(_FadeBurnTex);
-		SAMPLER(sampler_FadeBurnTex);
+		#if FADEBURN_ON
+			TEXTURE2D(_FadeBurnTex);
+			SAMPLER(sampler_FadeBurnTex);
+		#endif
 	#endif
 
-	#if DISTORT_ON
-		TEXTURE2D(_DistortTex);
-		SAMPLER(sampler_DistortTex);	
+	#if SHAPE1MASK_ON
+		TEXTURE2D(_Shape1MaskTex);
+		SAMPLER(sampler_Shape1MaskTex);
 	#endif
 
-	#if OUTTEX_ON
-		TEXTURE2D(_OutlineTex);
-		SAMPLER(sampler_OutlineTex);
-	#endif
-
-	#if OUTDIST_ON
-		TEXTURE2D(_OutlineDistortTex);
-		SAMPLER(sampler_OutlineDistortTex);
-	#endif
-
-	#if COLORSWAP_ON
-		TEXTURE2D(_ColorSwapTex);
-		SAMPLER(sampler_ColorSwapTex);
-	#endif
-
-	#if COLORRAMP_ON
-		TEXTURE2D(_ColorRampTex);
-		TEXTURE2D(_ColorRampTexGradient);
-		SAMPLER(sampler_ColorRampTex);
-		SAMPLER(sampler_ColorRampTexGradient);
-	#endif
-
-	#if SHINE_ON
-		TEXTURE2D(_ShineMask);
-		SAMPLER(sampler_ShineMask);
-	#endif
-
-	#if OVERLAY_ON
-		TEXTURE2D(_OverlayTex);
-		SAMPLER(sampler_OverlayTex);
+	#if TRAILWIDTH_ON
+		TEXTURE2D(_TrailWidthGradient);
+		SAMPLER(sampler_TrailWidthGradient);
 	#endif
 
 	#if NORMALMAP_ON
@@ -16173,225 +15157,124 @@ ZWrite On
 		SAMPLER(sampler_NormalMap);
 	#endif
 
-
-	half3 GetPixel(in int offsetX, in int offsetY, in half2 uv, in Texture2D _tex, in SamplerState _sampler)
+	half4 SampleTextureWithScroll(in Texture2D _tex, in SamplerState _sampler, in float2 uv, in half scrollXSpeed, in half scrollYSpeed, in float time)
 	{
-		half2 _uv = uv + half2(offsetX * _MainTex_TexelSize.x, offsetY * _MainTex_TexelSize.y);
-		half4 col = SAMPLE_TEXTURE2D(_tex, _sampler, _uv);
-		return col.rgb;
+		half2 _uv = uv;
+		_uv.x += (time * scrollXSpeed) % 1;
+		_uv.y += (time * scrollYSpeed) % 1;
+		return SAMPLE_TEXTURE2D(_tex, _sampler, _uv);
 	}
 
-
-	//BLURS-------------------------------------------------------------------------
-	half4 Blur(half2 uv, Texture2D source, SamplerState sampler_source, half Intensity)
+	half EaseOutQuint(half x) 
 	{
-		const half2 texelSize = 1.0 / _ScreenParams.xy;
-		const half4 color = SAMPLE_TEXTURE2D(source, sampler_source, uv);
-		const half2 offset = Intensity * texelSize;
-
-		half4 accumulatedColor = color;
-		half accumulatedWeight = 1.0;
-		for (int x = -1; x <= 1; x++)
-		{
-			for (int y = -1; y <= 1; y++)
-			{
-				const half2 sampleUV = uv + half2(x, y) * offset;
-				const half4 sampleColor = SAMPLE_TEXTURE2D(source, sampler_source, sampleUV);
-
-				accumulatedColor += sampleColor;
-				accumulatedWeight += 1.0;
-			}
-		}
-
-		half4 blurredColor = accumulatedColor / accumulatedWeight;
-		return blurredColor;
+		return 1 - pow(1 - x, 5);
 	}
 
-	half BlurHD_G(half bhqp, half x)
+	half RemapFloat(half inValue, half inMin, half inMax, half outMin, half outMax)
 	{
-		return exp(-(x * x) / (2.0 * bhqp * bhqp));
-	}
-	half4 BlurHD(half2 uv, Texture2D source, SamplerState sampler_source, half BlurAmount, half xScale, half yScale)
-	{
-		int iterations = 16;
-		int halfIterations = iterations / 2;
-		half sigmaX = 0.1 + BlurAmount * 0.5;
-		half sigmaY = sigmaX;
-		half total = 0.0;
-		half4 ret = half4(0, 0, 0, 0);
-		for (int iy = 0; iy < iterations; ++iy)
-		{
-			half fy = BlurHD_G(sigmaY, half(iy) -half(halfIterations));
-			half offsetY = half(iy - halfIterations) * 0.00390625 * xScale;
-			for (int ix = 0; ix < iterations; ++ix)
-			{
-				half fx = BlurHD_G(sigmaX, half(ix) - half(halfIterations));
-				half offsetX = half(ix - halfIterations) * 0.00390625 * yScale;
-				total += fx * fy;
-				ret += SAMPLE_TEXTURE2D(source, sampler_source, uv + half2(offsetX, offsetY)) * fx * fy;
-			}
-		}
-		return ret / total;
-	}
-	//-----------------------------------------------------------------------
-
-
-	//-------------------------------------------
-	half RemapFloat(half inValue, half inMin, half inMax, half outMin, half outMax){
 		return outMin + (inValue - inMin) * (outMax - outMin) / (inMax - inMin);
 	}
-	//-------------------------------------------
 
-	//-----------------------------------------------------------------------
-	half rand(half2 seed, half offset) {
-		return (frac(sin(dot(seed, half2(12.9898, 78.233))) * 43758.5453) + offset) % 1.0;
+	float2 RotateUvs(float2 uv, half rotation, half4 scaleAndTranslate)
+	{
+		half2 center = half2(0.5 * scaleAndTranslate.x + scaleAndTranslate.z, 0.5 * scaleAndTranslate.y + scaleAndTranslate.w);
+		half cosAngle = cos(rotation);
+		half sinAngle = sin(rotation);
+		uv -= center;
+		uv = mul(half2x2(cosAngle, -sinAngle, sinAngle, cosAngle), uv);
+		uv += center;
+		return uv; 
 	}
 
-	half rand2(half2 seed, half offset) {
-		return (frac(sin(dot(seed * floor(50 + (_Time.x % 1.0) * 12.), half2(127.1, 311.7))) * 43758.5453123) + offset) % 1.0;
-	}
+	half4 GetDebugColor(float4 resColor, half4 shape1, half4 shape2, half4 shape3)
+	{
+		half4 res = resColor;
 
-	half rand2CustomTime(half2 seed, half offset, half customTime) {
-		return (frac(sin(dot(seed * floor(50 + (customTime % 1.0) * 12.), half2(127.1, 311.7))) * 43758.5453123) + offset) % 1.0;
-	}
-	//-----------------------------------------------------------------------
+		//MAKE SURE THE FOLLOWING CODE BLOCK IS UNCOMMENTED-------------------------------------------
+        #if SHAPEDEBUG_ON
+			if(_DebugShape < 1.5) return shape1;
+			#if SHAPE2_ON
+				else if (_DebugShape < 2.5) return shape2;
+			#endif
+			#if SHAPE3_ON
+				else return shape3;
+			#endif
+        #endif
 
+		return res;
+	}
 
 	void Ext_ModifyVertex0 (inout VertexData v, inout ExtraV2F d)
 	{
-		//BILBOARD_ON
-		#if BILBOARD_ON
-			half3 camRight = mul((half3x3)unity_CameraToWorld, half3(1,0,0));
-			half3 camUp = half3(0,1,0);
-			#if BILBOARDY_ON
-				camUp = mul((half3x3)unity_CameraToWorld, half3(0,1,0));
+		//uvDistTex --> extraV2F0
+		//uvSh1DistTex --> extraV2F1
+		//uvSh2DistTex --> extraV2F2
+		//uvSh3DistTex --> extraV2F3
+ 
+		#if VERTOFFSET_ON
+			#if TIMEISCUSTOM_ON
+				const half time = v.texcoord0.z + globalCustomTime.y;
+			#else
+				const half time = v.texcoord0.z + _Time.y;
 			#endif
-			half3 localPos = v.vertex.x * camRight + v.vertex.y * camUp;
-			v.vertex = half4(localPos, 1);
-		#endif
-        //-----------------------------------------------------------
-
-        v.texcoord0.xy = TRANSFORM_TEX(v.texcoord0.xy, _MainTex);
-		half2 center = half2(0.5, 0.5);
-        #if ATLAS_ON
-		    center = half2((_MaxXUV + _MinXUV) / 2.0, (_MaxYUV + _MinYUV) / 2.0);
-		#endif
-		
-		//POLARUV_ON
-		#if POLARUV_ON
-			v.texcoord0.xy = v.texcoord0.xy - center;
+				half4 offsetUv = half4(TRANSFORM_TEX(v.texcoord0.xy, _VertOffsetTex), 0, 0);
+            	offsetUv.x += (time * _VertOffsetTexXSpeed) % 1;
+				offsetUv.y += (time * _VertOffsetTexYSpeed) % 1;
+                v.vertex.xyz += v.normal * _VertOffsetAmount * pow(SAMPLE_TEXTURE2D_LOD(_VertOffsetTex, sampler_VertOffsetTex, offsetUv, 0).r, _VertOffsetPower); 
 		#endif
 
-		//----------------------------------------
-
-		//ROTATEUV_ON
-		#if ROTATEUV_ON
-			half2 uvC = v.texcoord0.xy;
-			half cosAngle = cos(_RotateUvAmount);
-			half sinAngle = sin(_RotateUvAmount);
-			half2x2 rot = half2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
-			uvC -= center;
-			v.texcoord0.xy = mul(rot, uvC);
-			v.texcoord0.xy += center;
-		#endif
-		//--------------------
-
-		#if RECTSIZE_ON
-			v.vertex.xyz += (v.vertex.xyz * (_RectSize - 1.0));
+		#if DISTORT_ON && !POLARUVDISTORT_ON
+			d.extraV2F0.xy = TRANSFORM_TEX(v.texcoord0.xy, _DistortTex);
 		#endif
 
-		#if OUTTEX_ON
-			v.texcoord1.xy = TRANSFORM_TEX(v.texcoord0.xy, _OutlineTex);
+		#if SHAPE1DISTORT_ON && !POLARUVDISTORT_ON
+			d.extraV2F1.xy = TRANSFORM_TEX(v.texcoord0.xy, _ShapeDistortTex);
+        #endif
+
+		#if SHAPE2_ON
+			#if SHAPE2DISTORT_ON && !POLARUVDISTORT_ON
+				d.extraV2F2.xy = TRANSFORM_TEX(v.texcoord0.xy, _Shape2DistortTex);;
+			#endif
 		#endif
 
-		#if OUTDIST_ON
-			v.texcoord2.xy = TRANSFORM_TEX(v.texcoord0.xy, _OutlineDistortTex);
-		#endif
-
-		#if DISTORT_ON
-			v.texcoord3.xy = TRANSFORM_TEX(v.texcoord0.xy, _DistortTex);
-		#endif
+		#if SHAPE3_ON
+			#if SHAPE3DISTORT_ON && !POLARUVDISTORT_ON
+				d.extraV2F3.xy = TRANSFORM_TEX(v.texcoord0.xy, _Shape3DistortTex);
+			#endif
+        #endif
 	}
 
 	void Ext_SurfaceFunction0 (inout Surface o, ShaderData d)
 	{
-		half randomSeed = _RandomSeed;
+		//i.uvSeed -> d.texcoord0.xy
 
-		float2 uvRect = d.texcoord0;
-		half2 center = half2(0.5, 0.5);
-		#if ATLAS_ON
-			center = half2((_MaxXUV + _MinXUV) / 2.0, (_MaxYUV + _MinYUV) / 2.0);
-			uvRect = half2((d.texcoord0.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord0.y - _MinYUV) / (_MaxYUV - _MinYUV));
+		float seed = d.texcoord0.z + _TimingSeed;
+		#if TIMEISCUSTOM_ON
+			const float4 shaderTime = globalCustomTime;
+		#else
+			const float4 shaderTime = _Time;
 		#endif
-		half2 centerTiled = half2(center.x *  _MainTex_ST.x, center.y *  _MainTex_ST.y);
+		float time = shaderTime.y + seed;
 
-		//CLIPPING_ON
-		#if CLIPPING_ON
-			half2 tiledUv = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				tiledUv = half2((tiledUv.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUv.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			clip((1 - _ClipUvUp) - tiledUv.y);
-			clip(tiledUv.y - _ClipUvDown);
-			clip((1 - _ClipUvRight) - tiledUv.x);
-			clip(tiledUv.x - _ClipUvLeft);
-		#endif
-		//----------------------------------
+		#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half2 originalUvs = d.texcoord0.xy;
+        #endif
 
-		//RADIALCLIPPING_ON
-		#if RADIALCLIPPING_ON
-			half2 tiledUv2 = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				tiledUv2 = half2((tiledUv2.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUv2.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			half startAngle = _RadialStartAngle - _RadialClip;
-			half endAngle = _RadialStartAngle + _RadialClip2;
-			half offset0 = clamp(0, 360, startAngle + 360);
-			half offset360 = clamp(0, 360, endAngle - 360);
-			half2 atan2Coord = half2(lerp(-1, 1, tiledUv2.x), lerp(-1, 1, tiledUv2.y));
-			half atanAngle = atan2(atan2Coord.y, atan2Coord.x) * 57.3; // angle in degrees
-			if(atanAngle < 0) atanAngle = 360 + atanAngle;
-			if(atanAngle >= startAngle && atanAngle <= endAngle) discard;
-			if(atanAngle <= offset360) discard;
-			if(atanAngle >= offset0) discard;
+		#if PIXELATE_ON
+			half aspectRatio = _MainTex_TexelSize.x / _MainTex_TexelSize.y;
+			half2 pixelSize = float2(_PixelateSize, _PixelateSize * aspectRatio);
+			d.texcoord0.xy = floor(d.texcoord0.xy * pixelSize) / pixelSize;
 		#endif
 
-		//-----------------------------
-
-		//TEXTURESCROLL_ON && ATLAS_ON
-		#if TEXTURESCROLL_ON && ATLAS_ON
-			d.texcoord0.xy = half2(_MinXUV + ((_MaxXUV - _MinXUV) * (abs(((_Time.y + randomSeed) * _TextureScrollXSpeed) + uvRect.x) % 1)),
-			_MinYUV + ((_MaxYUV - _MinYUV) * (abs(((_Time.y + randomSeed) * _TextureScrollYSpeed) + uvRect.y) % 1)));
-		#endif
-		//----------------------------
-
-		//OFFSETUV_ON
-		#if OFFSETUV_ON
-			#if ATLAS_ON
-				d.texcoord0.xy = half2(_MinXUV + ((_MaxXUV - _MinXUV) * (abs((_OffsetUvX + uvRect.x) % 1))),
-				_MinYUV + ((_MaxYUV - _MinYUV) * (abs(_OffsetUvY + uvRect.y) % 1)));
-			#else
-				d.texcoord0.xy += half2(_OffsetUvX, _OffsetUvY);
-			#endif
+		#if NORMALMAP_ON
+			half4 normalSample = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, d.texcoord0.xy);
+			half3 normalTS = UnpackNormal(normalSample);
+			normalTS.xy *= _NormalStrength;
+			o.Normal = normalTS;
 		#endif
 
-		//----------------------
-
-		//POLARUV_ON
-		#if POLARUV_ON
-			d.texcoord0.xy = half2(atan2(d.texcoord0.y, d.texcoord0.x) / (2.0f * 3.141592653589f), length(d.texcoord0.xy));
-			d.texcoord0.xy *= _MainTex_ST.xy;
-		#endif
-
-		//--------------------------------------
-
-		//TWISTUV_ON
 		#if TWISTUV_ON
-			#if ATLAS_ON
-				_TwistUvPosX = ((_MaxXUV - _MinXUV) * _TwistUvPosX) + _MinXUV;
-				_TwistUvPosY = ((_MaxYUV - _MinYUV) * _TwistUvPosY) + _MinYUV;
-			#endif
-			half2 tempUv = d.texcoord0.xy - half2(_TwistUvPosX *  _MainTex_ST.x, _TwistUvPosY *  _MainTex_ST.y);
+			half2 tempUv = d.texcoord0.xy - half2(_TwistUvPosX * _MainTex_ST.x, _TwistUvPosY * _MainTex_ST.y);
 			_TwistUvRadius *= (_MainTex_ST.x + _MainTex_ST.y) / 2;
 			half percent = (_TwistUvRadius - length(tempUv)) / _TwistUvRadius;
 			half theta = percent * percent * (2.0 * sin(_TwistUvAmount)) * 8.0;
@@ -16399,593 +15282,505 @@ ZWrite On
 			half c = cos(theta);
 			half beta = max(sign(_TwistUvRadius - length(tempUv)), 0.0);
 			tempUv = half2(dot(tempUv, half2(c, -s)), dot(tempUv, half2(s, c))) * beta +	tempUv * (1 - beta);
-			tempUv += half2(_TwistUvPosX *  _MainTex_ST.x, _TwistUvPosY *  _MainTex_ST.y);
+			tempUv += half2(_TwistUvPosX * _MainTex_ST.x, _TwistUvPosY * _MainTex_ST.y);
 			d.texcoord0.xy = tempUv;
 		#endif
 
-		//--------------------------------------------
-
-		//FISHEYE_ON
-		#if FISHEYE_ON
-			half bind = length(centerTiled);
-			half2 dF = d.texcoord0.xy - centerTiled;
-			half dFlen = length(dF);
-			half fishInt = (3.14159265359 / bind) * (_FishEyeUvAmount + 0.001);
-			d.texcoord0.xy = centerTiled + (dF / (max(0.0001, dFlen))) * tan(dFlen * fishInt) * bind / tan(bind * fishInt);
-		#endif
-		//---------------------------------------------
-
-		//PINCH_ON
-		#if PINCH_ON
-			half2 dP = d.texcoord0.xy - centerTiled;
-			half pinchInt = (3.141592 / length(centerTiled)) * (-_PinchUvAmount + 0.001);
-			d.texcoord0.xy = centerTiled + normalize(dP) * atan(length(dP) * -pinchInt * 10.0) * 0.5 / atan(-pinchInt * 5);
-		#endif
-
-		//---------------------------------------------
-
-		//ZOOMUV_ON
-		#if ZOOMUV_ON
-			d.texcoord0.xy -= centerTiled;
-			d.texcoord0.xy = d.texcoord0.xy * _ZoomUvAmount;
-			d.texcoord0.xy += centerTiled;
-		#endif
-
-		//-----------------------------------------------
-
-		//DOODLE_ON
 		#if DOODLE_ON
-			half2 uvCopy = uvRect;
-			_HandDrawnSpeed = (floor((_Time.x + randomSeed) * 20 * _HandDrawnSpeed) / _HandDrawnSpeed) * _HandDrawnSpeed;
+			half2 uvCopy = d.texcoord0.xy;
+			_HandDrawnSpeed = (floor((shaderTime.x + seed) * 20 * _HandDrawnSpeed) / _HandDrawnSpeed) * _HandDrawnSpeed;
 			uvCopy.x = sin((uvCopy.x * _HandDrawnAmount + _HandDrawnSpeed) * 4);
 			uvCopy.y = cos((uvCopy.y * _HandDrawnAmount + _HandDrawnSpeed) * 4);
 			d.texcoord0.xy = lerp(d.texcoord0.xy, d.texcoord0.xy + uvCopy, 0.0005 * _HandDrawnAmount);
 		#endif
 
-		//--------------------------
-
-		//SHAKEUV_ON
 		#if SHAKEUV_ON
-			half xShake = sin((_Time.x + randomSeed) * _ShakeUvSpeed * 50) * _ShakeUvX;
-			half yShake = cos((_Time.x + randomSeed) * _ShakeUvSpeed * 50) * _ShakeUvY;
+			half xShake = sin((shaderTime.x + seed) * _ShakeUvSpeed * 50) * _ShakeUvX;
+			half yShake = cos((shaderTime.x + seed) * _ShakeUvSpeed * 50) * _ShakeUvY;
 			d.texcoord0.xy += half2(xShake * 0.012, yShake * 0.01);
 		#endif
 
-		//-------------------------------------------
-
-		//RECTSIZE_ON
-		#if RECTSIZE_ON
-			d.texcoord0.xy = d.texcoord0.xy * (_RectSize).xx + (((-_RectSize * 0.5) + 0.5)).xx;
-		#endif
-
-		//-------------------------------------------
-
-		//DISTORT_ON
-		#if DISTORT_ON
-			#if ATLAS_ON
-				d.texcoord3.x = d.texcoord3.x * (1 / (_MaxXUV - _MinXUV));
-				d.texcoord3.y = d.texcoord3.y * (1 / (_MaxYUV - _MinYUV)); 
-			#endif
-
-			d.texcoord3.x += ((_Time.x + _RandomSeed) * _DistortTexXSpeed) % 1;
-			d.texcoord3.y += ((_Time.x + _RandomSeed) * _DistortTexYSpeed) % 1;
-			half distortAmnt = (SAMPLE_TEXTURE2D(_DistortTex, sampler_DistortTex, d.texcoord3.xy).r - 0.5) * 0.2 * _DistortAmount;
-			d.texcoord0.x += distortAmnt;
-			d.texcoord0.y += distortAmnt;
-		#endif
-		//-------------------------------------------------------
-
-		//WARP_ON
-		#if WARP_ON
-            half2 warpUv = half2(d.texcoord0.x / _MainTex_ST.x, d.texcoord0.y / _MainTex_ST.y);
-			#if ATLAS_ON
-				warpUv = half2((warpUv.x - _MinXUV) / (_MaxXUV - _MinXUV), (warpUv.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			const float tau = 6.283185307179586;
-            float xWarp = (_Time.y + randomSeed) * _WarpSpeed + warpUv.x * tau / _WarpScale;
-            float yWarp = (_Time.y + randomSeed) * _WarpSpeed + warpUv.y * tau / _WarpScale;
-            float2 warp = float2(sin(xWarp), sin(yWarp)) * _WarpStrength;
-            d.texcoord0.xy += warp;
-		#endif
-
-		//-------------------------------------------------------
-
-		//WAVEUV_ON
 		#if WAVEUV_ON
-			float2 uvWave = half2(_WaveX * _MainTex_ST.x, _WaveY * _MainTex_ST.y) - d.texcoord0.xy;
-            uvWave %= 1;
+			half2 uvWave = half2(_WaveX * _MainTex_ST.x, _WaveY * _MainTex_ST.y) - d.texcoord0.xy;
 			#if ATLAS_ON
 				uvWave = half2(_WaveX, _WaveY) - uvRect;
 			#endif
 			uvWave.x *= _ScreenParams.x / _ScreenParams.y;
-            float waveTime = _Time.y + randomSeed;
-			float angWave = (sqrt(dot(uvWave, uvWave)) * _WaveAmount) - ((waveTime *  _WaveSpeed));
-			d.texcoord0.xy = d.texcoord0.xy + uvWave * sin(angWave) * (_WaveStrength / 1000.0);
+			half angWave = (sqrt(dot(uvWave, uvWave)) * _WaveAmount) - ((time * _WaveSpeed) % 360.0);
+			d.texcoord0.xy = d.texcoord0.xy + normalize(uvWave) * sin(angWave) * (_WaveStrength / 1000.0);
 		#endif
-		//----------------------------------------------------
 
-		//ROUNDWAVEUV_ON
 		#if ROUNDWAVEUV_ON
-			half xWave = ((0.5 * _MainTex_ST.x) - uvRect.x);
-			half yWave = ((0.5 * _MainTex_ST.y) - uvRect.y) * (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
+			half xWave = ((0.5 * _MainTex_ST.x) - d.texcoord0.x);
+			half yWave = ((0.5 * _MainTex_ST.y) - d.texcoord0.y) * (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
 			half ripple = -sqrt(xWave*xWave + yWave* yWave);
-			d.texcoord0.xy += (sin((ripple + (_Time.y + randomSeed) * (_RoundWaveSpeed/10.0)) / 0.015) * (_RoundWaveStrength/10.0)) % 1;
+            d.texcoord0.xy += (sin((ripple + time * (_RoundWaveSpeed/10.0)) / 0.015) * (_RoundWaveStrength/10.0)) % 1;
 		#endif
-		//----------------------------------------------------
 
+		#if POLARUV_ON
+            half2 prePolarUvs = d.texcoord0.xy;
+            d.texcoord0.xy = d.texcoord0.xy - half2(0.5, 0.5);
+			d.texcoord0.xy = half2(atan2(d.texcoord0.y, d.texcoord0.x) / (1.0 * 6.28318530718), length(d.texcoord0.xy) * 2.0);
+            d.texcoord0.xy *= _MainTex_ST.xy;
+		#endif
 
-		//WIND_ON
-		#if WIND_ON
-			half windOffset = sin((_Time.x + randomSeed) * _GrassSpeed * 10);
-			half2 windCenter = half2(0.5, 0.1);
-			#if ATLAS_ON
-				windCenter.x = ((_MaxXUV - _MinXUV) * windCenter.x) + _MinXUV;
-				windCenter.y = ((_MaxYUV - _MinYUV) * windCenter.y) + _MinYUV;
-			#endif
-			#if !MANUALWIND_ON
-				d.texcoord0.x = fmod(abs(lerp(d.texcoord0.x, d.texcoord0.x + (_GrassWind * 0.01 * windOffset), uvRect.y)), 1);
+		#if DISTORT_ON
+			#if POLARUVDISTORT_ON
+				half2 distortUvs = TRANSFORM_TEX(d.texcoord0.xy, _DistortTex);
 			#else
-				d.texcoord0.x = fmod(abs(lerp(d.texcoord0.x, d.texcoord0.x + (_GrassWind * 0.01 * _GrassManualAnim), uvRect.y)), 1);
-				windOffset = _GrassManualAnim;
+				half2 distortUvs = d.extraV2F0.xy;
 			#endif
-			half2 delta = d.texcoord0.xy - windCenter;
-			half delta2 = dot(delta.xy, delta.xy);
-			half2 delta_offset = delta2 * windOffset;
-			d.texcoord0.xy = d.texcoord0.xy + half2(delta.y, -delta.x) * delta_offset * _GrassRadialBend;
-		#endif
-
-		//--------------------------------------------------------
-
-		//TEXTURESCROLL_ON && !ATLAS_ON
-		#if TEXTURESCROLL_ON && !ATLAS_ON
-			d.texcoord0.x += ((_Time.y + randomSeed) * _TextureScrollXSpeed) % 1;
-			d.texcoord0.y += ((_Time.y + randomSeed) * _TextureScrollYSpeed) % 1;
-		#endif
-		//------------------------------
-
-		//PIXELATE_ON
-		#if PIXELATE_ON
-            half aspectRatio = _MainTex_TexelSize.x / _MainTex_TexelSize.y;
-			half2 pixelSize = float2(_PixelateSize, _PixelateSize * aspectRatio);
-			d.texcoord0.xy = floor(d.texcoord0.xy * pixelSize) / pixelSize;
-		#endif
-		//--------------
-
-		half4 col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy);
-		half originalAlpha = col.a;
-		col *= d.vertexColor;
-
-		//NORMAL MAP
-		#if NORMALMAP_ON
-			half4 normalSample = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, d.texcoord0.xy);
-			half3 normalTS = UnpackNormal(normalSample);
-			normalTS.xy *= _NormalStrength;
-			o.Normal = normalTS;
-		#endif
-        float normalSign = sign(dot(d.worldSpaceViewDir, d.worldSpaceNormal));
-        o.Normal *= normalSign;
-
-
-		//GLITCH_ON
-		#if GLITCH_ON
-			half2 uvGlitch = uvRect;
-			uvGlitch.y -= 0.5;
-			half lineNoise = pow(rand2(floor(uvGlitch * half2(24., 19.) * _GlitchSize) * 4.0, randomSeed), 3.0) * _GlitchAmount
-				* pow(rand2(floor(uvGlitch * half2(38., 14.) * _GlitchSize) * 4.0, randomSeed), 3.0);
-			col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(lineNoise * 0.02 * rand2(half2(2.0, 1), randomSeed), 0)) * d.vertexColor;
-		#endif
-		//--------------------------------------
-
-		//CHROMABERR_ON
-		#if CHROMABERR_ON
-			half4 r = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(_ChromAberrAmount/10, 0))	* d.vertexColor;
-			half4 b = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-_ChromAberrAmount/10, 0)) * d.vertexColor;
-			col = half4(r.r * r.a, col.g, b.b * b.a, max(max(r.a, b.a) * _ChromAberrAlpha, col.a));
-		#endif
-
-		//--------------------------------
-
-		//BLUR_ON
-		#if BLUR_ON
+			distortUvs.x += ((shaderTime.x + seed) * _DistortTexXSpeed) % 1;
+			distortUvs.y += ((shaderTime.x + seed) * _DistortTexYSpeed) % 1;
 			#if ATLAS_ON
-				#if !BLURISHD_ON
-					col = BlurHD(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity, (_MaxXUV - _MinXUV), (_MaxYUV - _MinYUV)) * d.vertexColor;
-				#else
-					col = Blur(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity * (_MaxXUV - _MinXUV)) * d.vertexColor;
+				d.extraV2F0.xy = half2((d.extraV2F0.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.extraV2F0.y - _MinYUV) / (_MaxYUV - _MinYUV));
+			#endif
+			half distortAmnt = (SAMPLE_TEXTURE2D(_DistortTex, sampler_DistortTex, distortUvs).r - 0.5) * 0.2 * _DistortAmount;
+			d.texcoord0.x += distortAmnt;
+			d.texcoord0.y += distortAmnt;
+		#endif
+
+		#if TEXTURESCROLL_ON
+			d.texcoord0.x += (time * _TextureScrollXSpeed) % 1;
+			d.texcoord0.y += (time * _TextureScrollYSpeed) % 1;
+		#endif
+
+		#if TRAILWIDTH_ON
+            half width = pow(SAMPLE_TEXTURE2D(_TrailWidthGradient, sampler_TrailWidthGradient, d.texcoord0).r, _TrailWidthPower);
+            d.texcoord0.y = (d.texcoord0.y * 2 - 1) / width * 0.5 + 0.5;
+            clip(d.texcoord0.y);
+            clip(1 - d.texcoord0.y);
+        #endif
+
+		float2 shape1Uv = d.texcoord0.xy;
+        #if SHAPE2_ON
+			float2 shape2Uv = shape1Uv;
+        #endif
+        #if SHAPE3_ON
+			float2 shape3Uv = shape1Uv;
+        #endif
+
+        #if CAMDISTFADE_ON || SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half camDistance = distance(d.worldSpacePosition, _WorldSpaceCameraPos);
+		#endif
+		 
+		#if SHAPE1SCREENUV_ON || SHAPE2SCREENUV_ON || SHAPE3SCREENUV_ON
+			half2 uvOffsetPostFx = d.texcoord0.xy - originalUvs;
+			d.texcoord0.xy = d.screenPos.xy / d.screenPos.w;
+			d.texcoord0.x = d.texcoord0.x * (_ScreenParams.x / _ScreenParams.y);
+			d.texcoord0.x -= 0.5;
+			d.texcoord0.xy -= uvOffsetPostFx;
+			originalUvs += uvOffsetPostFx;
+			half distanceZoom = camDistance * 0.1;
+			half2 scaleWithDistUvs = d.texcoord0.xy * distanceZoom + ((-distanceZoom * 0.5) + 0.5);
+			#if SHAPE1SCREENUV_ON
+				shape1Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvShDistScale);
+			#else
+				shape1Uv = originalUvs;
+			#endif
+			#if SHAPE2SCREENUV_ON && SHAPE2_ON
+				shape2Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvSh2DistScale);
+			#else
+				#if SHAPE2_ON
+					shape2Uv = originalUvs;
 				#endif
+			#endif
+			#if SHAPE3SCREENUV_ON && SHAPE3_ON
+				shape3Uv = lerp(d.texcoord0.xy, scaleWithDistUvs, _ScreenUvSh3DistScale);
 			#else
-				#if !BLURISHD_ON
-					col = BlurHD(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity, 1, 1) * d.vertexColor;
+				#if SHAPE3_ON
+					shape3Uv = originalUvs;
+				#endif
+			#endif
+		#endif
+
+		shape1Uv = TRANSFORM_TEX(shape1Uv, _MainTex);
+		#if OFFSETSTREAM_ON
+			shape1Uv.x += i.offsetCustomData.x * _OffsetSh1;
+			shape1Uv.y += i.offsetCustomData.y * _OffsetSh1;
+		#endif
+        #if SHAPETEXOFFSET_ON
+			shape1Uv += seed * _RandomSh1Mult;
+		#endif
+        
+		#if SHAPE1DISTORT_ON
+			#if POLARUVDISTORT_ON
+				half2 sh1DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _ShapeDistortTex);
+			#else
+				half2 sh1DistortUvs = d.extraV2F1.xy;
+			#endif
+			
+			sh1DistortUvs.x += ((time + seed) * _ShapeDistortXSpeed) % 1;
+			sh1DistortUvs.y += ((time + seed) * _ShapeDistortYSpeed) % 1;
+			half distortAmount = (SAMPLE_TEXTURE2D(_ShapeDistortTex, sampler_ShapeDistortTex, sh1DistortUvs).r - 0.5) * 0.2 * _ShapeDistortAmount;
+			shape1Uv.x += distortAmount;
+			shape1Uv.y += distortAmount;
+		#endif
+		#if SHAPE1ROTATE_ON
+			shape1Uv = RotateUvs(shape1Uv, _ShapeRotationOffset + ((_ShapeRotationSpeed * time) % 6.28318530718), _MainTex_ST);
+		#endif
+
+		half4 shape1 = SampleTextureWithScroll(_MainTex, sampler_MainTex, shape1Uv, _ShapeXSpeed, _ShapeYSpeed, time);
+		#if SHAPE1SHAPECOLOR_ON
+			shape1.a = shape1.r;
+			shape1.rgb = _ShapeColor.rgb;
+		#else
+			shape1 *= _ShapeColor;
+		#endif
+		#if SHAPE1CONTRAST_ON
+			#if SHAPE1SHAPECOLOR_ON
+				shape1.a = saturate((shape1.a - 0.5) * _ShapeContrast + 0.5 + _ShapeBrightness);
+			#else
+				shape1.rgb = max(0, (shape1.rgb - half3(0.5, 0.5, 0.5)) * _ShapeContrast + half3(0.5, 0.5, 0.5) + _ShapeBrightness);
+			#endif
+        #endif
+
+		half4 shape2 = 1.0;
+		#if SHAPE2_ON
+			shape2Uv = TRANSFORM_TEX(shape2Uv, _Shape2Tex);
+			#if OFFSETSTREAM_ON
+				shape2Uv.x += i.offsetCustomData.x * _OffsetSh2;
+				shape2Uv.y += i.offsetCustomData.y * _OffsetSh2;
+			#endif
+			#if SHAPETEXOFFSET_ON
+				shape2Uv += seed * _RandomSh2Mult;
+			#endif
+			#if SHAPE2DISTORT_ON
+				#if POLARUVDISTORT_ON
+					half2 sh2DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _Shape2DistortTex);
 				#else
-					col = Blur(d.texcoord0.xy, _MainTex, sampler_MainTex, _BlurIntensity) * d.vertexColor;
+					half2 sh2DistortUvs = d.extraV2F2.xy;
+				#endif
+				sh2DistortUvs.x += ((time + seed) * _Shape2DistortXSpeed) % 1;
+				sh2DistortUvs.y += ((time + seed) * _Shape2DistortYSpeed) % 1;
+				half distortAmnt2 = (SAMPLE_TEXTURE2D(_Shape2DistortTex, sampler_Shape2DistortTex, sh2DistortUvs).r - 0.5) * 0.2 * _Shape2DistortAmount;
+				shape2Uv.x += distortAmnt2;
+				shape2Uv.y += distortAmnt2;
+			#endif
+			#if SHAPE2ROTATE_ON
+				shape2Uv = RotateUvs(shape2Uv, _Shape2RotationOffset + ((_Shape2RotationSpeed * time) % 6.28318530718), _Shape2Tex_ST);
+			#endif
+			
+			shape2 = SampleTextureWithScroll(_Shape2Tex, sampler_Shape2Tex, shape2Uv, _Shape2XSpeed, _Shape2YSpeed, time); 
+			#if SHAPE2SHAPECOLOR_ON
+				shape2.a = shape2.r;
+				shape2.rgb = _Shape2Color.rgb;
+			#else
+				shape2 *= _Shape2Color;
+			#endif
+			#if SHAPE2CONTRAST_ON
+				#if SHAPE2SHAPECOLOR_ON
+					shape2.a = max(0, (shape2.a - 0.5) * _Shape2Contrast + 0.5 + _Shape2Brightness);
+				#else
+					shape2.rgb = max(0, (shape2.rgb - half3(0.5, 0.5, 0.5)) * _Shape2Contrast + half3(0.5, 0.5, 0.5) + _Shape2Brightness);
 				#endif
 			#endif
         #endif
 
-		//--------------------
-
-		//MOTIONBLUR_ON
-		#if MOTIONBLUR_ON
-			_MotionBlurAngle = _MotionBlurAngle * 3.1415926;
-			#define rot(n) mul(n, half2x2(cos(_MotionBlurAngle), -sin(_MotionBlurAngle), sin(_MotionBlurAngle), cos(_MotionBlurAngle)))
-			_MotionBlurDist = _MotionBlurDist * 0.005;
-			#if ATLAS_ON
-				_MotionBlurDist *= (_MaxXUV - _MinXUV);
+		half4 shape3 = 1.0;
+		 #if SHAPE3_ON
+            shape3Uv = TRANSFORM_TEX(shape3Uv, _Shape3Tex);
+			
+            #if OFFSETSTREAM_ON
+				shape3Uv.x += i.offsetCustomData.x * _OffsetSh3;
+				shape3Uv.y += i.offsetCustomData.y * _OffsetSh3;
 			#endif
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist, -_MotionBlurDist)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 2, -_MotionBlurDist * 2)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 3, -_MotionBlurDist * 3)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(-_MotionBlurDist * 4, -_MotionBlurDist * 4)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist, _MotionBlurDist)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 2, _MotionBlurDist * 2)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 3, _MotionBlurDist * 3)));
-			col.rgb += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + rot(half2(_MotionBlurDist * 4, _MotionBlurDist * 4)));
-			col.rgb = col.rgb / 9;
+            #if SHAPETEXOFFSET_ON
+				shape3Uv += seed * _RandomSh3Mult;
+			#endif
+            #if SHAPE3DISTORT_ON
+				#if POLARUVDISTORT_ON
+					half2 sh3DistortUvs = TRANSFORM_TEX(d.texcoord0.xy, _Shape3DistortTex);
+				#else
+					half2 sh3DistortUvs = d.extraV2F3.xy;
+				#endif
+				sh3DistortUvs.x += ((time + seed) * _Shape3DistortXSpeed) % 1;
+				sh3DistortUvs.y += ((time + seed) * _Shape3DistortYSpeed) % 1;
+				half distortAmnt3 = (SAMPLE_TEXTURE2D(_Shape3DistortTex, sampler_Shape3DistortTex, sh3DistortUvs).r - 0.5) * 0.3 * _Shape3DistortAmount;
+				shape3Uv.x += distortAmnt3;
+				shape3Uv.y += distortAmnt3;
+            #endif
+            #if SHAPE3ROTATE_ON
+				shape3Uv = RotateUvs(shape3Uv, _Shape3RotationOffset + ((_Shape3RotationSpeed * time) % 6.28318530718), _Shape3Tex_ST);
+            #endif
+				shape3 = SampleTextureWithScroll(_Shape3Tex, sampler_Shape3Tex, shape3Uv, _Shape3XSpeed, _Shape3YSpeed, time);
+            #if SHAPE3SHAPECOLOR_ON
+				shape3.a = shape3.r;
+				shape3.rgb = _Shape3Color.rgb;
+            #else
+				shape3 *= _Shape3Color;
+            #endif
+            #if SHAPE3CONTRAST_ON
+				#if SHAPE3SHAPECOLOR_ON
+					shape3.a = max(0, (shape3.a - 0.5) * _Shape3Contrast + 0.5 + _Shape3Brightness);
+				#else
+					shape3.rgb = max(0, (shape3.rgb - half3(0.5, 0.5, 0.5)) * _Shape3Contrast + half3(0.5, 0.5, 0.5) + _Shape3Brightness);
+				#endif
+            #endif
+		#endif
+
+		half4 col = shape1;
+		//Mix all shapes pre: change weights if custom vertex effect active
+        #if SHAPEWEIGHTS_ON
+			half shapeWeightOffset;
+			#if SHAPE2_ON
+				shapeWeightOffset = i.offsetCustomData.z * _Sh1BlendOffset;
+				_ShapeColorWeight = max(0, _ShapeColorWeight + shapeWeightOffset);
+				_ShapeAlphaWeight = max(0, _ShapeAlphaWeight + shapeWeightOffset);
+				shapeWeightOffset = i.offsetCustomData.z * _Sh2BlendOffset;
+				_Shape2ColorWeight = max(0, _Shape2ColorWeight + shapeWeightOffset);
+				_Shape2AlphaWeight = max(0, _Shape2AlphaWeight + shapeWeightOffset);
+			#endif
+			#if SHAPE3_ON
+				shapeWeightOffset = i.offsetCustomData.z * _Sh3BlendOffset;
+				_Shape3ColorWeight = max(0, _Shape3ColorWeight + shapeWeightOffset);
+				_Shape3AlphaWeight = max(0, _Shape3AlphaWeight + shapeWeightOffset);
+			#endif
+		#endif
+
+		//Mix all shapes
+        #if SHAPE2_ON
+			#if !SPLITRGBA_ON
+				_ShapeAlphaWeight = _ShapeColorWeight;
+				_Shape2AlphaWeight = _Shape2ColorWeight;
+			#endif
+			#if SHAPE3_ON //Shape3 On
+				#if !SPLITRGBA_ON
+					_Shape3AlphaWeight = _Shape3ColorWeight;
+				#endif
+			#if SHAPEADD_ON
+				col.rgb = ((shape1.rgb * _ShapeColorWeight) + (shape2.rgb * _Shape2ColorWeight)) + (shape3.rgb * _Shape3ColorWeight);
+				col.a = saturate(max(shape3.a * _Shape3AlphaWeight, max(shape1.a * _ShapeAlphaWeight, shape2.a * _Shape2AlphaWeight)));
+			#else
+				col.rgb = ((shape1.rgb * _ShapeColorWeight) * (shape2.rgb * _Shape2ColorWeight)) * (shape3.rgb * _Shape3ColorWeight);
+				col.a = saturate(((shape1.a * _ShapeAlphaWeight) * (shape2.a * _Shape2AlphaWeight)) * (shape3.a * _Shape3AlphaWeight));
+			#endif
+			#else //Shape3 Off
+				#if SHAPEADD_ON
+					col.rgb = (shape1.rgb * _ShapeColorWeight) + (shape2.rgb * _Shape2ColorWeight);
+					col.a = saturate(max(shape1.a * _ShapeAlphaWeight, shape2.a * _Shape2AlphaWeight));
+				#else
+					col.rgb = (shape1.rgb * _ShapeColorWeight) * (shape2.rgb * _Shape2ColorWeight);
+					col.a = saturate((shape1.a * _ShapeAlphaWeight) * (shape2.a * _Shape2AlphaWeight));
+				#endif
+			#endif
         #endif
-		//------------------------------------
 
-		//NEGATIVE_ON
-		#if NEGATIVE_ON
-			col.rgb = lerp(col.rgb, 1 - col.rgb, _NegativeAmount);
-		#endif
-
-		//--------------
-		half luminance = 0;
-
-		//GREYSCALE_ON && !GREYSCALEOUTLINE_ON
-		#if GREYSCALE_ON && !GREYSCALEOUTLINE_ON
+		#if SHAPE1MASK_ON
+            col = lerp(col, shape1, pow(SAMPLE_TEXTURE2D(_Shape1MaskTex, sampler_Shape1MaskTex, TRANSFORM_TEX(i.uvSeed.xy, _Shape1MaskTex)).r, _Shape1MaskPow));
+        #endif
+		
+		#if PREMULTIPLYCOLOR_ON
+			half luminance = 0;
 			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _GreyscaleLuminosity);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _GreyscaleTintColor, _GreyscaleBlend);
-		#endif
-		//------------------------------------
+			luminance *= col.a;
+			col.a = min(luminance, col.a);
+        #endif
 
-		//GHOST_ON
-		#if GHOST_ON
+		col.rgb *= _Color.rgb * d.vertexColor.rgb;
+		#if PREMULTIPLYALPHA_ON
+			col.rgb *= col.a;
+        #endif
+
+        #if !PREMULTIPLYCOLOR_ON && (COLORRAMP_ON || ALPHAFADE_ON || COLORGRADING_ON || FADE_ON || (ADDITIVECONFIG_ON && (GLOW_ON || DEPTHGLOW_ON)))
+			half luminance = 0;
 			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			half4 ghostResult;
-			ghostResult.a = saturate(luminance - _GhostTransparency) * col.a;
-			ghostResult.rgb = col.rgb * (luminance + _GhostColorBoost);
-			col = lerp(col, ghostResult, _GhostBlend);
-		#endif
-		//------------------------------------
+			luminance *= col.a;
+        #endif
 
-		//INNEROUTLINE_ON
-		#if INNEROUTLINE_ON
-			half3 innerT = abs(GetPixel(0, _InnerOutlineThickness, d.texcoord0.xy, _MainTex, sampler_MainTex) - GetPixel(0, -_InnerOutlineThickness, d.texcoord0.xy, _MainTex, sampler_MainTex));
-			innerT += abs(GetPixel(_InnerOutlineThickness, 0, d.texcoord0.xy, _MainTex, sampler_MainTex) - GetPixel(-_InnerOutlineThickness, 0, d.texcoord0.xy, _MainTex, sampler_MainTex));
-			#if !ONLYINNEROUTLINE_ON
-				innerT = (innerT / 2.0) * col.a * _InnerOutlineAlpha;
-				col.rgb += length(innerT) * _InnerOutlineColor.rgb * _InnerOutlineGlow;
+		#if (FADE_ON || ALPHAFADE_ON) && ALPHAFADEINPUTSTREAM_ON
+			col.a *= d.vertexColor.a;
+			d.vertexColor.a = d.texcoord0.w;
+        #endif
+
+		#if FADE_ON
+			half preFadeAlpha = col.a;
+			_FadeAmount = saturate(_FadeAmount + (1 - d.vertexColor.a));
+			_FadeTransition = max(0.01, _FadeTransition * EaseOutQuint(saturate(_FadeAmount)));
+			half2 fadeUv;
+			fadeUv = d.texcoord0.xy + seed;
+			fadeUv.x += (time * _FadeScrollXSpeed) % 1;
+			fadeUv.y += (time * _FadeScrollYSpeed) % 1;
+			half2 tiledUvFade1 = TRANSFORM_TEX(fadeUv, _FadeTex);
+			#if ADDITIVECONFIG_ON && !PREMULTIPLYCOLOR_ON
+				preFadeAlpha *= luminance;
+			#endif
+			_FadeAmount = saturate(pow(_FadeAmount, _FadePower));
+			#if FADEBURN_ON
+				half2 tiledUvFade2 = TRANSFORM_TEX(fadeUv, _FadeBurnTex);
+				half fadeSample = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
+				half fadeNaturalEdge = saturate(smoothstep(0.0 , _FadeTransition, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				col.a *= fadeNaturalEdge;
+				half fadeBurn = saturate(smoothstep(0.0 , _FadeTransition + _FadeBurnWidth, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				fadeBurn = fadeNaturalEdge - fadeBurn;
+				_FadeBurnColor.rgb *= _FadeBurnGlow;
+				col.rgb += fadeBurn * SAMPLE_TEXTURE2D(_FadeBurnTex, sampler_FadeBurnTex, tiledUvFade2).rgb * _FadeBurnColor.rgb * preFadeAlpha;
 			#else
-				innerT *= col.a * _InnerOutlineAlpha;
-				col.rgb = length(innerT) * _InnerOutlineColor.rgb * _InnerOutlineGlow;
-				col.a = step(0.3, col.r+col.g+col.b);
+				half fadeSample = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
+				float fade = saturate(smoothstep(0.0 , _FadeTransition, RemapFloat(1.0 - _FadeAmount, 0.0, 1.0, -1.0, 1.0) + fadeSample));
+				col.a *= fade;
+			#endif
+			#if ALPHAFADETRANSPARENCYTOO_ON
+				col.a *= 1 - _FadeAmount;
 			#endif
 		#endif
-		//-------------------------------------------------------
 
-		//HITEFFECT_ON
-		#if HITEFFECT_ON
-			col.rgb = lerp(col.rgb, _HitEffectColor.rgb * _HitEffectGlow, _HitEffectBlend);
-		#endif
-		//--------------------
-
-		//GRADIENT_ON
-		#if GRADIENT_ON
-			half2 tiledUvGrad = half2(uvRect.x / _MainTex_ST.x, uvRect.y / _MainTex_ST.y);
-			#if GRADIENT2COL_ON
-				_GradTopRightCol = _GradTopLeftCol;
-				_GradBotRightCol = _GradBotLeftCol;
-			#endif
-			#if RADIALGRADIENT_ON
-				half radialDist = 1 - length(tiledUvGrad - half2(0.5, 0.5));
-				radialDist *= (_MainTex_TexelSize.w / _MainTex_TexelSize.z);
-				radialDist = saturate(_GradBoostX * radialDist);
-				half4 gradientResult = lerp(_GradTopLeftCol, _GradBotLeftCol, radialDist);
+		#if ALPHAFADE_ON
+			half alphaFadeLuminance;
+			_AlphaFadeAmount = saturate(_AlphaFadeAmount + (1 - d.vertexColor.a));
+			_AlphaFadeAmount = saturate(pow(_AlphaFadeAmount, _AlphaFadePow));
+			_AlphaFadeSmooth = max(0.01, _AlphaFadeSmooth * EaseOutQuint(saturate(_AlphaFadeAmount)));
+			#if ALPHAFADEUSESHAPE1_ON
+				alphaFadeLuminance = shape1.r;
 			#else
-				half gradXLerpFactor = saturate(pow(tiledUvGrad.x, _GradBoostX));
-				half4 gradientResult = lerp(lerp(_GradBotLeftCol, _GradBotRightCol, gradXLerpFactor),
-				lerp(_GradTopLeftCol, _GradTopRightCol, gradXLerpFactor), saturate(pow(tiledUvGrad.y, _GradBoostY)));
+				alphaFadeLuminance = luminance;
 			#endif
-			gradientResult = lerp(col, gradientResult, _GradBlend);
-			col.rgb = gradientResult.rgb * col.a;
-			col.a *= gradientResult.a;
-		#endif
-		//--------------------------------------------------------------------
+				alphaFadeLuminance = saturate(alphaFadeLuminance - 0.001);
+			#if ALPHAFADEUSEREDCHANNEL_ON
+				col.a *= col.r;
+			#endif
+				col.a = saturate(col.a);
+				float alphaFade = saturate(smoothstep(0.0 , _AlphaFadeSmooth, RemapFloat(1.0 - _AlphaFadeAmount, 0.0, 1.0, -1.0, 1.0) + alphaFadeLuminance));
+				col.a *= alphaFade;
+			#if ALPHAFADETRANSPARENCYTOO_ON
+				col.a *= 1 - _AlphaFadeAmount;
+			#endif
+        #endif
 
-		//CONTRAST_ON
-		#if CONTRAST_ON
-			col.rgb = (col.rgb - float3(0.5, 0.5, 0.5)) * _Contrast + float3(0.5, 0.5, 0.5);
-			col.rgb += _Brightness;
-		#endif
+		#if BACKFACETINT_ON
+			col.rgb = lerp(col.rgb * _BackFaceTint, col.rgb * _FrontFaceTint, step(0, dot(d.worldSpaceNormal, d.worldSpaceViewDir)));
+        #endif
 
-		//-------------------------------------------------------------------
+		//#if LIGHTANDSHADOW_ON
+			//half NdL = saturate(dot(d.worldSpaceNormal, -_All1VfxLightDir));
+			//col.rgb += _LightColor * _LightAmount * NdL;
+			//NdL = max(_ShadowAmount, NdL);
+            //NdL = smoothstep(_ShadowStepMin, _ShadowStepMax, NdL);
+            //col.rgb *= NdL;
+		//#endif
 
-		//COLORSWAP_ON
-		#if COLORSWAP_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			half4 swapMask = SAMPLE_TEXTURE2D(_ColorSwapTex, sampler_ColorSwapTex, d.texcoord0.xy);
-			swapMask.rgb *= swapMask.a;
-			half3 redSwap = _ColorSwapRed * swapMask.r * saturate(luminance + _ColorSwapRedLuminosity);
-			half3 greenSwap = _ColorSwapGreen * swapMask.g * saturate(luminance + _ColorSwapGreenLuminosity);
-			half3 blueSwap = _ColorSwapBlue * swapMask.b * saturate(luminance + _ColorSwapBlueLuminosity);
-			swapMask.rgb = col.rgb * saturate(1 - swapMask.r - swapMask.g - swapMask.b);
-			col.rgb = lerp(col.rgb, swapMask.rgb + redSwap + greenSwap + blueSwap, _ColorSwapBlend);
-		#endif
-		//--------------------------------------------------------------------
+		#if COLORGRADING_ON
+			col.rgb *= lerp(lerp(_ColorGradingDark, _ColorGradingMiddle, luminance/_ColorGradingMidPoint),
+			lerp(_ColorGradingMiddle, _ColorGradingLight, (luminance - _ColorGradingMidPoint)/(1.0 - _ColorGradingMidPoint)), step(_ColorGradingMidPoint, luminance));
+        #endif
 
-		//COLORRAMP_ON && !COLORRAMPOUTLINE_ON
-		#if COLORRAMP_ON && !COLORRAMPOUTLINE_ON 
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _ColorRampLuminosity);
-			#if GRADIENTCOLORRAMP_ON
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(luminance, 0)).rgb, _ColorRampBlend);
+		#if COLORRAMP_ON
+			half colorRampLuminance = saturate(luminance + _ColorRampLuminosity);
+			#if COLORRAMPGRAD_ON
+				half4 colorRampRes = SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(colorRampLuminance, 0));
 			#else
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(luminance, 0)).rgb, _ColorRampBlend);
+				half4 colorRampRes = SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(colorRampLuminance, 0));
 			#endif
-		#endif
-		//--------------------------------------------------------------------
+			col.rgb = lerp(col.rgb, colorRampRes.rgb, _ColorRampBlend);
+			col.a = lerp(col.a, saturate(col.a * colorRampRes.a), _ColorRampBlend);
+        #endif
 
-		//CHANGECOLOR_ON
-		#if CHANGECOLOR_ON
-			float3 currChangeColor = saturate(col.rgb);
-			luminance = 0.3 * currChangeColor.r + 0.59 * currChangeColor.g + 0.11 * currChangeColor.b;
-			luminance = saturate(luminance + _ColorChangeLuminosity);
-			half3 dif = abs(currChangeColor - _ColorChangeTarget.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance), 0.0));
-			#if CHANGECOLOR2_ON
-			dif = abs(currChangeColor - _ColorChangeTarget2.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol2.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance2), 0.0));
-			#endif
-			#if CHANGECOLOR3_ON
-			dif = abs(currChangeColor - _ColorChangeTarget3.rgb);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _ColorChangeNewCol3.rgb,
-				max(sign(1 - saturate(dif.x + dif.y + dif.z) - _ColorChangeTolerance3), 0.0));
-			#endif
-		#endif
-		//-------------------------------------------------------
-
-		//POSTERIZE_ON && !POSTERIZEOUTLINE_ON
 		#if POSTERIZE_ON && !POSTERIZEOUTLINE_ON
-			col.rgb = pow(col.rgb, _PosterizeGamma) * _PosterizeNumColors;
-			col.rgb = floor(col.rgb) / _PosterizeNumColors;
-			col.rgb = pow(col.rgb, 1.0 / _PosterizeGamma);
+			col.rgb = floor(col.rgb / (1.0 / _PosterizeNumColors)) * (1.0 / _PosterizeNumColors);
 		#endif
-		//------------------------------------
 
-		//HSV_ON
+		#if DEPTHGLOW_ON
+			half sceneDepthDiff = GetLinearEyeDepth(d.screenUV) - d.screenPos.w;
+        #endif
+
+		#if RIM_ON
+			half NdV = 1 - abs(dot(d.worldSpaceNormal, d.worldSpaceViewDir));
+			half rimFactor = saturate(_RimBias + _RimScale * pow(NdV, _RimPower));
+			half4 rimCol = _RimColor * rimFactor;
+			rimCol.rgb *= _RimIntensity;
+			col.rgb = lerp(col.rgb * (rimCol.rgb + half3(1,1,1)), col.rgb + rimCol.rgb, _RimAddAmount);
+			col.a = saturate(col.a * (1 - rimFactor * _RimErodesAlpha));
+        #endif
+
+		#if DEPTHGLOW_ON
+			half depthGlowMask = saturate(_DepthGlowDist * pow((1 - sceneDepthDiff), _DepthGlowPow));
+			col.rgb = lerp(col.rgb, _DepthGlowGlobal * col.rgb, depthGlowMask);
+			half depthGlowMult = 1;
+			#if ADDITIVECONFIG_ON
+				depthGlowMult = luminance;
+			#endif
+			col.rgb += _DepthGlowColor.rgb * _DepthGlow * depthGlowMask * col.a * depthGlowMult;
+        #endif
+
+		#if GLOW_ON
+			half glowMask = 1;
+			#if GLOWTEX_ON
+				glowMask = SAMPLE_TEXTURE2D(_GlowTex, sampler_GlowTex, TRANSFORM_TEX(d.texcoord0.xy, _GlowTex));
+			#endif
+				col.rgb *= _GlowGlobal * glowMask;
+				half glowMult = 1;
+			#if ADDITIVECONFIG_ON
+				glowMult = luminance;
+			#endif
+			
+			col.rgb += _GlowColor.rgb * _Glow * glowMask * col.a * glowMult;
+        #endif
+
 		#if HSV_ON
 			half3 resultHsv = half3(col.rgb);
 			half cosHsv = _HsvBright * _HsvSaturation * cos(_HsvShift * 3.14159265 / 180);
 			half sinHsv = _HsvBright * _HsvSaturation * sin(_HsvShift * 3.14159265 / 180);
 			resultHsv.x = (.299 * _HsvBright + .701 * cosHsv + .168 * sinHsv) * col.x
-			+ (.587 * _HsvBright - .587 * cosHsv + .330 * sinHsv) * col.y
-			+ (.114 * _HsvBright - .114 * cosHsv - .497 * sinHsv) * col.z;
+				+ (.587 * _HsvBright - .587 * cosHsv + .330 * sinHsv) * col.y
+				+ (.114 * _HsvBright - .114 * cosHsv - .497 * sinHsv) * col.z;
 			resultHsv.y = (.299 * _HsvBright - .299 * cosHsv - .328 * sinHsv) *col.x
-			+ (.587 * _HsvBright + .413 * cosHsv + .035 * sinHsv) * col.y
-			+ (.114 * _HsvBright - .114 * cosHsv + .292 * sinHsv) * col.z;
+				+ (.587 * _HsvBright + .413 * cosHsv + .035 * sinHsv) * col.y
+				+ (.114 * _HsvBright - .114 * cosHsv + .292 * sinHsv) * col.z;
 			resultHsv.z = (.299 * _HsvBright - .3 * cosHsv + 1.25 * sinHsv) * col.x
-			+ (.587 * _HsvBright - .588 * cosHsv - 1.05 * sinHsv) * col.y
-			+ (.114 * _HsvBright + .886 * cosHsv - .203 * sinHsv) * col.z;
+				+ (.587 * _HsvBright - .588 * cosHsv - 1.05 * sinHsv) * col.y
+				+ (.114 * _HsvBright + .886 * cosHsv - .203 * sinHsv) * col.z;
 			col.rgb = resultHsv;
 		#endif
-		//-------------------------------------------------------
 
-		//OVERLAY_ON
-		#if OVERLAY_ON
-			half2 overlayUvs = d.texcoord0.xy;
-			overlayUvs.x += ((_Time.y + randomSeed) * _OverlayTextureScrollXSpeed) % 1;
-			overlayUvs.y += ((_Time.y + randomSeed) * _OverlayTextureScrollYSpeed) % 1;
-			half4 overlayCol = SAMPLE_TEXTURE2D(_OverlayTex, sampler_OverlayTex, TRANSFORM_TEX(overlayUvs, _OverlayTex));
-			overlayCol.rgb *= _OverlayColor.rgb * _OverlayGlow;
-			#if !OVERLAYMULT_ON
-				overlayCol.rgb *= overlayCol.a * _OverlayColor.rgb * _OverlayColor.a * _OverlayBlend;
-				col.rgb += overlayCol.rgb;
-			#else
-				overlayCol.a *= _OverlayColor.a;
-				col = lerp(col, col * overlayCol, _OverlayBlend);
+		#if CAMDISTFADE_ON
+			col.a *= 1 - saturate(smoothstep(_CamDistFadeStepMin, _CamDistFadeStepMax, camDistance));
+			col.a *= smoothstep(0.0, _CamDistProximityFade, camDistance);
+		#endif
+
+		#if MASK_ON
+            half2 maskUv = d.texcoord0.xy;
+            #if POLARUV_ON
+				maskUv = prePolarUvs;
 			#endif
+            half4 maskSample = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, TRANSFORM_TEX(maskUv, _MaskTex));
+			half mask = pow(min(maskSample.r, maskSample.a), _MaskPow);
+			col.a *= mask;
+        #endif
+
+		#if ALPHASMOOTHSTEP_ON
+			col.a = smoothstep(_AlphaStepMin, _AlphaStepMax, col.a);
+        #endif
+
+		half4 debugColor = col;
+		#if SHAPEDEBUG_ON
+			debugColor = GetDebugColor(col, shape1, shape2, shape3);
 		#endif
 
-		//---------------------------------
+		clip(debugColor.a - _AlphaCutoffValue - 0.01);
 
-		//OUTBASE_ON
-		#if OUTBASE_ON
-			#if OUTBASEPIXELPERF_ON
-				half2 destUv = half2(_OutlinePixelWidth * _MainTex_TexelSize.x, _OutlinePixelWidth * _MainTex_TexelSize.y);
-			#else
-				half2 destUv = half2(_OutlineWidth * _MainTex_TexelSize.x * 200, _OutlineWidth * _MainTex_TexelSize.y * 200);
-			#endif
+		//#if FOG_ON
+			//UNITY_APPLY_FOG(i.fogCoord, col);
+        //#endif
+		
+		//Don't use a starting i.color.a lower than 1 unless using vertex stream dissolve when using a FADE effect
+        #if !FADE_ON && !ALPHAFADE_ON
+			col.a *= _Alpha * d.vertexColor.a;
+        #endif
+        #if FADE_ON || ALPHAFADE_ON
+			col.a *= _Alpha;
+        #endif
+        #if ADDITIVECONFIG_ON
+			col.rgb *= col.a;
+        #endif
 
-			#if OUTDIST_ON
-				d.texcoord3.x += ((_Time.x + _RandomSeed) * _OutlineDistortTexXSpeed) % 1;
-				d.texcoord3.y += ((_Time.x + _RandomSeed) * _OutlineDistortTexYSpeed) % 1;
-				#if ATLAS_ON
-					d.texcoord3 = half2((d.texcoord3.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord3.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				#endif
-				half outDistortAmnt = (SAMPLE_TEXTURE2D(_OutlineDistortTex, sampler_OutlineDistortTex, d.texcoord3).r - 0.5) * 0.2 * _OutlineDistortAmount;
-				destUv.x += outDistortAmnt;
-				destUv.y += outDistortAmnt;
-			#endif
-
-			half spriteLeft		= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, 0)).a;
-			half spriteRight	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy - half2(destUv.x, 0)).a;
-			half spriteBottom	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(0, destUv.y)).a;
-			half spriteTop		= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy - half2(0, destUv.y)).a;
-			half result = spriteLeft + spriteRight + spriteBottom + spriteTop;
-
-			#if OUTBASE8DIR_ON
-				half spriteTopLeft	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, destUv.y)).a;
-				half spriteTopRight = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-destUv.x, destUv.y)).a;
-				half spriteBotLeft	= SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(destUv.x, -destUv.y)).a;
-				half spriteBotRight = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(-destUv.x, -destUv.y)).a;
-				result = result + spriteTopLeft + spriteTopRight + spriteBotLeft + spriteBotRight;
-			#endif
-					
-			result = step(0.05, saturate(result));
-
-			#if OUTTEX_ON
-				d.texcoord1.x += ((_Time.x + _RandomSeed) * _OutlineTexXSpeed) % 1;
-				d.texcoord1.y += ((_Time.x + _RandomSeed) * _OutlineTexYSpeed) % 1;
-				#if ATLAS_ON
-					d.texcoord1 = half2((d.texcoord1.x - _MinXUV) / (_MaxXUV - _MinXUV), (d.texcoord1.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				#endif
-				half4 tempOutColor = SAMPLE_TEXTURE2D(_OutlineTex, sampler_OutlineTex, d.texcoord1);
-				tempOutColor *= _OutlineColor;
-				_OutlineColor = tempOutColor;
-			#endif
-
-			result *= (1 - originalAlpha) * _OutlineAlpha;
-
-			half4 outline = _OutlineColor * d.vertexColor.a;
-			outline.rgb *= _OutlineGlow;
-			outline.a = result;
-			#if ONLYOUTLINE_ON
-			col = outline;
-			#else
-			col = lerp(col, outline, result);
-			#endif
+		
+		#if SHAPEDEBUG_ON
+		o.Albedo = debugColor.rgb; 
+		o.Alpha = debugColor.a;
+		#else
+		o.Albedo = col.rgb; 
+		o.Alpha = col.a;
 		#endif
-		//-------------------------------------------------------
-
-		//FADE_ON
-		#if FADE_ON
-			half2 tiledUvFade1	= TRANSFORM_TEX(d.texcoord0, _FadeTex);
-			half2 tiledUvFade2	= TRANSFORM_TEX(d.texcoord0, _FadeBurnTex);
-			#if ATLAS_ON
-				tiledUvFade1 = half2((tiledUvFade1.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUvFade1.y - _MinYUV) / (_MaxYUV - _MinYUV));
-				tiledUvFade2 = half2((tiledUvFade2.x - _MinXUV) / (_MaxXUV - _MinXUV), (tiledUvFade2.y - _MinYUV) / (_MaxYUV - _MinYUV));
-			#endif
-			half fadeTemp = SAMPLE_TEXTURE2D(_FadeTex, sampler_FadeTex, tiledUvFade1).r;
-			half fade = smoothstep(_FadeAmount, _FadeAmount + _FadeBurnTransition, fadeTemp);
-			half fadeBurn = saturate(smoothstep(_FadeAmount - _FadeBurnWidth, _FadeAmount - _FadeBurnWidth + 0.1, fadeTemp) * _FadeAmount);
-			col.a *= fade;
-			_FadeBurnColor.rgb *= _FadeBurnGlow;
-			col += fadeBurn * SAMPLE_TEXTURE2D(_FadeBurnTex, sampler_FadeBurnTex, tiledUvFade2) * _FadeBurnColor * originalAlpha * (1 - col.a);
-		#endif
-		//-------------------------------------------------------
-
-		//SHADOW_ON
-		#if SHADOW_ON
-			half shadowA = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, d.texcoord0.xy + half2(_ShadowX, _ShadowY)).a;
-			half preMultShadowMask = 1 - (saturate(shadowA - col.a) * (1 - col.a));
-			col.rgb *= 1 - ((shadowA - col.a) * (1 - col.a));
-			col.rgb += (_ShadowColor * shadowA) * (1 - col.a);
-			col.a = max(shadowA * _ShadowAlpha * d.vertexColor.a, col.a);
-		#endif
-
-		//-------------------------------------------------------
-
-		//GLOW_ON
-		#if GLOW_ON
-			half4 emission;
-			#if GLOWTEX_ON
-				emission = SAMPLE_TEXTURE2D(_GlowTex, sampler_GlowTex, d.texcoord0);
-			#else
-				emission = col;
-			#endif
-
-			col.rgb *= _GlowGlobal;
-			emission.rgb *= emission.a * col.a * _Glow * _GlowColor;
-			col.rgb += emission.rgb;
-		#endif
-		//-------------------------------------------------------
-
-		//COLORRAMP_ON && COLORRAMPOUTLINE_ON
-		#if COLORRAMP_ON && COLORRAMPOUTLINE_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _ColorRampLuminosity);
-			#if GRADIENTCOLORRAMP_ON
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTexGradient, sampler_ColorRampTexGradient, half2(luminance, 0)).rgb, _ColorRampBlend);
-			#else
-				col.rgb = lerp(col.rgb, SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, half2(luminance, 0)).rgb, _ColorRampBlend);
-			#endif
-		#endif
-		//---------------
-
-		//GREYSCALE_ON && GREYSCALEOUTLINE_ON
-		#if GREYSCALE_ON && GREYSCALEOUTLINE_ON
-			luminance = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
-			luminance = saturate(luminance + _GreyscaleLuminosity);
-			col.rgb = lerp(col.rgb, half3(luminance, luminance, luminance) * _GreyscaleTintColor, _GreyscaleBlend);
-		#endif
-
-		//-----------------------------------
-
-		//POSTERIZE_ON && POSTERIZEOUTLINE_ON
-		#if POSTERIZE_ON && POSTERIZEOUTLINE_ON
-			col.rgb = pow(col.rgb, _PosterizeGamma) * _PosterizeNumColors;
-			col.rgb = floor(col.rgb) / _PosterizeNumColors;
-			col.rgb = pow(col.rgb, 1.0 / _PosterizeGamma);
-		#endif
-
-		//-----------------------------------
-
-		//SHINE_ON
-		#if SHINE_ON
-			half2 uvShine = uvRect;
-			half cosAngle = cos(_ShineRotate);
-			half sinAngle = sin(_ShineRotate);
-			half2x2 rot = half2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
-			uvShine -= half2(0.5, 0.5);
-			uvShine = mul(rot, uvShine);
-			uvShine += half2(0.5, 0.5);
-			half shineMask = SAMPLE_TEXTURE2D(_ShineMask, sampler_ShineMask, d.texcoord0.xy).a;
-			half currentDistanceProjection = (uvShine.x + uvShine.y) / 2;
-			half whitePower = 1 - (abs(currentDistanceProjection - _ShineLocation) / _ShineWidth);
-			col.rgb +=  col.a * whitePower * _ShineGlow * max(sign(currentDistanceProjection - (_ShineLocation - _ShineWidth)), 0.0)
-			* max(sign((_ShineLocation + _ShineWidth) - currentDistanceProjection), 0.0) * _ShineColor * shineMask;
-		#endif
-
-		//-----------------------------------
-
-		//HOLOGRAM_ON
-		#if HOLOGRAM_ON
-			half totalHologram = _HologramStripesAmount + _HologramUnmodAmount;
-			half hologramYCoord = ((uvRect.y + (((_Time.x + randomSeed) % 1) * _HologramStripesSpeed)) % totalHologram) / totalHologram;
-			hologramYCoord = abs(hologramYCoord);
-			half alpha = RemapFloat(saturate(hologramYCoord - (_HologramUnmodAmount/totalHologram)), 0.0, 1.0, _HologramMinAlpha, saturate(_HologramMaxAlpha));
-			half hologramMask = max(sign((_HologramUnmodAmount/totalHologram) - hologramYCoord), 0.0);
-			half4 hologramResult = col;
-			hologramResult.a *= lerp(alpha, 1, hologramMask);
-			hologramResult.rgb *= max(1, _HologramMaxAlpha * max(sign(hologramYCoord - (_HologramUnmodAmount/totalHologram)), 0.0));
-			hologramMask = 1 - step(0.01,hologramMask);
-			hologramResult.rgb += hologramMask * _HologramStripeColor * col.a;
-			col = lerp(col, hologramResult, _HologramBlend);
-		#endif
-
-		//-----------------------------------
-
-		//FLICKER_ON
-		#if FLICKER_ON
-			col.a *= saturate(col.a * step(frac(0.05 + (_Time.w + randomSeed) * _FlickerFreq), 1 - _FlickerPercent) + _FlickerAlpha);
-		#endif
-		//-----------------------------------
-
-		//ALPHACUTOFF_ON
-
-		//ALPHAROUND_ON
-
-		//ALPHAOUTLINE_ON
-		#if ALPHAOUTLINE_ON
-			half alphaOutlineRes = pow(1 - col.a, max(_AlphaOutlinePower, 0.0001)) * step(_AlphaOutlineMinAlpha, col.a) * _AlphaOutlineBlend;
-			col.rgb = lerp(col.rgb, _AlphaOutlineColor.rgb * _AlphaOutlineGlow, alphaOutlineRes);
-			col.a = lerp(col.a, 1, alphaOutlineRes > 1);
-		#endif
-		//-------------------------------------------------------
-
-		//FOG_ON
-
-		//------------------
-
-        col *= _Color;
-		o.Albedo = col;
-		col.a *= _Alpha;
-        clip(col.a - _AlphaCutoffValue - 0.01);
-		o.Alpha = _Color.a;
 	}
 
 
@@ -17072,19 +15867,19 @@ ZWrite On
 
 
                  // #if %EXTRAV2F0REQUIREKEY%
-                 // v2p.extraV2F0 = d.extraV2F0;
+                  v2p.extraV2F0 = d.extraV2F0;
                  // #endif
 
                  // #if %EXTRAV2F1REQUIREKEY%
-                 // v2p.extraV2F1 = d.extraV2F1;
+                  v2p.extraV2F1 = d.extraV2F1;
                  // #endif
 
                  // #if %EXTRAV2F2REQUIREKEY%
-                 // v2p.extraV2F2 = d.extraV2F2;
+                  v2p.extraV2F2 = d.extraV2F2;
                  // #endif
 
                  // #if %EXTRAV2F3REQUIREKEY%
-                 // v2p.extraV2F3 = d.extraV2F3;
+                  v2p.extraV2F3 = d.extraV2F3;
                  // #endif
 
                  // #if %EXTRAV2F4REQUIREKEY%
@@ -17111,19 +15906,19 @@ ZWrite On
                ZERO_INITIALIZE(Blackboard, d.blackboard);
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // d.extraV2F0 = v2p.extraV2F0;
+                d.extraV2F0 = v2p.extraV2F0;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // d.extraV2F1 = v2p.extraV2F1;
+                d.extraV2F1 = v2p.extraV2F1;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // d.extraV2F2 = v2p.extraV2F2;
+                d.extraV2F2 = v2p.extraV2F2;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // d.extraV2F3 = v2p.extraV2F3;
+                d.extraV2F3 = v2p.extraV2F3;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -17175,19 +15970,19 @@ ZWrite On
                // Ext_ModifyTessellatedVertex29(v, d);
 
                // #if %EXTRAV2F0REQUIREKEY%
-               // v2p.extraV2F0 = d.extraV2F0;
+                v2p.extraV2F0 = d.extraV2F0;
                // #endif
 
                // #if %EXTRAV2F1REQUIREKEY%
-               // v2p.extraV2F1 = d.extraV2F1;
+                v2p.extraV2F1 = d.extraV2F1;
                // #endif
 
                // #if %EXTRAV2F2REQUIREKEY%
-               // v2p.extraV2F2 = d.extraV2F2;
+                v2p.extraV2F2 = d.extraV2F2;
                // #endif
 
                // #if %EXTRAV2F3REQUIREKEY%
-               // v2p.extraV2F3 = d.extraV2F3;
+                v2p.extraV2F3 = d.extraV2F3;
                // #endif
 
                // #if %EXTRAV2F4REQUIREKEY%
@@ -17307,7 +16102,7 @@ ZWrite On
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), d.worldSpaceTangent.xyz));
 
             // #if %SCREENPOSREQUIREKEY%
-            // d.screenUV = (IN.ScreenPosition.xy / max(0.01, IN.ScreenPosition.w));
+             d.screenUV = (IN.ScreenPosition.xy / max(0.01, IN.ScreenPosition.w));
             // #endif
 
             return d;
@@ -17335,11 +16130,11 @@ ZWrite On
 
             d.tangentSpaceViewDir = mul(d.TBNMatrix, d.worldSpaceViewDir);
              d.texcoord0 = i.texcoord0;
-             d.texcoord1 = i.texcoord1;
-             d.texcoord2 = i.texcoord2;
+            // d.texcoord1 = i.texcoord1;
+            // d.texcoord2 = i.texcoord2;
 
             // #if %TEXCOORD3REQUIREKEY%
-             d.texcoord3 = i.texcoord3;
+            // d.texcoord3 = i.texcoord3;
             // #endif
 
             // d.isFrontFace = facing;
@@ -17357,25 +16152,25 @@ ZWrite On
             // d.localSpaceTangent = normalize(mul((float3x3)GetWorldToObjectMatrix(), i.worldTangent.xyz));
 
             // #if %SCREENPOSREQUIREKEY%
-            // d.screenPos = i.screenPos;
-            // d.screenUV = (i.screenPos.xy / i.screenPos.w);
+             d.screenPos = i.screenPos;
+             d.screenUV = (i.screenPos.xy / i.screenPos.w);
             // #endif
 
 
             // #if %EXTRAV2F0REQUIREKEY%
-            // d.extraV2F0 = i.extraV2F0;
+             d.extraV2F0 = i.extraV2F0;
             // #endif
 
             // #if %EXTRAV2F1REQUIREKEY%
-            // d.extraV2F1 = i.extraV2F1;
+             d.extraV2F1 = i.extraV2F1;
             // #endif
 
             // #if %EXTRAV2F2REQUIREKEY%
-            // d.extraV2F2 = i.extraV2F2;
+             d.extraV2F2 = i.extraV2F2;
             // #endif
 
             // #if %EXTRAV2F3REQUIREKEY%
-            // d.extraV2F3 = i.extraV2F3;
+             d.extraV2F3 = i.extraV2F3;
             // #endif
 
             // #if %EXTRAV2F4REQUIREKEY%
@@ -17446,11 +16241,11 @@ ZWrite On
            #endif
 
             o.texcoord0 = v.texcoord0;
-            o.texcoord1 = v.texcoord1;
-            o.texcoord2 = v.texcoord2;
+           // o.texcoord1 = v.texcoord1;
+           // o.texcoord2 = v.texcoord2;
 
            // #if %TEXCOORD3REQUIREKEY%
-            o.texcoord3 = v.texcoord3;
+           // o.texcoord3 = v.texcoord3;
            // #endif
 
            // #if %VERTEXCOLORREQUIREKEY%
@@ -17489,14 +16284,14 @@ ZWrite On
           #endif
 
           // #if %SCREENPOSREQUIREKEY%
-          // o.screenPos = ComputeScreenPos(o.pos, _ProjectionParams.x);
+           o.screenPos = ComputeScreenPos(o.pos, _ProjectionParams.x);
           // #endif
 
           
           #if _PASSFORWARD || _PASSGBUFFER
               float2 uv1 = v.texcoord1.xy;
               OUTPUT_LIGHTMAP_UV(uv1, unity_LightmapST, o.lightmapUV);
-               o.texcoord1.xy = uv1;
+              // o.texcoord1.xy = uv1;
               #if UNITY_VERSION < 60000009
                 OUTPUT_SH(o.worldNormal, o.sh);
               #endif
@@ -17674,5 +16469,5 @@ ZWrite On
    }
    
    
-   CustomEditor "AllIn1SpriteShaderLitMaterialInspector"
+   CustomEditor "AllIn1VfxLitCustomMaterialEditor"
 }
