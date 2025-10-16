@@ -11,7 +11,6 @@ namespace SpiderController.UI.Health
     {
         [SerializeField] private GameObject _canvasRootUI;
 
-        [SerializeField] private StickerUI _stickerUI;
         [SerializeField] private HealthBarUI _healthBarUI;
         [SerializeField] private EnergyBarUI _energyBarUI;
         [SerializeField] private ReloadUI _reloadUI;
@@ -23,7 +22,6 @@ namespace SpiderController.UI.Health
         public ReloadUI ReloadUI => _reloadUI;
         public PressedMouseButtonIndicatorUI PlaneIndicatorUI => _planeIndicatorUI;
         public PressedMouseButtonIndicatorUI MagnetIndicatorUI => _magnetIndicatorUI;
-        public StickerUI StickerUI => _stickerUI;
         private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
 
         private SpiderHealth _spiderHealth;

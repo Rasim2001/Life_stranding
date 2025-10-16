@@ -12,8 +12,6 @@ namespace SpiderController.StateMachine.States.Airborn
 {
     public class FallingWithControlState : AirbornState
     {
-        private StickerUI StickerUI => Spider.SpiderUI.StickerUI;
-
         private readonly GroundChecker _spiderGroundChecker;
 
         public FallingWithControlState(ISpiderStateMachine stateMachine, IInputService inputService,
@@ -55,7 +53,7 @@ namespace SpiderController.StateMachine.States.Airborn
                 ShakeCamera();
 
                 Data.YVelocity = 0;
-                StickerUI.PlaySticker(StickerEnum.FallingDown);
+                Spider.Stickers.PlaySticker(StickerEnum.FallingDown);
 
                 if (IsInputZero())
                     StateMachine.SwitchState<IdlingState>();

@@ -39,6 +39,7 @@ namespace SpiderController
         [SerializeField] private BatteryProductChecker _batteryChecker;
         [SerializeField] private EnergyChecker _energyChecker;
         [SerializeField] private ElephantChecker _elephantChecker;
+        [SerializeField] private Stickers _stickers;
 
         [SerializeField] private Transform _rotationPlaneTransform;
         [SerializeField] private GroundChecker _groundChecker;
@@ -56,6 +57,7 @@ namespace SpiderController
         public ThrusterSystem ThrusterSystem => _thrusterSystem;
         public ScannerAnimator ScannerAnimator => _scannerAnimator;
         public PlatformSelector PlatformSelector => _platformSelector;
+        public Stickers Stickers => _stickers;
 
         [HideInEditorMode] public Action<float> OnShakeCameraHappened;
 
@@ -157,9 +159,6 @@ namespace SpiderController
                 _platformRegistryService,
                 _elephantChecker);
             _elephantProductPickup.Initialize();
-
-            _spiderUI.StickerUI.PlaySticker(StickerEnum.StartGame);
-
 
             _spiderStateMachine =
                 new SpiderStateMachine(this,

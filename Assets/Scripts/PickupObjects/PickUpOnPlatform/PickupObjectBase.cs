@@ -68,8 +68,6 @@ namespace PickupObjects.PickUpOnPlatform
 
         public virtual void StopSimulatePhysics()
         {
-            Debug.Log("Stop");
-
             if (!_platformObjectsService.PickupObjects.Contains(this))
                 _platformObjectsService.PickupObjects.Add(this);
 
