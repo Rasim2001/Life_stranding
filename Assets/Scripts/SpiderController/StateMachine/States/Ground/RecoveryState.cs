@@ -1,9 +1,7 @@
 using System;
-using System.Threading;
 using Cysharp.Threading.Tasks;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
-using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
 using SpiderController.SpiderMove;
 using UnityEngine;
@@ -41,11 +39,11 @@ namespace SpiderController.StateMachine.States.Ground
                 return;
             }
 
-            Spider.Rigidbody.linearVelocity = Vector3.zero;
-            Spider.Rigidbody.angularVelocity = Vector3.zero;
+            /*Spider.Rigidbody.linearVelocity = Vector3.zero;
+            Spider.Rigidbody.angularVelocity = Vector3.zero;*/
 
-            Spider.Rigidbody.position = Data.LastValidGroundPosition;
-            Spider.Rigidbody.rotation = Data.LastValidGroundRotation;
+            Spider.transform.position = Data.LastValidGroundPosition;
+            Spider.transform.rotation = Data.LastValidGroundRotation;
 
             await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
 

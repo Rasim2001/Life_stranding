@@ -9,7 +9,7 @@ namespace AllIn13DShader
 		public static void DisableFeature(string featureToDisable)
 		{
 			// Find the shader features file
-			string[] guids = AssetDatabase.FindAssets("AllIn13DShader_FeaturesURP");
+			string[] guids = AssetDatabase.FindAssets("AllIn13DShader_FeaturesURP_Defines");
 			if (guids.Length == 0)
 			{
 				Debug.LogWarning("AllIn13DShader_FeaturesURP file not found");
@@ -37,7 +37,6 @@ namespace AllIn13DShader
 				}
 
 				correctedFile += line;
-				correctedFile += System.Environment.NewLine;
 			}
 
 			File.WriteAllText(shaderFeaturesFilePath, correctedFile);

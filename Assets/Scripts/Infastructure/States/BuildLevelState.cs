@@ -68,6 +68,7 @@ namespace Infastructure.States
             InitStartGameScene(spider);
 
             InitBatteryProducts(spider);
+            InitElephantProducts(spider);
             InitEnergyProducts();
         }
 
@@ -98,6 +99,9 @@ namespace Infastructure.States
 
         private void InitEnergyProducts() =>
             _gameFactory.CreateEnergyProducts();
+
+        private void InitElephantProducts(Spider spider) =>
+            _gameFactory.CreateElephantProduct(spider);
 
         private void GoToCheckPoints() =>
             _checkPointService.GoToNextPoint();

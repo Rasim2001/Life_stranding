@@ -8,5 +8,6 @@ namespace Infastructure.Services.PlatformObjects
     {
         List<PickupObjectBase> PickupObjects { get; set; }
         bool HasAny<T>() where T : PickupObjectBase;
+        bool IsEmpty();
     }
 }

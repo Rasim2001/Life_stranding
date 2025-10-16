@@ -389,7 +389,7 @@ Shader "AllIn13DShader/AllIn13DShaderOutline"
             HLSLPROGRAM
 			#define URP_PASS
 			#define ALLIN1_FORWARD_PASS
-
+			 
             #pragma vertex BasicVertex 
             #pragma fragment BasicFragment
 
@@ -398,15 +398,8 @@ Shader "AllIn13DShader/AllIn13DShaderOutline"
 				#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/RenderingLayers.hlsl"
 			#endif
 
+			#include "../ShaderLibrary/AllIn13DShader_FeaturesURP_Defines.hlsl" 
 			#include_with_pragmas "../ShaderLibrary/AllIn13DShader_FeaturesURP.hlsl"
-
-
-			#ifdef ALLIN1_DOTS_INSTANCING_SUPPORT
-				#pragma target 4.5
-			#else
-				#pragma target 3.0
-			#endif
-
 
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
@@ -444,20 +437,11 @@ Shader "AllIn13DShader/AllIn13DShaderOutline"
             #pragma vertex OutlinePass_Vertex
             #pragma fragment OutlinePass_Fragment
 			
-			//#pragma multi_compile_instancing
-			//#pragma multi_compile_fog
-			//#pragma multi_compile _ DOTS_INSTANCING_ON
-			
 			#define URP_PASS
 			#define ALLIN1_OUTLINE_PASS
 			
+			#include "../ShaderLibrary/AllIn13DShader_FeaturesURP_Defines.hlsl"
 			#include_with_pragmas "../ShaderLibrary/AllIn13DShader_FeaturesURP.hlsl"
-
-			#ifdef ALLIN1_DOTS_INSTANCING_SUPPORT
-				#pragma target 4.5
-			#else
-				#pragma target 3.0
-			#endif
 
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include_with_pragmas  "../ShaderLibrary/AllIn13DShader_Features.hlsl"
@@ -490,13 +474,8 @@ Shader "AllIn13DShader/AllIn13DShaderOutline"
 			#define URP_PASS
 			#define SHADOW_CASTER_PASS
 
+			#include "../ShaderLibrary/AllIn13DShader_FeaturesURP_Defines.hlsl"
 			#include_with_pragmas "../ShaderLibrary/AllIn13DShader_FeaturesURP.hlsl"
-
-			#ifdef ALLIN1_DOTS_INSTANCING_SUPPORT
-				#pragma target 4.5
-			#else
-				#pragma target 3.0
-			#endif
 
             #pragma vertex BasicVertexShadowCaster
             #pragma fragment BasicFragmentShadowCaster
@@ -549,13 +528,8 @@ Shader "AllIn13DShader/AllIn13DShaderOutline"
 
 			#define URP_PASS
             
+			#include "../ShaderLibrary/AllIn13DShader_FeaturesURP_Defines.hlsl"
 			#include_with_pragmas "../ShaderLibrary/AllIn13DShader_FeaturesURP.hlsl"
-
-			#ifdef ALLIN1_DOTS_INSTANCING_SUPPORT
-				#pragma target 4.5
-			#else
-				#pragma target 3.0 
-			#endif
 
             // -------------------------------------
             // Includes
@@ -600,13 +574,8 @@ Shader "AllIn13DShader/AllIn13DShaderOutline"
 				#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/RenderingLayers.hlsl"
 			#endif
 			
+			#include "../ShaderLibrary/AllIn13DShader_FeaturesURP_Defines.hlsl"
 			#include_with_pragmas "../ShaderLibrary/AllIn13DShader_FeaturesURP.hlsl"
-			
-			#ifdef ALLIN1_DOTS_INSTANCING_SUPPORT
-				#pragma target 4.5
-			#else
-				#pragma target 3.0
-			#endif
 			
 			//Includes
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -636,12 +605,6 @@ Shader "AllIn13DShader/AllIn13DShaderOutline"
 
             HLSLPROGRAM
             #pragma exclude_renderers gles gles3 glcore
-            #ifdef ALLIN1_DOTS_INSTANCING_SUPPORT
-				#pragma target 4.5
-			#else
-				#pragma target 3.0
-			#endif
-
 			#define URP_PASS
 
             #pragma vertex AllIn1VertexMeta

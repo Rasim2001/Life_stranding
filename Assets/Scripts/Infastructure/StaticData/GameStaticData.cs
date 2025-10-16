@@ -22,6 +22,7 @@ namespace Infastructure.StaticData
         public List<Vector3> CheckPoints;
         public List<Vector3> BatteriesPoints;
         public List<WorldData> EnergyPoints;
+        public List<WorldData> ElephantPoints;
     }
 
 

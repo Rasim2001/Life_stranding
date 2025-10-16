@@ -22,23 +22,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9776ff48ccd46f945b05f0a82cbfd07d, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.6532815
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9776ff48ccd46f945b05f0a82cbfd07d, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.6532815
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9776ff48ccd46f945b05f0a82cbfd07d, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.27059805
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9776ff48ccd46f945b05f0a82cbfd07d, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.27059805
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9776ff48ccd46f945b05f0a82cbfd07d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9776ff48ccd46f945b05f0a82cbfd07d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -128,8 +128,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.2153555, y: 0.21535552, z: 0.31996337}
-  m_Center: {x: 0.000000013769972, y: -0.00000000570371, z: 0.16335711}
+  m_Size: {x: 0.0026008552, y: 0.0025830455, z: 0.0038152137}
+  m_Center: {x: -0.000016092457, y: 0.0000011952583, z: 0.0018926148}
 --- !u!114 &5821688104128507668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,13 +142,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f85eca76cb34ae1aed221f3c1e6defd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _platformBounds:
-    m_Center: {x: 0, y: 0.0062, z: 0}
-    m_Extent: {x: 0.016, y: 0.002, z: 0.016}
+  _startRotationEuler: {x: -90, y: 0, z: 0}
+  _startPositionVector: {x: 0, y: 0.007330549, z: 0}
   _speed: 1
-  _colorLerpSpeed: 25
   IsFreezingOnPlatform: 0
-  _platform: {fileID: 0}
 --- !u!114 &8644794199926312251
 MonoBehaviour:
   m_ObjectHideFlags: 0

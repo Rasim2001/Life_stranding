@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Common.SceneMarkers;
 using Infastructure.StaticData;
@@ -34,6 +35,10 @@ namespace Editor
                     .ToList();
 
                 gameData.GameDatas[nameScene].EnergyPoints = FindObjectsOfType<EnergyPointMarker>()
+                    .Select(x => new WorldData(x.transform.position, x.transform.rotation))
+                    .ToList();
+
+                gameData.GameDatas[nameScene].ElephantPoints = FindObjectsOfType<ElephantPointMarker>()
                     .Select(x => new WorldData(x.transform.position, x.transform.rotation))
                     .ToList();
 

@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using PickupObjects;
 using Sirenix.OdinInspector;
+using SpiderController.Platform;
 using UnityEngine;
 
 namespace Infastructure.StaticData.Product
@@ -8,6 +10,17 @@ namespace Infastructure.StaticData.Product
     [CreateAssetMenu(fileName = "ProductsData", menuName = "StaticData/ProductsData")]
     public class ProductsStaticData : SerializedScriptableObject
     {
-        public Dictionary<ProductType, GameObject> ProductsDictionary;
+        public Dictionary<ProductType, ProductData> ProductsDictionary;
+    }
+
+    [Serializable]
+    public class ProductData
+    {
+        public GameObject Prefab;
+
+        [FoldoutGroup("OnPlatformSettings")] public float Speed;
+        [FoldoutGroup("OnPlatformSettings")] public Vector3 StartRotationEuler;
+        [FoldoutGroup("OnPlatformSettings")] public Vector3 StartPositionVector;
+        [FoldoutGroup("OnPlatformSettings")] public PlatformId PlatformId;
     }
 }

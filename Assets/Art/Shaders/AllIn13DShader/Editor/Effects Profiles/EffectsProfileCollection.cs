@@ -148,13 +148,11 @@ namespace AllIn13DShader
 			}
 		}
 
-		public void CheckBakedShadersFolder(PropertiesConfig propertiesConfig)
+		public void CheckBakedShadersFolder(string folderPath, PropertiesConfig propertiesConfig)
 		{
-			string shaderVariantsFolderPath = ShaderVariantCreator.GetShaderVariantsFolderPath();
-
-			if (AssetDatabase.IsValidFolder(shaderVariantsFolderPath))
+			if (AssetDatabase.IsValidFolder(folderPath))
 			{
-				string[] files = Directory.GetFiles(shaderVariantsFolderPath, "*.shader", SearchOption.AllDirectories);
+				string[] files = Directory.GetFiles(folderPath, "*.shader", SearchOption.AllDirectories);
 
 				for (int i = 0; i < files.Length; i++)
 				{
@@ -168,6 +166,12 @@ namespace AllIn13DShader
 					}
 				}
 			}
+		}
+
+		public void CheckBakedShadersFolder(PropertiesConfig propertiesConfig)
+		{
+			string shaderVariantsFolderPath = ShaderVariantCreator.GetShaderVariantsFolderPath();
+			CheckBakedShadersFolder(shaderVariantsFolderPath, propertiesConfig);
 		}
 
 		public void CheckRemovedShader(string removedPath)

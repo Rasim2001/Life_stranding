@@ -384,7 +384,7 @@ Shader "AllIn13DShader/AllIn13DShader_NoShadowCaster"
             HLSLPROGRAM
 			#define URP_PASS
 			#define ALLIN1_FORWARD_PASS
-
+			 
             #pragma vertex BasicVertex 
             #pragma fragment BasicFragment
 
@@ -393,15 +393,8 @@ Shader "AllIn13DShader/AllIn13DShader_NoShadowCaster"
 				#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/RenderingLayers.hlsl"
 			#endif
 
+			#include "../ShaderLibrary/AllIn13DShader_FeaturesURP_Defines.hlsl" 
 			#include_with_pragmas "../ShaderLibrary/AllIn13DShader_FeaturesURP.hlsl"
-
-
-			#ifdef ALLIN1_DOTS_INSTANCING_SUPPORT
-				#pragma target 4.5
-			#else
-				#pragma target 3.0
-			#endif
-
 
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
@@ -445,13 +438,8 @@ Shader "AllIn13DShader/AllIn13DShader_NoShadowCaster"
 
 			#define URP_PASS
             
+			#include "../ShaderLibrary/AllIn13DShader_FeaturesURP_Defines.hlsl"
 			#include_with_pragmas "../ShaderLibrary/AllIn13DShader_FeaturesURP.hlsl"
-
-			#ifdef ALLIN1_DOTS_INSTANCING_SUPPORT
-				#pragma target 4.5
-			#else
-				#pragma target 3.0 
-			#endif
 
             // -------------------------------------
             // Includes
@@ -496,13 +484,8 @@ Shader "AllIn13DShader/AllIn13DShader_NoShadowCaster"
 				#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/RenderingLayers.hlsl"
 			#endif
 			
+			#include "../ShaderLibrary/AllIn13DShader_FeaturesURP_Defines.hlsl"
 			#include_with_pragmas "../ShaderLibrary/AllIn13DShader_FeaturesURP.hlsl"
-			
-			#ifdef ALLIN1_DOTS_INSTANCING_SUPPORT
-				#pragma target 4.5
-			#else
-				#pragma target 3.0
-			#endif
 			
 			//Includes
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -532,12 +515,6 @@ Shader "AllIn13DShader/AllIn13DShader_NoShadowCaster"
 
             HLSLPROGRAM
             #pragma exclude_renderers gles gles3 glcore
-            #ifdef ALLIN1_DOTS_INSTANCING_SUPPORT
-				#pragma target 4.5
-			#else
-				#pragma target 3.0
-			#endif
-
 			#define URP_PASS
 
             #pragma vertex AllIn1VertexMeta

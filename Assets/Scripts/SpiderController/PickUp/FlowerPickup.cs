@@ -47,7 +47,7 @@ namespace SpiderController.PickUp
         {
             bool canDisplay = CanDisplay();
 
-            if (canDisplay && _inputService.PickupPressed && !_platformObjectsService.HasAny<BatteryProduct>())
+            if (canDisplay && _inputService.PickupPressed && _platformObjectsService.IsEmpty())
             {
                 _flower.StopSimulatePhysics();
                 _healthBar.PlayFadeHologramEffect();

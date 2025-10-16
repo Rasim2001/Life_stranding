@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StepLength: 0.35
   GroundStateRayDistance: 3
-  AirbornStateRayDistance: 1.1
+  AirbornStateRayDistance: 1.2
   Speed: 3
   LerpForwardSpeed: 60
   DistanceFromGround: 0.35
@@ -66,6 +66,10 @@ MonoBehaviour:
   MouseRotationSpeedY: 3
   ScrollSensitivity: 15
   WorldUpSmoothRotation: 2
+  MinShakeDistance: 5
+  MaxShakeDistance: 20
+  MinForceShake: 0.5
+  MaxForceShake: 3
   FallSpeed: 1
   FallWithoutEnergySpeed: 10
   CrossLerpSpeed: 20

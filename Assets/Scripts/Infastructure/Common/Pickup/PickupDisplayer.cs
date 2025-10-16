@@ -25,8 +25,6 @@ namespace Infastructure.Common.Pickup
             if (_pickups.ContainsKey(id))
                 return;
 
-            Debug.Log("Show");
-
             PickupView pickupView = _poolObjects.GetObjectFromPool();
             pickupView.transform.SetParent(transform);
             pickupView.transform.position = pickupTarget.position + Vector3.up;
@@ -43,8 +41,6 @@ namespace Infastructure.Common.Pickup
 
             if (!_pickups.TryGetValue(id, out PickupView pickupView))
                 return;
-
-            Debug.Log("Hide");
 
             HighlightEffect highlightEffect = pickupTarget.GetComponent<HighlightEffect>();
             highlightEffect?.SetHighlighted(false);

@@ -7,6 +7,12 @@
       "dependencies": {},
       "hash": "f213ff497e4ff462a77319cf677cf20cc0860ca9"
     },
+    "com.distantlands.cozy.core": {
+      "version": "file:com.distantlands.cozy.core",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.staggartcreations.splinemesher": {
       "version": "file:com.staggartcreations.splinemesher",
       "depth": 0,
@@ -14,6 +20,17 @@
       "dependencies": {
         "com.unity.splines": "2.8.1",
         "com.unity.mathematics": "1.2.6"
+      }
+    },
+    "com.staggartcreations.splinespawner": {
+      "version": "file:com.staggartcreations.splinespawner",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.splines": "2.8.1",
+        "com.unity.mathematics": "1.3.2",
+        "com.unity.burst": "1.8.18",
+        "com.unity.collections": "2.5.1"
       }
     },
     "com.unity.2d.sprite": {
@@ -70,7 +87,7 @@
     },
     "com.unity.collections": {
       "version": "2.5.1",
-      "depth": 2,
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.unity.burst": "1.8.17",
@@ -131,7 +148,7 @@
     },
     "com.unity.nuget.mono-cecil": {
       "version": "1.11.4",
-      "depth": 3,
+      "depth": 2,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
@@ -247,7 +264,7 @@
     },
     "com.unity.test-framework.performance": {
       "version": "3.0.3",
-      "depth": 3,
+      "depth": 2,
       "source": "registry",
       "dependencies": {
         "com.unity.test-framework": "1.1.31",

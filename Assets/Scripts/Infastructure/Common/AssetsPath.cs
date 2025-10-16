@@ -25,5 +25,6 @@ namespace Infastructure.Common
         public const string VolumeProfilesDataPath = "StaticData/VolumeProfiles/VolumeProfiles";
         public const string XRayCollectionDataPath = "StaticData/XRay/XRayCollection";
         public const string ProductStaticDataPath = "StaticData/Products/ProductsData";
+        public const string StickersStaticDataPath = "StaticData/Stickers/StickersData";
     }
 }

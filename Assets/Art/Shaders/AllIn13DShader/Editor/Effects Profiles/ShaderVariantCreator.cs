@@ -30,6 +30,7 @@ namespace AllIn13DShader
 
 
 		private const string TAG_STENCIL_BLOCK				= @"<STENCIL_BLOCK>";
+		private const string TAG_FEATURES_URP_DEFINES		= @"<FEATURES_URP_DEFINES>";
 		private const string TAG_FEATURES_URP_LIBRARY		= @"<FEATURES_URP_LIBRARY>";
 		private const string TAG_VERTEX_PROGRAM_NAME		= @"<VERTEX_PROGRAM_NAME>";
 		private const string TAG_FRAGMENT_PROGRAM_NAME		= @"<FRAGMENT_PROGRAM_NAME>";
@@ -40,6 +41,12 @@ namespace AllIn13DShader
 		private const string TAG_INCLUDE_EFFECT_LIBRARIES	= @"<INCLUDE_EFFECT_LIBRARIES>";
 		private const string TAG_INCLUDE_PASS				= @"<INCLUDE_PASS>";
 		private const string TAG_EXTRA_PRAGMA_LINES			= @"<EXTRA_PRAGMA_LINES>";
+
+		private const string TAG_INCLUDE_ALL_IN_SHADER_FEATURES = @"<INCLUDE_ALL_IN_1_SHADER_FEATURES>";
+		private const string TAG_INCLUDE_ALL_IN_1_SHADER_LIGHT	= @"<INCLUDE_ALL_IN_1_SHADER_LIGHT>";
+		private const string TAG_INCLUDE_CORE_LIBRARY			= @"<INCLUDE_CORE_LIBRARY>";
+		private const string TAG_INCLUDE_COMMON_FUNCTIONS		= @"<INCLUDE_COMMON_FUNCTIONS>";
+		private const string TAG_INCLUDE_COMMON_STRUCTS			= @"<INCLUDE_COMMON_STRUCTS>";
 		//
 
 		private static string TEMPLATE_PATH = GlobalConfiguration.GetRootPluginFolderPath() + "/Editor/Effects Profiles/Templates/ShaderTemplate.allin1template";
@@ -63,8 +70,9 @@ namespace AllIn13DShader
 				activeEffectsList: effectsProfileCollection.generalProfile, 
 				matInfo: matInfo, 
 				propertiesConfig: propertiesConfig);
-			
-			Shader res = CreateVariant(effectsProfile, effectsProfileCollection);
+
+			string folderPath = Path.Combine(Constants.SHADERS_FOLDER_PATH, SHADER_VARIANTS_FOLDER_NAME);
+			Shader res = CreateVariant(effectsProfile, effectsProfileCollection, folderPath, false);
 			
 			return res;
 		}
@@ -74,12 +82,18 @@ namespace AllIn13DShader
 			EffectsProfile effectProfile = effectsProfileCollection.CreateNewProfile(profileName);
 			effectProfile.InitFromOtherProfile(effectsProfileCollection.generalProfile);
 
-			Shader res = CreateVariant(effectProfile, effectsProfileCollection);
+			string folderPath = Path.Combine(Constants.SHADERS_FOLDER_PATH, SHADER_VARIANTS_FOLDER_NAME);
+			Shader res = CreateVariant(effectProfile, effectsProfileCollection, folderPath, false);
 			return res;
 		}
 
-		public static Shader CreateVariant(EffectsProfile effectsProfile, EffectsProfileCollection effectsProfileCollection)
+		public static Shader CreateVariant(EffectsProfile effectsProfile, EffectsProfileCollection effectsProfileCollection, string folderPath, bool overwrite)
 		{
+			if (!AssetDatabase.IsValidFolder(folderPath))
+			{
+				AssetDatabase.CreateFolder(Constants.SHADERS_FOLDER_PATH, SHADER_VARIANTS_FOLDER_NAME);
+			}
+
 			string txtShaderVariant = File.ReadAllText(TEMPLATE_PATH);
 
 			txtShaderVariant = ConfigureVariantName(txtShaderVariant, effectsProfile.profileName);
@@ -87,21 +101,26 @@ namespace AllIn13DShader
 
 			ShaderPassCollection shaderPassCollection = GlobalConfiguration.instance.shaderPassCollection;
 
-			string urpPassesEntry = GetShaderPassesEntry(effectsProfile, shaderPassCollection, RenderPipelineEnum.URP);
+			string urpPassesEntry = GetShaderPassesEntry(effectsProfile, shaderPassCollection, RenderPipelineEnum.URP, folderPath);
 			txtShaderVariant = txtShaderVariant.Replace(TAG_SHADER_PASSES_URP, urpPassesEntry);
 
-			string birpPassesEntry = GetShaderPassesEntry(effectsProfile, shaderPassCollection, RenderPipelineEnum.BIRP);
+			string birpPassesEntry = GetShaderPassesEntry(effectsProfile, shaderPassCollection, RenderPipelineEnum.BIRP, folderPath);
 			txtShaderVariant = txtShaderVariant.Replace(TAG_SHADER_PASSES_BIRP, birpPassesEntry);
 
-			string folderPath = Path.Combine(Constants.SHADERS_FOLDER_PATH, SHADER_VARIANTS_FOLDER_NAME);
-			if (!AssetDatabase.IsValidFolder(folderPath))
+			
+			string filePath;
+			if (overwrite)
 			{
-				AssetDatabase.CreateFolder(Constants.SHADERS_FOLDER_PATH, SHADER_VARIANTS_FOLDER_NAME);
+				Shader shader = effectsProfile.FindShader();
+				filePath = AssetDatabase.GetAssetPath(shader);
 			}
+			else
+			{
+				string fileName = string.Format(SHADER_VARIANT_FILE_NAME, effectsProfile.profileName);
+				filePath = Path.Combine(folderPath, fileName);
 
-			string fileName = string.Format(SHADER_VARIANT_FILE_NAME, effectsProfile.profileName);
-			string filePath = Path.Combine(folderPath, fileName);
-			filePath = AssetDatabase.GenerateUniqueAssetPath(filePath);
+				filePath = AssetDatabase.GenerateUniqueAssetPath(filePath);
+			}
 
 			effectsProfile.shaderGUID = AssetDatabase.AssetPathToGUID(filePath);
 
@@ -135,7 +154,7 @@ namespace AllIn13DShader
 			return res;
 		}
 
-		private static string GetShaderPassesEntry(EffectsProfile effectsProfile, ShaderPassCollection shaderPassCollection, RenderPipelineEnum renderPipeline)
+		private static string GetShaderPassesEntry(EffectsProfile effectsProfile, ShaderPassCollection shaderPassCollection, RenderPipelineEnum renderPipeline, string shaderFolderPath)
 		{
 			string shaderPassTemplateTxt = EditorUtils.ReadFileTextWithTabs(GetTemplatePathByRenderPipeline(renderPipeline), 2);
 
@@ -155,7 +174,7 @@ namespace AllIn13DShader
 			for (int i = 0; i < shaderPasses.Count; i++)
 			{
 				string currentPass = shaderPassTemplateTxt;
-				currentPass = ConfigureShaderPass(effectsProfile, currentPass, shaderPasses[i], renderPipeline, hasStencilBlock);
+				currentPass = ConfigureShaderPass(effectsProfile, currentPass, shaderPasses[i], renderPipeline, hasStencilBlock, shaderFolderPath);
 
 				res += currentPass;
 				res += "\n";
@@ -164,7 +183,9 @@ namespace AllIn13DShader
 			return res;
 		}
 
-		private static string ConfigureShaderPass(EffectsProfile effectsProfile, string templatePass, ShaderPassConfig shaderPass, RenderPipelineEnum renderPipeline, bool hasStencilBlock)
+		private static string ConfigureShaderPass(EffectsProfile effectsProfile, 
+			string templatePass, ShaderPassConfig shaderPass, RenderPipelineEnum renderPipeline, bool hasStencilBlock, 
+			string shaderFolderPath)
 		{
 			string res = templatePass;
 
@@ -188,17 +209,18 @@ namespace AllIn13DShader
 				res = res.Replace(TAG_STENCIL_BLOCK, string.Empty);
 			}
 
-			res = res.Replace(TAG_FEATURES_URP_LIBRARY, shaderPass.GetPipelineFeaturesLibraryShaderEntry(renderPipeline));
+			res = res.Replace(TAG_FEATURES_URP_DEFINES, shaderPass.GetPipelineFeaturesDefinesShaderEntry(renderPipeline, shaderFolderPath));
+			res = res.Replace(TAG_FEATURES_URP_LIBRARY, shaderPass.GetPipelineFeaturesLibraryShaderEntry(renderPipeline, shaderFolderPath));
 
 			res = res.Replace(TAG_VERTEX_PROGRAM_NAME, shaderPass.vertexProgramName);
 			res = res.Replace(TAG_FRAGMENT_PROGRAM_NAME, shaderPass.fragmentProgramName);
 
-			res = res.Replace(TAG_INCLUDE_PIPELINE_HELPER, string.Format(INCLUDE_LINE_FORMAT, shaderPass.GetHelperLibraryPath(renderPipeline)));
+			res = res.Replace(TAG_INCLUDE_PIPELINE_HELPER, string.Format(INCLUDE_LINE_FORMAT, shaderPass.GetHelperLibraryPath(renderPipeline, shaderFolderPath)));
 
-			string effectsLibraries = shaderPass.GetEffectsLibrariesShaderEntry(effectsProfile);
+			string effectsLibraries = shaderPass.GetEffectsLibrariesShaderEntry(effectsProfile, shaderFolderPath);
 			res = res.Replace(TAG_INCLUDE_EFFECT_LIBRARIES, effectsLibraries);
 
-			res = res.Replace(TAG_INCLUDE_PASS, string.Format(INCLUDE_LINE_FORMAT, shaderPass.GetPassFilePath()));
+			res = res.Replace(TAG_INCLUDE_PASS, string.Format(INCLUDE_LINE_FORMAT, shaderPass.GetPassFilePath(shaderFolderPath)));
 
 			List<EffectsProfileEntry> enabledEntries = effectsProfile.GetEnabledEntriesFlatList();
 			string entryFeaturesTxt = ShaderPassConfig.GetAllIn1FeaturesEntries(enabledEntries);
@@ -209,6 +231,12 @@ namespace AllIn13DShader
 			res = res.Replace(TAG_THIS_PASS_SYMBOL, shaderPass.GetPassSymbolShaderEntry());
 
 			res = res.Replace(TAG_EXTRA_PRAGMA_LINES, shaderPass.GetExtraPragmaLines(renderPipeline));
+
+			res = res.Replace(TAG_INCLUDE_ALL_IN_SHADER_FEATURES, shaderPass.GetShaderFeaturesLibraryShaderEntry(shaderFolderPath));
+			res = res.Replace(TAG_INCLUDE_ALL_IN_1_SHADER_LIGHT, shaderPass.GetLightLibraryShaderEntry(shaderFolderPath));
+			res = res.Replace(TAG_INCLUDE_CORE_LIBRARY, shaderPass.GetCoreLibraryShaderEntry(shaderFolderPath));
+			res = res.Replace(TAG_INCLUDE_COMMON_STRUCTS, shaderPass.GetCommonStructsShaderEntry(shaderFolderPath));
+			res = res.Replace(TAG_INCLUDE_COMMON_FUNCTIONS, shaderPass.GetCommonFunctionsShaderEntry(shaderFolderPath));
 
 			return res;
 		}

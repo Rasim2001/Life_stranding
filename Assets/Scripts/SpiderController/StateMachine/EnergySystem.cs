@@ -12,6 +12,8 @@ namespace SpiderController.StateMachine
         private readonly EnergyBarUI _energyBar;
         private readonly Spider _spider;
         private readonly ICutSceneService _cutSceneService;
+        
+        
 
         public EnergySystem(
             StateMachineData data,

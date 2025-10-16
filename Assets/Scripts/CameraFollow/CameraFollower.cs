@@ -1,4 +1,3 @@
-using Infastructure.Common;
 using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
@@ -34,6 +33,8 @@ namespace CameraFollow
         private float _cameraRotationSpeed;
         private JoystickInputSource _joystickInputSource;
 
+        private float _defaultY;
+
 
         [Inject]
         public void Construct(
@@ -57,6 +58,8 @@ namespace CameraFollow
 
         private void Start()
         {
+            _defaultY = _cameraSystem.RotationComposer.Composition.ScreenPosition.y;
+
             _joystickInputSource = _inputService.GetInputSource<JoystickInputSource>();
 
             CinemachineCore.CameraUpdatedEvent.AddListener(UpdateAfterCinemachine);
@@ -124,7 +127,7 @@ namespace CameraFollow
             {
                 _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed / 3;
 
-                _yRotation = 0;
+                _yRotation = _defaultY;
                 _xRotation = 0;
 
                 _isMouseRotating = false;

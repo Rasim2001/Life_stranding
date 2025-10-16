@@ -12,6 +12,8 @@ namespace AllIn13DShader
 		public UnityEngine.Rendering.BlendMode blendDst;
 		public bool depthWrite;
 
+		public bool isTransparent;
+
 		public string[] defaultEnabledEffects;
 	}
 }

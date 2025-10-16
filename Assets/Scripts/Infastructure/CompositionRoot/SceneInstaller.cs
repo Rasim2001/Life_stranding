@@ -2,6 +2,7 @@ using Infastructure.Common;
 using Infastructure.Common.Pickup;
 using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Factories.GameFactories;
+using Infastructure.PlatformRegistry;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Explosion;
@@ -49,7 +50,12 @@ namespace Infastructure.CompositionRoot
             BindPlatformObjectsService();
 
             BindXRayService();
+
+            BindPlatformRegistryService();
         }
+
+        private void BindPlatformRegistryService() =>
+            Container.BindInterfacesAndSelfTo<PlatformRegistryService>().AsSingle();
 
         private void BindXRayService() =>
             Container.BindInterfacesAndSelfTo<XRayService>().AsSingle();

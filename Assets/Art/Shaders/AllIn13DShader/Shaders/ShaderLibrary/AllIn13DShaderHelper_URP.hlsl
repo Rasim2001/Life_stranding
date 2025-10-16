@@ -100,9 +100,12 @@ float3 GetMainLightColorRGB()
 float2 GetSSAO(float2 normalizedScreenSpaceUV, float alpha)
 {
 	AmbientOcclusionFactor aoFactorURP = GetScreenSpaceAmbientOcclusion(normalizedScreenSpaceUV);
+		
+#if defined(_ALLIN13D_SURFACE_TRANSPARENT)
+	float2 res = float2(1, 1);
+#else
 	float2 res = float2(aoFactorURP.directAmbientOcclusion, aoFactorURP.indirectAmbientOcclusion);
-	
-	res = lerp(res, float2(1, 1), saturate(alpha + 0.01));
+#endif
 	
 	return res;
 }
@@ -113,7 +116,7 @@ AllIn1LightData GetPointLightData(int index, float3 vertexWS, float3 normalWS, E
 {
 	AllIn1LightData lightData;
 
-	Light additionalLight = GetAdditionalLight(index, vertexWS); 
+	Light additionalLight = GetAdditionalLight(index, vertexWS);
 	lightData.lightColor = additionalLight.color;
 	lightData.lightDir = additionalLight.direction;
 
@@ -306,21 +309,21 @@ float3 GetLightmap(float2 uvLightmap, EffectsData data)
 float3 GetAmbientColor(EffectsData data)
 {
 	float3 res = float3(0, 0, 0);
-	
-#ifdef _CUSTOM_AMBIENT_LIGHT_ON
-	res = ACCESS_PROP_FLOAT4(_CustomAmbientColor).rgb;
-#else
-	#if defined(PROBE_VOLUMES_L1) || defined(PROBE_VOLUMES_L2)
-	    half3 bakedGI;
-		float4 probeOcclusion;
-		EvaluateAdaptiveProbeVolume(data.vertexWS.xyz, data.normalWS.xyz, data.viewDirWS.xyz,
-                                  data.projPos.xy, GetMeshRenderingLayer(), 
-                                  bakedGI, probeOcclusion);
-        res = bakedGI;
+#if !defined(LIGHTMAP_ON)
+	#if defined(_CUSTOM_AMBIENT_LIGHT_ON)
+		res = ACCESS_PROP_FLOAT4(_CustomAmbientColor).rgb;
 	#else
-		res = SampleSH(data.normalWS);
+		#if defined(PROBE_VOLUMES_L1) || defined(PROBE_VOLUMES_L2)
+			half3 bakedGI;
+			float4 probeOcclusion;
+			EvaluateAdaptiveProbeVolume(data.vertexWS.xyz, data.normalWS.xyz, data.viewDirWS.xyz,
+									  data.projPos.xy, GetMeshRenderingLayer(), 
+									  bakedGI, probeOcclusion);
+			res = bakedGI;
+		#else
+			res = SampleSH(data.normalWS);
+		#endif
 	#endif
-
 
 #endif
 
