@@ -5,5 +5,6 @@ namespace PickupObjects
         Energy = 0,
         Battery = 1,
         Elephant = 2,
+        Flower,
     }
 }

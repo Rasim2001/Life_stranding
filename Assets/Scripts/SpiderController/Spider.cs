@@ -4,6 +4,7 @@ using Common.SceneMarkers;
 using HighlightPlus;
 using HUD;
 using Infastructure.Common.Pickup;
+using Infastructure.PlatformRegistry;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Magnet;
@@ -81,6 +82,7 @@ namespace SpiderController
         private IMagnetFreezingService _magnetFreezingService;
         private IPlatformObjectsService _platformObjectsService;
         private IXRayService _xRayService;
+        private IPlatformRegistryService _platformRegistryService;
 
 
         [Inject]
@@ -93,8 +95,10 @@ namespace SpiderController
             ICutSceneService cutSceneService,
             IMagnetFreezingService magnetFreezingService,
             IPlatformObjectsService platformObjectsService,
-            IXRayService xRayService)
+            IXRayService xRayService,
+            IPlatformRegistryService platformRegistryService)
         {
+            _platformRegistryService = platformRegistryService;
             _xRayService = xRayService;
             _platformObjectsService = platformObjectsService;
             _magnetFreezingService = magnetFreezingService;
@@ -120,12 +124,13 @@ namespace SpiderController
 
         public void Initialize(Flower flower)
         {
-            EnergyLegs energyLegs = new EnergyLegs(_energyHighlightEffects);
+            _platformRegistryService.Register(_platformDatas);
 
             StateMachineData stateMachineData = new StateMachineData();
             stateMachineData.EnergyFillAmount = _staticDataService.SpiderStaticData.EnergyFillAmount;
             stateMachineData.OnShakeHappened += distanceFalling => OnShakeCameraHappened?.Invoke(distanceFalling);
 
+            EnergyLegs energyLegs = new EnergyLegs(_energyHighlightEffects);
 
             EnergySystem energySystem = new EnergySystem(stateMachineData, _spiderUI.EnergyBar, _cutSceneService);
 
@@ -149,6 +154,7 @@ namespace SpiderController
             _energyPickup.Initialize();
 
             _elephantProductPickup = new ElephantProductPickup(_inputService, _pickupDisplayer, _platformObjectsService,
+                _platformRegistryService,
                 _elephantChecker);
             _elephantProductPickup.Initialize();
 
@@ -164,8 +170,8 @@ namespace SpiderController
                     flower,
                     energySystem);
 
-            _platformSelector = new PlatformSelector(_staticDataService, _spiderStateMachine);
-            _platformSelector.Initialize(_platformDatas);
+            _platformSelector = new PlatformSelector(_staticDataService, _platformRegistryService, _spiderStateMachine);
+            _platformSelector.Initialize();
         }
 
 

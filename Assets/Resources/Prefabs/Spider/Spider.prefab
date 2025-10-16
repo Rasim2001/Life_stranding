@@ -551,6 +551,60 @@ MonoBehaviour:
       x: 1
       y: 1
       z: 1
+--- !u!1 &738150808737861200
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7142091039583374368}
+  - component: {fileID: 8356446169578364473}
+  m_Layer: 6
+  m_Name: SurfCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7142091039583374368
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 738150808737861200}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6818748164456685843}
+  m_Father: {fileID: 5895152827964624774}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &8356446169578364473
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 738150808737861200}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.07683465, y: 0.0068325507, z: 0.022233048}
+  m_Center: {x: 0.01990412, y: 0.00597235, z: -0.00019252134}
 --- !u!1 &865310734443912336
 GameObject:
   m_ObjectHideFlags: 0
@@ -3399,6 +3453,59 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &3360838329937172128
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6818748164456685843}
+  - component: {fileID: 682230620985786105}
+  m_Layer: 6
+  m_Name: SurfBlink
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6818748164456685843
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3360838329937172128}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7142091039583374368}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &682230620985786105
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3360838329937172128}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.062462613, y: 0.0068325507, z: 0.016439842}
+  m_Center: {x: 0.019357841, y: 0.00597235, z: 0.0005598751}
 --- !u!1 &3443367161407103976
 GameObject:
   m_ObjectHideFlags: 0
@@ -8387,8 +8494,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 3
-  m_Size: {x: 0.05081435, y: 0.083902426, z: 0.051243648}
-  m_Center: {x: -0.00004808765, y: 0.046546087, z: -0.00018204005}
+  m_Size: {x: 0.05081435, y: 0.008724988, z: 0.051243648}
+  m_Center: {x: -0.000048087648, y: 0.008957367, z: -0.00018204011}
 --- !u!1 &7893996188900208002
 GameObject:
   m_ObjectHideFlags: 0
@@ -10203,6 +10310,18 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -339454495817923931, guid: 05326d264ead81a438996b2110f7983f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.238
+      objectReference: {fileID: 0}
+    - target: {fileID: -339454495817923931, guid: 05326d264ead81a438996b2110f7983f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.105
+      objectReference: {fileID: 0}
+    - target: {fileID: -339454495817923931, guid: 05326d264ead81a438996b2110f7983f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0
+      objectReference: {fileID: 0}
     - target: {fileID: 239970416062138621, guid: 05326d264ead81a438996b2110f7983f, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -10413,7 +10532,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2891746525080496957, guid: 05326d264ead81a438996b2110f7983f, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3088744109235440964, guid: 05326d264ead81a438996b2110f7983f, type: 3}
       propertyPath: m_Layer
@@ -10549,7 +10668,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 2bae59df757026343be828ada7b0398d, type: 2}
     - target: {fileID: 4936893025195984926, guid: 05326d264ead81a438996b2110f7983f, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4962822013914782224, guid: 05326d264ead81a438996b2110f7983f, type: 3}
       propertyPath: m_Layer
@@ -10677,7 +10796,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6335250783087129314, guid: 05326d264ead81a438996b2110f7983f, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6444305303594608765, guid: 05326d264ead81a438996b2110f7983f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -10886,6 +11005,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6444305303594608765, guid: 05326d264ead81a438996b2110f7983f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3592384540847914560}
+    - targetCorrespondingSourceObject: {fileID: 6444305303594608765, guid: 05326d264ead81a438996b2110f7983f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7142091039583374368}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 05326d264ead81a438996b2110f7983f, type: 3}
       insertIndex: -1
@@ -11046,14 +11168,20 @@ MonoBehaviour:
     ReferencedUnityObjects:
     - {fileID: 2342016805745200326}
     - {fileID: 6866400368658011417}
+    - {fileID: 8450746619889243910}
     - {fileID: 4231182277101323405}
     - {fileID: 601400870763877580}
     - {fileID: 3889355751671458804}
     - {fileID: 7969274899053791503}
     - {fileID: 4790918106667489194}
+    - {fileID: 7785485509147609875}
     - {fileID: 8492767903934744276}
     - {fileID: 8148713738413078901}
     - {fileID: 5310026190791565009}
+    - {fileID: 5486037216993849317}
+    - {fileID: 738150808737861200}
+    - {fileID: 8356446169578364473}
+    - {fileID: 682230620985786105}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -11079,7 +11207,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 2
+      Data: 3
     - Name: 
       Entry: 7
       Data: 
@@ -11094,13 +11222,16 @@ MonoBehaviour:
       Data: 3|UnityEngine.GameObject[], UnityEngine.CoreModule
     - Name: 
       Entry: 12
-      Data: 2
+      Data: 3
     - Name: 
       Entry: 10
       Data: 0
     - Name: 
       Entry: 10
       Data: 1
+    - Name: 
+      Entry: 10
+      Data: 2
     - Name: 
       Entry: 13
       Data: 
@@ -11109,13 +11240,13 @@ MonoBehaviour:
       Data: 
     - Name: MeshRenderer
       Entry: 10
-      Data: 2
+      Data: 3
     - Name: Collider
       Entry: 10
-      Data: 3
+      Data: 4
     - Name: BlinkDetectionCollider
       Entry: 10
-      Data: 4
+      Data: 5
     - Name: 
       Entry: 8
       Data: 
@@ -11136,13 +11267,16 @@ MonoBehaviour:
       Data: 5|UnityEngine.GameObject[], UnityEngine.CoreModule
     - Name: 
       Entry: 12
-      Data: 2
-    - Name: 
-      Entry: 10
-      Data: 5
+      Data: 3
     - Name: 
       Entry: 10
       Data: 6
+    - Name: 
+      Entry: 10
+      Data: 7
+    - Name: 
+      Entry: 10
+      Data: 8
     - Name: 
       Entry: 13
       Data: 
@@ -11151,13 +11285,55 @@ MonoBehaviour:
       Data: 
     - Name: MeshRenderer
       Entry: 10
-      Data: 7
+      Data: 9
     - Name: Collider
       Entry: 10
-      Data: 8
+      Data: 10
     - Name: BlinkDetectionCollider
       Entry: 10
-      Data: 9
+      Data: 11
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 2
+    - Name: $v
+      Entry: 7
+      Data: 6|SpiderController.Platform.PlatformData, Assembly-CSharp
+    - Name: AllPieceObjects
+      Entry: 7
+      Data: 7|UnityEngine.GameObject[], UnityEngine.CoreModule
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 10
+      Data: 12
+    - Name: 
+      Entry: 10
+      Data: 13
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: MeshRenderer
+      Entry: 6
+      Data: 
+    - Name: Collider
+      Entry: 10
+      Data: 14
+    - Name: BlinkDetectionCollider
+      Entry: 10
+      Data: 15
     - Name: 
       Entry: 8
       Data: 
@@ -11911,6 +12087,11 @@ MonoBehaviour:
 --- !u!4 &5462225995190865350 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4858458616590838333, guid: 05326d264ead81a438996b2110f7983f, type: 3}
+  m_PrefabInstance: {fileID: 621795561860016123}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5486037216993849317 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4936893025195984926, guid: 05326d264ead81a438996b2110f7983f, type: 3}
   m_PrefabInstance: {fileID: 621795561860016123}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &5609014006133297643 stripped

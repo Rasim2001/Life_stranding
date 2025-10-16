@@ -1,8 +1,10 @@
 using System.Linq;
 using Infastructure.Common.Pickup;
+using Infastructure.PlatformRegistry;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using PickupObjects.PickUpOnPlatform;
+using SpiderController.Platform;
 using SpiderController.TriggerChecker;
 using UnityEngine;
 
@@ -13,6 +15,7 @@ namespace SpiderController.PickUp
         private readonly IInputService _inputService;
         private readonly IPickupDisplayer _pickupDisplayer;
         private readonly IPlatformObjectsService _platformObjectsService;
+        private readonly IPlatformRegistryService _platformRegistryService;
         private readonly ElephantChecker _elephantChecker;
 
         private bool _isShowed;
@@ -21,9 +24,11 @@ namespace SpiderController.PickUp
             IInputService inputService,
             IPickupDisplayer pickupDisplayer,
             IPlatformObjectsService platformObjectsService,
+            IPlatformRegistryService platformRegistryService,
             ElephantChecker elephantChecker)
         {
             _platformObjectsService = platformObjectsService;
+            _platformRegistryService = platformRegistryService;
             _elephantChecker = elephantChecker;
             _inputService = inputService;
             _pickupDisplayer = pickupDisplayer;
@@ -37,10 +42,17 @@ namespace SpiderController.PickUp
 
         public void Update()
         {
-            if (_inputService.PickupPressed && _platformObjectsService.IsEmpty())
+            if (CanPickup())
                 PickElephant();
 
             TryShow();
+        }
+
+        private bool CanPickup()
+        {
+            return _inputService.PickupPressed &&
+                   _platformObjectsService.IsEmpty() &&
+                   _platformRegistryService.CurrentPlatformId == PlatformId.Surf;
         }
 
         private void TryShow()

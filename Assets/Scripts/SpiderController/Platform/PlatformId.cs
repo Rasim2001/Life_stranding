@@ -4,5 +4,6 @@ namespace SpiderController.Platform
     {
         Circle = 0,
         Box = 1,
+        Surf = 2,
     }
 }

@@ -1,10 +1,7 @@
-using System;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.StaticData.StaticDataService;
-using SpiderController;
 using SpiderController.Platform;
 using UnityEngine;
-using VInspector.Libs;
 using Zenject;
 
 namespace PickupObjects.PickUpOnPlatform
@@ -12,12 +9,9 @@ namespace PickupObjects.PickUpOnPlatform
     [RequireComponent(typeof(Rigidbody))]
     public class PickupObjectBase : MonoBehaviour
     {
-        [SerializeField] private Vector3 _startRotationEuler;
-        [SerializeField] private Vector3 _startPositionVector;
-
-        [SerializeField] private float _speed = 1;
-        private Vector3 StartPosition => _startPositionVector;
-        private Quaternion StartRotation => Quaternion.Euler(_startRotationEuler);
+        protected Vector3 StartPosition { get; set; }
+        protected Quaternion StartRotation { get; set; }
+        protected float Speed { get; set; }
 
         private Vector3 _customPositionOffset = Vector3.zero;
 
@@ -34,7 +28,7 @@ namespace PickupObjects.PickUpOnPlatform
         public void Construct(IStaticDataService staticDataService, IPlatformObjectsService platformObjectsService) =>
             _platformObjectsService = platformObjectsService;
 
-        public void Initialize(Transform platformTransform, PlatformSelector platformSelector)
+        public virtual void Initialize(Transform platformTransform, PlatformSelector platformSelector)
         {
             _platformSelector = platformSelector;
             _platformArmature = platformTransform;
@@ -62,8 +56,6 @@ namespace PickupObjects.PickUpOnPlatform
 
         protected virtual void StartSimulatePhysics()
         {
-            Debug.Log("Start");
-
             _platformSelector.ReturnToDefaultMaterial();
 
             _platformObjectsService.PickupObjects.Remove(this);
@@ -95,16 +87,18 @@ namespace PickupObjects.PickUpOnPlatform
         {
             Vector3 platformRotation = _platformArmature.eulerAngles;
 
+            int sing = StartRotation.x >= 0 ? 1 : -1;
+
             float angleX = Mathf.Deg2Rad * platformRotation.x;
             float angleZ = Mathf.Deg2Rad * platformRotation.z;
 
             Vector3 gravityForce = new Vector3(
                 -Mathf.Sin(angleZ),
                 0f,
-                -Mathf.Sin(angleX)
+                Mathf.Sin(angleX) * sing
             );
 
-            Vector3 movementVector = gravityForce * (Time.deltaTime * _speed);
+            Vector3 movementVector = gravityForce * (Time.deltaTime * Speed);
             movementVector = StartRotation * movementVector;
 
             transform.Translate(movementVector, Space.Self);

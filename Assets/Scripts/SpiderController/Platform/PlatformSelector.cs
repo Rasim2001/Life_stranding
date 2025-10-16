@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Infastructure.PlatformRegistry;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.StateMachine;
 using SpiderController.StateMachine.States.Airborn;
@@ -8,8 +9,8 @@ namespace SpiderController.Platform
 {
     public class PlatformSelector
     {
+        private readonly IPlatformRegistryService _platformRegistryService;
         private readonly SpiderStateMachine _spiderStateMachine;
-        private Dictionary<PlatformId, PlatformData> _platformDatas;
 
         private readonly Material _planeBlinkMaterial;
         private Material _defaultMaterial;
@@ -18,21 +19,20 @@ namespace SpiderController.Platform
         private float _blinkSpeed;
         private bool _IsOnPlatform;
 
-        private PlatformData _currentPlatformData;
         private Vector3 _pointPositionCached;
 
-        public PlatformSelector(IStaticDataService staticDataService, SpiderStateMachine spiderStateMachine)
+        public PlatformSelector(
+            IStaticDataService staticDataService,
+            IPlatformRegistryService platformRegistryService,
+            SpiderStateMachine spiderStateMachine)
         {
+            _platformRegistryService = platformRegistryService;
             _spiderStateMachine = spiderStateMachine;
             _planeBlinkMaterial = new Material(staticDataService.MaterialsStaticData.PlaneBlinkMaterial);
         }
 
-        public void Initialize(Dictionary<PlatformId, PlatformData> platformDatas)
-        {
-            _platformDatas = new Dictionary<PlatformId, PlatformData>(platformDatas);
-
+        public void Initialize() =>
             InitializePlatform(PlatformId.Circle);
-        }
 
         public void Update()
         {
@@ -42,30 +42,41 @@ namespace SpiderController.Platform
             if (Input.GetKeyDown(KeyCode.Alpha2))
                 SelectPlatform(PlatformId.Box);
 
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+                SelectPlatform(PlatformId.Surf);
+
+            if (_platformRegistryService.CurrentPlatformId == PlatformId.Surf)
+                return;
+
             if (_IsOnPlatform && _spiderStateMachine.IsCurrentState<AirbornState>() == false)
                 ChangeMaterial();
         }
 
         public void ReturnToDefaultMaterial()
         {
+            if (_platformRegistryService.CurrentPlatformId == PlatformId.Surf)
+                return;
+
             if (!_isBlinking)
                 return;
 
             _isBlinking = false;
-            _currentPlatformData.MeshRenderer.material = _defaultMaterial;
+            _platformRegistryService.CurrentPlatformData.MeshRenderer.material = _defaultMaterial;
         }
 
         public bool IsOnPlatform(Vector3 flowerPosition)
         {
             _pointPositionCached = flowerPosition;
-            _IsOnPlatform = _currentPlatformData.Collider.bounds.Contains(flowerPosition);
+            _IsOnPlatform = _platformRegistryService.CurrentPlatformData.Collider.bounds.Contains(flowerPosition);
 
             return _IsOnPlatform;
         }
 
         private void InitializePlatform(PlatformId platformId)
         {
-            foreach (KeyValuePair<PlatformId, PlatformData> pair in _platformDatas)
+            _platformRegistryService.CurrentPlatformId = platformId;
+
+            foreach (KeyValuePair<PlatformId, PlatformData> pair in _platformRegistryService.GetAllPlatforms())
             {
                 PlatformId key = pair.Key;
                 PlatformData platformData = pair.Value;
@@ -75,7 +86,7 @@ namespace SpiderController.Platform
                     Activate(platformData, true);
 
                     _defaultMaterial = platformData.MeshRenderer.material;
-                    _currentPlatformData = platformData;
+                    _platformRegistryService.CurrentPlatformData = platformData;
                 }
                 else
                 {
@@ -86,14 +97,20 @@ namespace SpiderController.Platform
 
         private void SelectPlatform(PlatformId platformId)
         {
-            if (!_platformDatas.TryGetValue(platformId, out PlatformData platformData))
+            PlatformData platformData = _platformRegistryService.TryGetPlatformData(platformId);
+            if (platformData == null)
                 return;
 
             Activate(platformData, true);
-            Activate(_currentPlatformData, false);
+            Activate(_platformRegistryService.CurrentPlatformData, false);
+
+            _platformRegistryService.CurrentPlatformData = platformData;
+            _platformRegistryService.CurrentPlatformId = platformId;
+
+            if (_platformRegistryService.CurrentPlatformId == PlatformId.Surf)
+                return;
 
             _defaultMaterial = platformData.MeshRenderer.material;
-            _currentPlatformData = platformData;
         }
 
         private void SetBlinkMaterial()
@@ -102,12 +119,13 @@ namespace SpiderController.Platform
                 return;
 
             _isBlinking = true;
-            _currentPlatformData.MeshRenderer.material = _planeBlinkMaterial;
+            _platformRegistryService.CurrentPlatformData.MeshRenderer.material = _planeBlinkMaterial;
         }
 
         private void ChangeMaterial()
         {
-            Vector3 closestPoint = _currentPlatformData.BlinkDetectionCollider.ClosestPoint(_pointPositionCached);
+            Vector3 closestPoint =
+                _platformRegistryService.CurrentPlatformData.BlinkDetectionCollider.ClosestPoint(_pointPositionCached);
             closestPoint.y = 0;
             _pointPositionCached.y = 0;
 
@@ -126,9 +144,6 @@ namespace SpiderController.Platform
 
             foreach (GameObject pieceObject in platformData.AllPieceObjects)
                 pieceObject.SetActive(value);
-
-            platformData.Collider.enabled = value;
-            platformData.BlinkDetectionCollider.enabled = value;
         }
     }
 }

@@ -13,10 +13,8 @@ using PickupObjects.PickUpOnPlatform;
 using SpiderController;
 using SpiderController.UI.Health;
 using UnityEngine;
-using UnityEngine.ProBuilder.Shapes;
 using UnityEngine.SceneManagement;
 using Zenject;
-using Product = Unity.VisualScripting.Product;
 
 
 namespace Infastructure.Factories.GameFactories
@@ -88,22 +86,33 @@ namespace Infastructure.Factories.GameFactories
             _checkPointService.PointIndicator = indicatorMarker.transform;
         }
 
-        public Flower CreateFlower() =>
-            _diContainer.InstantiatePrefabResourceForComponent<Flower>(AssetsPath.FlowerPath);
+        public Flower CreateFlower()
+        {
+            ProductType productType = ProductType.Flower;
+
+            ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
+            GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
+
+            Flower flower = _diContainer.InstantiatePrefabForComponent<Flower>(prefab);
+
+            IProduct product = flower.GetComponent<IProduct>();
+            product.ProductType = ProductType.Flower;
+
+            return flower;
+        }
 
         public void CreateAllBatteryProducts(Spider spider)
         {
             ProductType productType = ProductType.Battery;
 
             ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
-            GameObject prefab = productsStaticData.ProductsDictionary[productType];
+            GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
 
             foreach (Vector3 position in _staticDataService.GameStaticData.GameDatas[ActiveSceneName].BatteriesPoints)
             {
                 BatteryProduct batteryProduct =
                     _diContainer.InstantiatePrefabForComponent<BatteryProduct>(prefab, position, Quaternion.identity,
                         null);
-                batteryProduct.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
 
                 IProduct product = batteryProduct.GetComponent<IProduct>();
                 product.ProductType = productType;
@@ -112,6 +121,8 @@ namespace Infastructure.Factories.GameFactories
                 xRayMarker.Type = productType;
 
                 _xRayService.Add(xRayMarker);
+
+                batteryProduct.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
             }
         }
 
@@ -120,7 +131,7 @@ namespace Infastructure.Factories.GameFactories
             ProductType productType = ProductType.Energy;
 
             ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
-            GameObject prefab = productsStaticData.ProductsDictionary[productType];
+            GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
 
             foreach (WorldData data in _staticDataService.GameStaticData.GameDatas[ActiveSceneName].EnergyPoints)
             {
@@ -144,7 +155,7 @@ namespace Infastructure.Factories.GameFactories
             ProductType productType = ProductType.Elephant;
 
             ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
-            GameObject prefab = productsStaticData.ProductsDictionary[productType];
+            GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
 
             foreach (WorldData data in _staticDataService.GameStaticData.GameDatas[ActiveSceneName].ElephantPoints)
             {
@@ -152,10 +163,11 @@ namespace Infastructure.Factories.GameFactories
                     _diContainer.InstantiatePrefabForComponent<ElephantProduct>(prefab, data.WorldPosition,
                         data.WorldRotation,
                         null);
-                elephantProduct.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
 
                 IProduct product = elephantProduct.GetComponent<IProduct>();
                 product.ProductType = productType;
+
+                elephantProduct.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
             }
         }
 
