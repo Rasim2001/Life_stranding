@@ -1,35 +1,100 @@
-*.tga filter=lfs diff=lfs merge=lfs -text
-*.psd filter=lfs diff=lfs merge=lfs -text
-*.psb filter=lfs diff=lfs merge=lfs -text
-*.tif filter=lfs diff=lfs merge=lfs -text
-*.exr filter=lfs diff=lfs merge=lfs -text
-*.wav filter=lfs diff=lfs merge=lfs -text
-*.aif filter=lfs diff=lfs merge=lfs -text
-*.ogg filter=lfs diff=lfs merge=lfs -text
-*.hdr filter=lfs diff=lfs merge=lfs -text
-*.mp4 filter=lfs diff=lfs merge=lfs -text
-*.mov filter=lfs diff=lfs merge=lfs -text
-*.png filter=lfs diff=lfs merge=lfs -text
-*.meta   -text merge=unityyamlmerge diff
-*.unity  -text merge=unityyamlmerge diff
-*.asset  -text merge=unityyamlmerge diff
-*.prefab -text merge=unityyamlmerge diff
-*.tiff filter=lfs diff=lfs merge=lfs -text
-*.fbx filter=lfs diff=lfs merge=lfs -text
-*.obj filter=lfs diff=lfs merge=lfs -text
-*.blend filter=lfs diff=lfs merge=lfs -text
-*.abc filter=lfs diff=lfs merge=lfs -text
+################################################################################
+# 0) БАЗА: авто-нормализация текста
+################################################################################
+* text=auto
+
+################################################################################
+# 1) UNITY YAML / ТЕКСТ — дифф/мердж через UnityYAMLMerge
+#    Требует настроенный Smart Merge:
+#    git config merge.unityyamlmerge.name "Unity YAML Merge"
+#    git config merge.unityyamlmerge.driver 'unityyamlmerge merge -p %O %A %B %L %P'
+################################################################################
+*.meta                  text eol=lf merge=unityyamlmerge diff
+*.unity                 text eol=lf merge=unityyamlmerge diff
+*.prefab                text eol=lf merge=unityyamlmerge diff
+*.mat                   text eol=lf merge=unityyamlmerge diff
+*.anim                  text eol=lf merge=unityyamlmerge diff
+*.controller            text eol=lf merge=unityyamlmerge diff
+*.overrideController    text eol=lf merge=unityyamlmerge diff
+*.physicMaterial        text eol=lf merge=unityyamlmerge diff
+*.spriteatlas           text eol=lf merge=unityyamlmerge diff
+*.vfx                   text eol=lf merge=unityyamlmerge diff
+*.asmdef                text eol=lf merge=unityyamlmerge diff
+*.inputactions          text eol=lf merge=unityyamlmerge diff
+*.shadergraph           text eol=lf merge=unityyamlmerge diff
+
+################################################################################
+# 2) КОД / КОНФИГИ — текст LF
+################################################################################
+*.cs        text eol=lf diff
+*.shader    text eol=lf diff
+*.hlsl      text eol=lf diff
+*.cginc     text eol=lf diff
+*.compute   text eol=lf diff
+*.json      text eol=lf diff
+*.xml       text eol=lf diff
+*.yaml      text eol=lf diff
+*.yml       text eol=lf diff
+*.uxml      text eol=lf diff
+*.uss       text eol=lf diff
+
+################################################################################
+# 3) GIT LFS — ИЗОБРАЖЕНИЯ / ТЕКСТУРЫ
+################################################################################
+*.png   filter=lfs diff=lfs merge=lfs -text
+*.jpg   filter=lfs diff=lfs merge=lfs -text
+*.jpeg  filter=lfs diff=lfs merge=lfs -text
+*.tga   filter=lfs diff=lfs merge=lfs -text
+*.tif   filter=lfs diff=lfs merge=lfs -text
+*.tiff  filter=lfs diff=lfs merge=lfs -text
+*.exr   filter=lfs diff=lfs merge=lfs -text
+*.hdr   filter=lfs diff=lfs merge=lfs -text
+*.psd   filter=lfs diff=lfs merge=lfs -text lockable
+*.psb   filter=lfs diff=lfs merge=lfs -text lockable
+*.webp  filter=lfs diff=lfs merge=lfs -text
+
+################################################################################
+# 4) GIT LFS — 3D/SCENE/ASSET DCC
+################################################################################
+*.fbx   filter=lfs diff=lfs merge=lfs -text lockable
+*.obj   filter=lfs diff=lfs merge=lfs -text
+*.blend filter=lfs diff=lfs merge=lfs -text lockable
+*.abc   filter=lfs diff=lfs merge=lfs -text
 *.sbsar filter=lfs diff=lfs merge=lfs -text
-*.mp3 filter=lfs diff=lfs merge=lfs -text
-*.aiff filter=lfs diff=lfs merge=lfs -text
-*.flac filter=lfs diff=lfs merge=lfs -text
-*.webm filter=lfs diff=lfs merge=lfs -text
-*.avi filter=lfs diff=lfs merge=lfs -text
-*.mkv filter=lfs diff=lfs merge=lfs -text
-*.ogv filter=lfs diff=lfs merge=lfs -text
+
+# КРУПНЫЕ БИНАРНЫЕ Unity .asset (ТОЧЕЧНО!)
+Assets/**/LightingData.asset          filter=lfs diff=lfs merge=lfs -text
+Assets/**/OcclusionCullingData.asset  filter=lfs diff=lfs merge=lfs -text
+Assets/**/NavMesh.asset               filter=lfs diff=lfs merge=lfs -text
+Assets/**/TerrainData.asset           filter=lfs diff=lfs merge=lfs -text
+Assets/**/NoiseTex3D.asset            filter=lfs diff=lfs merge=lfs -text
+# (опционально, если встречается в проекте)
+Assets/**/LightmapSnapshot.asset      filter=lfs diff=lfs merge=lfs -text
+
+################################################################################
+# 5) GIT LFS — АУДИО/ВИДЕО
+################################################################################
+*.wav   filter=lfs diff=lfs merge=lfs -text
+*.aif   filter=lfs diff=lfs merge=lfs -text
+*.aiff  filter=lfs diff=lfs merge=lfs -text
+*.ogg   filter=lfs diff=lfs merge=lfs -text
+*.flac  filter=lfs diff=lfs merge=lfs -text
+*.mp3   filter=lfs diff=lfs merge=lfs -text
+
+*.mp4   filter=lfs diff=lfs merge=lfs -text
+*.mov   filter=lfs diff=lfs merge=lfs -text
+*.webm  filter=lfs diff=lfs merge=lfs -text
+*.avi   filter=lfs diff=lfs merge=lfs -text
+*.mkv   filter=lfs diff=lfs merge=lfs -text
+*.ogv   filter=lfs diff=lfs merge=lfs -text
+
+################################################################################
+# 6) GIT LFS — АРХИВЫ/ПАКЕТЫ/ШРИФТЫ
+################################################################################
 *.unitypackage filter=lfs diff=lfs merge=lfs -text
-*.zip filter=lfs diff=lfs merge=lfs -text
-*.7z filter=lfs diff=lfs merge=lfs -text
-*.rar filter=lfs diff=lfs merge=lfs -text
-*.ttf filter=lfs diff=lfs merge=lfs -text
-*.otf filter=lfs diff=lfs merge=lfs -text
+*.zip          filter=lfs diff=lfs merge=lfs -text
+*.7z           filter=lfs diff=lfs merge=lfs -text
+*.rar          filter=lfs diff=lfs merge=lfs -text
+
+*.ttf  filter=lfs diff=lfs merge=lfs -text
+*.otf  filter=lfs diff=lfs merge=lfs -text
