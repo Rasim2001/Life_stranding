@@ -8,21 +8,18 @@ namespace SpiderController.StateMachine
 {
     public class EnergySystem
     {
-        private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
-
         private readonly StateMachineData _data;
         private readonly EnergyBarUI _energyBar;
         private readonly Spider _spider;
-        private readonly IStaticDataService _staticDataService;
         private readonly ICutSceneService _cutSceneService;
+        
+        
 
         public EnergySystem(
             StateMachineData data,
             EnergyBarUI EnergyBar,
-            IStaticDataService staticDataService,
             ICutSceneService cutSceneService)
         {
-            _staticDataService = staticDataService;
             _cutSceneService = cutSceneService;
             _data = data;
             _energyBar = EnergyBar;
@@ -33,23 +30,23 @@ namespace SpiderController.StateMachine
             if (_cutSceneService.IsActive)
                 return;
 
-            if (_data.EnergyFillAmount >= 0)
+            if (_data.CurrentEnergyFillAmount >= 0)
             {
-                _data.EnergyFillAmount -= Time.deltaTime * speed /
-                                          SpiderStaticData.EnergyFillAmount;
+                _data.CurrentEnergyFillAmount -= Time.deltaTime * speed /
+                                          _data.EnergyFillAmount;
 
-                _energyBar.SetValue(_data.EnergyFillAmount);
+                _energyBar.SetValue(_data.CurrentEnergyFillAmount);
             }
         }
 
         public void RestoreEnergy(float speed)
         {
-            if (_data.EnergyFillAmount < 1)
+            if (_data.CurrentEnergyFillAmount < 1)
             {
-                _data.EnergyFillAmount += Time.deltaTime * speed /
-                                          SpiderStaticData.EnergyFillAmount;
+                _data.CurrentEnergyFillAmount += Time.deltaTime * speed /
+                                          _data.EnergyFillAmount;
 
-                _energyBar.SetValue(_data.EnergyFillAmount);
+                _energyBar.SetValue(_data.CurrentEnergyFillAmount);
             }
         }
     }

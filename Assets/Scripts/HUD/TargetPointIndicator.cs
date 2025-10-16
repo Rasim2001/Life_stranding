@@ -6,21 +6,28 @@ namespace HUD
     {
         protected Vector3 FinishTargetPosition;
 
-        private readonly RectTransform _arrowUI;
+        private readonly ArrowUI _arrowUI;
+
         private readonly RectTransform _canvasRect;
         private readonly LayerMask _layerMask;
 
-        private readonly float _borderOffsetX = 50;
-        private readonly float _borderOffsetY = 50f;
+        private readonly float _borderOffsetX = 75;
+        private readonly float _borderOffsetY = 75;
 
         private readonly Camera _mainCamera;
         private bool _arrowShowing;
 
-        protected TargetPointIndicator(RectTransform arrowUI, RectTransform canvasRect, LayerMask layerMask)
+        private readonly RectTransform _arrowRectTransform;
+        private readonly RectTransform _arrowCenterRectTransform;
+
+        protected TargetPointIndicator(ArrowUI arrowUI, RectTransform canvasRect, LayerMask layerMask)
         {
             _arrowUI = arrowUI;
             _canvasRect = canvasRect;
             _layerMask = layerMask;
+
+            _arrowRectTransform = _arrowUI.GetComponent<RectTransform>();
+            _arrowCenterRectTransform = _arrowUI.ArrowCenter.GetComponent<RectTransform>();
 
             _mainCamera = Camera.main;
         }
@@ -45,27 +52,36 @@ namespace HUD
                 screenPos.y = Screen.height - screenPos.y;
             }
 
-            Vector2 screenPoint = new Vector2(screenPos.x, screenPos.y);
-
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                _canvasRect, screenPoint, null, out Vector2 localPoint);
-
             bool isOnScreen = screenPos.x > 0 && screenPos.x < Screen.width &&
                               screenPos.y > 0 && screenPos.y < Screen.height &&
                               !isBehind && IsTargetVisible();
 
             Show(!isOnScreen);
 
-            Vector2 direction = (localPoint - Vector2.zero).normalized;
+            Vector3 camLocal = _mainCamera.transform.InverseTransformPoint(FinishTargetPosition);
+            camLocal.y = 0f;
+
+            Vector2 direction = new Vector2(camLocal.x, camLocal.z).normalized;
 
             float halfWidth = canvasSize.x / 2f - _borderOffsetX;
             float halfHeight = canvasSize.y / 2f - _borderOffsetY;
 
             Vector2 clampedPos = GetClampedPosition(direction, halfWidth, halfHeight);
-            _arrowUI.anchoredPosition = clampedPos;
+            _arrowRectTransform.anchoredPosition = clampedPos;
 
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            _arrowUI.rotation = Quaternion.Euler(0, 0, angle);
+            _arrowCenterRectTransform.rotation = Quaternion.Euler(0, 0, angle);
+        }
+
+        private bool IsTargetVisible()
+        {
+            Vector3 cameraPos = _mainCamera.transform.position;
+            Vector3 direction = FinishTargetPosition - cameraPos;
+            float distance = direction.magnitude;
+
+            return Physics.Raycast(cameraPos, direction.normalized, out RaycastHit hit, distance, _layerMask)
+                ? hit.collider.GetComponent<TargetPointIndicatorMarker>()
+                : false;
         }
 
         private Vector2 GetClampedPosition(Vector2 direction, float halfWidth, float halfHeight)
@@ -78,32 +94,14 @@ namespace HUD
             return direction * t;
         }
 
-        private bool IsTargetVisible()
-        {
-            Vector3 cameraPos = _mainCamera.transform.position;
-            Vector3 direction = FinishTargetPosition - cameraPos;
-            float distance = direction.magnitude;
-
-
-            if (Physics.Raycast(cameraPos, direction.normalized, out RaycastHit hit, distance, _layerMask))
-            {
-                Debug.DrawRay(cameraPos, direction.normalized * distance, Color.green, 0f);
-
-                return hit.collider.GetComponent<TargetPointIndicatorMarker>();
-            }
-
-            Debug.DrawRay(cameraPos, direction.normalized * distance, Color.red, 0f);
-
-            return false;
-        }
 
         private void Show(bool value)
         {
             if (_arrowShowing == value)
                 return;
 
-            _arrowUI.gameObject.SetActive(value);
             _arrowShowing = value;
+            _arrowUI.gameObject.SetActive(value);
         }
     }
 }

@@ -6,6 +6,5 @@ namespace Infastructure.Common.Pickup
     {
         void Show(Transform pickupTarget);
         void Hide(Transform pickupTarget);
-        void HideRemainingObjects(Collider[] allColliders);
     }
 }

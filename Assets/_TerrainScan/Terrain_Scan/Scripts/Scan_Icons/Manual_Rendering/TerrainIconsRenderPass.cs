@@ -32,13 +32,13 @@ namespace GameDevBuddies
             _cameraTagId = cameraTagId;
 
             Dictionary<RenderTexture, RTHandle> createdHandlesForTextures = new Dictionary<RenderTexture, RTHandle>();
-            foreach(TerrainIconsRenderPassSettings renderPassSettings in renderPassesSettings)
+            foreach (TerrainIconsRenderPassSettings renderPassSettings in renderPassesSettings)
             {
                 // If the current pass doesn't have an output render texture assigned yet,
                 // we can't correctly set up the render pass data, so it will be skipped until
                 // the output texture is correctly assigned.
-                RenderTexture outputColorTexture = renderPassSettings.OutputColorTexture;                
-                if(outputColorTexture == null)
+                RenderTexture outputColorTexture = renderPassSettings.OutputColorTexture;
+                if (outputColorTexture == null)
                 {
                     break;
                 }
@@ -46,12 +46,13 @@ namespace GameDevBuddies
                 // Creating RTHandles for output textures with keeping in mind no to create
                 // duplicate RTHandles if multiple render passes use the same output texture.
                 RTHandle outputColorRTHandle = CreateOrReuseRTHandle(outputColorTexture, ref createdHandlesForTextures);
-                RTHandle outputDepthRTHandle = CreateOrReuseRTHandle(renderPassSettings.OutputDepthTexture, ref createdHandlesForTextures);
+                RTHandle outputDepthRTHandle = CreateOrReuseRTHandle(renderPassSettings.OutputDepthTexture,
+                    ref createdHandlesForTextures);
 
                 // Create a list of shader tag IDs that will be used for filtering which materials would
                 // be rendered with this custom render pass.
                 List<ShaderTagId> supportedShaderTagIds = new List<ShaderTagId>();
-                foreach(string supportedShaderPassName in renderPassSettings.SupportedShaderPassNames)
+                foreach (string supportedShaderPassName in renderPassSettings.SupportedShaderPassNames)
                 {
                     supportedShaderTagIds.Add(new ShaderTagId(supportedShaderPassName));
                 }
@@ -77,7 +78,7 @@ namespace GameDevBuddies
 
                 // Cache the helper data class into a collection for all passes.
                 _renderPassesData.Add(renderPassData);
-            }            
+            }
         }
 
         /// <inheritdoc/>
@@ -89,7 +90,7 @@ namespace GameDevBuddies
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             // Only rendering terrain icons with the special orthographic terrain icons camera.
-            if(!renderingData.cameraData.camera.CompareTag(_cameraTagId))
+            if (!renderingData.cameraData.camera.CompareTag(_cameraTagId))
             {
                 return;
             }
@@ -97,12 +98,13 @@ namespace GameDevBuddies
             // Go over every render pass and execute a render command.
             RTHandle currentColorOutputRTHandle = null;
             RTHandle currentDepthOutputRTHandle = null;
-            foreach(RenderPassData renderPassData in _renderPassesData)
+            foreach (RenderPassData renderPassData in _renderPassesData)
             {
                 bool depthOutputChanged = false;
                 bool colorOutputChanged = false;
 
-                if ((renderPassData.OutputDepthRTHandle != null && renderPassData.OutputDepthRTHandle != currentDepthOutputRTHandle) ||
+                if ((renderPassData.OutputDepthRTHandle != null &&
+                     renderPassData.OutputDepthRTHandle != currentDepthOutputRTHandle) ||
                     (renderPassData.OutputDepthRTHandle == null && currentDepthOutputRTHandle != null))
                 {
                     currentDepthOutputRTHandle = renderPassData.OutputDepthRTHandle;
@@ -117,7 +119,7 @@ namespace GameDevBuddies
 
                 if (colorOutputChanged || depthOutputChanged)
                 {
-                    if(currentDepthOutputRTHandle == null)
+                    if (currentDepthOutputRTHandle == null)
                     {
                         ConfigureTarget(currentColorOutputRTHandle);
                     }
@@ -127,20 +129,22 @@ namespace GameDevBuddies
                     }
                 }
 
-                renderingData.cameraData.camera.TryGetCullingParameters(out ScriptableCullingParameters cullingParameters);
+                renderingData.cameraData.camera.TryGetCullingParameters(
+                    out ScriptableCullingParameters cullingParameters);
                 ExecuteRenderPass(context, ref renderingData, ref cullingParameters, renderPassData);
-            }            
+            }
         }
 
-        private void ExecuteRenderPass(ScriptableRenderContext context, ref RenderingData renderingData, 
+        private void ExecuteRenderPass(ScriptableRenderContext context, ref RenderingData renderingData,
             ref ScriptableCullingParameters cullingParameters, RenderPassData renderPassData)
         {
             // Get a command buffer instance from the pool.
             CommandBuffer cmd = CommandBufferPool.Get();
 
             // Create drawing settings for this render pass based on the supported shader tags.
-            DrawingSettings drawingSettings = CreateDrawingSettings(renderPassData.SupportedShaderTagIds, ref renderingData, SortingCriteria.CommonTransparent);
-            if(renderPassData.OverrideMaterial != null)
+            DrawingSettings drawingSettings = CreateDrawingSettings(renderPassData.SupportedShaderTagIds,
+                ref renderingData, SortingCriteria.CommonTransparent);
+            if (renderPassData.OverrideMaterial != null)
             {
                 drawingSettings.overrideMaterial = renderPassData.OverrideMaterial;
                 drawingSettings.overrideMaterialPassIndex = renderPassData.OverrideMaterialPassIndex;
@@ -157,9 +161,9 @@ namespace GameDevBuddies
 
                 if (renderPassData.ShouldClearOutputTexture)
                 {
-                    cmd.ClearRenderTarget(true, true, Color.clear);
                     context.ExecuteCommandBuffer(cmd);
                     cmd.Clear();
+                    cmd.ClearRenderTarget(true, true, Color.clear);
                 }
 
                 // Create a list of renderers that will need to be drawn in this pass based on filtering settings
@@ -184,10 +188,10 @@ namespace GameDevBuddies
             CommandBufferPool.Release(cmd);
         }
 
-        private RTHandle CreateOrReuseRTHandle(RenderTexture renderTexture, 
+        private RTHandle CreateOrReuseRTHandle(RenderTexture renderTexture,
             ref Dictionary<RenderTexture, RTHandle> createdHandlesForTextures)
         {
-            if(renderTexture == null)
+            if (renderTexture == null)
             {
                 return null;
             }
@@ -203,20 +207,19 @@ namespace GameDevBuddies
                 createdHandlesForTextures.Add(renderTexture, outputRTHandle);
                 return outputRTHandle;
             }
-            
         }
 
         /// <inheritdoc/>
         public void Dispose()
         {
-            if(_renderPassesData == null)
+            if (_renderPassesData == null)
             {
                 return;
             }
 
-            foreach(RenderPassData renderPassData in _renderPassesData)
+            foreach (RenderPassData renderPassData in _renderPassesData)
             {
-                if(renderPassData.OutputColorRTHandle != null)
+                if (renderPassData.OutputColorRTHandle != null)
                 {
                     renderPassData.OutputColorRTHandle = null;
                 }
@@ -226,6 +229,7 @@ namespace GameDevBuddies
                     renderPassData.OutputDepthRTHandle = null;
                 }
             }
+
             _renderPassesData.Clear();
         }
     }

@@ -1,16 +1,17 @@
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
+using SpiderController.TriggerChecker;
 using SpiderController.UI.Stickers;
+using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Airborn
 {
     public class FallingWithControlState : AirbornState
     {
-        private StickerUI StickerUI => Spider.SpiderUI.StickerUI;
-
         private readonly GroundChecker _spiderGroundChecker;
 
         public FallingWithControlState(ISpiderStateMachine stateMachine, IInputService inputService,
@@ -26,6 +27,7 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Enter();
 
+            Data.GlobalY = Spider.transform.position.y;
             Data.AirbornSpeed = SpiderStaticData.FallWithoutEnergySpeed;
 
             SetCrossLegs();
@@ -48,8 +50,10 @@ namespace SpiderController.StateMachine.States.Airborn
 
             if (_spiderGroundChecker.IsTouchesWithLegs)
             {
+                ShakeCamera();
+
                 Data.YVelocity = 0;
-                StickerUI.PlaySticker(StickerEnum.FallingDown);
+                Spider.Stickers.PlaySticker(StickerEnum.FallingDown);
 
                 if (IsInputZero())
                     StateMachine.SwitchState<IdlingState>();

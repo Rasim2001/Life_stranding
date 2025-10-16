@@ -1,4 +1,4 @@
-using Infastructure.Common;
+using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
 using Infastructure.StaticData.Spider;
@@ -33,6 +33,8 @@ namespace CameraFollow
         private float _cameraRotationSpeed;
         private JoystickInputSource _joystickInputSource;
 
+        private float _defaultY;
+
 
         [Inject]
         public void Construct(
@@ -54,8 +56,14 @@ namespace CameraFollow
         public void SetTarget(Transform spiderTransform) =>
             _target = spiderTransform;
 
-        private void Start() =>
+        private void Start()
+        {
+            _defaultY = _cameraSystem.RotationComposer.Composition.ScreenPosition.y;
+
+            _joystickInputSource = _inputService.GetInputSource<JoystickInputSource>();
+
             CinemachineCore.CameraUpdatedEvent.AddListener(UpdateAfterCinemachine);
+        }
 
         private void OnDestroy() =>
             CinemachineCore.CameraUpdatedEvent.RemoveListener(UpdateAfterCinemachine);
@@ -74,14 +82,6 @@ namespace CameraFollow
                 RotateToTarget();
         }
 
-        private void Update()
-        {
-            if (_target == null)
-                return;
-
-            HandleMouse();
-        }
-
         private void UpdateAfterCinemachine(CinemachineBrain _)
         {
             if (_target == null)
@@ -97,10 +97,12 @@ namespace CameraFollow
         {
             float scrollInput = _inputService.ScrollWheelAxis;
 
+            float maxLenght = _joystickInputSource.IsGamepadActiveNow() ? 4 : 7;
+
             if (scrollInput != 0f)
             {
                 _mouseSensitivity -= scrollInput * SpiderStaticData.ScrollSensitivity;
-                _mouseSensitivity = Mathf.Clamp(_mouseSensitivity, 2, 7);
+                _mouseSensitivity = Mathf.Clamp(_mouseSensitivity, 2, maxLenght);
             }
 
             float smoothSensitivityY = Mathf.Lerp(_cameraSystem.ThirdPersonFollow.ShoulderOffset.y, _mouseSensitivity,
@@ -125,7 +127,7 @@ namespace CameraFollow
             {
                 _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed / 3;
 
-                _yRotation = 0;
+                _yRotation = _defaultY;
                 _xRotation = 0;
 
                 _isMouseRotating = false;

@@ -4,6 +4,7 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using SpiderController.SpiderMove;
 using SpiderController.UI;
 using SpiderController.UI.Health;
@@ -83,6 +84,7 @@ namespace SpiderController.StateMachine.States
             TryMoveLegs();
             CheckFlowerAndReduceHp();
             BackLegHandle();
+            UpdateTerranTime();
         }
 
         public virtual void FixedUpdate()
@@ -126,7 +128,7 @@ namespace SpiderController.StateMachine.States
             if (Data.IsMouseHolding)
                 EnergySystem.SpendEnergy(SpiderStaticData.EnergySpendFreezingFlowerSpeed);
 
-            if (Data.EnergyFillAmount <= 0)
+            if (Data.CurrentEnergyFillAmount <= 0)
                 Spider.MagnetFreezingService.Unfreeze();
         }
 
@@ -169,6 +171,22 @@ namespace SpiderController.StateMachine.States
         protected bool IsNotMoveableLayer() =>
             Legs.Select(x => x.Raycast).Any(x => x.IsNotMoveableLayer);
 
+
+        private void UpdateTerranTime()
+        {
+            if (Data.TerrainTimer > 0)
+            {
+                Data.TerrainTimer -= Time.deltaTime;
+
+                Spider.SpiderUI.ReloadUI.SetValue(Data.TerrainTimer / Data.TerrainTimerDefault);
+
+                if (Data.TerrainTimer <= 0)
+                {
+                    Spider.SpiderUI.ReloadUI.ShowHologram();
+                    Data.TerrainTimer = Mathf.NegativeInfinity;
+                }
+            }
+        }
 
         private void CheckFlowerAndReduceHp()
         {

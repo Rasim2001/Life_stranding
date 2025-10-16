@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement class="CommentBox Comment">
+        <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Contents" binding-path="contents" class="Label-margin" />
+        <ui:VisualElement name="Separator" />
+        <ui:VisualElement name="Author" class="unity-base-field SubtleField">
+            <ui:Label tabindex="-1" text="Author" parse-escape-sequences="true" display-tooltip-when-elided="true" tooltip="When the note was first created." class="unity-base-field__label" />
+            <ui:Label tabindex="-1" text="00:00:00" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Name" class="unity-base-field__label" />
+        </ui:VisualElement>
+        <ui:VisualElement name="CreatedOn" class="unity-base-field SubtleField">
+            <ui:Label tabindex="-1" text="Created" parse-escape-sequences="true" display-tooltip-when-elided="true" tooltip="When the note was first created." class="unity-base-field__label" />
+            <ui:Label tabindex="-1" text="00:00:00" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Date" class="unity-base-field__label" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; flex-direction: row-reverse;">
+            <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="DeleteCommentBtn" class="DeleteBtn DetachedButton" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -3,15 +3,17 @@ using Cysharp.Threading.Tasks;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
+using SpiderController.TriggerChecker;
 using SpiderController.UI.Stickers;
 
 namespace SpiderController.StateMachine.States.Airborn
 {
     public class FallingWithoutEnergyState : AirbornState
     {
-        private StickerUI StickerUI => Spider.SpiderUI.StickerUI;
+        //private Sticker Sticker => Spider.SpiderUI.Sticker;
 
         private readonly GroundChecker _spiderGroundChecker;
 
@@ -28,6 +30,7 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Enter();
 
+            Data.GlobalY = Spider.transform.position.y;
             Data.AirbornSpeed = SpiderStaticData.FallWithoutEnergySpeed;
             Data.IsFallingDownWithoutEnergyState = true;
 
@@ -41,7 +44,7 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Exit();
 
-            StickerUI.PlaySticker(StickerEnum.FallingDown);
+            Spider.Stickers.PlaySticker(StickerEnum.FallingDown);
             Data.IsFallingDownWithoutEnergyState = false;
 
             SetUncrossLegs();
@@ -61,6 +64,8 @@ namespace SpiderController.StateMachine.States.Airborn
 
         private async UniTask StandUpAsync()
         {
+            ShakeCamera();
+
             Data.IsStandingUpAfterFalling = true;
 
             if (IsInputZero())

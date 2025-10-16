@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 
 namespace Infastructure.Services.PlatformObjects
 {
@@ -7,5 +8,6 @@ namespace Infastructure.Services.PlatformObjects
     {
         List<PickupObjectBase> PickupObjects { get; set; }
         bool HasAny<T>() where T : PickupObjectBase;
+        bool IsEmpty();
     }
 }

@@ -1,6 +1,7 @@
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using SpiderController.SpiderMove;
 using SpiderController.UI;
 
@@ -41,7 +42,7 @@ namespace SpiderController.StateMachine.States.Ground
 
             EnergySystem.SpendEnergy(SpiderStaticData.EnergySpendFastRunningSpeed);
 
-            if (!IsFastRunUp() && Data.EnergyFillAmount > 0)
+            if (!IsFastRunUp() && Data.CurrentEnergyFillAmount > 0)
                 return;
 
             if (IsInputZero())

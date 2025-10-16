@@ -162,25 +162,23 @@ namespace GameDevBuddies
             // Send the latest data to the compute shader.
             UpdateIndirectDrawData();
 
-#if UNITY_EDITOR
+
             UpdateComputeShaderData();
 
-            // Fix for Unity Editor scene save resetting the compute buffer connection with the compute shader.
-            if (!EditorApplication.isPlaying)
+            // Надёжно: ребиндим то, что читается в ядре, перед КАЖДЫМ dispatch (Player-safe)
+            _iconsInfoComputeShader.SetBuffer(KernelId, "_TerrainIconsData", _terrainIconsInfoBuffer);
+            _iconMaterial.SetBuffer("_TerrainIconsData", _terrainIconsInfoBuffer);
+
+            if (_normalsAndIdRT != null)
             {
-                TerrainTypeData[] terrainTypesData = _terrainTypesScriptable.GetTerrainTypes();
-                _terrainTypesDataBuffer = new ComputeBuffer(terrainTypesData.Length, TerrainTypeData.StructSize);
-                _terrainTypesDataBuffer.SetData(terrainTypesData);
-
-                _iconsInfoComputeShader.SetBuffer(KernelId, "_TerrainTypesData", _terrainTypesDataBuffer);
-                _iconsInfoComputeShader.SetBuffer(KernelId, "_TerrainTypesGeneralInfo", _terrainGeneralInfoBuffer);
-                _iconsInfoComputeShader.SetBuffer(KernelId, "_TerrainIconsData", _terrainIconsInfoBuffer);
-                _iconMaterial.SetBuffer("_TerrainIconsData", _terrainIconsInfoBuffer);
-
                 _iconsInfoComputeShader.SetTexture(KernelId, "_NormalsAndIdRT", _normalsAndIdRT);
+                _iconsInfoComputeShader.SetInt("_NormalsAndIdRTWidth",  _normalsAndIdRT.width);
+                _iconsInfoComputeShader.SetInt("_NormalsAndIdRTHeight", _normalsAndIdRT.height);
+            }
+            if (_depthRT != null)
+            {
                 _iconsInfoComputeShader.SetTexture(KernelId, "_DepthRT", _depthRT);
             }
-#endif
 
             // Dispatch compute shader that will calculate the position, rotation and size of each terrain scan icon.            
             _iconsInfoComputeShader.DispatchThreads(KernelId, _iconsColumnCount, _iconsRowCount);

@@ -1,6 +1,7 @@
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using SpiderController.SpiderMove;
 using SpiderController.UI;
 using UnityEngine;
@@ -47,7 +48,7 @@ namespace SpiderController.StateMachine.States.Ground
             UpdateDashTime();
             UpdateJerkVelocity();
 
-            if (_dashTimer <= 0 || Data.EnergyFillAmount <= 0)
+            if (_dashTimer <= 0 || Data.CurrentEnergyFillAmount <= 0)
                 SwitchState();
         }
 

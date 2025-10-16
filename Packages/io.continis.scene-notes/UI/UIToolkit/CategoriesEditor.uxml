@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/io.continis.scene-notes/UI/UIToolkit/CategoriesStyles.uss?fileID=7433441132597879392&amp;guid=0363033cf86274aa1b20a98bab16f51f&amp;type=3#CategoriesStyles" />
+    <ui:Button text="Open Categories Legend Overlay" name="OpenLegendOverlayBtn" tooltip="Opens the scene overlay that displays a legend of each category with its corresponding icon." />
+    <ui:Label tabindex="-1" text="Categories" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CategoriesLabel" />
+    <ui:ListView reorder-mode="Animated" show-bound-collection-size="true" show-add-remove-footer="true" header-title="Categories" reorderable="true" show-alternating-row-backgrounds="ContentOnly" show-border="true" binding-path="_categories" show-foldout-header="false" name="CategoriesList" data-source-type="SceneNotes.NoteCategories+NoteCategory, SceneNotes.Runtime" virtualization-method="DynamicHeight" />
+    <ui:HelpBox name="IconStyleWarningBox" message-type="Info" text="Notes are set to display their state in the scene view, so the icons specified above will be ignored. Hover for more info." tooltip="Go to Project Settings &gt; Scene Notes and change the Note Icon Style setting to see category icons instead." />
+</ui:UXML>

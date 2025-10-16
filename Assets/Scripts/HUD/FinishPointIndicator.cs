@@ -6,7 +6,7 @@ namespace HUD
     {
         private readonly Transform _finishPoint;
 
-        public FinishPointIndicator(RectTransform arrowUI, RectTransform canvasRect, LayerMask layerMask,
+        public FinishPointIndicator(ArrowUI arrowUI, RectTransform canvasRect, LayerMask layerMask,
             Transform finishPoint) : base(
             arrowUI, canvasRect, layerMask)
         {

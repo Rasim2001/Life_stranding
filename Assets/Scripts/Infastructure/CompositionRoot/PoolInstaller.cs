@@ -1,3 +1,4 @@
+using HUD;
 using Infastructure.Common.Pickup;
 using Infastructure.Services.Pool;
 using UnityEngine;
@@ -10,8 +11,15 @@ namespace Infastructure.CompositionRoot
         public PickupView PickupView;
         public Transform PickupContainer;
 
-        public override void InstallBindings() =>
+        public XRayOccluderUI OccluderUI;
+        public Transform OccluderContainer;
+
+        public override void InstallBindings()
+        {
             BindArrowWorkshopPool();
+
+            BindXRayOccluder();
+        }
 
         private void BindArrowWorkshopPool()
         {
@@ -19,6 +27,14 @@ namespace Infastructure.CompositionRoot
                 .BindInterfacesAndSelfTo<PoolObjects<PickupView>>()
                 .AsSingle()
                 .WithArguments(PickupView, PickupContainer);
+        }
+
+        private void BindXRayOccluder()
+        {
+            Container
+                .BindInterfacesAndSelfTo<PoolObjects<XRayOccluderUI>>()
+                .AsSingle()
+                .WithArguments(OccluderUI, OccluderContainer);
         }
     }
 }

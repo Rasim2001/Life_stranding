@@ -1,16 +1,44 @@
+using UnityEngine;
+using UnityEngine.UI;
+
 namespace SpiderController.UI.Health
 {
     public class HealthBarUI : BarBaseUI
     {
+        [SerializeField] Color _firstIncreaseColor;
+        [SerializeField] Color _firstReducedColor;
+
         private HologramEffect _hologramEffect;
 
-        private void Awake() =>
-            _hologramEffect = new HologramEffect(GetSegments(), GetContainers());
+        private Image[] _segmentsOwn;
+
+        private void Awake()
+        {
+            _segmentsOwn = GetSegments();
+
+            _hologramEffect = new HologramEffect(_segmentsOwn, GetContainers(), GetOtherObjects());
+        }
 
         public void PlayFadeHologramEffect() =>
             _hologramEffect.Play();
 
         public void ShowHologram() =>
             _hologramEffect.Stop();
+
+        protected override void UpdateFirstSegmentColorReduced()
+        {
+            base.UpdateFirstSegmentColorReduced();
+
+            _segmentsOwn[0].color = _firstReducedColor;
+        }
+
+        protected override void UpdateFirstSegmentColorIncrease()
+        {
+            base.UpdateFirstSegmentColorIncrease();
+
+            Debug.Log("Increase");
+
+            _segmentsOwn[0].color = _firstIncreaseColor;
+        }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -10,14 +11,17 @@ namespace SpiderController.UI
     {
         private readonly Image[] _segments;
         private readonly Image[] _containers;
+        private readonly Image[] _otherObjects;
 
         private CancellationTokenSource _cts;
 
-        public HologramEffect(Image[] segments, Image[] containers)
+        public HologramEffect(Image[] segments, Image[] containers, Image[] otherObjects)
         {
             _segments = segments;
             _containers = containers;
+            _otherObjects = otherObjects;
         }
+
 
         public void Play()
         {
@@ -39,6 +43,7 @@ namespace SpiderController.UI
             _cts = null;
 
             ResetAlpha();
+            ResetOtherObjects();
         }
 
         private async UniTaskVoid RunHologramEffectAsync(CancellationToken token)
@@ -47,7 +52,8 @@ namespace SpiderController.UI
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(2f), cancellationToken: token);
 
-                int count = _segments.Length;
+                int count = _segments.Count(x => x.gameObject.activeSelf);
+
                 for (int i = 0; i < count; i++)
                 {
                     DisableFirstPiece(_segments, _containers, i);
@@ -69,6 +75,7 @@ namespace SpiderController.UI
 
                     FadeAllPieces(_segments, _containers);
                     DisableFirstPiece(_segments, _containers, i);
+                    DisableOtherObjects();
                 }
             }
             catch (OperationCanceledException)
@@ -76,12 +83,34 @@ namespace SpiderController.UI
             }
         }
 
+        private void DisableOtherObjects()
+        {
+            foreach (Image otherObject in _otherObjects)
+            {
+                Color seg = otherObject.color;
+                seg.a = 0;
+
+                otherObject.color = seg;
+            }
+        }
+
+        private void ResetOtherObjects()
+        {
+            foreach (Image otherObject in _otherObjects)
+            {
+                Color seg = otherObject.color;
+                seg.a = 1;
+
+                otherObject.color = seg;
+            }
+        }
+
         private void FadeOtherPieces(Image[] segments, Image[] containers, int i)
         {
             for (int y = i + 1; y < segments.Length; y++)
             {
-                Color seg = segments[i].color;
-                Color con = containers[i].color;
+                Color seg = segments[y].color;
+                Color con = containers[y].color;
 
                 seg.a -= i * 0.05f;
                 con.a -= i * 0.05f;
@@ -117,16 +146,16 @@ namespace SpiderController.UI
 
         private void FadeAllPieces(Image[] segments, Image[] containers)
         {
-            for (int x = 0; x < segments.Length; x++)
+            for (int i = 0; i < segments.Length; i++)
             {
-                Color seg = segments[x].color;
-                Color con = containers[x].color;
+                Color seg = segments[i].color;
+                Color con = containers[i].color;
 
                 seg.a -= 0.1f;
                 con.a -= 0.1f;
 
-                segments[x].color = seg;
-                containers[x].color = con;
+                segments[i].color = seg;
+                containers[i].color = con;
             }
         }
 
@@ -135,12 +164,17 @@ namespace SpiderController.UI
             for (int i = 0; i < _segments.Length; i++)
             {
                 Color seg = _segments[i].color;
-                Color con = _containers[i].color;
 
                 seg.a = 1;
-                con.a = 1;
 
                 _segments[i].color = seg;
+            }
+
+            for (int i = 0; i < _containers.Length; i++)
+            {
+                Color con = _containers[i].color;
+                con.a = 1;
+
                 _containers[i].color = con;
             }
         }

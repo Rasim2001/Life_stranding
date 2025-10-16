@@ -21,5 +21,21 @@ namespace Infastructure.StaticData
 
         public List<Vector3> CheckPoints;
         public List<Vector3> BatteriesPoints;
+        public List<WorldData> EnergyPoints;
+        public List<WorldData> ElephantPoints;
+    }
+
+
+    [Serializable]
+    public class WorldData
+    {
+        public Vector3 WorldPosition;
+        public Quaternion WorldRotation;
+
+        public WorldData(Vector3 worldPosition, Quaternion worldRotation)
+        {
+            WorldPosition = worldPosition;
+            WorldRotation = worldRotation;
+        }
     }
 }

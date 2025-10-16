@@ -80,9 +80,9 @@ namespace Infastructure.Services.PlayerInput
         {
             get
             {
-                float keyboardInput = _inputSource.MouseXAxis;
+                float keyboardInput = Mathf.Abs(_inputSource.MouseXAxis);
 
-                return keyboardInput > Mathf.Epsilon
+                return keyboardInput > 0
                     ? _inputSource.MouseXAxis
                     : _joystickInputSource.MouseXAxis;
             }
@@ -92,9 +92,9 @@ namespace Infastructure.Services.PlayerInput
         {
             get
             {
-                float keyboardInput = _inputSource.MouseYAxis;
+                float keyboardInput = Mathf.Abs(_inputSource.MouseYAxis);
 
-                return keyboardInput > Mathf.Epsilon
+                return keyboardInput > 0
                     ? _inputSource.MouseYAxis
                     : _joystickInputSource.MouseYAxis;
             }

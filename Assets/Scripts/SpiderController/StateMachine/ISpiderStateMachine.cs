@@ -6,5 +6,6 @@ namespace SpiderController.StateMachine
         void HandleInput();
         void Update();
         void LateUpdate();
+        bool IsCurrentState<T>() where T : ISpiderState;
     }
 }

@@ -3,6 +3,7 @@ using System.Linq;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Airborn;
 using SpiderController.StateMachine.States.Ground;
@@ -62,6 +63,9 @@ namespace SpiderController.StateMachine
             _currentState = newState;
             _currentState.Enter();
         }
+
+        public bool IsCurrentState<T>() where T : ISpiderState =>
+            _currentState is T;
 
         public void HandleInput() => _currentState.HandleInput();
 

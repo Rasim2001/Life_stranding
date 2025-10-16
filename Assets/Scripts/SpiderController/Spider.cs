@@ -1,17 +1,27 @@
+using System;
+using System.Collections.Generic;
+using Common.SceneMarkers;
+using HighlightPlus;
 using HUD;
 using Infastructure.Common.Pickup;
+using Infastructure.PlatformRegistry;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Magnet;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.XRay;
 using Infastructure.States;
 using Infastructure.StaticData.StaticDataService;
-using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
+using Sirenix.OdinInspector;
+using SpiderController.PickUp;
+using SpiderController.Platform;
 using SpiderController.Scanner;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine;
 using SpiderController.Thruster;
+using SpiderController.TriggerChecker;
 using SpiderController.UI.Health;
 using SpiderController.UI.Stickers;
 using UnityEngine;
@@ -20,60 +30,83 @@ using Zenject;
 namespace SpiderController
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class Spider : MonoBehaviour
+    public class Spider : SerializedMonoBehaviour
     {
         [SerializeField] private SpiderUI _spiderUI;
-        [SerializeField] private FlowerChecker _flowerChecker;
-        [SerializeField] private BatteryProductChecker _batteryChecker;
-        [SerializeField] private MeshRenderer _boundPlaneMeshRender;
         [SerializeField] private ThrusterSystem _thrusterSystem;
         [SerializeField] private ScannerAnimator _scannerAnimator;
+        [SerializeField] private FlowerChecker _flowerChecker;
+        [SerializeField] private BatteryProductChecker _batteryChecker;
+        [SerializeField] private EnergyChecker _energyChecker;
+        [SerializeField] private ElephantChecker _elephantChecker;
+        [SerializeField] private Stickers _stickers;
 
         [SerializeField] private Transform _rotationPlaneTransform;
-        [SerializeField] private LegDataStruct[] _legs;
         [SerializeField] private GroundChecker _groundChecker;
+
+        [SerializeField] private HighlightEffect[] _energyHighlightEffects;
+        [SerializeField] private LegDataStruct[] _legs;
+        [SerializeField] private Dictionary<PlatformId, PlatformData> _platformDatas;
+
+        public IMagnetFreezingService MagnetFreezingService => _magnetFreezingService;
         public Rigidbody Rigidbody => _rigidbody;
         public GroundChecker GroundChecker => _groundChecker;
         public SpiderUI SpiderUI => _spiderUI;
         public SpiderImpactReceiver SpiderImpactReceiver => _spiderImpactReceiver;
         public Transform RotationPlaneTransform => _rotationPlaneTransform;
-        public MeshRenderer BoundPlaneMeshRender => _boundPlaneMeshRender;
-        public IMagnetFreezingService MagnetFreezingService => _magnetFreezingService;
         public ThrusterSystem ThrusterSystem => _thrusterSystem;
         public ScannerAnimator ScannerAnimator => _scannerAnimator;
+        public PlatformSelector PlatformSelector => _platformSelector;
+        public Stickers Stickers => _stickers;
+
+        [HideInEditorMode] public Action<float> OnShakeCameraHappened;
 
         private Rigidbody _rigidbody;
         private SpiderStateMachine _spiderStateMachine;
         private SpiderPlane _spiderPlane;
-        private FlowerPickup _flowerPickup;
-        private BatteryProductPickup _batteryProductPickup;
         private CheckPointChanger _checkPointChanger;
         private SpiderImpactReceiver _spiderImpactReceiver;
+        private PlatformSelector _platformSelector;
+
+        private FlowerPickup _flowerPickup;
+        private BatteryProductPickup _batteryProductPickup;
+        private EnergyPickup _energyPickup;
+        private ElephantProductPickup _elephantProductPickup;
 
         private HudUI _hudUI;
-
 
         private IInputService _inputService;
         private IStaticDataService _staticDataService;
         private IPickupDisplayer _pickupDisplayer;
-        private IStateMachine _stateMachine1;
+        private IStateMachine _stateMachine;
         private ICheckPointService _checkPointService;
         private ICutSceneService _cutSceneService;
         private IMagnetFreezingService _magnetFreezingService;
         private IPlatformObjectsService _platformObjectsService;
+        private IXRayService _xRayService;
+        private IPlatformRegistryService _platformRegistryService;
 
 
         [Inject]
-        public void Construct(IInputService inputService, IStaticDataService staticDataService,
-            IPickupDisplayer pickupDisplayer, IStateMachine stateMachine, ICheckPointService checkPointService,
-            ICutSceneService cutSceneService, IMagnetFreezingService magnetFreezingService,
-            IPlatformObjectsService platformObjectsService)
+        public void Construct(
+            IInputService inputService,
+            IStaticDataService staticDataService,
+            IPickupDisplayer pickupDisplayer,
+            IStateMachine stateMachine,
+            ICheckPointService checkPointService,
+            ICutSceneService cutSceneService,
+            IMagnetFreezingService magnetFreezingService,
+            IPlatformObjectsService platformObjectsService,
+            IXRayService xRayService,
+            IPlatformRegistryService platformRegistryService)
         {
+            _platformRegistryService = platformRegistryService;
+            _xRayService = xRayService;
             _platformObjectsService = platformObjectsService;
             _magnetFreezingService = magnetFreezingService;
             _cutSceneService = cutSceneService;
             _checkPointService = checkPointService;
-            _stateMachine1 = stateMachine;
+            _stateMachine = stateMachine;
             _pickupDisplayer = pickupDisplayer;
             _staticDataService = staticDataService;
             _inputService = inputService;
@@ -87,13 +120,21 @@ namespace SpiderController
             _spiderPlane.Destroy();
             _batteryProductPickup.Destroy();
             _flowerPickup.Destroy();
+            _energyPickup.Destroy();
+            _elephantProductPickup.Destroy();
         }
 
         public void Initialize(Flower flower)
         {
+            _platformRegistryService.Register(_platformDatas);
+
             StateMachineData stateMachineData = new StateMachineData();
-            EnergySystem energySystem = new EnergySystem(stateMachineData, _spiderUI.EnergyBar, _staticDataService,
-                _cutSceneService);
+            stateMachineData.EnergyFillAmount = _staticDataService.SpiderStaticData.EnergyFillAmount;
+            stateMachineData.OnShakeHappened += distanceFalling => OnShakeCameraHappened?.Invoke(distanceFalling);
+
+            EnergyLegs energyLegs = new EnergyLegs(_energyHighlightEffects);
+
+            EnergySystem energySystem = new EnergySystem(stateMachineData, _spiderUI.EnergyBar, _cutSceneService);
 
             _spiderImpactReceiver = new SpiderImpactReceiver(stateMachineData, transform);
 
@@ -110,7 +151,14 @@ namespace SpiderController
                 _batteryChecker, _flowerChecker);
             _batteryProductPickup.Initialize();
 
-            _spiderUI.StickerUI.PlaySticker(StickerEnum.StartGame);
+            _energyPickup = new EnergyPickup(_inputService, _pickupDisplayer, _xRayService, _energyChecker,
+                SpiderUI.EnergyBar, stateMachineData, energyLegs);
+            _energyPickup.Initialize();
+
+            _elephantProductPickup = new ElephantProductPickup(_inputService, _pickupDisplayer, _platformObjectsService,
+                _platformRegistryService,
+                _elephantChecker);
+            _elephantProductPickup.Initialize();
 
             _spiderStateMachine =
                 new SpiderStateMachine(this,
@@ -120,6 +168,9 @@ namespace SpiderController
                     _legs,
                     flower,
                     energySystem);
+
+            _platformSelector = new PlatformSelector(_staticDataService, _platformRegistryService, _spiderStateMachine);
+            _platformSelector.Initialize();
         }
 
 
@@ -129,7 +180,7 @@ namespace SpiderController
                 return;
 
             if (Input.GetKeyDown(KeyCode.Escape))
-                _stateMachine1.Enter<LoadLevelState>(); //TODO:
+                _stateMachine.Enter<LoadLevelState>(); //TODO:
 
             _spiderStateMachine.HandleInput();
             _spiderStateMachine.Update();
@@ -138,6 +189,9 @@ namespace SpiderController
             _batteryProductPickup.Update();
             _checkPointChanger.Update();
             _spiderImpactReceiver.Update();
+            _energyPickup.Update();
+            _platformSelector.Update();
+            _elephantProductPickup.Update();
         }
 
         private void FixedUpdate()

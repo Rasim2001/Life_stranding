@@ -2,10 +2,14 @@ using CameraFollow;
 using GameDevBuddies;
 using HUD;
 using Infastructure.Common;
-using Infastructure.CutScene;
 using Infastructure.Services.CheckPoint;
+using Infastructure.Services.XRay;
+using Infastructure.StaticData;
+using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
+using Infastructure.StaticData.XRay;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using SpiderController;
 using SpiderController.UI.Health;
 using UnityEngine;
@@ -20,15 +24,17 @@ namespace Infastructure.Factories.GameFactories
         private readonly DiContainer _diContainer;
         private readonly IStaticDataService _staticDataService;
         private readonly ICheckPointService _checkPointService;
+        private readonly IXRayService _xRayService;
 
         private string ActiveSceneName => SceneManager.GetActiveScene().name;
 
         public GameFactory(DiContainer diContainer, IStaticDataService staticDataService,
-            ICheckPointService checkPointService)
+            ICheckPointService checkPointService, IXRayService xRayService)
         {
             _diContainer = diContainer;
             _staticDataService = staticDataService;
             _checkPointService = checkPointService;
+            _xRayService = xRayService;
         }
 
         public Spider CreateSpider(Flower flower)
@@ -54,17 +60,19 @@ namespace Infastructure.Factories.GameFactories
 
         public HudUI CreateHUD(Flower flower, Spider spider)
         {
-            RectTransform arrowUIPrefab = _staticDataService.HudStaticData.ArrowUIPrefab;
+            ArrowUI arrowUIPrefab = _staticDataService.HudStaticData.ArrowUIPrefab;
 
             HudUI hud = _diContainer.InstantiatePrefabResourceForComponent<HudUI>(AssetsPath.HUDPath);
             hud.Initialize(arrowUIPrefab);
 
-            hud.RegisterFlowerPoint(flower.transform);
+            hud.RegisterFlowerPoint(flower);
             hud.RegisterFinishTarget(_checkPointService.PointIndicator);
 
             flower.Initialize(hud.FlowerPointIndicator);
-            flower.Initialize(spider.RotationPlaneTransform, spider.BoundPlaneMeshRender);
+            flower.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
             flower.StopSimulatePhysics();
+
+            _xRayService.Initialize(hud.XRayCollectionContainer);
 
             return hud;
         }
@@ -78,19 +86,88 @@ namespace Infastructure.Factories.GameFactories
             _checkPointService.PointIndicator = indicatorMarker.transform;
         }
 
-        public Flower CreateFlower() =>
-            _diContainer.InstantiatePrefabResourceForComponent<Flower>(AssetsPath.FlowerPath);
+        public Flower CreateFlower()
+        {
+            ProductType productType = ProductType.Flower;
+
+            ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
+            GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
+
+            Flower flower = _diContainer.InstantiatePrefabForComponent<Flower>(prefab);
+
+            IProduct product = flower.GetComponent<IProduct>();
+            product.ProductType = ProductType.Flower;
+
+            return flower;
+        }
 
         public void CreateAllBatteryProducts(Spider spider)
         {
+            ProductType productType = ProductType.Battery;
+
+            ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
+            GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
+
             foreach (Vector3 position in _staticDataService.GameStaticData.GameDatas[ActiveSceneName].BatteriesPoints)
             {
-                BatteryProduct batteryProduct = _diContainer.InstantiatePrefabResourceForComponent<BatteryProduct>(
-                    AssetsPath.BatteryProductPath,
-                    position, Quaternion.identity,
-                    null);
+                BatteryProduct batteryProduct =
+                    _diContainer.InstantiatePrefabForComponent<BatteryProduct>(prefab, position, Quaternion.identity,
+                        null);
 
-                batteryProduct.Initialize(spider.RotationPlaneTransform, spider.BoundPlaneMeshRender);
+                IProduct product = batteryProduct.GetComponent<IProduct>();
+                product.ProductType = productType;
+
+                XRayMarker xRayMarker = batteryProduct.GetComponent<XRayMarker>();
+                xRayMarker.Type = productType;
+
+                _xRayService.Add(xRayMarker);
+
+                batteryProduct.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
+            }
+        }
+
+        public void CreateEnergyProducts()
+        {
+            ProductType productType = ProductType.Energy;
+
+            ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
+            GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
+
+            foreach (WorldData data in _staticDataService.GameStaticData.GameDatas[ActiveSceneName].EnergyPoints)
+            {
+                EnergyProduct energyProduct =
+                    _diContainer.InstantiatePrefabForComponent<EnergyProduct>(prefab, data.WorldPosition,
+                        data.WorldRotation,
+                        null);
+
+                IProduct product = energyProduct.GetComponent<IProduct>();
+                product.ProductType = productType;
+
+                XRayMarker xRayMarker = energyProduct.GetComponent<XRayMarker>();
+                xRayMarker.Type = productType;
+
+                _xRayService.Add(xRayMarker);
+            }
+        }
+
+        public void CreateElephantProduct(Spider spider)
+        {
+            ProductType productType = ProductType.Elephant;
+
+            ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
+            GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
+
+            foreach (WorldData data in _staticDataService.GameStaticData.GameDatas[ActiveSceneName].ElephantPoints)
+            {
+                ElephantProduct elephantProduct =
+                    _diContainer.InstantiatePrefabForComponent<ElephantProduct>(prefab, data.WorldPosition,
+                        data.WorldRotation,
+                        null);
+
+                IProduct product = elephantProduct.GetComponent<IProduct>();
+                product.ProductType = productType;
+
+                elephantProduct.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
             }
         }
 

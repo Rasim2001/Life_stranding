@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/io.continis.scene-notes/UI/UIToolkit/NotesBrowser/NotesBrowser.uss?fileID=7433441132597879392&amp;guid=bcf7b5c58cb064161a2468ce8c62b1c4&amp;type=3#NotesBrowser" />
+    <ui:VisualElement name="Search" class="a">
+        <ui:VisualElement name="SearchBar" style="flex-direction: row; min-height: 20px;">
+            <uie:ToolbarSearchField name="SearchField" tooltip="Search by note title, file name, or author." style="flex-grow: 1; flex-shrink: 1;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="Filters" style="flex-direction: row; flex-shrink: 1;">
+            <ui:Foldout text="Filters" name="FiltersFoldout" view-data-key="FiltersFoldout">
+                <ui:DropdownField label="State" name="StateFilter" tooltip="Filter notes by their state." class="search-filters filter-item" />
+                <ui:DropdownField label="Category" name="CategoryFilter" tooltip="Filter notes by the category they belong to." class="search-filters filter-item" />
+                <ui:Toggle label="Open scenes" name="OpenScenesFilter" tooltip="Only search notes associated to scenes that are currently loaded." value="true" class="search-filters filter-item" style="-unity-font-style: normal;" />
+            </ui:Foldout>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <SceneNotes.Editor.NotesListView name="NotesView" style="flex-grow: 1;" />
+    <ui:HelpBox message-type="Info" text="Can&apos;t find the notes you&apos;re looking for? Hover for a tip." name="SuggestionBox" tooltip="If you can&apos;t see notes in the browser that you are sure should show up, try rebuilding the search index. Go to Window &gt; Search &gt; Index Manager. Right-click on the first Search Index, and choose &quot;Force Rebuild&quot;." class="mini-help-box" style="font-size: 10px;" />
+</ui:UXML>

@@ -1,6 +1,8 @@
 using Infastructure.Common;
 using Infastructure.Common.Pickup;
+using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Factories.GameFactories;
+using Infastructure.PlatformRegistry;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Explosion;
@@ -8,6 +10,7 @@ using Infastructure.Services.Magnet;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Window.GameWindowService;
+using Infastructure.Services.XRay;
 using Infastructure.States;
 using UnityEngine.Rendering;
 using Zenject;
@@ -45,7 +48,17 @@ namespace Infastructure.CompositionRoot
             BindMagnetService();
 
             BindPlatformObjectsService();
+
+            BindXRayService();
+
+            BindPlatformRegistryService();
         }
+
+        private void BindPlatformRegistryService() =>
+            Container.BindInterfacesAndSelfTo<PlatformRegistryService>().AsSingle();
+
+        private void BindXRayService() =>
+            Container.BindInterfacesAndSelfTo<XRayService>().AsSingle();
 
         private void BindPlatformObjectsService() =>
             Container.BindInterfacesAndSelfTo<PlatformObjectsService>().AsSingle();

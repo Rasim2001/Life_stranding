@@ -15,7 +15,6 @@ namespace Infastructure.Common
         public const string HUDPath = "Prefabs/HUD/HUD";
         public const string FlowerPath = "Prefabs/Flower/Flower";
         public const string PointIndicatorPath = "Prefabs/Scene/PointIndicator";
-        public const string BatteryProductPath = "Prefabs/BatteryProduct/BatteryProduct";
         public const string StartGameCutSceneTimelinePath = "Prefabs/Timeline/StartGameTimeline";
         public const string TerrainScanPath = "Prefabs/TerrainScan/[Terrain_Scan]";
 
@@ -24,5 +23,8 @@ namespace Infastructure.Common
         public const string GameDataPath = "StaticData/GameData/GameData";
         public const string MaterialsDataPath = "StaticData/Materials/MaterialsData";
         public const string VolumeProfilesDataPath = "StaticData/VolumeProfiles/VolumeProfiles";
+        public const string XRayCollectionDataPath = "StaticData/XRay/XRayCollection";
+        public const string ProductStaticDataPath = "StaticData/Products/ProductsData";
+        public const string StickersStaticDataPath = "StaticData/Stickers/StickersData";
     }
 }
