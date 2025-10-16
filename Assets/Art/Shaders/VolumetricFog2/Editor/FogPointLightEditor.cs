@@ -4,7 +4,7 @@ using UnityEditor;
 namespace VolumetricFogAndMist2 {
 
     [CustomEditor(typeof(FogPointLight))]
-    public class FogPointLightEditor : Editor {
+    public class FogPointLightEditor : UnityEditor.Editor {
 
 
         SerializedProperty inscattering, intensity;

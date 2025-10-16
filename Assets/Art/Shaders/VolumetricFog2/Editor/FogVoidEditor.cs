@@ -4,7 +4,7 @@ using UnityEditor;
 namespace VolumetricFogAndMist2 {
 
     [CustomEditor(typeof(FogVoid))]
-    public class FogVoidEditor : Editor {
+    public class FogVoidEditor : UnityEditor.Editor {
 
         SerializedProperty falloff, roundness;
 

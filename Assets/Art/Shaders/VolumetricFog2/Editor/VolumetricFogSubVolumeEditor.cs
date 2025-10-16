@@ -5,7 +5,7 @@ using UnityEditor.IMGUI.Controls;
 namespace VolumetricFogAndMist2 {
 
     [CustomEditor(typeof(VolumetricFogSubVolume))]
-    public class VolumetricFogSubVolumeEditor : Editor {
+    public class VolumetricFogSubVolumeEditor : UnityEditor.Editor {
 
         SerializedProperty profile, fadeDistance;
 

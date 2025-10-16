@@ -7,7 +7,7 @@ using UnityEditor;
 namespace VolumetricFogAndMist2 {
 
     [CustomEditor(typeof(VolumetricFogProfile))]
-    public class VolumetricFogProfileEditor : Editor {
+    public class VolumetricFogProfileEditor : UnityEditor.Editor {
 
         SerializedProperty raymarchQuality, raymarchMinStep, jittering, dithering;
         SerializedProperty renderQueue, sortingLayerID, sortingOrder;

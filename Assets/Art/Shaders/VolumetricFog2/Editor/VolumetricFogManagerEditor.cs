@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 namespace VolumetricFogAndMist2 {
 
     [CustomEditor(typeof(VolumetricFogManager))]
-    public class VolumetricFogManagerEditor : Editor {
+    public class VolumetricFogManagerEditor : UnityEditor.Editor {
 
         SerializedProperty sun, moon, includeTransparent, depthPeeling, transparentCullMode, includeSemiTransparent, alphaCutOff, semiTransparentCullMode, flipDepthTexture, mainManager;
         SerializedProperty scattering, scatteringThreshold, scatteringIntensity, scatteringAbsorption, scatteringTint, scatteringHighQuality;
