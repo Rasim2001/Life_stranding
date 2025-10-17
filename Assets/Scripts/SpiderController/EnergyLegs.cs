@@ -25,8 +25,6 @@ namespace SpiderController
             _highlightEffect[_count].gameObject.SetActive(true);
             _highlightEffect[_count].Highlighted = true;
 
-            Debug.Log(_highlightEffect[_count]);
-
             await UniTask.Delay(TimeSpan.FromSeconds(2));
 
             _highlightEffect[_count].Highlighted = false;

@@ -44,19 +44,13 @@ namespace SpiderController.Platform
 
             if (Input.GetKeyDown(KeyCode.Alpha3))
                 SelectPlatform(PlatformId.Surf);
-
-            if (_platformRegistryService.CurrentPlatformId == PlatformId.Surf)
-                return;
-
+            
             if (_IsOnPlatform && _spiderStateMachine.IsCurrentState<AirbornState>() == false)
                 ChangeMaterial();
         }
 
         public void ReturnToDefaultMaterial()
         {
-            if (_platformRegistryService.CurrentPlatformId == PlatformId.Surf)
-                return;
-
             if (!_isBlinking)
                 return;
 
@@ -106,10 +100,6 @@ namespace SpiderController.Platform
 
             _platformRegistryService.CurrentPlatformData = platformData;
             _platformRegistryService.CurrentPlatformId = platformId;
-
-            if (_platformRegistryService.CurrentPlatformId == PlatformId.Surf)
-                return;
-
             _defaultMaterial = platformData.MeshRenderer.material;
         }
 
