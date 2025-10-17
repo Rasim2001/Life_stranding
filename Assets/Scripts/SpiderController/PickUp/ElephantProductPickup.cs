@@ -45,6 +45,7 @@ namespace SpiderController.PickUp
             if (CanPickup())
                 PickElephant();
 
+
             TryShow();
         }
 
@@ -58,7 +59,13 @@ namespace SpiderController.PickUp
         private void TryShow()
         {
             foreach (Collider collider in _elephantChecker.Results)
-                _pickupDisplayer.Show(collider.transform);
+            {
+                if (collider != null && collider.TryGetComponent(out ElephantProduct elephantProduct))
+                {
+                    if (elephantProduct.Rigidbody.IsSleeping() && !elephantProduct.IsOnPlatform)
+                        _pickupDisplayer.Show(elephantProduct.transform);
+                }
+            }
         }
 
 
@@ -67,6 +74,8 @@ namespace SpiderController.PickUp
             Collider elephantCollider = _elephantChecker.Results.FirstOrDefault();
             if (elephantCollider == null)
                 return;
+
+            HideElephant(elephantCollider);
 
             ElephantProduct elephantProduct = elephantCollider.GetComponent<ElephantProduct>();
             elephantProduct.StopSimulatePhysics();
