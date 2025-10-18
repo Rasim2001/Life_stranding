@@ -23,6 +23,7 @@ namespace PickupObjects.PickUpOnPlatform
         private Transform _platformArmature;
         private IPlatformObjectsService _platformObjectsService;
         private PlatformSelector _platformSelector;
+        private Collider _collider;
 
         [Inject]
         public void Construct(IStaticDataService staticDataService, IPlatformObjectsService platformObjectsService) =>
@@ -34,15 +35,19 @@ namespace PickupObjects.PickUpOnPlatform
             _platformArmature = platformTransform;
         }
 
-        private void Awake() =>
+        private void Awake()
+        {
+            _collider = GetComponent<Collider>();
+
             Rigidbody = GetComponent<Rigidbody>();
+        }
 
         private void Update()
         {
             if (!IsOnPlatform || IsFreezingOnPlatform)
                 return;
 
-            IsOnPlatform = _platformSelector.IsOnPlatform(transform.position);
+            IsOnPlatform = _platformSelector.IsOnPlatform(_collider);
 
             if (IsOnPlatform)
                 SimulateRotation();

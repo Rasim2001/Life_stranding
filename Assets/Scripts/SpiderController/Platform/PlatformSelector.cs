@@ -10,7 +10,6 @@ namespace SpiderController.Platform
     public class PlatformSelector
     {
         private readonly IPlatformRegistryService _platformRegistryService;
-        private readonly SpiderStateMachine _spiderStateMachine;
 
         private readonly Material _planeBlinkMaterial;
         private Material _defaultMaterial;
@@ -19,15 +18,13 @@ namespace SpiderController.Platform
         private float _blinkSpeed;
         private bool _IsOnPlatform;
 
-        private Vector3 _pointPositionCached;
+        private Collider _productColliderCached;
 
         public PlatformSelector(
             IStaticDataService staticDataService,
-            IPlatformRegistryService platformRegistryService,
-            SpiderStateMachine spiderStateMachine)
+            IPlatformRegistryService platformRegistryService)
         {
             _platformRegistryService = platformRegistryService;
-            _spiderStateMachine = spiderStateMachine;
             _planeBlinkMaterial = new Material(staticDataService.MaterialsStaticData.PlaneBlinkMaterial);
         }
 
@@ -44,8 +41,8 @@ namespace SpiderController.Platform
 
             if (Input.GetKeyDown(KeyCode.Alpha3))
                 SelectPlatform(PlatformId.Surf);
-            
-            if (_IsOnPlatform && _spiderStateMachine.IsCurrentState<AirbornState>() == false)
+
+            if (_IsOnPlatform)
                 ChangeMaterial();
         }
 
@@ -58,10 +55,12 @@ namespace SpiderController.Platform
             _platformRegistryService.CurrentPlatformData.MeshRenderer.material = _defaultMaterial;
         }
 
-        public bool IsOnPlatform(Vector3 flowerPosition)
+        public bool IsOnPlatform(Collider productCollider)
         {
-            _pointPositionCached = flowerPosition;
-            _IsOnPlatform = _platformRegistryService.CurrentPlatformData.Collider.bounds.Contains(flowerPosition);
+            Collider platformCollider = _platformRegistryService.CurrentPlatformData.Collider;
+
+            _productColliderCached = productCollider;
+            _IsOnPlatform = IsInside(platformCollider, _productColliderCached);
 
             return _IsOnPlatform;
         }
@@ -114,12 +113,9 @@ namespace SpiderController.Platform
 
         private void ChangeMaterial()
         {
-            Vector3 closestPoint =
-                _platformRegistryService.CurrentPlatformData.BlinkDetectionCollider.ClosestPoint(_pointPositionCached);
-            closestPoint.y = 0;
-            _pointPositionCached.y = 0;
+            Collider blinkCollider = _platformRegistryService.CurrentPlatformData.BlinkDetectionCollider;
 
-            bool isInside = (closestPoint - _pointPositionCached).sqrMagnitude < Mathf.Epsilon;
+            bool isInside = IsInside(_productColliderCached, blinkCollider);
 
             if (isInside)
                 ReturnToDefaultMaterial();
@@ -134,6 +130,15 @@ namespace SpiderController.Platform
 
             foreach (GameObject pieceObject in platformData.AllPieceObjects)
                 pieceObject.SetActive(value);
+        }
+
+        private bool IsInside(Collider a, Collider b)
+        {
+            return Physics.ComputePenetration(
+                a, a.transform.position, a.transform.rotation,
+                b, b.transform.position, b.transform.rotation,
+                out _, out _
+            );
         }
     }
 }

@@ -169,7 +169,7 @@ namespace SpiderController
                     flower,
                     energySystem);
 
-            _platformSelector = new PlatformSelector(_staticDataService, _platformRegistryService, _spiderStateMachine);
+            _platformSelector = new PlatformSelector(_staticDataService, _platformRegistryService);
             _platformSelector.Initialize();
         }
 
