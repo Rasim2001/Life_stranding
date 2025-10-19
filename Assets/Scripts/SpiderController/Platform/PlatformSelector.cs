@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using Infastructure.PlatformRegistry;
 using Infastructure.StaticData.StaticDataService;
-using SpiderController.StateMachine;
-using SpiderController.StateMachine.States.Airborn;
 using UnityEngine;
 
 namespace SpiderController.Platform
@@ -12,6 +10,9 @@ namespace SpiderController.Platform
         private readonly IPlatformRegistryService _platformRegistryService;
 
         private readonly Material _planeBlinkMaterial;
+        private readonly int _excludeLayers =
+            1 << LayerMask.NameToLayer("Product") | 1 << LayerMask.NameToLayer("Flower");
+
         private Material _defaultMaterial;
 
         private bool _isBlinking;
@@ -64,6 +65,12 @@ namespace SpiderController.Platform
 
             return _IsOnPlatform;
         }
+
+        public void SetExcludeLayerMask() =>
+            _platformRegistryService.CurrentPlatformData.Collider.excludeLayers = _excludeLayers;
+
+        public void ResetExcludeLayerMask() =>
+            _platformRegistryService.CurrentPlatformData.Collider.excludeLayers = 0;
 
         private void InitializePlatform(PlatformId platformId)
         {

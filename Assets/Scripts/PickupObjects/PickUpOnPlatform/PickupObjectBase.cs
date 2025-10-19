@@ -1,5 +1,7 @@
+using System;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.StaticData.StaticDataService;
+using SpiderController;
 using SpiderController.Platform;
 using UnityEngine;
 using Zenject;
@@ -23,7 +25,10 @@ namespace PickupObjects.PickUpOnPlatform
         private Transform _platformArmature;
         private IPlatformObjectsService _platformObjectsService;
         private PlatformSelector _platformSelector;
+
         private Collider _collider;
+        private Transform _spiderTransform;
+
 
         [Inject]
         public void Construct(IStaticDataService staticDataService, IPlatformObjectsService platformObjectsService) =>
@@ -33,13 +38,14 @@ namespace PickupObjects.PickUpOnPlatform
         {
             _platformSelector = platformSelector;
             _platformArmature = platformTransform;
+
+            _spiderTransform = _platformArmature.GetComponentInParent<Spider>().transform;
         }
 
         private void Awake()
         {
-            _collider = GetComponent<Collider>();
-
             Rigidbody = GetComponent<Rigidbody>();
+            _collider = GetComponent<Collider>();
         }
 
         private void Update()
@@ -55,8 +61,26 @@ namespace PickupObjects.PickUpOnPlatform
                 StartSimulatePhysics();
         }
 
+
         public void SetCustomOffsetPosition(Vector3 position) =>
             _customPositionOffset = position;
+
+
+        public virtual void StopSimulatePhysics()
+        {
+            if (!_platformObjectsService.PickupObjects.Contains(this))
+                _platformObjectsService.PickupObjects.Add(this);
+
+            Rigidbody.useGravity = false;
+            IsOnPlatform = true;
+
+            _platformSelector.SetExcludeLayerMask();
+
+            transform.SetParent(_platformArmature);
+
+            transform.localPosition = StartPosition + _customPositionOffset;
+            transform.localRotation = StartRotation;
+        }
 
 
         protected virtual void StartSimulatePhysics()
@@ -65,24 +89,12 @@ namespace PickupObjects.PickUpOnPlatform
 
             _platformObjectsService.PickupObjects.Remove(this);
 
-            Rigidbody.isKinematic = false;
+            Rigidbody.useGravity = true;
             IsOnPlatform = false;
 
+            _platformSelector.ResetExcludeLayerMask();
+
             transform.SetParent(null);
-        }
-
-        public virtual void StopSimulatePhysics()
-        {
-            if (!_platformObjectsService.PickupObjects.Contains(this))
-                _platformObjectsService.PickupObjects.Add(this);
-
-            Rigidbody.isKinematic = true;
-            IsOnPlatform = true;
-
-            transform.SetParent(_platformArmature);
-
-            transform.localPosition = StartPosition + _customPositionOffset;
-            transform.localRotation = StartRotation;
         }
 
 
@@ -105,6 +117,9 @@ namespace PickupObjects.PickUpOnPlatform
             movementVector = StartRotation * movementVector;
 
             transform.Translate(movementVector, Space.Self);
+
+            transform.localPosition =
+                new Vector3(transform.localPosition.x, StartPosition.y, transform.localPosition.z);
         }
     }
 }
