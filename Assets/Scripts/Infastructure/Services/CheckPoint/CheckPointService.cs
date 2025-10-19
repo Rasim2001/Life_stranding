@@ -23,7 +23,7 @@ namespace Infastructure.Services.CheckPoint
             if (_count >= GameData.CheckPoints.Count)
                 return;
 
-            PointIndicator.position = GameData.CheckPoints[_count];
+            PointIndicator.position = GameData.CheckPoints[_count].WorldPosition;
             _count++;
         }
     }

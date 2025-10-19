@@ -17,10 +17,10 @@ namespace Infastructure.StaticData
     [Serializable]
     public class GameData
     {
-        public Vector3 SpiderSpawnPosition;
+        public WorldData SpiderSpawnData;
 
-        public List<Vector3> CheckPoints;
-        public List<Vector3> BatteriesPoints;
+        public List<WorldData> CheckPoints;
+        public List<WorldData> BatteriesPoints;
         public List<WorldData> EnergyPoints;
         public List<WorldData> ElephantPoints;
     }

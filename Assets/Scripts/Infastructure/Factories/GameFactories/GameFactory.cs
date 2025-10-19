@@ -39,10 +39,10 @@ namespace Infastructure.Factories.GameFactories
 
         public Spider CreateSpider(Flower flower)
         {
-            Vector3 spiderSpawnPosition =
-                _staticDataService.GameStaticData.GameDatas[ActiveSceneName].SpiderSpawnPosition;
+            WorldData worldData =
+                _staticDataService.GameStaticData.GameDatas[ActiveSceneName].SpiderSpawnData;
             Spider spider = _diContainer.InstantiatePrefabResourceForComponent<Spider>(AssetsPath.SpiderPath,
-                spiderSpawnPosition, Quaternion.identity, null);
+                worldData.WorldPosition, worldData.WorldRotation, null);
             spider.Initialize(flower);
 
             SpiderUI spiderUI = spider.GetComponent<SpiderUI>();
@@ -108,10 +108,12 @@ namespace Infastructure.Factories.GameFactories
             ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
             GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
 
-            foreach (Vector3 position in _staticDataService.GameStaticData.GameDatas[ActiveSceneName].BatteriesPoints)
+            foreach (WorldData worldData in _staticDataService.GameStaticData.GameDatas[ActiveSceneName]
+                         .BatteriesPoints)
             {
                 BatteryProduct batteryProduct =
-                    _diContainer.InstantiatePrefabForComponent<BatteryProduct>(prefab, position, Quaternion.identity,
+                    _diContainer.InstantiatePrefabForComponent<BatteryProduct>(prefab, worldData.WorldPosition,
+                        worldData.WorldRotation,
                         null);
 
                 IProduct product = batteryProduct.GetComponent<IProduct>();

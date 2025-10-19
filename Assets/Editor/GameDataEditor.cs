@@ -27,11 +27,11 @@ namespace Editor
 
                 gameData.GameDatas[nameScene].CheckPoints = FindObjectsOfType<CheckPointMarker>()
                     .OrderBy(x => x.transform.GetSiblingIndex())
-                    .Select(x => x.transform.position)
+                    .Select(x => new WorldData(x.transform.position, x.transform.rotation))
                     .ToList();
 
                 gameData.GameDatas[nameScene].BatteriesPoints = FindObjectsOfType<BatteryPointMarker>()
-                    .Select(x => x.transform.position)
+                    .Select(x => new WorldData(x.transform.position, x.transform.rotation))
                     .ToList();
 
                 gameData.GameDatas[nameScene].EnergyPoints = FindObjectsOfType<EnergyPointMarker>()
@@ -42,8 +42,11 @@ namespace Editor
                     .Select(x => new WorldData(x.transform.position, x.transform.rotation))
                     .ToList();
 
-                gameData.GameDatas[nameScene].SpiderSpawnPosition =
-                    FindObjectOfType<SpiderSpawnPointMarker>().transform.position;
+                SpiderSpawnPointMarker spiderSpawnPointMarker = FindObjectOfType<SpiderSpawnPointMarker>();
+
+                gameData.GameDatas[nameScene].SpiderSpawnData = new WorldData(
+                    spiderSpawnPointMarker.transform.position,
+                    spiderSpawnPointMarker.transform.rotation);
             }
 
 
