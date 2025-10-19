@@ -61,6 +61,9 @@ namespace PickupObjects.PickUpOnPlatform
 
         private void Update()
         {
+            if (IsOnPlatform)
+                transform.localRotation = Quaternion.Euler(StartRotation.eulerAngles.x, 0, 0);
+
             if (!IsOnPlatform || IsFreezingOnPlatform)
                 return;
 
@@ -140,8 +143,6 @@ namespace PickupObjects.PickUpOnPlatform
 
         private void SimulateRotation()
         {
-            transform.localRotation = Quaternion.Euler(StartRotation.eulerAngles.x, 0, 0);
-
             Vector3 platformRotation = _platformArmature.eulerAngles;
 
             int sing = StartRotation.x >= 0 ? 1 : -1;
