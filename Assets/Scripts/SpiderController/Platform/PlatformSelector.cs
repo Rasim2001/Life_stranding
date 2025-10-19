@@ -107,6 +107,11 @@ namespace SpiderController.Platform
             _platformRegistryService.CurrentPlatformData = platformData;
             _platformRegistryService.CurrentPlatformId = platformId;
             _defaultMaterial = platformData.MeshRenderer.material;
+
+            if (_IsOnPlatform)
+                SetExcludeLayerMask();
+            else
+                ResetExcludeLayerMask();
         }
 
         private void SetBlinkMaterial()

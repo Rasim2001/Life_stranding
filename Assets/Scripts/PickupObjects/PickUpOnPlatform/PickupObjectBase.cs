@@ -11,23 +11,30 @@ namespace PickupObjects.PickUpOnPlatform
     [RequireComponent(typeof(Rigidbody))]
     public class PickupObjectBase : MonoBehaviour
     {
-        protected Vector3 StartPosition { get; set; }
-        protected Quaternion StartRotation { get; set; }
-        protected float Speed { get; set; }
-
-        private Vector3 _customPositionOffset = Vector3.zero;
+        private readonly float _linearDamping = 10;
+        private readonly float _angularDamping = 10;
 
         public bool IsOnPlatform { get; private set; }
         public Rigidbody Rigidbody { get; private set; }
 
         public bool IsFreezingOnPlatform;
 
+        protected Vector3 StartPosition { get; set; }
+        protected Quaternion StartRotation { get; set; }
+        protected float Speed { get; set; }
+
+        private Vector3 _customPositionOffset = Vector3.zero;
+
         private Transform _platformArmature;
         private IPlatformObjectsService _platformObjectsService;
         private PlatformSelector _platformSelector;
 
         private Collider _collider;
-        private Transform _spiderTransform;
+        private Rigidbody _spiderRigidbody;
+
+
+        private float _linearDefaultDamping;
+        private float _angularDefaultDamping;
 
 
         [Inject]
@@ -39,12 +46,16 @@ namespace PickupObjects.PickUpOnPlatform
             _platformSelector = platformSelector;
             _platformArmature = platformTransform;
 
-            _spiderTransform = _platformArmature.GetComponentInParent<Spider>().transform;
+            _spiderRigidbody = _platformArmature.GetComponentInParent<Spider>().Rigidbody;
         }
 
         private void Awake()
         {
             Rigidbody = GetComponent<Rigidbody>();
+
+            _linearDefaultDamping = Rigidbody.linearDamping;
+            _angularDefaultDamping = Rigidbody.angularDamping;
+
             _collider = GetComponent<Collider>();
         }
 
@@ -61,6 +72,27 @@ namespace PickupObjects.PickUpOnPlatform
                 StartSimulatePhysics();
         }
 
+        private void FixedUpdate()
+        {
+            if (!IsOnPlatform)
+                return;
+
+            if (Rigidbody.constraints == RigidbodyConstraints.FreezeRotation)
+                Rigidbody.linearVelocity =
+                    new Vector3(_spiderRigidbody.linearVelocity.x, 0, _spiderRigidbody.linearVelocity.z);
+        }
+
+        private void OnCollisionEnter(Collision other)
+        {
+            if (other.gameObject.layer == LayerMask.NameToLayer("Default"))
+                Rigidbody.constraints = IsOnPlatform ? RigidbodyConstraints.FreezeRotation : RigidbodyConstraints.None;
+        }
+
+        private void OnCollisionExit(Collision other)
+        {
+            if (other.gameObject.layer == LayerMask.NameToLayer("Default"))
+                Rigidbody.constraints = IsOnPlatform ? RigidbodyConstraints.FreezeAll : RigidbodyConstraints.None;
+        }
 
         public void SetCustomOffsetPosition(Vector3 position) =>
             _customPositionOffset = position;
@@ -71,8 +103,11 @@ namespace PickupObjects.PickUpOnPlatform
             if (!_platformObjectsService.PickupObjects.Contains(this))
                 _platformObjectsService.PickupObjects.Add(this);
 
-            Rigidbody.useGravity = false;
             IsOnPlatform = true;
+            Rigidbody.useGravity = false;
+            Rigidbody.angularDamping = _angularDamping;
+            Rigidbody.linearDamping = _linearDamping;
+            Rigidbody.constraints = RigidbodyConstraints.FreezeAll;
 
             _platformSelector.SetExcludeLayerMask();
 
@@ -85,12 +120,17 @@ namespace PickupObjects.PickUpOnPlatform
 
         protected virtual void StartSimulatePhysics()
         {
+            Debug.Log("StartSimulatePhysics");
+
             _platformSelector.ReturnToDefaultMaterial();
 
             _platformObjectsService.PickupObjects.Remove(this);
 
-            Rigidbody.useGravity = true;
             IsOnPlatform = false;
+            Rigidbody.useGravity = true;
+            Rigidbody.angularDamping = _angularDefaultDamping;
+            Rigidbody.linearDamping = _linearDefaultDamping;
+            Rigidbody.constraints = RigidbodyConstraints.None;
 
             _platformSelector.ResetExcludeLayerMask();
 
@@ -100,6 +140,8 @@ namespace PickupObjects.PickUpOnPlatform
 
         private void SimulateRotation()
         {
+            transform.localRotation = Quaternion.Euler(StartRotation.eulerAngles.x, 0, 0);
+
             Vector3 platformRotation = _platformArmature.eulerAngles;
 
             int sing = StartRotation.x >= 0 ? 1 : -1;
