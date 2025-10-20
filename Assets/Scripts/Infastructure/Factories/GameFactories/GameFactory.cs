@@ -2,6 +2,7 @@ using CameraFollow;
 using GameDevBuddies;
 using HUD;
 using Infastructure.Common;
+using Infastructure.CutScene;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.XRay;
 using Infastructure.StaticData;
@@ -176,9 +177,10 @@ namespace Infastructure.Factories.GameFactories
 
         public void CreateStartGameCutSceneTimeline(Spider spiderTransform)
         {
-            /*GameObject cutScene = _diContainer.InstantiatePrefabResource(AssetsPath.StartGameCutSceneTimelinePath);
-            StartGameCutSceneRunner startGameCutSceneRunner = cutScene.GetComponent<StartGameCutSceneRunner>();
-            startGameCutSceneRunner.Initialize(spiderTransform.transform);*/
+            StartGameCutSceneRunner cutScene =
+                _diContainer.InstantiatePrefabResourceForComponent<StartGameCutSceneRunner>(AssetsPath
+                    .StartGameCutSceneTimelinePath);
+            cutScene.Initialize(spiderTransform.transform);
         }
 
         public void CreateTerrainScan(Spider spider)

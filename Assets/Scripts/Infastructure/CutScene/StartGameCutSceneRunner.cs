@@ -1,5 +1,3 @@
-using System;
-using Cysharp.Threading.Tasks;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
@@ -16,7 +14,6 @@ namespace Infastructure.CutScene
     {
         [SerializeField] private CinemachineCamera _secondCamera;
         [SerializeField] private CinemachineCamera _fourthCamera;
-
         private VolumeProfilesStaticData VolumeProfilesStaticData => _staticDataService.VolumeProfilesStaticData;
 
         private IInputService _inputService;
@@ -45,10 +42,7 @@ namespace Infastructure.CutScene
 
         private void Awake()
         {
-            _cutSceneInputSource = new CutSceneInputSource();
-            _inputService.SetInputSource(_cutSceneInputSource);
-
-            _inputService.SetInputSource(new PlayerInputSource());
+            
         }
 
 
