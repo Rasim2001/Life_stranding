@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
@@ -13,6 +14,7 @@ namespace SpiderController.StateMachine
 {
     public class SpiderStateMachine : ISpiderStateMachine
     {
+        private readonly ICutSceneService _cutSceneService;
         private readonly List<ISpiderState> _states;
 
         private ISpiderState _currentState;
@@ -21,31 +23,43 @@ namespace SpiderController.StateMachine
             StateMachineData stateMachineData,
             IInputService inputService,
             IStaticDataService staticDataService,
+            ICutSceneService cutSceneService,
             LegDataStruct[] legs,
             Flower flower,
             EnergySystem energySystem)
         {
+            _cutSceneService = cutSceneService;
             _states = new List<ISpiderState>()
             {
-                new IdlingState(this, inputService, staticDataService, spider, stateMachineData, legs, flower,
+                new IdlingState(this, inputService, staticDataService, cutSceneService, spider, stateMachineData, legs,
+                    flower,
                     energySystem),
-                new RunningState(this, inputService, staticDataService, spider, stateMachineData, legs, flower,
+                new RunningState(this, inputService, staticDataService, cutSceneService, spider, stateMachineData, legs,
+                    flower,
                     energySystem),
-                new FastRunningState(this, inputService, staticDataService, spider, stateMachineData, legs, flower,
+                new FastRunningState(this, inputService, staticDataService, cutSceneService, spider, stateMachineData,
+                    legs, flower,
                     energySystem),
-                new JumpingState(this, inputService, staticDataService, spider, stateMachineData, legs, flower,
+                new JumpingState(this, inputService, staticDataService, cutSceneService, spider, stateMachineData, legs,
+                    flower,
                     energySystem),
-                new FallingState(this, inputService, staticDataService, spider, stateMachineData, legs, flower,
+                new FallingState(this, inputService, staticDataService, cutSceneService, spider, stateMachineData, legs,
+                    flower,
                     energySystem),
-                new FallingWithoutEnergyState(this, inputService, staticDataService, spider, stateMachineData, legs,
+                new FallingWithoutEnergyState(this, inputService, staticDataService, cutSceneService, spider,
+                    stateMachineData, legs,
                     flower, energySystem),
-                new JerkState(this, inputService, staticDataService, spider, stateMachineData, legs, flower,
+                new JerkState(this, inputService, staticDataService, cutSceneService, spider, stateMachineData, legs,
+                    flower,
                     energySystem),
-                new SlowdownState(this, inputService, staticDataService, spider, stateMachineData, legs, flower,
+                new SlowdownState(this, inputService, staticDataService, cutSceneService, spider, stateMachineData,
+                    legs, flower,
                     energySystem),
-                new FallingWithControlState(this, inputService, staticDataService, spider, stateMachineData, legs,
+                new FallingWithControlState(this, inputService, staticDataService, spider, cutSceneService,
+                    stateMachineData, legs,
                     flower, energySystem),
-                new RecoveryState(this, inputService, staticDataService, spider, stateMachineData, legs, flower,
+                new RecoveryState(this, inputService, staticDataService, cutSceneService, spider, stateMachineData,
+                    legs, flower,
                     energySystem),
             };
 

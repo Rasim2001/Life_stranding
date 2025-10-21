@@ -1,5 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
+using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects.PickUpOnPlatform;
@@ -11,9 +12,10 @@ namespace SpiderController.StateMachine.States.Ground
     public class RecoveryState : MovementState
     {
         public RecoveryState(ISpiderStateMachine stateMachine, IInputService inputService,
-            IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
+            IStaticDataService staticDataService, ICutSceneService cutSceneService, Spider spider,
+            StateMachineData stateMachineData,
             LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(stateMachine, inputService,
-            staticDataService, spider, stateMachineData, legs, flower, energySystem)
+            staticDataService, cutSceneService, spider, stateMachineData, legs, flower, energySystem)
         {
         }
 

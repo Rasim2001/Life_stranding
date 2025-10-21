@@ -2,7 +2,6 @@
 # 0) БАЗА: авто-нормализация текста
 ################################################################################
 * text=auto
-
 ################################################################################
 # 1) UNITY YAML / ТЕКСТ — дифф/мердж через UnityYAMLMerge
 #    Требует настроенный Smart Merge:
@@ -22,7 +21,6 @@
 *.asmdef                text eol=lf merge=unityyamlmerge diff
 *.inputactions          text eol=lf merge=unityyamlmerge diff
 *.shadergraph           text eol=lf merge=unityyamlmerge diff
-
 ################################################################################
 # 2) КОД / КОНФИГИ — текст LF
 ################################################################################
@@ -37,7 +35,6 @@
 *.yml       text eol=lf diff
 *.uxml      text eol=lf diff
 *.uss       text eol=lf diff
-
 ################################################################################
 # 3) GIT LFS — ИЗОБРАЖЕНИЯ / ТЕКСТУРЫ
 ################################################################################
@@ -52,7 +49,6 @@
 *.psd   filter=lfs diff=lfs merge=lfs -text lockable
 *.psb   filter=lfs diff=lfs merge=lfs -text lockable
 *.webp  filter=lfs diff=lfs merge=lfs -text
-
 ################################################################################
 # 4) GIT LFS — 3D/SCENE/ASSET DCC
 ################################################################################
@@ -61,7 +57,6 @@
 *.blend filter=lfs diff=lfs merge=lfs -text lockable
 *.abc   filter=lfs diff=lfs merge=lfs -text
 *.sbsar filter=lfs diff=lfs merge=lfs -text
-
 # КРУПНЫЕ БИНАРНЫЕ Unity .asset (ТОЧЕЧНО!)
 Assets/**/LightingData.asset          filter=lfs diff=lfs merge=lfs -text
 Assets/**/OcclusionCullingData.asset  filter=lfs diff=lfs merge=lfs -text
@@ -70,7 +65,6 @@ Assets/**/TerrainData.asset           filter=lfs diff=lfs merge=lfs -text
 Assets/**/NoiseTex3D.asset            filter=lfs diff=lfs merge=lfs -text
 # (опционально, если встречается в проекте)
 Assets/**/LightmapSnapshot.asset      filter=lfs diff=lfs merge=lfs -text
-
 ################################################################################
 # 5) GIT LFS — АУДИО/ВИДЕО
 ################################################################################
@@ -80,14 +74,12 @@ Assets/**/LightmapSnapshot.asset      filter=lfs diff=lfs merge=lfs -text
 *.ogg   filter=lfs diff=lfs merge=lfs -text
 *.flac  filter=lfs diff=lfs merge=lfs -text
 *.mp3   filter=lfs diff=lfs merge=lfs -text
-
 *.mp4   filter=lfs diff=lfs merge=lfs -text
 *.mov   filter=lfs diff=lfs merge=lfs -text
 *.webm  filter=lfs diff=lfs merge=lfs -text
 *.avi   filter=lfs diff=lfs merge=lfs -text
 *.mkv   filter=lfs diff=lfs merge=lfs -text
 *.ogv   filter=lfs diff=lfs merge=lfs -text
-
 ################################################################################
 # 6) GIT LFS — АРХИВЫ/ПАКЕТЫ/ШРИФТЫ
 ################################################################################
@@ -95,6 +87,6 @@ Assets/**/LightmapSnapshot.asset      filter=lfs diff=lfs merge=lfs -text
 *.zip          filter=lfs diff=lfs merge=lfs -text
 *.7z           filter=lfs diff=lfs merge=lfs -text
 *.rar          filter=lfs diff=lfs merge=lfs -text
-
 *.ttf  filter=lfs diff=lfs merge=lfs -text
 *.otf  filter=lfs diff=lfs merge=lfs -text
+*.FBX filter=lfs diff=lfs merge=lfs -text

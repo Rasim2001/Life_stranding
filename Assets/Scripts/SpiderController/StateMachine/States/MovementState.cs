@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
@@ -29,6 +30,7 @@ namespace SpiderController.StateMachine.States
         private SpiderHealth SpiderHealth => Spider.SpiderUI.SpiderHealth;
 
         private readonly IStaticDataService _staticDataService;
+        private readonly ICutSceneService _cutSceneService;
         private readonly IInputService _inputService;
         private readonly float _legMoveDeadzone = 0.04f;
 
@@ -39,6 +41,7 @@ namespace SpiderController.StateMachine.States
             ISpiderStateMachine stateMachine,
             IInputService inputService,
             IStaticDataService staticDataService,
+            ICutSceneService cutSceneService,
             Spider spider,
             StateMachineData stateMachineData,
             LegDataStruct[] legs,
@@ -47,6 +50,7 @@ namespace SpiderController.StateMachine.States
         {
             _inputService = inputService;
             _staticDataService = staticDataService;
+            _cutSceneService = cutSceneService;
             Flower = flower;
             EnergySystem = energySystem;
 
@@ -75,7 +79,11 @@ namespace SpiderController.StateMachine.States
             Data.Input = _inputService.InputVector;
             Data.Velocity = Data.Input * Data.Speed;
 
-            Data.RotationAmount = Data.Input.x * SpiderStaticData.LerpForwardSpeed;
+            float lerpForwardSpeed = _cutSceneService.IsActive && _cutSceneService.LerpForwardSpeed != 0
+                ? _cutSceneService.LerpForwardSpeed
+                : SpiderStaticData.LerpForwardSpeed;
+
+            Data.RotationAmount = Data.Input.x * lerpForwardSpeed;
         }
 
         public virtual void Update()

@@ -3,6 +3,8 @@ using GameDevBuddies;
 using HUD;
 using Infastructure.Common;
 using Infastructure.CutScene;
+using Infastructure.CutScene.Custom;
+using Infastructure.CutScene.Custom.Receivers;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.XRay;
 using Infastructure.StaticData;
@@ -175,12 +177,16 @@ namespace Infastructure.Factories.GameFactories
         }
 
 
-        public void CreateStartGameCutSceneTimeline(Spider spiderTransform)
+        public void CreateStartGameCutSceneTimeline(Spider spider)
         {
             StartGameCutSceneRunner cutScene =
                 _diContainer.InstantiatePrefabResourceForComponent<StartGameCutSceneRunner>(AssetsPath
                     .StartGameCutSceneTimelinePath);
-            cutScene.Initialize(spiderTransform.transform);
+
+            PlayDirectorMarkerReceiver playDirectorMarkerReceiver = cutScene.GetComponent<PlayDirectorMarkerReceiver>();
+            playDirectorMarkerReceiver.Initialize(spider);
+
+            cutScene.Initialize(spider);
         }
 
         public void CreateTerrainScan(Spider spider)

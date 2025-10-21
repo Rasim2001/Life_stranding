@@ -1,4 +1,5 @@
 using Common.SceneMarkers;
+using Infastructure.CutScene;
 using UnityEditor;
 using UnityEngine;
 
@@ -35,6 +36,17 @@ namespace Editor
         {
             Gizmos.color = Color.magenta;
             Gizmos.DrawSphere(spawner.transform.position, 0.5f);
+        }
+    }
+
+    [CustomEditor(typeof(CutSceneTargetMarker))]
+    public class CutScenePointEditor : UnityEditor.Editor
+    {
+        [DrawGizmo(GizmoType.Active | GizmoType.Pickable | GizmoType.NonSelected)]
+        public static void RenderCustomGizmo(CutSceneTargetMarker spawner, GizmoType gizmo)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawCube(spawner.transform.position, new Vector3(1, 1, 1));
         }
     }
 }

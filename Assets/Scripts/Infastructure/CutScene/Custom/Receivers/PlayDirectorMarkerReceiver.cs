@@ -1,0 +1,122 @@
+using Infastructure.CutScene.Custom.Markers;
+using Infastructure.Services.CutScene;
+using Infastructure.Services.PlayerInput;
+using Infastructure.Services.PlayerInput.InputSourceRealization;
+using ModestTree;
+using sc.splines.spawner.runtime;
+using SpiderController;
+using UnityEngine;
+using UnityEngine.Playables;
+using Zenject;
+
+namespace Infastructure.CutScene.Custom.Receivers
+{
+    public class PlayDirectorMarkerReceiver : MonoBehaviour, INotificationReceiver
+    {
+        private IInputService _inputService;
+        private CutSceneInputSource _cutSceneInputSource;
+
+        private Spider _spider;
+        private Transform _moveTarget;
+        private Transform _lookingTarget;
+        private ICutSceneService _cutSceneService;
+
+
+        [Inject]
+        public void Construct(IInputService inputService, ICutSceneService cutSceneService)
+        {
+            _cutSceneService = cutSceneService;
+            _inputService = inputService;
+        }
+
+        private void Awake() =>
+            _cutSceneInputSource = _inputService.GetInputSource<CutSceneInputSource>();
+
+        public void Initialize(Spider spider) =>
+            _spider = spider;
+
+        public void OnNotify(Playable origin, INotification notification, object context)
+        {
+            PlayableDirector director = origin.GetGraph().GetResolver() as PlayableDirector;
+
+            if (notification is ExplosionMarker explosionMarker)
+            {
+                Transform target = explosionMarker.Target.Resolve(director);
+                if (target)
+                    _spider.SpiderImpactReceiver.ApplyExplosionForce(target.position, explosionMarker.Force,
+                        explosionMarker.Radius);
+            }
+            else if (notification is MoveToTargetMarker moveToTargetMarker)
+            {
+                Transform target = moveToTargetMarker.Target.Resolve(director);
+                if (target) MoveTo(target);
+            }
+            else if (notification is LookAtTargetMarker lookAtTarget)
+            {
+                Transform target = lookAtTarget.Target.Resolve(director);
+                if (target) LookAt(target);
+            }
+        }
+
+        private void Update()
+        {
+            if (_spider == null)
+                return;
+
+            if (_moveTarget != null)
+                Move();
+
+            if (_lookingTarget != null)
+                LookAtTarget();
+        }
+
+        private void Move()
+        {
+            if (Vector3.Distance(_moveTarget.position, _spider.transform.position) < 1)
+            {
+                _cutSceneInputSource.InputVector = Vector3.zero;
+                _moveTarget = null;
+                return;
+            }
+
+            Vector3 worldDirection = (_moveTarget.position - _spider.transform.position).normalized;
+
+            Vector3 localDirection = _spider.transform.InverseTransformDirection(worldDirection);
+            _cutSceneInputSource.InputVector = new Vector3(localDirection.x, 0f, Mathf.Abs(localDirection.z));
+        }
+
+        private void LookAtTarget()
+        {
+            Vector3 toTarget = (_lookingTarget.position - _spider.transform.position).normalized;
+
+            Vector3 localDirection = _spider.transform.InverseTransformDirection(toTarget);
+            _cutSceneInputSource.InputVector = new Vector3(localDirection.x, _cutSceneInputSource.InputVector.y,
+                _cutSceneInputSource.InputVector.z);
+
+            float angle = Vector3.Angle(_spider.transform.forward, toTarget);
+
+            if (angle < 10)
+            {
+                Debug.Log("Angle Zero");
+
+                _cutSceneInputSource.InputVector = Vector3.zero;
+                _cutSceneService.LerpForwardSpeed = 0;
+                _lookingTarget = null;
+            }
+        }
+
+        private void MoveTo(Transform target)
+        {
+            Debug.Log(target.position);
+
+            _moveTarget = target;
+        }
+
+        private void LookAt(Transform target)
+        {
+            _cutSceneService.LerpForwardSpeed = 120;
+
+            _lookingTarget = target;
+        }
+    }
+}

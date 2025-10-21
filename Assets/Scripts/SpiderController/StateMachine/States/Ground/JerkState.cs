@@ -1,3 +1,4 @@
+using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
@@ -13,9 +14,10 @@ namespace SpiderController.StateMachine.States.Ground
         private float _dashTimer;
 
         public JerkState(ISpiderStateMachine stateMachine, IInputService inputService,
-            IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
+            IStaticDataService staticDataService, ICutSceneService cutSceneService, Spider spider,
+            StateMachineData stateMachineData,
             LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(stateMachine, inputService,
-            staticDataService, spider,
+            staticDataService, cutSceneService, spider,
             stateMachineData, legs, flower, energySystem)
         {
         }

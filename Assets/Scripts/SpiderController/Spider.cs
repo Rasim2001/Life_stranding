@@ -165,6 +165,7 @@ namespace SpiderController
                     stateMachineData,
                     _inputService,
                     _staticDataService,
+                    _cutSceneService,
                     _legs,
                     flower,
                     energySystem);

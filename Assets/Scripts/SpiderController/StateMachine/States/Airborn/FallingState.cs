@@ -1,6 +1,6 @@
+using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
-using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
@@ -13,9 +13,10 @@ namespace SpiderController.StateMachine.States.Airborn
         private readonly GroundChecker _spiderGroundChecker;
 
         public FallingState(ISpiderStateMachine stateMachine, IInputService inputService,
-            IStaticDataService staticDataService, Spider spider, StateMachineData stateMachineData,
+            IStaticDataService staticDataService, ICutSceneService cutSceneService, Spider spider,
+            StateMachineData stateMachineData,
             LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(stateMachine, inputService,
-            staticDataService, spider,
+            staticDataService, cutSceneService, spider,
             stateMachineData, legs, flower, energySystem)
         {
             _spiderGroundChecker = spider.GroundChecker;

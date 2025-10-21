@@ -14,7 +14,7 @@ namespace Infastructure.Services.PlayerInput
             _joystickInputSource = new JoystickInputSource();
             _joystickInputSource.Enable();
 
-            SetInputSource(new PlayerInputSource());
+            SetInputSource(new CutSceneInputSource());
         }
 
         public void Dispose()
