@@ -56,6 +56,11 @@ namespace Infastructure.CutScene.Custom.Receivers
                 Transform target = lookAtTarget.Target.Resolve(director);
                 if (target) LookAt(target);
             }
+            else if (notification is TeleportToTargetMarker teleportTo)
+            {
+                Transform target = teleportTo.Target.Resolve(director);
+                if (target) TeleportTo(target);
+            }
         }
 
         private void Update()
@@ -97,26 +102,31 @@ namespace Infastructure.CutScene.Custom.Receivers
 
             if (angle < 10)
             {
-                Debug.Log("Angle Zero");
-
                 _cutSceneInputSource.InputVector = Vector3.zero;
                 _cutSceneService.LerpForwardSpeed = 0;
                 _lookingTarget = null;
             }
         }
 
-        private void MoveTo(Transform target)
-        {
-            Debug.Log(target.position);
-
+        private void MoveTo(Transform target) =>
             _moveTarget = target;
-        }
 
         private void LookAt(Transform target)
         {
             _cutSceneService.LerpForwardSpeed = 120;
 
             _lookingTarget = target;
+        }
+
+        private void TeleportTo(Transform target)
+        {
+            _lookingTarget = null;
+            _moveTarget = null;
+            _cutSceneInputSource.InputVector = Vector3.zero;
+            _cutSceneService.LerpForwardSpeed = 0;
+
+            _spider.transform.position = target.transform.position;
+            _spider.transform.rotation = target.transform.rotation;
         }
     }
 }
