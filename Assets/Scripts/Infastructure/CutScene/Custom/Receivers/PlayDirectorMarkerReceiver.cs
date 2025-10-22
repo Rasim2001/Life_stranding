@@ -61,6 +61,13 @@ namespace Infastructure.CutScene.Custom.Receivers
                 Transform target = teleportTo.Target.Resolve(director);
                 if (target) TeleportTo(target);
             }
+            else if (notification is ResetAllTargetsMarker)
+            {
+                _moveTarget = null;
+                _lookingTarget = null;
+
+                _cutSceneInputSource.InputVector = Vector3.zero;
+            }
         }
 
         private void Update()
@@ -108,11 +115,16 @@ namespace Infastructure.CutScene.Custom.Receivers
             }
         }
 
-        private void MoveTo(Transform target) =>
+        private void MoveTo(Transform target)
+        {
+            Debug.Log(target.name);
+
             _moveTarget = target;
+        }
 
         private void LookAt(Transform target)
         {
+            _moveTarget = null;
             _cutSceneService.LerpForwardSpeed = 120;
 
             _lookingTarget = target;

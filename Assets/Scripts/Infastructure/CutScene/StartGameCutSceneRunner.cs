@@ -83,7 +83,8 @@ namespace Infastructure.CutScene
 
         private void Update()
         {
-            if (_spider == null) return;
+            if (_spider == null) 
+                return;
 
             Vector3 pos = _spider.transform.position;
             pos.y = pos.y;
