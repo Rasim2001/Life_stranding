@@ -19,8 +19,6 @@ namespace Infastructure.CompositionRoot
 {
     public class SceneInstaller : MonoInstaller
     {
-        public Volume GlobalVolume;
-
         public override void InstallBindings()
         {
             BindBuildLevelState();
@@ -38,8 +36,6 @@ namespace Infastructure.CompositionRoot
             BindCheckPointInstaller();
 
             BindCutSceneService();
-
-            BindGlobalVolume();
 
             BindExplosionService();
 
@@ -68,9 +64,6 @@ namespace Infastructure.CompositionRoot
 
         private void BindExplosionService() =>
             Container.BindInterfacesAndSelfTo<ExplosionService>().AsSingle();
-
-        private void BindGlobalVolume() =>
-            Container.Bind<Volume>().FromInstance(GlobalVolume).AsSingle();
 
         private void BindCutSceneService() =>
             Container.BindInterfacesAndSelfTo<CutSceneService>().AsSingle();

@@ -8,6 +8,8 @@ namespace SpiderController.SpiderMove
 {
     public class LegRaycast : MonoBehaviour
     {
+        private const string NotMoveableLayer = "NotMoveable";
+
         [SerializeField] private LayerMask _layerMask;
         [SerializeField] private float _offsetDistance = 15f;
         [SerializeField] private int _offsetRayCount = 5;
@@ -43,7 +45,7 @@ namespace SpiderController.SpiderMove
             _rayDistance = _staticDataService.SpiderStaticData.GroundStateRayDistance;
             _defaultPosition = transform.localPosition;
 
-            _notMoveableLayer = LayerMask.NameToLayer("NotMoveable");
+            _notMoveableLayer = LayerMask.NameToLayer(NotMoveableLayer);
         }
 
         public void SetGroundState()
@@ -93,6 +95,17 @@ namespace SpiderController.SpiderMove
                 Debug.DrawRay(mainRay.origin, mainRay.direction * _rayDistance, Color.green);
             else
                 Debug.DrawRay(mainRay.origin, mainRay.direction * _rayDistance, Color.red);
+        }
+        
+        public void ForceImmediateUpdate()
+        {
+            Vector3 origin = transform.position;
+            Vector3 baseDirection = -transform.up;
+
+            if (Physics.Raycast(origin, baseDirection, out _hit, _rayDistance, _layerMask))
+                _smoothedPoint = _hit.point;
+            else
+                _smoothedPoint = origin + baseDirection * _rayDistance;
         }
 
         private void GroupBody()

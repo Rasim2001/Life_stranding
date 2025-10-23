@@ -1,4 +1,5 @@
 using Infastructure.Common.StableWorlUpManagement;
+using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
 using Infastructure.StaticData.Spider;
@@ -16,6 +17,7 @@ namespace CameraFollow
         private IInputService _inputService;
         private IStaticDataService _staticDataService;
         private IStableWorldUp _stableWorldUp;
+        private ICutSceneService _cutSceneService;
 
         private Transform _target;
         private Vector3 _velocity;
@@ -40,8 +42,10 @@ namespace CameraFollow
         public void Construct(
             IInputService inputService,
             IStaticDataService staticDataService,
-            IStableWorldUp stableWorldUp)
+            IStableWorldUp stableWorldUp,
+            ICutSceneService cutSceneService)
         {
+            _cutSceneService = cutSceneService;
             _stableWorldUp = stableWorldUp;
             _staticDataService = staticDataService;
             _inputService = inputService;
@@ -68,8 +72,6 @@ namespace CameraFollow
         private void OnDestroy() =>
             CinemachineCore.CameraUpdatedEvent.RemoveListener(UpdateAfterCinemachine);
 
-        private void WorldUpRotate() =>
-            _stableWorldUp.Rotate(_target.rotation);
 
         private void FixedUpdate()
         {
@@ -84,13 +86,16 @@ namespace CameraFollow
 
         private void UpdateAfterCinemachine(CinemachineBrain _)
         {
-            if (_target == null)
+            if (_target == null || _cutSceneService.IsActive)
                 return;
 
             HandleScrollWheel();
             HandleMouse();
             WorldUpRotate();
         }
+
+        private void WorldUpRotate() =>
+            _stableWorldUp.Rotate(_target.rotation);
 
 
         private void HandleScrollWheel()

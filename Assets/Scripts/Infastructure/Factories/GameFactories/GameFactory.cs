@@ -54,11 +54,11 @@ namespace Infastructure.Factories.GameFactories
             return spider;
         }
 
-        public void CreateCameraSystem(Spider spiderTransform)
+        public void CreateCameraSystem(Spider spider)
         {
             CameraSystem cameraSystem =
                 _diContainer.InstantiatePrefabResourceForComponent<CameraSystem>(AssetsPath.CameraSystemPath);
-            cameraSystem.Initialize(spiderTransform);
+            cameraSystem.Initialize(spider);
         }
 
         public HudUI CreateHUD(Flower flower, Spider spider)

@@ -1,4 +1,5 @@
 using System;
+using Infastructure.Services.CutScene;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using MoreMountains.Feedbacks;
@@ -23,16 +24,23 @@ namespace CameraFollow
 
         private Spider _spider;
         private IStaticDataService _staticDataService;
+        private ICutSceneService _cutSceneService;
 
         private void Awake() =>
             LocalInitialize();
 
         [Inject]
-        public void Construct(IStaticDataService staticDataService) =>
+        public void Construct(IStaticDataService staticDataService, ICutSceneService cutSceneService)
+        {
+            _cutSceneService = cutSceneService;
             _staticDataService = staticDataService;
+        }
 
-        private void LocalInitialize() =>
+        private void LocalInitialize()
+        {
             _cameraFollower.Initialize(this);
+            _cutSceneService.OnCutsceneActiveChanged += CutsceneActiveChanged;
+        }
 
         public void Initialize(Spider spider)
         {
@@ -44,8 +52,11 @@ namespace CameraFollow
             _spider.OnShakeCameraHappened += ShakeCamera;
         }
 
-        private void OnDestroy() =>
+        private void OnDestroy()
+        {
             _spider.OnShakeCameraHappened -= ShakeCamera;
+            _cutSceneService.OnCutsceneActiveChanged -= CutsceneActiveChanged;
+        }
 
         private void ShakeCamera(float distanceFalling)
         {
@@ -59,6 +70,18 @@ namespace CameraFollow
             Impulse.m_ImpulseDefinition.AmplitudeGain = force;
 
             _cameraShake.PlayFeedbacks();
+        }
+
+        private void CutsceneActiveChanged(bool value)
+        {
+            if (value == false)
+                StopCutScene();
+        }
+
+        private void StopCutScene()
+        {
+            _thirdPersonFollow.gameObject.SetActive(false);
+            _thirdPersonFollow.gameObject.SetActive(true);
         }
     }
 }

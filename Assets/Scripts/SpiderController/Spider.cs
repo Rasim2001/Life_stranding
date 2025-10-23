@@ -175,6 +175,13 @@ namespace SpiderController
         }
 
 
+        public void ForceLegsAfterTeleport() //TODO:
+        {
+            foreach (LegDataStruct legDataStruct in _legs)
+                legDataStruct.Raycast.ForceImmediateUpdate();
+        }
+
+
         private void Update()
         {
             if (_spiderStateMachine == null)

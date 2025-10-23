@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Infastructure.CutScene.Custom.Markers;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
@@ -5,6 +6,7 @@ using Infastructure.Services.PlayerInput.InputSourceRealization;
 using ModestTree;
 using sc.splines.spawner.runtime;
 using SpiderController;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Playables;
 using Zenject;
@@ -115,12 +117,8 @@ namespace Infastructure.CutScene.Custom.Receivers
             }
         }
 
-        private void MoveTo(Transform target)
-        {
-            Debug.Log(target.name);
-
+        private void MoveTo(Transform target) =>
             _moveTarget = target;
-        }
 
         private void LookAt(Transform target)
         {
@@ -137,8 +135,13 @@ namespace Infastructure.CutScene.Custom.Receivers
             _cutSceneInputSource.InputVector = Vector3.zero;
             _cutSceneService.LerpForwardSpeed = 0;
 
+            _spider.Rigidbody.linearVelocity = Vector3.zero;
+            _spider.Rigidbody.angularVelocity = Vector3.zero;
+
             _spider.transform.position = target.transform.position;
             _spider.transform.rotation = target.transform.rotation;
+
+            _spider.ForceLegsAfterTeleport();
         }
     }
 }

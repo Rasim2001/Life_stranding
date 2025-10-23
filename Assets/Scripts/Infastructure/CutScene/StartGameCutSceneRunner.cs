@@ -9,7 +9,6 @@ using Infastructure.StaticData.VolumeProfiles;
 using Sirenix.Utilities;
 using SpiderController;
 using Unity.Cinemachine;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Rendering;
@@ -22,6 +21,7 @@ namespace Infastructure.CutScene
     {
         private const string CinemachineTrack = "Cinemachine Track";
 
+        [SerializeField] private Volume _globalVolume;
         [SerializeField] private SplineContainer splineContainer;
         [SerializeField] private float minDistance = 0.5f;
 
@@ -31,7 +31,6 @@ namespace Infastructure.CutScene
         private IInputService _inputService;
         private ICutSceneService _cutSceneService;
         private IStaticDataService _staticDataService;
-        private Volume _globalVolume;
 
         private Spline _spline;
         private Vector3 _lastPoint;
@@ -43,12 +42,10 @@ namespace Infastructure.CutScene
 
         [Inject]
         public void Construct(
-            Volume globalVolume,
             IInputService inputService,
             ICutSceneService cutSceneService,
             IStaticDataService staticDataService)
         {
-            _globalVolume = globalVolume;
             _staticDataService = staticDataService;
             _inputService = inputService;
             _cutSceneService = cutSceneService;
@@ -68,6 +65,7 @@ namespace Infastructure.CutScene
             _mainBrainCamera = Camera.main.GetComponent<CinemachineBrain>();
         }
 
+
         private void Start()
         {
             _spline = splineContainer.Spline;
@@ -79,11 +77,24 @@ namespace Infastructure.CutScene
                 .Where(x => x.streamName == CinemachineTrack).ToList();
 
             playableBindings.ForEach(x => _playableDirector.SetGenericBinding(x.sourceObject, _mainBrainCamera));
+
+            _playableDirector.stopped += StopCutScene;
+        }
+
+        private void OnDestroy() =>
+            _playableDirector.stopped -= StopCutScene;
+
+        private void StopCutScene(PlayableDirector obj)
+        {
+            _mainBrainCamera.UpdateMethod = CinemachineBrain.UpdateMethods.FixedUpdate;
+            _inputService.SetInputSource(new PlayerInputSource());
+
+            _cutSceneService.IsActive = false;
         }
 
         private void Update()
         {
-            if (_spider == null) 
+            if (_spider == null)
                 return;
 
             Vector3 pos = _spider.transform.position;
@@ -101,28 +112,6 @@ namespace Infastructure.CutScene
 
         public void ShakeCamera() =>
             _spider.OnShakeCameraHappened?.Invoke(20);
-
-
-        public void SetFirstCameraVolume() =>
-            _globalVolume.profile = VolumeProfilesStaticData.StartGameFirstCameraProfile;
-
-        public void SetDefaultVolume() =>
-            _globalVolume.profile = VolumeProfilesStaticData.DefaultProfile;
-
-        public void MoveTowardSignal(Transform target) =>
-            _cutSceneInputSource.InputVector += Vector3.forward;
-
-        public void StopMoveSignal() =>
-            _cutSceneInputSource.InputVector = Vector3.zero;
-
-        public void TurnRightSignal() =>
-            _cutSceneInputSource.InputVector += -Vector3.left;
-
-        public void TurnLeftSignal() =>
-            _cutSceneInputSource.InputVector += Vector3.left;
-
-        public void JumpSignal() =>
-            _cutSceneInputSource.JumpPressed = true;
 
         private void AddPoint(Vector3 position)
         {
