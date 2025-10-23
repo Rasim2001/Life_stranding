@@ -7,5 +7,6 @@ namespace Infastructure.Services.CutScene
         bool IsActive { get; set; }
         float LerpForwardSpeed { get; set; }
         event Action<bool> OnCutsceneActiveChanged;
+        event Action OnSkipHappened;
     }
 }

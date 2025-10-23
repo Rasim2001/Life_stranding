@@ -7,13 +7,13 @@ namespace Infastructure.Common
 
         public const string GameBootstrapperPath = "Prefabs/GameBootstrapper";
         public const string CoroutineRunnerPath = "Prefabs/CoroutineRunner";
+        public const string CurtainRootPath = "Prefabs/UI/CurtainRoot";
         public const string PickupDisplayerPath = "Prefabs/UI/PickupDisplayerRoot";
         public const string StableWorldUpPath = "Prefabs/CameraSystem/StableWorldUp";
 
         public const string SpiderPath = "Prefabs/Spider/Spider";
         public const string CameraSystemPath = "Prefabs/CameraSystem/CameraSystem";
         public const string HUDPath = "Prefabs/HUD/HUD";
-        public const string FlowerPath = "Prefabs/Flower/Flower";
         public const string PointIndicatorPath = "Prefabs/Scene/PointIndicator";
         public const string StartGameCutSceneTimelinePath = "Prefabs/Timeline/StartGameTimeline";
         public const string TerrainScanPath = "Prefabs/TerrainScan/[Terrain_Scan]";

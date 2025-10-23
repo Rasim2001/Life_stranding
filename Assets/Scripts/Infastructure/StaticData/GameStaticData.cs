@@ -18,6 +18,7 @@ namespace Infastructure.StaticData
     public class GameData
     {
         public WorldData SpiderSpawnData;
+        public WorldData FlowerSpawnData;
 
         public List<WorldData> CheckPoints;
         public List<WorldData> BatteriesPoints;

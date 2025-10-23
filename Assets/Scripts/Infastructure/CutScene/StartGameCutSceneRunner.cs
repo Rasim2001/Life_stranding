@@ -1,17 +1,13 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
-using Infastructure.StaticData.StaticDataService;
-using Infastructure.StaticData.VolumeProfiles;
 using Sirenix.Utilities;
 using SpiderController;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Playables;
-using UnityEngine.Rendering;
 using UnityEngine.Splines;
 using Zenject;
 
@@ -21,16 +17,10 @@ namespace Infastructure.CutScene
     {
         private const string CinemachineTrack = "Cinemachine Track";
 
-        [SerializeField] private Volume _globalVolume;
-        [SerializeField] private SplineContainer splineContainer;
-        [SerializeField] private float minDistance = 0.5f;
-
         [SerializeField] private CinemachineCamera[] _cameras;
-        private VolumeProfilesStaticData VolumeProfilesStaticData => _staticDataService.VolumeProfilesStaticData;
 
         private IInputService _inputService;
         private ICutSceneService _cutSceneService;
-        private IStaticDataService _staticDataService;
 
         private Spline _spline;
         private Vector3 _lastPoint;
@@ -41,12 +31,8 @@ namespace Infastructure.CutScene
         private CinemachineBrain _mainBrainCamera;
 
         [Inject]
-        public void Construct(
-            IInputService inputService,
-            ICutSceneService cutSceneService,
-            IStaticDataService staticDataService)
+        public void Construct(IInputService inputService, ICutSceneService cutSceneService)
         {
-            _staticDataService = staticDataService;
             _inputService = inputService;
             _cutSceneService = cutSceneService;
         }
@@ -68,9 +54,6 @@ namespace Infastructure.CutScene
 
         private void Start()
         {
-            _spline = splineContainer.Spline;
-            AddPoint(_spider.transform.position);
-
             _cutSceneService.IsActive = true;
 
             List<PlayableBinding> playableBindings = _playableDirector.playableAsset.outputs
@@ -79,10 +62,21 @@ namespace Infastructure.CutScene
             playableBindings.ForEach(x => _playableDirector.SetGenericBinding(x.sourceObject, _mainBrainCamera));
 
             _playableDirector.stopped += StopCutScene;
+            _cutSceneService.OnSkipHappened += SkipCutscene;
         }
 
-        private void OnDestroy() =>
+        private void SkipCutscene()
+        {
+            _playableDirector.time = _playableDirector.duration;
+            _playableDirector.Stop();
+        }
+
+
+        private void OnDestroy()
+        {
             _playableDirector.stopped -= StopCutScene;
+            _cutSceneService.OnSkipHappened -= SkipCutscene;
+        }
 
         private void StopCutScene(PlayableDirector obj)
         {
@@ -92,17 +86,6 @@ namespace Infastructure.CutScene
             _cutSceneService.IsActive = false;
         }
 
-        private void Update()
-        {
-            if (_spider == null)
-                return;
-
-            Vector3 pos = _spider.transform.position;
-            pos.y = pos.y;
-
-            if ((pos - _lastPoint).sqrMagnitude >= minDistance * minDistance)
-                AddPoint(pos);
-        }
 
         public void FastRunMovingSignal() =>
             _cutSceneInputSource.IsLeftShiftPressed = true;
@@ -112,12 +95,5 @@ namespace Infastructure.CutScene
 
         public void ShakeCamera() =>
             _spider.OnShakeCameraHappened?.Invoke(20);
-
-        private void AddPoint(Vector3 position)
-        {
-            BezierKnot knot = new BezierKnot(position: position);
-            _spline.Add(knot);
-            _lastPoint = position;
-        }
     }
 }

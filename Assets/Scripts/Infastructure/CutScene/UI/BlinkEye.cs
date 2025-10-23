@@ -37,11 +37,8 @@ namespace Infastructure.CutScene.UI
             _depthOfField.active = false;
         }
 
-        [Button]
         public void Blink()
         {
-            Debug.Log("Blink");
-
             _blinkSequence?.Kill();
             _blurTween?.Kill();
             _topImageRect?.DOKill();

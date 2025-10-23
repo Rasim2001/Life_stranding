@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5585646272025786871
 Transform:
   m_ObjectHideFlags: 0
@@ -5697,9 +5697,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed430c674614455d8b7e4b4a35a69be7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _globalVolume: {fileID: 5801077650807954439}
-  splineContainer: {fileID: 9047407173068419539}
-  minDistance: 0.5
   _cameras:
   - {fileID: 5186527145702246928}
   - {fileID: 8154723071921410035}
@@ -5720,6 +5717,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6406406207cc4daa93a977628d2deeac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _lastTarget: {fileID: 2792053687592686790}
 --- !u!1 &3914115939619831246
 GameObject:
   m_ObjectHideFlags: 0

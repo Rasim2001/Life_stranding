@@ -18,6 +18,7 @@ namespace PickupObjects.PickUpOnPlatform
         public Rigidbody Rigidbody { get; private set; }
 
         public bool IsFreezingOnPlatform;
+        public bool WasOnPlatform;
 
         protected Vector3 StartPosition { get; set; }
         protected Quaternion StartRotation { get; set; }
@@ -105,6 +106,9 @@ namespace PickupObjects.PickUpOnPlatform
         {
             if (!_platformObjectsService.PickupObjects.Contains(this))
                 _platformObjectsService.PickupObjects.Add(this);
+
+            if (!WasOnPlatform)
+                WasOnPlatform = true;
 
             IsOnPlatform = true;
             Rigidbody.useGravity = false;

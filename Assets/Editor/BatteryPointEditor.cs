@@ -49,4 +49,16 @@ namespace Editor
             Gizmos.DrawCube(spawner.transform.position, new Vector3(1, 1, 1));
         }
     }
+
+
+    [CustomEditor(typeof(FlowerPointMarker))]
+    public class FlowerPointEditor : UnityEditor.Editor
+    {
+        [DrawGizmo(GizmoType.Active | GizmoType.Pickable | GizmoType.NonSelected)]
+        public static void RenderCustomGizmo(FlowerPointMarker spawner, GizmoType gizmo)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(spawner.transform.position, 0.3f);
+        }
+    }
 }

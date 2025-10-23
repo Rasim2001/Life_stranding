@@ -36,8 +36,6 @@ namespace SpiderController.UI.Health
         {
             base.UpdateFirstSegmentColorIncrease();
 
-            Debug.Log("Increase");
-
             _segmentsOwn[0].color = _firstIncreaseColor;
         }
     }

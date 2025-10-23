@@ -47,6 +47,12 @@ namespace Editor
                 gameData.GameDatas[nameScene].SpiderSpawnData = new WorldData(
                     spiderSpawnPointMarker.transform.position,
                     spiderSpawnPointMarker.transform.rotation);
+
+                FlowerPointMarker flowerPointMarker = FindObjectOfType<FlowerPointMarker>();
+
+                gameData.GameDatas[nameScene].FlowerSpawnData = new WorldData(
+                    flowerPointMarker.transform.position,
+                    flowerPointMarker.transform.rotation);
             }
 
 

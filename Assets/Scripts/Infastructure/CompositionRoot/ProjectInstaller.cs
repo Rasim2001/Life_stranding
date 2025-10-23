@@ -6,6 +6,7 @@ using Infastructure.Services.SaveLoadService;
 using Infastructure.Services.Window.ProjectWindowService;
 using Infastructure.States;
 using Infastructure.StaticData.StaticDataService;
+using UI;
 using Zenject;
 
 namespace Infastructure.CompositionRoot
@@ -31,6 +32,8 @@ namespace Infastructure.CompositionRoot
             BindPersistentProgressService();
 
             BindSaveLoadService();
+
+            BindCurtainRoot();
         }
 
 
@@ -65,6 +68,15 @@ namespace Infastructure.CompositionRoot
                 .AsSingle();
         }
 
+
+        private void BindCurtainRoot()
+        {
+            Container
+                .Bind<ICurtainRoot>()
+                .To<CurtainRoot>()
+                .FromComponentInNewPrefabResource(AssetsPath.CurtainRootPath)
+                .AsSingle();
+        }
 
         private void BindSceneLoader() =>
             Container.BindInterfacesAndSelfTo<SceneLoader>().AsSingle();

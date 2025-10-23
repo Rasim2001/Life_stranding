@@ -1,10 +1,8 @@
-using Cysharp.Threading.Tasks;
+using System;
 using Infastructure.CutScene.Custom.Markers;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
-using ModestTree;
-using sc.splines.spawner.runtime;
 using SpiderController;
 using UnityEditor;
 using UnityEngine;
@@ -15,6 +13,8 @@ namespace Infastructure.CutScene.Custom.Receivers
 {
     public class PlayDirectorMarkerReceiver : MonoBehaviour, INotificationReceiver
     {
+        [SerializeField] private Transform _lastTarget;
+
         private IInputService _inputService;
         private CutSceneInputSource _cutSceneInputSource;
 
@@ -34,8 +34,17 @@ namespace Infastructure.CutScene.Custom.Receivers
         private void Awake() =>
             _cutSceneInputSource = _inputService.GetInputSource<CutSceneInputSource>();
 
+        private void Start() =>
+            _cutSceneService.OnSkipHappened += SkipCutScene;
+
+        private void OnDestroy() =>
+            _cutSceneService.OnSkipHappened -= SkipCutScene;
+
         public void Initialize(Spider spider) =>
             _spider = spider;
+
+        private void SkipCutScene() =>
+            TeleportTo(_lastTarget);
 
         public void OnNotify(Playable origin, INotification notification, object context)
         {
@@ -135,6 +144,7 @@ namespace Infastructure.CutScene.Custom.Receivers
             _cutSceneInputSource.InputVector = Vector3.zero;
             _cutSceneService.LerpForwardSpeed = 0;
 
+            _spider.enabled = false;
             _spider.Rigidbody.linearVelocity = Vector3.zero;
             _spider.Rigidbody.angularVelocity = Vector3.zero;
 
@@ -142,6 +152,7 @@ namespace Infastructure.CutScene.Custom.Receivers
             _spider.transform.rotation = target.transform.rotation;
 
             _spider.ForceLegsAfterTeleport();
+            _spider.enabled = true;
         }
     }
 }

@@ -198,7 +198,7 @@ namespace SpiderController.StateMachine.States
 
         private void CheckFlowerAndReduceHp()
         {
-            if (Flower.IsOnPlatform == false)
+            if (Flower.WasOnPlatform && Flower.IsOnPlatform == false)
                 SpiderHealth.TakeDamage(SpiderStaticData.DamageAmount);
         }
 

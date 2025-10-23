@@ -96,10 +96,14 @@ namespace Infastructure.Factories.GameFactories
             ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
             GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
 
-            Flower flower = _diContainer.InstantiatePrefabForComponent<Flower>(prefab);
+            WorldData worldData =
+                _staticDataService.GameStaticData.GameDatas[ActiveSceneName].FlowerSpawnData;
+
+            Flower flower = _diContainer.InstantiatePrefabForComponent<Flower>(prefab, worldData.WorldPosition,
+                Quaternion.Euler(-90, worldData.WorldRotation.y, worldData.WorldRotation.z), null);
 
             IProduct product = flower.GetComponent<IProduct>();
-            product.ProductType = ProductType.Flower;
+            product.ProductType = productType;
 
             return flower;
         }
