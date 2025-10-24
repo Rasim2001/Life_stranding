@@ -64,6 +64,7 @@ namespace Infastructure.CutScene
 
             _playableDirector.stopped += StopCutScene;
             _cutSceneService.OnSkipHappened += SkipCutscene;
+            _cutSceneService.OnCutsceneActiveChanged += ActiveCutsceneChanged;
         }
 
 
@@ -71,10 +72,17 @@ namespace Infastructure.CutScene
         {
             _playableDirector.stopped -= StopCutScene;
             _cutSceneService.OnSkipHappened -= SkipCutscene;
+            _cutSceneService.OnCutsceneActiveChanged -= ActiveCutsceneChanged;
         }
 
         private void StopCutScene(PlayableDirector obj) =>
             SkipCustom();
+
+        private void ActiveCutsceneChanged(bool isActive)
+        {
+            if (isActive)
+                _playableDirector.Play();
+        }
 
         private void SkipCutscene()
         {
