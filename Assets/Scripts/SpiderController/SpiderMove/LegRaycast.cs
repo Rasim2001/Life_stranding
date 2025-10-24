@@ -96,7 +96,7 @@ namespace SpiderController.SpiderMove
             else
                 Debug.DrawRay(mainRay.origin, mainRay.direction * _rayDistance, Color.red);
         }
-        
+
         public void ForceImmediateUpdate()
         {
             Vector3 origin = transform.position;

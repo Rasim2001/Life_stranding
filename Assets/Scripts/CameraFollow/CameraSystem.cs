@@ -61,7 +61,7 @@ namespace CameraFollow
         private void ShakeCamera(float distanceFalling)
         {
             float distanceNormalized = Mathf.InverseLerp(SpiderStaticData.MinShakeDistance,
-                SpiderStaticData.MaxShakeDistance, distanceFalling);
+                SpiderStaticData.MaxShakeDistance, 20);
 
             float force = Mathf.Lerp(SpiderStaticData.MinForceShake, SpiderStaticData.MaxForceShake,
                 distanceNormalized);
@@ -80,8 +80,10 @@ namespace CameraFollow
 
         private void StopCutScene()
         {
-            _thirdPersonFollow.gameObject.SetActive(false);
-            _thirdPersonFollow.gameObject.SetActive(true);
+            _thirdPersonFollow.GetComponent<CinemachineCamera>().Priority = 1;
+
+            //_thirdPersonFollow.gameObject.SetActive(false);
+            //_thirdPersonFollow.gameObject.SetActive(true);
         }
     }
 }

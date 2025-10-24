@@ -17,6 +17,7 @@ namespace Infastructure.CutScene
     {
         private const string CinemachineTrack = "Cinemachine Track";
 
+        [SerializeField] private CinemachineCamera _firstCamera;
         [SerializeField] private CinemachineCamera[] _cameras;
 
         private IInputService _inputService;
@@ -54,7 +55,7 @@ namespace Infastructure.CutScene
 
         private void Start()
         {
-            _cutSceneService.IsActive = true;
+            _firstCamera.Priority = 100;
 
             List<PlayableBinding> playableBindings = _playableDirector.playableAsset.outputs
                 .Where(x => x.streamName == CinemachineTrack).ToList();
@@ -65,12 +66,6 @@ namespace Infastructure.CutScene
             _cutSceneService.OnSkipHappened += SkipCutscene;
         }
 
-        private void SkipCutscene()
-        {
-            _playableDirector.time = _playableDirector.duration;
-            _playableDirector.Stop();
-        }
-
 
         private void OnDestroy()
         {
@@ -78,12 +73,23 @@ namespace Infastructure.CutScene
             _cutSceneService.OnSkipHappened -= SkipCutscene;
         }
 
-        private void StopCutScene(PlayableDirector obj)
+        private void StopCutScene(PlayableDirector obj) =>
+            SkipCustom();
+
+        private void SkipCutscene()
+        {
+            SkipCustom();
+
+            _playableDirector.time = _playableDirector.duration;
+            _playableDirector.Stop();
+        }
+
+        private void SkipCustom()
         {
             _mainBrainCamera.UpdateMethod = CinemachineBrain.UpdateMethods.FixedUpdate;
             _inputService.SetInputSource(new PlayerInputSource());
 
-            _cutSceneService.IsActive = false;
+            _firstCamera.Priority = 0;
         }
 
 

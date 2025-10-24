@@ -5,7 +5,7 @@ using Zenject;
 
 namespace Infastructure.Services.CutScene
 {
-    public class CutSceneService : ICutSceneService, ITickable
+    public class CutSceneService : ICutSceneService, ITickable, IInitializable
     {
         public event Action<bool> OnCutsceneActiveChanged;
         public event Action OnSkipHappened;
@@ -25,7 +25,11 @@ namespace Infastructure.Services.CutScene
         }
 
         private readonly ICurtainRoot _cutSceneService;
+
         private bool _isActive;
+
+        public void Initialize() =>
+            IsActive = true;
 
         public CutSceneService(ICurtainRoot cutSceneService) =>
             _cutSceneService = cutSceneService;
@@ -34,8 +38,9 @@ namespace Infastructure.Services.CutScene
         {
             if (Input.GetKeyDown(KeyCode.Space) && IsActive)
             {
-                _cutSceneService.Show();
+                IsActive = false;
 
+                _cutSceneService.Show();
                 OnSkipHappened?.Invoke();
             }
         }

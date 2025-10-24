@@ -250,8 +250,11 @@ namespace SpiderController.StateMachine.States
             Transform spiderTransform = Spider.transform;
             for (int i = 0; i < Legs.Length; i++)
             {
-                avgLegPos += Legs[i].Raycast.Position;
-                count++;
+                if (Legs[i].Raycast.IsGrounded)
+                {
+                    avgLegPos += Legs[i].Raycast.Position;
+                    count++;
+                }
             }
 
             if (count == 0)
