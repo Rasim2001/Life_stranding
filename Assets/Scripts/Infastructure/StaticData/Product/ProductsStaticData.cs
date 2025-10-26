@@ -22,5 +22,15 @@ namespace Infastructure.StaticData.Product
         [FoldoutGroup("OnPlatformSettings")] public Vector3 StartRotationEuler;
         [FoldoutGroup("OnPlatformSettings")] public Vector3 StartPositionVector;
         [FoldoutGroup("OnPlatformSettings")] public PlatformId PlatformId;
+
+        [FoldoutGroup("Description")] public ProductDescription ProductDescription;
+    }
+
+    [Serializable]
+    public class ProductDescription
+    {
+        public string TitleText;
+        public string HowToUseText;
+        public string DescriptionText;
     }
 }

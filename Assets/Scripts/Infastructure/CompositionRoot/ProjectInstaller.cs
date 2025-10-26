@@ -1,6 +1,7 @@
 using Infastructure.Common;
 using Infastructure.Common.Pickup;
 using Infastructure.Factories.ProjectFactories;
+using Infastructure.Services.Pause;
 using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.SaveLoadService;
 using Infastructure.States;
@@ -32,7 +33,12 @@ namespace Infastructure.CompositionRoot
             BindSaveLoadService();
 
             BindCurtainRoot();
+
+            BindPauseService();
         }
+
+        private void BindPauseService() =>
+            Container.BindInterfacesAndSelfTo<PauseService>().AsSingle();
 
 
         private void BindPersistentProgressService() =>

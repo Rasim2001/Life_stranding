@@ -12,6 +12,7 @@ namespace Infastructure.Common
         public const string StableWorldUpPath = "Prefabs/CameraSystem/StableWorldUp";
         public const string UIRootPath = "Prefabs/UI/Windows/Root/UIRoot";
         public const string GamePlayUIPath = "Prefabs/UI/Windows/Root/GameplayUI";
+        public const string EventSystemPath = "Prefabs/UI/EventSystem";
 
         public const string SpiderPath = "Prefabs/Spider/Spider";
         public const string CameraSystemPath = "Prefabs/CameraSystem/CameraSystem";

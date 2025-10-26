@@ -12,7 +12,7 @@ namespace UI.MVVM.View.StartSplashScreen
         public StartSplashScreenViewModel(IWindowService windowService) =>
             _windowService = windowService;
 
-        public void RequestOpenPopupSettings() =>
-            _windowService.OpenSettingsPopup();
+        public void RequestOpenSettingScreen() =>
+            _windowService.OpenSettingsScreen();
     }
 }

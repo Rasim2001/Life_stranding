@@ -94,6 +94,9 @@ namespace Infastructure.CutScene
 
         private void SkipCustom()
         {
+            _cutSceneService.IsActive = false;
+            _cutSceneService.HasPlayed = true;
+
             _mainBrainCamera.UpdateMethod = CinemachineBrain.UpdateMethods.FixedUpdate;
             _inputService.SetInputSource(new PlayerInputSource());
 

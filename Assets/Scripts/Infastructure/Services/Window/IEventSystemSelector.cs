@@ -1,9 +1,12 @@
-using UnityEngine.UI;
+using System;
+using UnityEngine;
 
 namespace Infastructure.Services.Window
 {
     public interface IEventSystemSelector
     {
-        void SelectButton(Button button);
+        void SelectButton(GameObject buttonObject);
+        event Action<GameObject> OnSelectHappened;
+        bool HasFocusUI();
     }
 }

@@ -74,7 +74,7 @@ namespace SpiderController.Platform
 
             if (_isMouseHold)
                 HandleMousePosition();
-            else
+            else if (_joystickInputSource != null)
             {
                 bool isGamepadActiveNow = _joystickInputSource.IsGamepadActiveNow();
 

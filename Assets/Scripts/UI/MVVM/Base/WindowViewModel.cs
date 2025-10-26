@@ -10,11 +10,9 @@ namespace UI.MVVM.Base
 
         private readonly Subject<WindowViewModel> _closeRequested = new();
 
-        public void RequestClose() =>
+        public void RequestClose() => 
             _closeRequested.OnNext(this);
 
-        public virtual void Dispose()
-        {
-        }
+        public virtual void Dispose() { }
     }
 }

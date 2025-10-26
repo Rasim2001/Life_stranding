@@ -52,7 +52,7 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Update();
 
-            if (InputService.TabPressed)
+            if (InputService.TabPressed && !Spider.EventSystemSelector.HasFocusUI())
                 StartTerrainScan().Forget();
 
             if (IsNotMoveableLayer())
@@ -77,7 +77,6 @@ namespace SpiderController.StateMachine.States.Ground
             Data.TerrainTimerDefault = Data.TerrainTimer;
 
             Spider.ScannerAnimator.PlayScanAnimation();
-
 
             await UniTask.Delay(TimeSpan.FromSeconds(0.4f));
 

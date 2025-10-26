@@ -10,6 +10,7 @@ using Infastructure.Services.CutScene;
 using Infastructure.Services.Magnet;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.Window;
 using Infastructure.Services.XRay;
 using Infastructure.States;
 using Infastructure.StaticData.StaticDataService;
@@ -49,6 +50,7 @@ namespace SpiderController
         [SerializeField] private Dictionary<PlatformId, PlatformData> _platformDatas;
 
         public IMagnetFreezingService MagnetFreezingService => _magnetFreezingService;
+        public IEventSystemSelector EventSystemSelector => _eventSystemSelector;
         public Rigidbody Rigidbody => _rigidbody;
         public GroundChecker GroundChecker => _groundChecker;
         public SpiderUI SpiderUI => _spiderUI;
@@ -85,6 +87,8 @@ namespace SpiderController
         private IPlatformObjectsService _platformObjectsService;
         private IXRayService _xRayService;
         private IPlatformRegistryService _platformRegistryService;
+        private IWindowService _windowService;
+        private IEventSystemSelector _eventSystemSelector;
 
 
         [Inject]
@@ -98,8 +102,12 @@ namespace SpiderController
             IMagnetFreezingService magnetFreezingService,
             IPlatformObjectsService platformObjectsService,
             IXRayService xRayService,
-            IPlatformRegistryService platformRegistryService)
+            IPlatformRegistryService platformRegistryService,
+            IWindowService windowService,
+            IEventSystemSelector eventSystemSelector)
         {
+            _eventSystemSelector = eventSystemSelector;
+            _windowService = windowService;
             _platformRegistryService = platformRegistryService;
             _xRayService = xRayService;
             _platformObjectsService = platformObjectsService;
@@ -151,8 +159,8 @@ namespace SpiderController
                 _batteryChecker, _flowerChecker);
             _batteryProductPickup.Initialize();
 
-            _energyPickup = new EnergyPickup(_inputService, _pickupDisplayer, _xRayService, _energyChecker,
-                SpiderUI.EnergyBar, stateMachineData, energyLegs);
+            _energyPickup = new EnergyPickup(_inputService, _pickupDisplayer, _xRayService, _windowService,
+                _energyChecker, SpiderUI.EnergyBar, stateMachineData, energyLegs);
             _energyPickup.Initialize();
 
             _elephantProductPickup = new ElephantProductPickup(_inputService, _pickupDisplayer, _platformObjectsService,
@@ -186,9 +194,6 @@ namespace SpiderController
         {
             if (_spiderStateMachine == null)
                 return;
-
-            if (Input.GetKeyDown(KeyCode.Escape))
-                _stateMachine.Enter<LoadLevelState>(); //TODO:
 
             _spiderStateMachine.HandleInput();
             _spiderStateMachine.Update();

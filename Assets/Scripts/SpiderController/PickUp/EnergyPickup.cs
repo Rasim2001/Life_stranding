@@ -1,7 +1,9 @@
 using Infastructure.Common.Pickup;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.Window;
 using Infastructure.Services.XRay;
 using Infastructure.StaticData.XRay;
+using PickupObjects;
 using SpiderController.StateMachine;
 using SpiderController.TriggerChecker;
 using SpiderController.UI;
@@ -14,6 +16,7 @@ namespace SpiderController.PickUp
         private readonly IInputService _inputService;
         private readonly IPickupDisplayer _pickupDisplayer;
         private readonly IXRayService _xRayService;
+        private readonly IWindowService _windowService;
         private readonly EnergyChecker _energyChecker;
         private readonly EnergyBarUI _energyBarUI;
         private readonly StateMachineData _data;
@@ -23,6 +26,7 @@ namespace SpiderController.PickUp
             IInputService inputService,
             IPickupDisplayer pickupDisplayer,
             IXRayService xRayService,
+            IWindowService windowService,
             EnergyChecker energyChecker,
             EnergyBarUI energyBarUI,
             StateMachineData data,
@@ -31,6 +35,7 @@ namespace SpiderController.PickUp
             _inputService = inputService;
             _pickupDisplayer = pickupDisplayer;
             _xRayService = xRayService;
+            _windowService = windowService;
             _energyChecker = energyChecker;
             _energyBarUI = energyBarUI;
             _data = data;
@@ -63,6 +68,11 @@ namespace SpiderController.PickUp
         private void PickUp()
         {
             int count = _energyChecker.Results.Count;
+
+            if (count == 0)
+                return;
+
+            _windowService.OpenProductDescriptionPopup(ProductType.Energy);
 
             for (int i = 0; i < count; i++)
             {

@@ -29,6 +29,8 @@ namespace HUD
 
         private bool _cutSceneIsActive;
 
+        private TerrainScan _terrain;
+
         [Inject]
         public void Construct(ICutSceneService cutSceneService) =>
             _cutSceneService = cutSceneService;
@@ -62,8 +64,10 @@ namespace HUD
 
         private void Start()
         {
+            _terrain = TerrainScan.Instance;
+            _terrain.OnTerrainScanStart += TerrainStartHappened;
+
             _cutSceneService.OnCutsceneActiveChanged += CutsceneActiveChanged;
-            TerrainScan.Instance.OnTerrainScanStart += TerrainStartHappened;
 
             CinemachineCore.CameraUpdatedEvent.AddListener(UpdateIndicator);
         }
@@ -72,7 +76,9 @@ namespace HUD
         {
             _cutSceneService.OnCutsceneActiveChanged -= CutsceneActiveChanged;
 
-            TerrainScan.Instance.OnTerrainScanStart -= TerrainStartHappened;
+            if (_terrain != null)
+                _terrain.OnTerrainScanStart -= TerrainStartHappened;
+
             CinemachineCore.CameraUpdatedEvent.RemoveListener(UpdateIndicator);
         }
 

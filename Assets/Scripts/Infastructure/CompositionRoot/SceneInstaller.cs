@@ -62,6 +62,8 @@ namespace Infastructure.CompositionRoot
             BindUIFactory();
 
             BindWindowService();
+
+            BindEventSystemSelector();
         }
 
         private void BindPlatformRegistryService() =>
@@ -123,6 +125,15 @@ namespace Infastructure.CompositionRoot
                 .Bind<IUIRoot>()
                 .To<UIRoot>()
                 .FromComponentInNewPrefabResource(AssetsPath.UIRootPath)
+                .AsSingle();
+        }
+
+        private void BindEventSystemSelector()
+        {
+            Container
+                .Bind<IEventSystemSelector>()
+                .To<EventSystemSelector>()
+                .FromComponentInNewPrefabResource(AssetsPath.EventSystemPath)
                 .AsSingle();
         }
 

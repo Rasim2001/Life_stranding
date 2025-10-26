@@ -77,6 +77,9 @@ namespace Infastructure.Services.PlayerInput.InputSourceRealization
 
         public bool IsGamepadActiveNow()
         {
+            if (_gameInput == null)
+                return false;
+
             Gamepad gp = Gamepad.current;
             if (gp == null)
                 return false;

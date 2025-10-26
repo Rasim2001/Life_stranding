@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using Infastructure.Services.Window;
+using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace UI.MVVM.Base
 {
@@ -7,6 +9,15 @@ namespace UI.MVVM.Base
     {
         [SerializeField] private Button _btnClose;
         [SerializeField] private Button _btnCloseAlt;
+
+        private IEventSystemSelector _eventSystemSelector;
+
+        [Inject]
+        public void Construct(IEventSystemSelector eventSystemSelector) =>
+            _eventSystemSelector = eventSystemSelector;
+
+        private void Awake() =>
+            _eventSystemSelector.SelectButton(_btnClose.gameObject);
 
         protected virtual void Start()
         {
@@ -20,9 +31,7 @@ namespace UI.MVVM.Base
             _btnCloseAlt?.onClick.RemoveListener(OnCloseButtonClick);
         }
 
-        protected virtual void OnCloseButtonClick()
-        {
+        protected virtual void OnCloseButtonClick() =>
             ViewModel.RequestClose();
-        }
     }
 }

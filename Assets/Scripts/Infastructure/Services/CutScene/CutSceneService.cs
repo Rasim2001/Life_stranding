@@ -1,7 +1,10 @@
 using System;
+using System.Linq;
 using UI;
 using UI.Curtain;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 using Zenject;
 
 namespace Infastructure.Services.CutScene
@@ -10,9 +13,8 @@ namespace Infastructure.Services.CutScene
     {
         public event Action<bool> OnCutsceneActiveChanged;
         public event Action OnSkipHappened;
-
         public float LerpForwardSpeed { get; set; }
-
+        public bool HasPlayed { get; set; }
         public bool IsActive
         {
             get => _isActive;
@@ -35,14 +37,21 @@ namespace Infastructure.Services.CutScene
 
         public void Tick()
         {
-            if (Input.GetKeyDown(KeyCode.Escape) && !_isTriggered)
-            {
-                _isTriggered = true;
-                IsActive = false;
+            Gamepad gp = Gamepad.current;
+            if (gp == null)
+                return;
 
+            if (AnyKeyPressed(gp) && !HasPlayed && _isActive)
+            {
                 _curtain.ShowAndHide();
                 OnSkipHappened?.Invoke();
             }
+        }
+
+        private bool AnyKeyPressed(Gamepad gp)
+        {
+            return gp.allControls.Any(c => c is ButtonControl b && b.wasPressedThisFrame) ||
+                   Input.anyKeyDown;
         }
     }
 }

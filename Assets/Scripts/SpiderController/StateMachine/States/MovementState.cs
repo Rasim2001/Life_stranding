@@ -19,7 +19,6 @@ namespace SpiderController.StateMachine.States
         protected readonly StateMachineData Data;
         protected readonly Spider Spider;
         protected readonly LegDataStruct[] Legs;
-        protected readonly Flower Flower;
         protected readonly EnergySystem EnergySystem;
 
         protected IInputService InputService => _inputService;
@@ -29,6 +28,7 @@ namespace SpiderController.StateMachine.States
 
         private SpiderHealth SpiderHealth => Spider.SpiderUI.SpiderHealth;
 
+        private readonly Flower _flower;
         private readonly IStaticDataService _staticDataService;
         private readonly ICutSceneService _cutSceneService;
         private readonly IInputService _inputService;
@@ -51,7 +51,7 @@ namespace SpiderController.StateMachine.States
             _inputService = inputService;
             _staticDataService = staticDataService;
             _cutSceneService = cutSceneService;
-            Flower = flower;
+            _flower = flower;
             EnergySystem = energySystem;
 
             StateMachine = stateMachine;
@@ -198,7 +198,7 @@ namespace SpiderController.StateMachine.States
 
         private void CheckFlowerAndReduceHp()
         {
-            if (Flower.WasOnPlatform && Flower.IsOnPlatform == false)
+            if (_flower.WasOnPlatform && _flower.IsOnPlatform == false)
                 SpiderHealth.TakeDamage(SpiderStaticData.DamageAmount);
         }
 

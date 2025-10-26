@@ -102,7 +102,12 @@ namespace CameraFollow
         {
             float scrollInput = _inputService.ScrollWheelAxis;
 
-            float maxLenght = _joystickInputSource.IsGamepadActiveNow() ? 4 : 7;
+            float maxLenght;
+            if (_joystickInputSource == null)
+                maxLenght = 7;
+            else
+                maxLenght = _joystickInputSource.IsGamepadActiveNow() ? 4 : 7;
+
 
             if (scrollInput != 0f)
             {

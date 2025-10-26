@@ -24,6 +24,9 @@ namespace UI.MVVM.Base
             _openedScreen.Value?.Dispose();
         }
 
+        public bool HasOpenedWindow() =>
+            _openedPopups.Count == 0 && _openedScreen.Value == null;
+
         public void OpenScreen(WindowViewModel screenViewModel)
         {
             _openedScreen.Value?.Dispose();
@@ -38,40 +41,58 @@ namespace UI.MVVM.Base
             if (_openedPopups.Contains(popupViewModel))
                 return;
 
-            IDisposable subscription = popupViewModel.CloseRequested.Subscribe(ClosePopup);
+            IDisposable subscription = popupViewModel.CloseRequested.Subscribe(CloseLastPopup);
             _popupSubscriptions.Add(popupViewModel, subscription);
             _openedPopups.Add(popupViewModel);
         }
 
         public void ClosePopup(string popupId)
         {
-            var openedPopupViewModel = _openedPopups.FirstOrDefault(p => p.Id == popupId);
-            ClosePopup(openedPopupViewModel);
+            WindowViewModel openedPopupViewModel = _openedPopups.FirstOrDefault(p => p.Id == popupId);
+
+            if (_openedPopups.Contains(openedPopupViewModel))
+                ClosePopup(openedPopupViewModel);
         }
 
         private void CloseAllPopups()
         {
             foreach (WindowViewModel openedPopup in _openedPopups)
-                ClosePopup(openedPopup);
+            {
+                if (_openedPopups.Contains(openedPopup))
+                    ClosePopup(openedPopup);
+            }
+        }
+
+        private void CloseLastPopup(WindowViewModel popupViewModel)
+        {
+            if (_openedPopups.Contains(popupViewModel) && IsLastPopup(popupViewModel))
+                ClosePopup(popupViewModel);
         }
 
         private void ClosePopup(WindowViewModel popupViewModel)
         {
-            if (_openedPopups.Contains(popupViewModel))
-            {
-                popupViewModel.Dispose();
-                _openedPopups.Remove(popupViewModel);
+            popupViewModel.Dispose();
+            _openedPopups.Remove(popupViewModel);
 
-                IDisposable popupSubscription = _popupSubscriptions[popupViewModel];
-                popupSubscription?.Dispose();
-                _popupSubscriptions.Remove(popupViewModel);
-            }
+            IDisposable popupSubscription = _popupSubscriptions[popupViewModel];
+            popupSubscription?.Dispose();
+            _popupSubscriptions.Remove(popupViewModel);
         }
 
         private void CloseScreen(WindowViewModel popupViewModel)
         {
             _openedScreen.Value.Dispose();
             _openedScreen.Value = null;
+        }
+
+        private bool IsLastPopup(WindowViewModel vm)
+        {
+            int count = _openedPopups.Count;
+            if (count == 0)
+                return false;
+
+            int idx = _openedPopups.IndexOf(vm);
+            return idx == count - 1;
         }
     }
 }
