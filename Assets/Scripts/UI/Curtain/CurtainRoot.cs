@@ -1,7 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 
-namespace UI
+namespace UI.Curtain
 {
     public class CurtainRoot : MonoBehaviour, ICurtainRoot
     {
@@ -10,7 +10,7 @@ namespace UI
         private Sequence _fadeSequence;
         private Tween _fadeTween;
 
-        public void Show()
+        public void ShowAndHide()
         {
             _canvasGroup.alpha = 1;
 

@@ -4,8 +4,8 @@ using Infastructure.Factories.GameFactories;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerProgressService;
+using Infastructure.Services.Window;
 using Infastructure.StaticData.StaticDataService;
-using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
 using SpiderController;
 using Zenject;
@@ -21,6 +21,7 @@ namespace Infastructure.States
         private readonly ISceneLoader _sceneLoader;
         private readonly ICheckPointService _checkPointService;
         private readonly IInputService _inputService;
+        private IWindowService _windowService;
 
         public BuildLevelState(
             IGameFactory gameFactory,
@@ -29,9 +30,11 @@ namespace Infastructure.States
             IPersistentProgressService progressService,
             ISceneLoader sceneLoader,
             ICheckPointService checkPointService,
-            IInputService inputService
+            IInputService inputService,
+            IWindowService windowService
         )
         {
+            _windowService = windowService;
             _gameFactory = gameFactory;
             _staticData = staticData;
             _uiFactory = uiFactory;
@@ -42,6 +45,19 @@ namespace Infastructure.States
         }
 
         public void Initialize()
+        {
+            InitUI();
+            InitAll();
+        }
+
+        private void InitUI()
+        {
+            _uiFactory.CreateGamplayRoot();
+
+            _windowService.OpenStartSplashScreen();
+        }
+
+        private void InitAll()
         {
             _inputService.Initialize();
 

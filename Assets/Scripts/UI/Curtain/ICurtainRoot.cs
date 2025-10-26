@@ -1,7 +1,7 @@
-namespace UI
+namespace UI.Curtain
 {
     public interface ICurtainRoot
     {
-        void Show();
+        void ShowAndHide();
     }
 }

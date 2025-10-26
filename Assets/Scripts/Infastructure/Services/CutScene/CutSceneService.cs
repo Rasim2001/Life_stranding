@@ -1,5 +1,6 @@
 using System;
 using UI;
+using UI.Curtain;
 using UnityEngine;
 using Zenject;
 
@@ -24,30 +25,23 @@ namespace Infastructure.Services.CutScene
             }
         }
 
-        private readonly ICurtainRoot _cutSceneService;
+        private readonly ICurtainRoot _curtain;
 
         private bool _isActive;
+        private bool _isTriggered;
 
-        public CutSceneService(ICurtainRoot cutSceneService) =>
-            _cutSceneService = cutSceneService;
+        public CutSceneService(ICurtainRoot curtain) =>
+            _curtain = curtain;
 
         public void Tick()
         {
-            if (Input.GetKeyDown(KeyCode.Escape) && IsActive)
+            if (Input.GetKeyDown(KeyCode.Escape) && !_isTriggered)
             {
-                Debug.Log("Escape");
-
+                _isTriggered = true;
                 IsActive = false;
 
-                _cutSceneService.Show();
+                _curtain.ShowAndHide();
                 OnSkipHappened?.Invoke();
-            }
-
-            if (Input.GetKeyDown(KeyCode.Space) && !IsActive)
-            {
-                Debug.Log("Space");
-
-                IsActive = true;
             }
         }
     }

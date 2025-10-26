@@ -9,10 +9,10 @@ using Infastructure.Services.Explosion;
 using Infastructure.Services.Magnet;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
-using Infastructure.Services.Window.GameWindowService;
+using Infastructure.Services.Window;
 using Infastructure.Services.XRay;
 using Infastructure.States;
-using UnityEngine.Rendering;
+using UI.MVVM.View.Root;
 using Zenject;
 
 namespace Infastructure.CompositionRoot
@@ -21,13 +21,16 @@ namespace Infastructure.CompositionRoot
     {
         public override void InstallBindings()
         {
+            BindUI();
+
+            BindWorld();
+        }
+
+        private void BindWorld()
+        {
             BindBuildLevelState();
 
-            BindWindowService();
-
             BindGameFactory();
-
-            BindUIFactory();
 
             BindInputService();
 
@@ -48,6 +51,17 @@ namespace Infastructure.CompositionRoot
             BindXRayService();
 
             BindPlatformRegistryService();
+        }
+
+        private void BindUI()
+        {
+            BindUIRoot();
+
+            BindUIGameplayRootViewModel();
+
+            BindUIFactory();
+
+            BindWindowService();
         }
 
         private void BindPlatformRegistryService() =>
@@ -102,7 +116,20 @@ namespace Infastructure.CompositionRoot
         private void BindGameFactory() =>
             Container.BindInterfacesAndSelfTo<GameFactory>().AsSingle();
 
+
+        private void BindUIRoot()
+        {
+            Container
+                .Bind<IUIRoot>()
+                .To<UIRoot>()
+                .FromComponentInNewPrefabResource(AssetsPath.UIRootPath)
+                .AsSingle();
+        }
+
+        private void BindUIGameplayRootViewModel() =>
+            Container.BindInterfacesAndSelfTo<UIGameplayRootViewModel>().AsSingle();
+
         private void BindWindowService() =>
-            Container.BindInterfacesAndSelfTo<GameWindowService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<WindowService>().AsSingle();
     }
 }

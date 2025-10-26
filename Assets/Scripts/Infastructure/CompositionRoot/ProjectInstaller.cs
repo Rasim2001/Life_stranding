@@ -3,10 +3,10 @@ using Infastructure.Common.Pickup;
 using Infastructure.Factories.ProjectFactories;
 using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.SaveLoadService;
-using Infastructure.Services.Window.ProjectWindowService;
 using Infastructure.States;
 using Infastructure.StaticData.StaticDataService;
 using UI;
+using UI.Curtain;
 using Zenject;
 
 namespace Infastructure.CompositionRoot
@@ -27,8 +27,6 @@ namespace Infastructure.CompositionRoot
 
             BindProjectUIFactory();
 
-            BindProjectWindowService();
-
             BindPersistentProgressService();
 
             BindSaveLoadService();
@@ -43,8 +41,6 @@ namespace Infastructure.CompositionRoot
         private void BindSaveLoadService() =>
             Container.BindInterfacesAndSelfTo<SaveLoadService>().AsSingle();
 
-        private void BindProjectWindowService() =>
-            Container.BindInterfacesAndSelfTo<ProjectWindowService>().AsSingle();
 
         private void BindProjectUIFactory() =>
             Container.BindInterfacesAndSelfTo<ProjectUIFactory>().AsSingle();
