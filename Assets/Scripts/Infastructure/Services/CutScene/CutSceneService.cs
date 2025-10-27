@@ -37,19 +37,19 @@ namespace Infastructure.Services.CutScene
 
         public void Tick()
         {
-            Gamepad gp = Gamepad.current;
-            if (gp == null)
-                return;
-
-            if (AnyKeyPressed(gp) && !HasPlayed && _isActive)
+            if (AnyKeyPressed() && !HasPlayed && _isActive)
             {
                 _curtain.ShowAndHide();
                 OnSkipHappened?.Invoke();
             }
         }
 
-        private bool AnyKeyPressed(Gamepad gp)
+        private bool AnyKeyPressed()
         {
+            Gamepad gp = Gamepad.current;
+            if (gp == null)
+                return Input.anyKeyDown;
+
             return gp.allControls.Any(c => c is ButtonControl b && b.wasPressedThisFrame) ||
                    Input.anyKeyDown;
         }
