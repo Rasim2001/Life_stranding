@@ -1,12 +1,12 @@
 fileFormatVersion: 2
-guid: 0ff6307ad90025044a4c734b4bafc10e
+guid: 7eb2108f9883da847ae68a3a80b1144d
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 0
+    enableMipMap: 1
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
@@ -37,15 +37,15 @@ TextureImporter:
     filterMode: 1
     aniso: 1
     mipBias: 0
-    wrapU: 1
-    wrapV: 1
+    wrapU: 0
+    wrapV: 0
     wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
@@ -134,12 +134,122 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: UI_FrameTut_Video_A
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 964
+        width: 1694
+        height: 1084
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e94783234b9e304b8bbbf73364eb530
+      internalID: -1129209853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_FrameTut_Video_DiamondLines_A
+      rect:
+        serializedVersion: 2
+        x: 550
+        y: 28
+        width: 1076
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ac5e1faf886705648a8e019670b3e7f3
+      internalID: -585049883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_FrameTut_Video_Glow_A
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 148
+        width: 1418
+        height: 816
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 582750b3041309640a12e6d2255fa0cb
+      internalID: -1033804389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Tuts_Button_OK_Blured_A
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 14
+        width: 550
+        height: 134
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ea3c963fe6ce36446a89cccaa7a7ac9e
+      internalID: -257062756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Tuts_Button_OK_Crisp_A
+      rect:
+        serializedVersion: 2
+        x: 550
+        y: 56
+        width: 493
+        height: 92
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3bb03a4e1d07f394692440c29e5c0408
+      internalID: -530863407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 0c1bd93c67a93a0469ed09eb200621df
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +258,12 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      UI_FrameTut_Video_A: -1129209853
+      UI_FrameTut_Video_DiamondLines_A: -585049883
+      UI_FrameTut_Video_Glow_A: -1033804389
+      UI_Tuts_Button_OK_Blured_A: -257062756
+      UI_Tuts_Button_OK_Crisp_A: -530863407
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -8,6 +8,7 @@ using Infastructure.PlatformRegistry;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Magnet;
+using Infastructure.Services.Pause;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Window;
@@ -89,6 +90,7 @@ namespace SpiderController
         private IPlatformRegistryService _platformRegistryService;
         private IWindowService _windowService;
         private IEventSystemSelector _eventSystemSelector;
+        private IPauseService _pauseService;
 
 
         [Inject]
@@ -104,8 +106,10 @@ namespace SpiderController
             IXRayService xRayService,
             IPlatformRegistryService platformRegistryService,
             IWindowService windowService,
-            IEventSystemSelector eventSystemSelector)
+            IEventSystemSelector eventSystemSelector,
+            IPauseService pauseService)
         {
+            _pauseService = pauseService;
             _eventSystemSelector = eventSystemSelector;
             _windowService = windowService;
             _platformRegistryService = platformRegistryService;
@@ -192,7 +196,7 @@ namespace SpiderController
 
         private void Update()
         {
-            if (_spiderStateMachine == null)
+            if (_spiderStateMachine == null || _pauseService.IsPaused)
                 return;
 
             _spiderStateMachine.HandleInput();
@@ -209,7 +213,7 @@ namespace SpiderController
 
         private void FixedUpdate()
         {
-            if (_spiderStateMachine == null)
+            if (_spiderStateMachine == null || _pauseService.IsPaused)
                 return;
 
             _spiderStateMachine.FixedUpdate();
@@ -218,7 +222,7 @@ namespace SpiderController
 
         private void LateUpdate()
         {
-            if (_spiderStateMachine == null)
+            if (_spiderStateMachine == null || _pauseService.IsPaused)
                 return;
 
             _spiderStateMachine.LateUpdate();
