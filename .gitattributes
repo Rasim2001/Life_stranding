@@ -22,6 +22,11 @@
 *.terrainlayer         text eol=lf merge=unityyamlmerge diff
 
 ################################################################################
+# Явно держим как YAML (НЕ LFS)
+Assets/**/TerrainData.asset    text diff merge=unityyamlmerge eol=lf -filter
+Assets/**/NoiseTex3D.asset     text diff merge=unityyamlmerge eol=lf -filter
+
+################################################################################
 # 2) КОД / КОНФИГИ — текст LF
 ################################################################################
 *.asmdef               text eol=lf diff
@@ -104,12 +109,12 @@
 *.otf  filter=lfs diff=lfs merge=lfs -text
 
 ################################################################################
-# 7) КРУПНЫЕ БИНАРНЫЕ Unity .asset (ТОЧЕЧНО!)
+# 7) КРУПНЫЕ БИНАРНЫЕ Unity .asset (ТОЧЕЧНО!) ЗАКОМИТИЛ НЕТРОГАТЬ НЕ менять если в гит игнор они прописаны тоже
 ################################################################################
-Assets/**/LightingData.asset          filter=lfs diff=lfs merge=lfs -text
-Assets/**/OcclusionCullingData.asset  filter=lfs diff=lfs merge=lfs -text
-Assets/**/NavMesh.asset               filter=lfs diff=lfs merge=lfs -text
-Assets/**/TerrainData.asset           filter=lfs diff=lfs merge=lfs -text
-Assets/**/NoiseTex3D.asset            filter=lfs diff=lfs merge=lfs -text
+# Assets/**/LightingData.asset          filter=lfs diff=lfs merge=lfs -text
+# Assets/**/OcclusionCullingData.asset  filter=lfs diff=lfs merge=lfs -text
+# Assets/**/NavMesh.asset               filter=lfs diff=lfs merge=lfs -text
+# Assets/**/TerrainData.asset           filter=lfs diff=lfs merge=lfs -text
+# Assets/**/NoiseTex3D.asset            filter=lfs diff=lfs merge=lfs -text
 # (опционально, если встречается в проекте)
-Assets/**/LightmapSnapshot.asset      filter=lfs diff=lfs merge=lfs -text
+# Assets/**/LightmapSnapshot.asset      filter=lfs diff=lfs merge=lfs -text

@@ -103,3 +103,16 @@ Assets/FR2_Cache.asset
 ProjectSettings/Packages/com.unity.probuilder/Settings.json
 Assets/FR2_Cache.asset.meta
 .vsconfig
+
+# Сгенерённые Unity-данные — не версионируем  Если сильно нужно то передавать через ТГ
+**/LightingData.asset
+**/OcclusionCullingData.asset
+**/NavMesh.asset
+**/LightmapSnapshot.asset
+
+# Пакеты — не версионируем содержимое  после ! знака - исключения они в git идут
+Packages/**
+!Packages/manifest.json
+!Packages/packages-lock.json
+
+
