@@ -61,7 +61,7 @@ MonoBehaviour:
     AOMethod: 1
     Downsample: 0
     AfterOpaque: 0
-    Source: 1
+    Source: 0
     NormalSamples: 1
     Intensity: 0.5
     DirectLightingStrength: 0.25
@@ -247,7 +247,7 @@ MonoBehaviour:
     ShouldClearOutputTexture: 1
     SupportedLayersMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 55
     SupportedShaderPassNames:
     - DepthNormalsTerrainIcons
     OverrideMaterial: {fileID: 2100000, guid: ad5cb347c16e45043ab5673e9b4c0936, type: 2}
@@ -273,7 +273,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b3d386ba5cd94485973aee1479b272e, type: 3}
-  m_Name: Render Feature  Outline Transparent
+  m_Name: Render Feature - Outline Transparent
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
