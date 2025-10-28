@@ -1,3 +1,1111 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:fc56dc94531857d3461319a192037710d8f0916fb08bbaa10f2a49c5d78ef6bc
-size 21722
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a24e5299b10445ad8c39ccf76f43cf6d, type: 3}
+  m_Name: GameData
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: GameDatas
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[Infastructure.StaticData.GameData,
+        Assembly-CSharp]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
+        mscorlib]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 3
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Test
+    - Name: $v
+      Entry: 7
+      Data: 2|Infastructure.StaticData.GameData, Assembly-CSharp
+    - Name: SpiderSpawnData
+      Entry: 6
+      Data: 
+    - Name: FlowerSpawnData
+      Entry: 6
+      Data: 
+    - Name: CheckPoints
+      Entry: 6
+      Data: 
+    - Name: BatteriesPoints
+      Entry: 6
+      Data: 
+    - Name: EnergyPoints
+      Entry: 6
+      Data: 
+    - Name: ElephantPoints
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: GameScene
+    - Name: $v
+      Entry: 7
+      Data: 3|Infastructure.StaticData.GameData, Assembly-CSharp
+    - Name: SpiderSpawnData
+      Entry: 7
+      Data: 4|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -156.469
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: -209.927292
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: FlowerSpawnData
+      Entry: 6
+      Data: 
+    - Name: CheckPoints
+      Entry: 7
+      Data: 5|System.Collections.Generic.List`1[[Infastructure.StaticData.WorldData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 3
+    - Name: 
+      Entry: 7
+      Data: 6|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -143.3
+    - Name: 
+      Entry: 4
+      Data: 1.2
+    - Name: 
+      Entry: 4
+      Data: -117
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 7|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -17.3167953
+    - Name: 
+      Entry: 4
+      Data: 53.53
+    - Name: 
+      Entry: 4
+      Data: -304.1166
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 8|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 121.380287
+    - Name: 
+      Entry: 4
+      Data: 149.4917
+    - Name: 
+      Entry: 4
+      Data: -332.2
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: BatteriesPoints
+      Entry: 7
+      Data: 9|System.Collections.Generic.List`1[[Infastructure.StaticData.WorldData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 4
+    - Name: 
+      Entry: 7
+      Data: 10|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -173.87
+    - Name: 
+      Entry: 4
+      Data: 1.80000019
+    - Name: 
+      Entry: 4
+      Data: -246.01
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 11|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -138.82
+    - Name: 
+      Entry: 4
+      Data: 1.80000019
+    - Name: 
+      Entry: 4
+      Data: -246.01
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 12|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -173.87
+    - Name: 
+      Entry: 4
+      Data: 1.8
+    - Name: 
+      Entry: 4
+      Data: -201.03
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 13|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -138.82
+    - Name: 
+      Entry: 4
+      Data: 1.80000019
+    - Name: 
+      Entry: 4
+      Data: -201.03
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: EnergyPoints
+      Entry: 7
+      Data: 14|System.Collections.Generic.List`1[[Infastructure.StaticData.WorldData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 4
+    - Name: 
+      Entry: 7
+      Data: 15|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -177.9
+    - Name: 
+      Entry: 4
+      Data: 0.65
+    - Name: 
+      Entry: 4
+      Data: -158.24
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 16|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -161.18
+    - Name: 
+      Entry: 4
+      Data: 0.65
+    - Name: 
+      Entry: 4
+      Data: -178.61
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 17|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -163.82
+    - Name: 
+      Entry: 4
+      Data: 0.65
+    - Name: 
+      Entry: 4
+      Data: -158.24
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 18|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -177.9
+    - Name: 
+      Entry: 4
+      Data: 0.65
+    - Name: 
+      Entry: 4
+      Data: -178.61
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: ElephantPoints
+      Entry: 7
+      Data: 19|System.Collections.Generic.List`1[[Infastructure.StaticData.WorldData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 20|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -188.4
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: -143.9
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: -0.85052073
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0.5259416
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: SCN_LevelDesingDraft
+    - Name: $v
+      Entry: 7
+      Data: 21|Infastructure.StaticData.GameData, Assembly-CSharp
+    - Name: SpiderSpawnData
+      Entry: 7
+      Data: 22|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -63.5975037
+    - Name: 
+      Entry: 4
+      Data: 110.842545
+    - Name: 
+      Entry: 4
+      Data: 221.294037
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: -0.8386707
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: -0.5446389
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: FlowerSpawnData
+      Entry: 7
+      Data: 23|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 15.063
+    - Name: 
+      Entry: 4
+      Data: 15.8
+    - Name: 
+      Entry: 4
+      Data: 162.097
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0.287397742
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0.957811356
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: CheckPoints
+      Entry: 7
+      Data: 24|System.Collections.Generic.List`1[[Infastructure.StaticData.WorldData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 3
+    - Name: 
+      Entry: 7
+      Data: 25|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -143.3
+    - Name: 
+      Entry: 4
+      Data: -32.2
+    - Name: 
+      Entry: 4
+      Data: -78.1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 26|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -17.3167953
+    - Name: 
+      Entry: 4
+      Data: 20.1299973
+    - Name: 
+      Entry: 4
+      Data: -265.2166
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 27|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 121.380287
+    - Name: 
+      Entry: 4
+      Data: 94.7
+    - Name: 
+      Entry: 4
+      Data: -293.300018
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: BatteriesPoints
+      Entry: 7
+      Data: 28|System.Collections.Generic.List`1[[Infastructure.StaticData.WorldData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: EnergyPoints
+      Entry: 7
+      Data: 29|System.Collections.Generic.List`1[[Infastructure.StaticData.WorldData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 4
+    - Name: 
+      Entry: 7
+      Data: 30|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 37.5775375
+    - Name: 
+      Entry: 4
+      Data: 13.2369118
+    - Name: 
+      Entry: 4
+      Data: 159.226929
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0.0240978152
+    - Name: 
+      Entry: 4
+      Data: -0.97472
+    - Name: 
+      Entry: 4
+      Data: 0.130004287
+    - Name: 
+      Entry: 4
+      Data: 0.180108726
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 31|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 13.6888866
+    - Name: 
+      Entry: 4
+      Data: 13.2369156
+    - Name: 
+      Entry: 4
+      Data: 103.52079
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0.0240978152
+    - Name: 
+      Entry: 4
+      Data: -0.97472
+    - Name: 
+      Entry: 4
+      Data: 0.130004287
+    - Name: 
+      Entry: 4
+      Data: 0.180108726
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 32|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 21.84043
+    - Name: 
+      Entry: 4
+      Data: 13.2369194
+    - Name: 
+      Entry: 4
+      Data: 134.690857
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0.0240978152
+    - Name: 
+      Entry: 4
+      Data: -0.97472
+    - Name: 
+      Entry: 4
+      Data: 0.130004287
+    - Name: 
+      Entry: 4
+      Data: 0.180108726
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 33|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 17.8104248
+    - Name: 
+      Entry: 4
+      Data: 13.2369156
+    - Name: 
+      Entry: 4
+      Data: 120.636063
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0.0240978152
+    - Name: 
+      Entry: 4
+      Data: -0.97472
+    - Name: 
+      Entry: 4
+      Data: 0.130004287
+    - Name: 
+      Entry: 4
+      Data: 0.180108726
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: ElephantPoints
+      Entry: 7
+      Data: 34|System.Collections.Generic.List`1[[Infastructure.StaticData.WorldData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 35|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 27.56439
+    - Name: 
+      Entry: 4
+      Data: 31.9532356
+    - Name: 
+      Entry: 4
+      Data: 23.9317474
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: -0.85052073
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0.5259416
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+  LoadScene: SCN_LevelDesingDraft
