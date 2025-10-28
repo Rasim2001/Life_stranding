@@ -19,6 +19,7 @@ namespace Infastructure.CutScene
 
         [SerializeField] private CinemachineCamera _firstCamera;
         [SerializeField] private CinemachineCamera[] _cameras;
+        [SerializeField] private float _startTime;
 
         private IInputService _inputService;
         private ICutSceneService _cutSceneService;
@@ -81,7 +82,15 @@ namespace Infastructure.CutScene
         private void ActiveCutsceneChanged(bool isActive)
         {
             if (isActive)
-                _playableDirector.Play();
+                Play();
+        }
+
+        private void Play()
+        {
+            _playableDirector.RebuildGraph();
+            _playableDirector.time = Mathf.Max(0, _startTime);
+            _playableDirector.Evaluate();
+            _playableDirector.Play();
         }
 
         private void SkipCutscene()
