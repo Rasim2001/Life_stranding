@@ -5,8 +5,8 @@ namespace Infastructure.StaticData.XRay
 {
     public class XRayMarker : MonoBehaviour
     {
-        public ProductType Type;
+        public ProductType Type { get; set; }
 
-        public string Id;
+        [HideInInspector] public string Id;
     }
 }

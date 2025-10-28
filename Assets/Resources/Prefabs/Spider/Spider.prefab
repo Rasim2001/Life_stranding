@@ -1436,6 +1436,7 @@ Transform:
   - {fileID: 1498908518501730004}
   - {fileID: 8042183286134516524}
   - {fileID: 7987350898421676912}
+  - {fileID: 6035750805498409298}
   m_Father: {fileID: 1093168242889441296}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2068096590413467173
@@ -3658,6 +3659,90 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &3569440267657156538
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6035750805498409298}
+  - component: {fileID: 210424719781416970}
+  - component: {fileID: 4312651226106737528}
+  - component: {fileID: 5344825924384677612}
+  m_Layer: 15
+  m_Name: SkillChecker
+  m_TagString: Untagged
+  m_Icon: {fileID: 3443629218296621865, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6035750805498409298
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3569440267657156538}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 781452967789582327}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &210424719781416970
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3569440267657156538}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 3
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4312651226106737528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3569440267657156538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04472d214065414984759eeaf533d1d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 4096
+--- !u!114 &5344825924384677612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3569440267657156538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae3876045ec0414498105fec6a8362b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _observerTrigger: {fileID: 4312651226106737528}
+  Results: []
 --- !u!1 &3709915977821733490
 GameObject:
   m_ObjectHideFlags: 0
@@ -11347,6 +11432,7 @@ MonoBehaviour:
   _batteryChecker: {fileID: 4899173071975301255}
   _energyChecker: {fileID: 423329812439949846}
   _elephantChecker: {fileID: 1703704432116311228}
+  _skillChecker: {fileID: 5344825924384677612}
   _stickers: {fileID: 1295488752135891832}
   _rotationPlaneTransform: {fileID: 5895152827964624774}
   _groundChecker: {fileID: 4291320528094871361}

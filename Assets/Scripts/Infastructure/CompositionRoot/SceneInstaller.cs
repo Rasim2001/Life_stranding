@@ -3,6 +3,7 @@ using Infastructure.Common.Pickup;
 using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Factories.GameFactories;
 using Infastructure.PlatformRegistry;
+using Infastructure.Services.Ability;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Explosion;
@@ -51,6 +52,8 @@ namespace Infastructure.CompositionRoot
             BindXRayService();
 
             BindPlatformRegistryService();
+
+            BindAbilityService();
         }
 
         private void BindUI()
@@ -65,6 +68,9 @@ namespace Infastructure.CompositionRoot
 
             BindEventSystemSelector();
         }
+
+        private void BindAbilityService() =>
+            Container.BindInterfacesAndSelfTo<AbilityService>().AsSingle();
 
         private void BindPlatformRegistryService() =>
             Container.BindInterfacesAndSelfTo<PlatformRegistryService>().AsSingle();

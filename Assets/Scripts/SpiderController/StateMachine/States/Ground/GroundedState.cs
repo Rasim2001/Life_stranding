@@ -52,7 +52,8 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Update();
 
-            if (InputService.TabPressed && !Spider.EventSystemSelector.HasFocusUI())
+            if (InputService.TabPressed && !Spider.EventSystemSelector.HasFocusUI() &&
+                Spider.AbilityService.IsExploredAbility(ProductType.TerrainScanSkillProduct))
                 StartTerrainScan().Forget();
 
             if (IsNotMoveableLayer())
@@ -61,10 +62,12 @@ namespace SpiderController.StateMachine.States.Ground
             if (_groundChecker.IsTouchesWithLegs == false)
                 StateMachine.SwitchState<FallingWithControlState>();
 
-            if (InputService.JumpPressed && Data.CurrentEnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling)
+            if (InputService.JumpPressed && Data.CurrentEnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling &&
+                Spider.AbilityService.IsExploredAbility(ProductType.JumpSkillProduct))
                 StateMachine.SwitchState<JumpingState>();
 
-            if (InputService.JerkPressed && Data.CurrentEnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling)
+            if (InputService.JerkPressed && Data.CurrentEnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling &&
+                Spider.AbilityService.IsExploredAbility(ProductType.JerkSkillProduct))
                 StateMachine.SwitchState<JerkState>();
         }
 

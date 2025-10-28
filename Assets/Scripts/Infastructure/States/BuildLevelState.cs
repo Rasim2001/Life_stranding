@@ -86,6 +86,7 @@ namespace Infastructure.States
             InitBatteryProducts(spider);
             InitElephantProducts(spider);
             InitEnergyProducts();
+            InitSkillProducts();
         }
 
         private void InitTerrainScan(Spider spider) =>
@@ -121,5 +122,8 @@ namespace Infastructure.States
 
         private void GoToCheckPoints() =>
             _checkPointService.GoToNextPoint();
+
+        private void InitSkillProducts() =>
+            _gameFactory.CreateSkillProducts();
     }
 }

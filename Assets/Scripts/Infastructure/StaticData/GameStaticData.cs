@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using PickupObjects;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -24,6 +25,8 @@ namespace Infastructure.StaticData
         public List<WorldData> BatteriesPoints;
         public List<WorldData> EnergyPoints;
         public List<WorldData> ElephantPoints;
+
+        public List<ProductSkillData> SkillsData;
     }
 
 
@@ -37,6 +40,18 @@ namespace Infastructure.StaticData
         {
             WorldPosition = worldPosition;
             WorldRotation = worldRotation;
+        }
+    }
+
+    [Serializable]
+    public class ProductSkillData : WorldData
+    {
+        public ProductType ProductType;
+
+        public ProductSkillData(Vector3 worldPosition, Quaternion worldRotation, ProductType productType) : base(
+            worldPosition, worldRotation)
+        {
+            ProductType = productType;
         }
     }
 }

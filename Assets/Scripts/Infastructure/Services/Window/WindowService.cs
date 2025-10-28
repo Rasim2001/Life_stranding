@@ -1,3 +1,4 @@
+using Infastructure.Services.Ability;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
@@ -13,9 +14,12 @@ namespace Infastructure.Services.Window
     {
         private readonly UIGameplayRootViewModel _gamePlayViewModel;
         private readonly IStaticDataService _staticDataService;
+        private readonly IAbilityService _abilityService;
 
-        public WindowService(UIGameplayRootViewModel gamePlayViewModel, IStaticDataService staticDataService)
+        public WindowService(UIGameplayRootViewModel gamePlayViewModel, IStaticDataService staticDataService,
+            IAbilityService abilityService)
         {
+            _abilityService = abilityService;
             _staticDataService = staticDataService;
             _gamePlayViewModel = gamePlayViewModel;
         }
@@ -43,6 +47,11 @@ namespace Infastructure.Services.Window
 
         public void OpenProductDescriptionPopup(ProductType productType)
         {
+            if (_abilityService.IsExploredAbility(productType))
+                return;
+
+            _abilityService.PickUpAbility(productType);
+
             ProductData productData = _staticDataService.ProductsStaticData.ProductsDictionary[productType];
 
             ProductDescriptionPopupViewModel model =

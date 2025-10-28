@@ -5,6 +5,7 @@ using HighlightPlus;
 using HUD;
 using Infastructure.Common.Pickup;
 using Infastructure.PlatformRegistry;
+using Infastructure.Services.Ability;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Magnet;
@@ -41,6 +42,7 @@ namespace SpiderController
         [SerializeField] private BatteryProductChecker _batteryChecker;
         [SerializeField] private EnergyChecker _energyChecker;
         [SerializeField] private ElephantChecker _elephantChecker;
+        [SerializeField] private SkillProductChecker _skillChecker;
         [SerializeField] private Stickers _stickers;
 
         [SerializeField] private Transform _rotationPlaneTransform;
@@ -52,6 +54,7 @@ namespace SpiderController
 
         public IMagnetFreezingService MagnetFreezingService => _magnetFreezingService;
         public IEventSystemSelector EventSystemSelector => _eventSystemSelector;
+        public IAbilityService AbilityService => _abilityService;
         public Rigidbody Rigidbody => _rigidbody;
         public GroundChecker GroundChecker => _groundChecker;
         public SpiderUI SpiderUI => _spiderUI;
@@ -75,6 +78,7 @@ namespace SpiderController
         private BatteryProductPickup _batteryProductPickup;
         private EnergyPickup _energyPickup;
         private ElephantProductPickup _elephantProductPickup;
+        private SkillProductPickup _skillProductPickup;
 
         private HudUI _hudUI;
 
@@ -91,6 +95,7 @@ namespace SpiderController
         private IWindowService _windowService;
         private IEventSystemSelector _eventSystemSelector;
         private IPauseService _pauseService;
+        private IAbilityService _abilityService;
 
 
         [Inject]
@@ -107,8 +112,10 @@ namespace SpiderController
             IPlatformRegistryService platformRegistryService,
             IWindowService windowService,
             IEventSystemSelector eventSystemSelector,
-            IPauseService pauseService)
+            IPauseService pauseService,
+            IAbilityService abilityService)
         {
+            _abilityService = abilityService;
             _pauseService = pauseService;
             _eventSystemSelector = eventSystemSelector;
             _windowService = windowService;
@@ -134,6 +141,7 @@ namespace SpiderController
             _flowerPickup.Destroy();
             _energyPickup.Destroy();
             _elephantProductPickup.Destroy();
+            _skillProductPickup.Destroy();
         }
 
         public void Initialize(Flower flower)
@@ -152,11 +160,11 @@ namespace SpiderController
 
             _checkPointChanger = new CheckPointChanger(transform, _checkPointService);
             _spiderPlane = new SpiderPlane(_spiderUI.PlaneIndicatorUI, _rotationPlaneTransform, _inputService,
-                _staticDataService, stateMachineData);
+                _abilityService, _staticDataService, stateMachineData);
             _spiderPlane.Initialize();
 
-            _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _platformObjectsService, _flowerChecker,
-                flower, _spiderUI.HealthBar);
+            _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _platformObjectsService, _windowService,
+                _flowerChecker, flower, _spiderUI.HealthBar);
             _flowerPickup.Initialize();
 
             _batteryProductPickup = new BatteryProductPickup(_inputService, _pickupDisplayer, _platformObjectsService,
@@ -171,6 +179,10 @@ namespace SpiderController
                 _platformRegistryService,
                 _elephantChecker);
             _elephantProductPickup.Initialize();
+
+            _skillProductPickup = new SkillProductPickup(_inputService, _pickupDisplayer, _xRayService, _windowService,
+                _skillChecker);
+            _skillProductPickup.Initialize();
 
             _spiderStateMachine =
                 new SpiderStateMachine(this,
@@ -209,6 +221,7 @@ namespace SpiderController
             _energyPickup.Update();
             _platformSelector.Update();
             _elephantProductPickup.Update();
+            _skillProductPickup.Update();
         }
 
         private void FixedUpdate()

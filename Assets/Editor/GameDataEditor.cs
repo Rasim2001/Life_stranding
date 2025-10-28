@@ -42,6 +42,10 @@ namespace Editor
                     .Select(x => new WorldData(x.transform.position, x.transform.rotation))
                     .ToList();
 
+                gameData.GameDatas[nameScene].SkillsData = FindObjectsOfType<ProductSkillPointMarker>()
+                    .Select(x => new ProductSkillData(x.transform.position, x.transform.rotation, x.ProductType))
+                    .ToList();
+
                 SpiderSpawnPointMarker spiderSpawnPointMarker = FindObjectOfType<SpiderSpawnPointMarker>();
 
                 gameData.GameDatas[nameScene].SpiderSpawnData = new WorldData(

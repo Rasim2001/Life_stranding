@@ -14,6 +14,7 @@ using Infastructure.StaticData.StaticDataService;
 using Infastructure.StaticData.XRay;
 using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
+using PickupObjects.Skills;
 using SpiderController;
 using SpiderController.UI.Health;
 using UnityEngine;
@@ -177,6 +178,33 @@ namespace Infastructure.Factories.GameFactories
                 product.ProductType = productType;
 
                 elephantProduct.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
+            }
+        }
+
+        public void CreateSkillProducts()
+        {
+            List<ProductSkillData> productSkillDatas =
+                _staticDataService.GameStaticData.GameDatas[ActiveSceneName].SkillsData;
+
+            foreach (ProductSkillData skillData in productSkillDatas)
+            {
+                ProductType productType = skillData.ProductType;
+
+                ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
+                GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
+
+                SkillProduct skillProduct = _diContainer.InstantiatePrefabForComponent<SkillProduct>(prefab,
+                    skillData.WorldPosition,
+                    skillData.WorldRotation,
+                    null);
+
+                IProduct product = skillProduct.GetComponent<IProduct>();
+                product.ProductType = productType;
+
+                XRayMarker xRayMarker = skillProduct.GetComponent<XRayMarker>();
+                xRayMarker.Type = productType;
+
+                _xRayService.Add(xRayMarker);
             }
         }
 

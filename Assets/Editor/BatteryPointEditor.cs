@@ -61,4 +61,15 @@ namespace Editor
             Gizmos.DrawSphere(spawner.transform.position, 0.3f);
         }
     }
+
+    [CustomEditor(typeof(ProductSkillPointMarker))]
+    public class ProductSkillsEditor : UnityEditor.Editor
+    {
+        [DrawGizmo(GizmoType.Active | GizmoType.Pickable | GizmoType.NonSelected)]
+        public static void RenderCustomGizmo(ProductSkillPointMarker spawner, GizmoType gizmo)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawSphere(spawner.transform.position, 0.3f);
+        }
+    }
 }
