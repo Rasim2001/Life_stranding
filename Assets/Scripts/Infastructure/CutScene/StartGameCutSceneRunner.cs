@@ -32,6 +32,7 @@ namespace Infastructure.CutScene
         private PlayableDirector _playableDirector;
         private CinemachineBrain _mainBrainCamera;
 
+
         [Inject]
         public void Construct(IInputService inputService, ICutSceneService cutSceneService)
         {
@@ -76,6 +77,15 @@ namespace Infastructure.CutScene
             _cutSceneService.OnCutsceneActiveChanged -= ActiveCutsceneChanged;
         }
 
+        public void FastRunMovingSignal() =>
+            _cutSceneInputSource.IsLeftShiftPressed = true;
+
+        public void StopFastRunMovingSignal() =>
+            _cutSceneInputSource.IsLeftShiftUp = true;
+
+        public void ShakeCamera() =>
+            _spider.OnShakeCameraHappened?.Invoke(20);
+
         private void StopCutScene(PlayableDirector obj) =>
             SkipCustom();
 
@@ -109,17 +119,18 @@ namespace Infastructure.CutScene
             _mainBrainCamera.UpdateMethod = CinemachineBrain.UpdateMethods.FixedUpdate;
             _inputService.SetInputSource(new PlayerInputSource());
 
-            _firstCamera.Priority = 0;
+            Destroy(gameObject);
         }
 
+        private void CameraBlendChange()
+        {
+            CinemachineBlendDefinition newDefault = new CinemachineBlendDefinition
+            {
+                Style = CinemachineBlendDefinition.Styles.EaseInOut,
+                Time = 2
+            };
 
-        public void FastRunMovingSignal() =>
-            _cutSceneInputSource.IsLeftShiftPressed = true;
-
-        public void StopFastRunMovingSignal() =>
-            _cutSceneInputSource.IsLeftShiftUp = true;
-
-        public void ShakeCamera() =>
-            _spider.OnShakeCameraHappened?.Invoke(20);
+            _mainBrainCamera.DefaultBlend = newDefault;
+        }
     }
 }

@@ -39,8 +39,6 @@ namespace Infastructure.CutScene.UI
 
         public void Blink()
         {
-            Debug.Log("Blink");
-
             _blinkSequence?.Kill();
             _blurTween?.Kill();
             _topImageRect?.DOKill();
