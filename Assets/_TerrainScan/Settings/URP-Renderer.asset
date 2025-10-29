@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Terrain Icons Special Objects ID Render
   m_EditorClassIdentifier: 
   m_Active: 1
-  _terrainIconsCameraTag: Untagged
+  _terrainIconsCameraTag: Terrain_Icons_Camera
   _renderPassesSettings:
   - ProfilingPassName: Terrain Scan Special Objects
     OutputColorTexture: {fileID: 8400000, guid: b0853c0f7d26b454092d1f81345fa7be, type: 2}
@@ -239,7 +239,7 @@ MonoBehaviour:
   m_Name: Terrain Icons Render
   m_EditorClassIdentifier: 
   m_Active: 1
-  _terrainIconsCameraTag: Untagged
+  _terrainIconsCameraTag: Terrain_Icons_Camera
   _renderPassesSettings:
   - ProfilingPassName: Terrain Depth & Normals
     OutputColorTexture: {fileID: 8400000, guid: b0853c0f7d26b454092d1f81345fa7be, type: 2}
@@ -247,9 +247,11 @@ MonoBehaviour:
     ShouldClearOutputTexture: 1
     SupportedLayersMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 65527
     SupportedShaderPassNames:
     - DepthNormalsTerrainIcons
+    - DepthNormals
+    - DepthOnly
     OverrideMaterial: {fileID: 2100000, guid: ad5cb347c16e45043ab5673e9b4c0936, type: 2}
     OverrideMaterialPassIndex: 0
   - ProfilingPassName: All Other Depth & Normals
@@ -261,6 +263,10 @@ MonoBehaviour:
       m_Bits: 1
     SupportedShaderPassNames:
     - UniversalForward
+    - ForwardBase
+    - UniversalForward
+    - UniversalForwardOnly
+    - SRPDefaultUnlit
     OverrideMaterial: {fileID: 2100000, guid: ad5cb347c16e45043ab5673e9b4c0936, type: 2}
     OverrideMaterialPassIndex: 0
 --- !u!114 &8181852232220159414

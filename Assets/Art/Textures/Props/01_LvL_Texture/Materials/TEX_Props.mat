@@ -21,38 +21,17 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: TEX_Props
-  m_Shader: {fileID: 4800000, guid: 0dde7f0097aeb2541aea684ca0ad0e3c, type: 3}
+  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - _ALBEDOVERTEXCOLORMODE_REPLACE
-  - _ALPHA_CUTOFF_ON
-  - _CAST_SHADOWS_ON
-  - _COLORRAMPLIGHTINGSTAGE_BEFORELIGHTING
-  - _GREYSCALESTAGE_BEFORELIGHTING
-  - _HEIGHTGRADIENTPOSITIONSPACE_LOCAL
-  - _LIGHTMODEL_CLASSIC
-  - _MATCAPBLENDMODE_MULTIPLY
-  - _METALLIC_MAP_ON
-  - _NORMAL_MAP_ON
-  - _OUTLINETYPE_NONE
-  - _RECEIVEDSHADOWSTYPE_CLASSIC
-  - _RECEIVE_SHADOWS_ON
-  - _REFLECTIONS_NONE
-  - _RIMLIGHTINGSTAGE_BEFORELIGHTING
-  - _SHADINGMODEL_PBR
-  - _SPECULARMODEL_CLASSIC
-  - _TEXTUREBLENDINGMODE_RGB
-  - _TEXTUREBLENDINGSOURCE_VERTEXCOLOR
-  - _TRIPLANARNORMALSPACE_WORLD
-  - _USE_WIND_VERTICAL_MASK
-  m_InvalidKeywords:
-  - _GLITCHWORLDSPACE_ON
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
-  stringTagMap: {}
+  m_CustomRenderQueue: -1
+  stringTagMap:
+    RenderType: Opaque
   disabledShaderPasses:
   - MOTIONVECTORS
   m_LockedProperties: 
