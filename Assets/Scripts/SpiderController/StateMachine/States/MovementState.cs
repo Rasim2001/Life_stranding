@@ -113,7 +113,8 @@ namespace SpiderController.StateMachine.States
 
         private void InputHandler()
         {
-            if (_inputService.RightMousePressed)
+            if (_inputService.RightMousePressed &&
+                Spider.AbilityService.IsExploredAbility(ProductType.MagnetSkillProduct))
             {
                 Spider.SpiderUI.MagnetIndicatorUI.Show();
                 Spider.MagnetFreezingService.Freeze();

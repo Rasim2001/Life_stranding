@@ -76,7 +76,7 @@ namespace Infastructure.Factories.GameFactories
             flower.Initialize(hud.FlowerPointIndicator);
             flower.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
 
-            _xRayService.Initialize(hud.XRayCollectionContainer);
+            _xRayService.Initialize(hud.XRayCollectionContainer, hud.transform);
 
             return hud;
         }

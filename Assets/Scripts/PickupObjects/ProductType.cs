@@ -10,5 +10,6 @@ namespace PickupObjects
         FastRunSkillProduct = 5,
         JerkSkillProduct = 6,
         TerrainScanSkillProduct = 7,
+        MagnetSkillProduct = 8,
     }
 }
