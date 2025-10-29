@@ -101,7 +101,7 @@ namespace Infastructure.Factories.GameFactories
                 _staticDataService.GameStaticData.GameDatas[ActiveSceneName].FlowerSpawnData;
 
             Flower flower = _diContainer.InstantiatePrefabForComponent<Flower>(prefab, worldData.WorldPosition,
-                Quaternion.Euler(-90, worldData.WorldRotation.y, worldData.WorldRotation.z), null);
+                worldData.WorldRotation, null);
 
             IProduct product = flower.GetComponent<IProduct>();
             product.ProductType = productType;
@@ -121,8 +121,7 @@ namespace Infastructure.Factories.GameFactories
             {
                 BatteryProduct batteryProduct =
                     _diContainer.InstantiatePrefabForComponent<BatteryProduct>(prefab, worldData.WorldPosition,
-                        worldData.WorldRotation,
-                        null);
+                        worldData.WorldRotation, null);
 
                 IProduct product = batteryProduct.GetComponent<IProduct>();
                 product.ProductType = productType;
