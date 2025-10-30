@@ -1,28 +1,47 @@
+using System;
+using Cysharp.Threading.Tasks;
 using Infastructure.Services.Ability;
+using Infastructure.Services.CutScene;
+using Infastructure.Services.TaskPopupChecker;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
+using Infastructure.StaticData.Task;
 using PickupObjects;
+using UI;
 using UI.MVVM.View.ProductDescriptionPopup;
 using UI.MVVM.View.Root;
 using UI.MVVM.View.SettingsPopup;
 using UI.MVVM.View.SettingsScreen;
 using UI.MVVM.View.StartSplashScreen;
+using UI.MVVM.View.TaskPopup;
+using Zenject;
 
 namespace Infastructure.Services.Window
 {
-    public class WindowService : IWindowService
+    public class WindowService : IWindowService, IInitializable, IDisposable
     {
         private readonly UIGameplayRootViewModel _gamePlayViewModel;
         private readonly IStaticDataService _staticDataService;
         private readonly IAbilityService _abilityService;
+        private readonly ITaskPopupCheckerService _taskPopupCheckerService;
+        private readonly ICutSceneService _cutSceneService;
 
         public WindowService(UIGameplayRootViewModel gamePlayViewModel, IStaticDataService staticDataService,
-            IAbilityService abilityService)
+            IAbilityService abilityService, ITaskPopupCheckerService taskPopupCheckerService,
+            ICutSceneService cutSceneService)
         {
             _abilityService = abilityService;
+            _taskPopupCheckerService = taskPopupCheckerService;
+            _cutSceneService = cutSceneService;
             _staticDataService = staticDataService;
             _gamePlayViewModel = gamePlayViewModel;
         }
+
+        public void Initialize() =>
+            _cutSceneService.OnCutsceneActiveChanged += TryOpenMainTaskPopup;
+
+        public void Dispose() =>
+            _cutSceneService.OnCutsceneActiveChanged -= TryOpenMainTaskPopup;
 
         public void OpenStartSplashScreen()
         {
@@ -58,6 +77,32 @@ namespace Infastructure.Services.Window
                 new ProductDescriptionPopupViewModel(productData.ProductDescription);
 
             _gamePlayViewModel.OpenPopup(model);
+        }
+
+        public void OpenTaskPopup(TaskId taskId)
+        {
+            if (_taskPopupCheckerService.IsWasOpened(taskId))
+                return;
+
+            _taskPopupCheckerService.AddTask(taskId);
+
+            TaskData taskData = _staticDataService.TasksStaticData.TaskDatas[taskId];
+            TaskPopupViewModel model = new TaskPopupViewModel(taskData);
+
+            _gamePlayViewModel.OpenPopup(model);
+        }
+
+        private void TryOpenMainTaskPopup(bool isActive)
+        {
+            if (!isActive)
+                OpenMainTaskPopupAsync().Forget();
+        }
+
+        private async UniTask OpenMainTaskPopupAsync()
+        {
+            await UniTask.Delay(TimeSpan.FromSeconds(2.2f));
+
+            OpenTaskPopup(TaskId.MainTask);
         }
     }
 }

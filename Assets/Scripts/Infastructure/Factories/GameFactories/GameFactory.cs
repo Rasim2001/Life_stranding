@@ -28,17 +28,17 @@ namespace Infastructure.Factories.GameFactories
     {
         private readonly DiContainer _diContainer;
         private readonly IStaticDataService _staticDataService;
-        private readonly ICheckPointService _checkPointService;
+        private readonly IBiospherePointService _biospherePointService;
         private readonly IXRayService _xRayService;
 
         private string ActiveSceneName => SceneManager.GetActiveScene().name;
 
         public GameFactory(DiContainer diContainer, IStaticDataService staticDataService,
-            ICheckPointService checkPointService, IXRayService xRayService)
+            IBiospherePointService biospherePointService, IXRayService xRayService)
         {
             _diContainer = diContainer;
             _staticDataService = staticDataService;
-            _checkPointService = checkPointService;
+            _biospherePointService = biospherePointService;
             _xRayService = xRayService;
         }
 
@@ -71,7 +71,7 @@ namespace Infastructure.Factories.GameFactories
             hud.Initialize(arrowUIPrefab);
 
             hud.RegisterFlowerPoint(flower);
-            hud.RegisterFinishTarget(_checkPointService.PointIndicator);
+            hud.RegisterFinishTarget(_biospherePointService.PointIndicator);
 
             flower.Initialize(hud.FlowerPointIndicator);
             flower.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
@@ -81,13 +81,27 @@ namespace Infastructure.Factories.GameFactories
             return hud;
         }
 
-        public void CreateCheckPointIndicator()
+        public void CreateCheckPoints()
         {
-            TargetPointIndicatorMarker indicatorMarker =
-                _diContainer.InstantiatePrefabResourceForComponent<TargetPointIndicatorMarker>(
-                    AssetsPath.PointIndicatorPath);
+            List<WorldData> checkPoints = _staticDataService.GameStaticData.GameDatas[ActiveSceneName].CheckPoints;
 
-            _checkPointService.PointIndicator = indicatorMarker.transform;
+            for (int i = 0; i < checkPoints.Count; i++)
+            {
+                if (IsBiospherePoint(i, checkPoints))
+                {
+                    TargetPointIndicatorMarker indicatorMarker =
+                        _diContainer.InstantiatePrefabResourceForComponent<TargetPointIndicatorMarker>(
+                            AssetsPath.BiospherePointIndicatorPath, checkPoints[i].WorldPosition, checkPoints[i].WorldRotation,
+                            null);
+
+                    _biospherePointService.PointIndicator = indicatorMarker.transform;
+                }
+                else
+                {
+                    _diContainer.InstantiatePrefabResource(AssetsPath.CheckPointPath,
+                        checkPoints[i].WorldPosition, checkPoints[i].WorldRotation, null);
+                }
+            }
         }
 
         public Flower CreateFlower()
@@ -234,5 +248,8 @@ namespace Infastructure.Factories.GameFactories
                 terrainScanObject.GetComponentInChildren<TerrainScanIconsRenderer>();
             terrainScanIconsRenderer.Initialize(cameraTransform);
         }
+
+        private bool IsBiospherePoint(int i, List<WorldData> checkPoints) =>
+            i == checkPoints.Count - 1;
     }
 }

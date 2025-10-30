@@ -17,7 +17,8 @@ namespace Infastructure.Common
         public const string SpiderPath = "Prefabs/Spider/Spider";
         public const string CameraSystemPath = "Prefabs/CameraSystem/CameraSystem";
         public const string HUDPath = "Prefabs/HUD/HUD";
-        public const string PointIndicatorPath = "Prefabs/Scene/PointIndicator";
+        public const string BiospherePointIndicatorPath = "Prefabs/Scene/BiospherePointIndicator";
+        public const string CheckPointPath = "Prefabs/Scene/ChechPoint";
         public const string StartGameCutSceneTimelinePath = "Prefabs/Timeline/StartGameTimeline";
         public const string TerrainScanPath = "Prefabs/TerrainScan/[Terrain_Scan]";
 
@@ -29,5 +30,6 @@ namespace Infastructure.Common
         public const string XRayCollectionDataPath = "StaticData/XRay/XRayCollection";
         public const string ProductStaticDataPath = "StaticData/Products/ProductsData";
         public const string StickersStaticDataPath = "StaticData/Stickers/StickersData";
+        public const string TasksStaticDataPath = "StaticData/UI/TasksPopupData";
     }
 }

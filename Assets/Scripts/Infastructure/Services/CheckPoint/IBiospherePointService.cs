@@ -2,9 +2,8 @@ using UnityEngine;
 
 namespace Infastructure.Services.CheckPoint
 {
-    public interface ICheckPointService
+    public interface IBiospherePointService
     {
-        void GoToNextPoint();
         Transform PointIndicator { get; set; }
     }
 }

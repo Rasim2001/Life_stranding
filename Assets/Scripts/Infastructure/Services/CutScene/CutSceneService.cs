@@ -9,7 +9,7 @@ using Zenject;
 
 namespace Infastructure.Services.CutScene
 {
-    public class CutSceneService : ICutSceneService, ITickable
+    public class CutSceneService : ICutSceneService, ITickable, IDisposable
     {
         public event Action<bool> OnCutsceneActiveChanged;
         public event Action OnSkipHappened;
@@ -28,9 +28,7 @@ namespace Infastructure.Services.CutScene
         }
 
         private readonly ICurtainRoot _curtain;
-
         private bool _isActive;
-        private bool _isTriggered;
 
         public CutSceneService(ICurtainRoot curtain) =>
             _curtain = curtain;
@@ -39,9 +37,16 @@ namespace Infastructure.Services.CutScene
         {
             if (AnyKeyPressed() && !HasPlayed && _isActive)
             {
+                HasPlayed = true;
                 _curtain.ShowAndHide();
                 OnSkipHappened?.Invoke();
             }
+        }
+
+        public void Dispose()
+        {
+            HasPlayed = false;
+            IsActive = false;
         }
 
         private bool AnyKeyPressed()

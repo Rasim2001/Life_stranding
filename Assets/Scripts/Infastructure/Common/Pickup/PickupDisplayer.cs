@@ -32,7 +32,7 @@ namespace Infastructure.Common.Pickup
 
             PickupView pickupView = _poolObjects.GetObjectFromPool();
             pickupView.transform.SetParent(transform);
-            pickupView.transform.position = pickupTarget.position;
+            pickupView.Initialize(pickupTarget);
 
             HighlightEffect highlightEffect = pickupTarget.GetComponent<HighlightEffect>();
             highlightEffect?.SetHighlighted(true);
