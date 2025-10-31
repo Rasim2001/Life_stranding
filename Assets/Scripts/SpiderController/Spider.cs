@@ -160,7 +160,7 @@ namespace SpiderController
             _spiderPlane.Initialize();
 
             _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _platformObjectsService, _windowService,
-                _flowerChecker, flower, _spiderUI.HealthBar);
+                _flowerChecker, flower, _spiderUI, _staticDataService.SpiderStaticData);
             _flowerPickup.Initialize();
 
             _batteryProductPickup = new BatteryProductPickup(_inputService, _pickupDisplayer, _platformObjectsService,
@@ -179,12 +179,13 @@ namespace SpiderController
             _skillProductPickup = new SkillProductPickup(_inputService, _pickupDisplayer, _xRayService, _windowService,
                 _skillChecker);
             _skillProductPickup.Initialize();
-            
+
             _platformSelector = new PlatformSelector(_staticDataService, _platformRegistryService);
             _platformSelector.Initialize();
 
             _checkpointPickup = new CheckpointPickup(_inputService, _pickupDisplayer, _windowService,
-                _checkpointChecker, flower, _platformSelector);
+                _checkpointChecker, flower, _spiderUI.HealthBar);
+
             _checkpointPickup.Initialize();
 
             _spiderStateMachine =
@@ -196,8 +197,6 @@ namespace SpiderController
                     _legs,
                     flower,
                     energySystem);
-
-         
         }
 
 

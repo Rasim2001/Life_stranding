@@ -1,10 +1,11 @@
 using System.Linq;
+using CheckPointManagement;
 using Infastructure.Common.Pickup;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Window;
 using PickupObjects.PickUpOnPlatform;
-using SpiderController.Platform;
 using SpiderController.TriggerChecker;
+using SpiderController.UI.Health;
 using UnityEngine;
 
 namespace SpiderController.PickUp
@@ -16,7 +17,7 @@ namespace SpiderController.PickUp
         private readonly IWindowService _windowService;
         private readonly CheckpointChecker _checkpointChecker;
         private readonly Flower _flower;
-        private PlatformSelector _platformSelector;
+        private readonly HealthBarUI _healthBarUI;
 
         public CheckpointPickup(
             IInputService inputService,
@@ -24,10 +25,10 @@ namespace SpiderController.PickUp
             IWindowService windowService,
             CheckpointChecker checkpointChecker,
             Flower flower,
-            PlatformSelector platformSelector)
+            HealthBarUI healthBarUI)
         {
-            _platformSelector = platformSelector;
             _flower = flower;
+            _healthBarUI = healthBarUI;
             _inputService = inputService;
             _pickupDisplayer = pickupDisplayer;
             _windowService = windowService;
@@ -44,9 +45,9 @@ namespace SpiderController.PickUp
         {
             if (_inputService.PickupPressed)
             {
-                if (IsPutingDown())
+                if (_flower.IsPuttingDown)
                     PickUp();
-                else
+                else if (_flower.IsOnPlatform)
                     Putdown();
             }
 
@@ -56,7 +57,12 @@ namespace SpiderController.PickUp
         private void TryShow()
         {
             foreach (Collider collider in _checkpointChecker.Results)
-                _pickupDisplayer.Show(collider.transform);
+            {
+                if (collider.TryGetComponent(out CheckPoint checkPoint) &&
+                    (_flower.IsPuttingDown && checkPoint.IsReady ||
+                     _flower.IsPuttingDown == false && checkPoint.IsReady == false))
+                    _pickupDisplayer.Show(collider.transform);
+            }
         }
 
         private void Hide(Collider obj) =>
@@ -64,47 +70,37 @@ namespace SpiderController.PickUp
 
         private void Putdown()
         {
-            Collider skillCollider = _checkpointChecker.Results.FirstOrDefault();
+            Collider checkPointCollider = _checkpointChecker.Results.FirstOrDefault();
 
-            if (skillCollider == null)
+            if (checkPointCollider == null)
                 return;
 
-            BoxCollider boxCollider = _flower.GetComponent<BoxCollider>();
-            boxCollider.enabled = false;
+            CheckPoint checkPoint = checkPointCollider.GetComponent<CheckPoint>();
+            if (checkPoint.IsReady)
+                return;
 
-            _flower.Rigidbody.isKinematic = true;
-            _flower.IsPuttingDown = true;
+            checkPoint.StartFlowerPutdown();
 
-            _flower.StartSimulatePhysics();
-
-            CheckPoint checkPoint = skillCollider.GetComponent<CheckPoint>();
-
-            _flower.transform.position = checkPoint.FlowerPutdownPosition;
-            _flower.transform.rotation = checkPoint.FlowerPutdownRotation;
-
-            _platformSelector.IsOnPlatform(boxCollider);
-
-            _pickupDisplayer.Hide(skillCollider.transform);
+            _flower.Putdown(checkPoint);
+            _healthBarUI.PlayFadeHologramEffect();
+            _pickupDisplayer.Hide(checkPointCollider.transform);
         }
 
         private void PickUp()
         {
-            Collider skillCollider = _checkpointChecker.Results.FirstOrDefault();
+            Collider checkPointCollider = _checkpointChecker.Results.FirstOrDefault();
 
-            if (skillCollider == null)
+            if (checkPointCollider == null)
                 return;
 
-            _flower.GetComponent<BoxCollider>().enabled = true;
+            CheckPoint checkPoint = checkPointCollider.GetComponent<CheckPoint>();
+            if (!checkPoint.IsReady)
+                return;
 
-            _flower.IsPuttingDown = false;
-            _flower.Rigidbody.isKinematic = false;
+            checkPoint.StartFlowerPickup();
 
-            _flower.StopSimulatePhysics();
-
-            _pickupDisplayer.Hide(skillCollider.transform);
+            _flower.PickUpAfterPutdown();
+            _pickupDisplayer.Hide(checkPointCollider.transform);
         }
-
-        private bool IsPutingDown() =>
-            _flower.GetComponent<BoxCollider>() == false;
     }
 }

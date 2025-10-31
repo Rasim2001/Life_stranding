@@ -26,8 +26,6 @@ namespace SpiderController.StateMachine.States
         protected SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
         protected EnergyBarUI EnergyBarUI => Spider.SpiderUI.EnergyBar;
 
-        private SpiderHealth SpiderHealth => Spider.SpiderUI.SpiderHealth;
-
         private readonly Flower _flower;
         private readonly IStaticDataService _staticDataService;
         private readonly ICutSceneService _cutSceneService;
@@ -90,7 +88,6 @@ namespace SpiderController.StateMachine.States
         {
             InputHandler();
             TryMoveLegs();
-            CheckFlowerAndReduceHp();
             BackLegHandle();
             UpdateTerranTime();
         }
@@ -197,11 +194,6 @@ namespace SpiderController.StateMachine.States
             }
         }
 
-        private void CheckFlowerAndReduceHp()
-        {
-            if (_flower.WasOnPlatform && _flower.IsOnPlatform == false && _flower.IsPuttingDown == false)
-                SpiderHealth.TakeDamage(SpiderStaticData.DamageAmount);
-        }
 
         private void BackLegHandle()
         {

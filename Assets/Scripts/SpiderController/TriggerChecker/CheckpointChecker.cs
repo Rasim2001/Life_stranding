@@ -1,3 +1,4 @@
+using CheckPointManagement;
 using UnityEngine;
 
 namespace SpiderController.TriggerChecker
