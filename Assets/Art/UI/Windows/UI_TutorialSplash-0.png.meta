@@ -45,7 +45,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
@@ -139,10 +139,10 @@ TextureImporter:
       name: UI_Frame_BluredBlue_A
       rect:
         serializedVersion: 2
-        x: 0
-        y: 792
-        width: 1914
-        height: 1256
+        x: 6
+        y: 785
+        width: 1915
+        height: 1257
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -161,12 +161,12 @@ TextureImporter:
       name: UI_FrameTut_Video_Diamond_A
       rect:
         serializedVersion: 2
-        x: 1996
-        y: 1223
-        width: 49
-        height: 61
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 1931
+        y: 1974
+        width: 54
+        height: 68
+      alignment: 9
+      pivot: {x: 0.5, y: 0.49264705}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -180,277 +180,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Tuts_Button_A
-      rect:
-        serializedVersion: 2
-        x: 1914
-        y: 1554
-        width: 90
-        height: 90
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 06e9d07cea4ca4743a20d239aa8e0bbf
-      internalID: -265525381
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_Tuts_Button_B
-      rect:
-        serializedVersion: 2
-        x: 1914
-        y: 1464
-        width: 90
-        height: 90
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0f45163ddfdd2a948a5fdd2dd2b0d332
-      internalID: 916986080
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_Tuts_Button_L
-      rect:
-        serializedVersion: 2
-        x: 1914
-        y: 1947
-        width: 99
-        height: 101
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0998728781f2d3d4384504cc8072c9e6
-      internalID: -231124057
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_Tuts_Button_L3
-      rect:
-        serializedVersion: 2
-        x: 1914
-        y: 1846
-        width: 99
-        height: 101
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bf3896c65e821264780b03615d764694
-      internalID: -1612365116
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_Tuts_Button_LB
-      rect:
-        serializedVersion: 2
-        x: 1914
-        y: 1225
-        width: 82
-        height: 59
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ccda9bc2e3132ef4da4ba90a47a442bc
-      internalID: 299139999
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_Tuts_Button_LT
-      rect:
-        serializedVersion: 2
-        x: 1914
-        y: 1084
-        width: 68
-        height: 82
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: dd9dca64eb4041847ba639296032831c
-      internalID: -620932742
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_Tuts_Button_R
-      rect:
-        serializedVersion: 2
-        x: 1914
-        y: 1745
-        width: 99
-        height: 101
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6e1c27d11c8839942bdcf69a7f01f187
-      internalID: 309861418
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_Tuts_Button_R3
-      rect:
-        serializedVersion: 2
-        x: 1914
-        y: 1644
-        width: 99
-        height: 101
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0e6ba1b998fa99b45b87b4466d6d3c4b
-      internalID: 203258038
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_Tuts_Button_RB
-      rect:
-        serializedVersion: 2
-        x: 1914
-        y: 1166
-        width: 82
-        height: 59
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a72ddf4e05be2184e913b2c751564255
-      internalID: -1006940159
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_Tuts_Button_RT
-      rect:
-        serializedVersion: 2
-        x: 1914
-        y: 1002
-        width: 68
-        height: 82
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 867bc4b0784090f42a563ee05517c84e
-      internalID: -2039053064
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_Tuts_Button_X
-      rect:
-        serializedVersion: 2
-        x: 1914
-        y: 1374
-        width: 90
-        height: 90
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: adfaae57bbaaceb4c94ec69749f28e82
-      internalID: -574618911
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_Tuts_Button_Y
-      rect:
-        serializedVersion: 2
-        x: 1914
-        y: 1284
-        width: 90
-        height: 90
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: fda83fc066ad6fe4392efac570b6812c
-      internalID: 340960445
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: UI_Tuts_Dot_Bottom_A
       rect:
         serializedVersion: 2
-        x: 2013
-        y: 2007
+        x: 1995
+        y: 1968
         width: 12
-        height: 30
+        height: 31
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -469,8 +205,8 @@ TextureImporter:
       name: UI_Tuts_Dot_Bottom_B
       rect:
         serializedVersion: 2
-        x: 2004
-        y: 1632
+        x: 1995
+        y: 2030
         width: 38
         height: 12
       alignment: 0
@@ -491,8 +227,8 @@ TextureImporter:
       name: UI_Tuts_Dot_Bottom_C
       rect:
         serializedVersion: 2
-        x: 2025
-        y: 1986
+        x: 2017
+        y: 1937
         width: 12
         height: 23
       alignment: 0
@@ -513,9 +249,9 @@ TextureImporter:
       name: UI_Tuts_Dot_Top_A
       rect:
         serializedVersion: 2
-        x: 2013
-        y: 2037
-        width: 35
+        x: 1995
+        y: 2009
+        width: 36
         height: 11
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -535,10 +271,10 @@ TextureImporter:
       name: UI_Tuts_Dot_Top_B
       rect:
         serializedVersion: 2
-        x: 2013
-        y: 1986
+        x: 1931
+        y: 1942
         width: 12
-        height: 21
+        height: 22
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -557,10 +293,10 @@ TextureImporter:
       name: UI_Tuts_Dot_Top_C
       rect:
         serializedVersion: 2
-        x: 2025
-        y: 2009
+        x: 2017
+        y: 1970
         width: 12
-        height: 28
+        height: 29
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -579,8 +315,8 @@ TextureImporter:
       name: UI_Tuts_Lines_A
       rect:
         serializedVersion: 2
-        x: 0
-        y: 391
+        x: 6
+        y: 374
         width: 1371
         height: 401
       alignment: 0
@@ -613,18 +349,6 @@ TextureImporter:
     nameFileIdTable:
       UI_FrameTut_Video_Diamond_A: -1877531192
       UI_Frame_BluredBlue_A: 765430070
-      UI_Tuts_Button_A: -265525381
-      UI_Tuts_Button_B: 916986080
-      UI_Tuts_Button_L: -231124057
-      UI_Tuts_Button_L3: -1612365116
-      UI_Tuts_Button_LB: 299139999
-      UI_Tuts_Button_LT: -620932742
-      UI_Tuts_Button_R: 309861418
-      UI_Tuts_Button_R3: 203258038
-      UI_Tuts_Button_RB: -1006940159
-      UI_Tuts_Button_RT: -2039053064
-      UI_Tuts_Button_X: -574618911
-      UI_Tuts_Button_Y: 340960445
       UI_Tuts_Dot_Bottom_A: 1308399425
       UI_Tuts_Dot_Bottom_B: -1589775742
       UI_Tuts_Dot_Bottom_C: 1484156140

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CameraFollow;
 using GameDevBuddies;
 using HUD;
@@ -13,6 +14,7 @@ using Infastructure.StaticData.StaticDataService;
 using Infastructure.StaticData.XRay;
 using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
+using PickupObjects.Skills;
 using SpiderController;
 using SpiderController.UI.Health;
 using UnityEngine;
@@ -26,17 +28,17 @@ namespace Infastructure.Factories.GameFactories
     {
         private readonly DiContainer _diContainer;
         private readonly IStaticDataService _staticDataService;
-        private readonly ICheckPointService _checkPointService;
+        private readonly IBiospherePointService _biospherePointService;
         private readonly IXRayService _xRayService;
 
         private string ActiveSceneName => SceneManager.GetActiveScene().name;
 
         public GameFactory(DiContainer diContainer, IStaticDataService staticDataService,
-            ICheckPointService checkPointService, IXRayService xRayService)
+            IBiospherePointService biospherePointService, IXRayService xRayService)
         {
             _diContainer = diContainer;
             _staticDataService = staticDataService;
-            _checkPointService = checkPointService;
+            _biospherePointService = biospherePointService;
             _xRayService = xRayService;
         }
 
@@ -69,23 +71,37 @@ namespace Infastructure.Factories.GameFactories
             hud.Initialize(arrowUIPrefab);
 
             hud.RegisterFlowerPoint(flower);
-            hud.RegisterFinishTarget(_checkPointService.PointIndicator);
+            hud.RegisterFinishTarget(_biospherePointService.PointIndicator);
 
             flower.Initialize(hud.FlowerPointIndicator);
             flower.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
 
-            _xRayService.Initialize(hud.XRayCollectionContainer);
+            _xRayService.Initialize(hud.XRayCollectionContainer, hud.transform);
 
             return hud;
         }
 
-        public void CreateCheckPointIndicator()
+        public void CreateCheckPoints()
         {
-            TargetPointIndicatorMarker indicatorMarker =
-                _diContainer.InstantiatePrefabResourceForComponent<TargetPointIndicatorMarker>(
-                    AssetsPath.PointIndicatorPath);
+            List<WorldData> checkPoints = _staticDataService.GameStaticData.GameDatas[ActiveSceneName].CheckPoints;
 
-            _checkPointService.PointIndicator = indicatorMarker.transform;
+            for (int i = 0; i < checkPoints.Count; i++)
+            {
+                if (IsBiospherePoint(i, checkPoints))
+                {
+                    TargetPointIndicatorMarker indicatorMarker =
+                        _diContainer.InstantiatePrefabResourceForComponent<TargetPointIndicatorMarker>(
+                            AssetsPath.BiospherePointIndicatorPath, checkPoints[i].WorldPosition, checkPoints[i].WorldRotation,
+                            null);
+
+                    _biospherePointService.PointIndicator = indicatorMarker.transform;
+                }
+                else
+                {
+                    _diContainer.InstantiatePrefabResource(AssetsPath.CheckPointPath,
+                        checkPoints[i].WorldPosition, checkPoints[i].WorldRotation, null);
+                }
+            }
         }
 
         public Flower CreateFlower()
@@ -99,7 +115,7 @@ namespace Infastructure.Factories.GameFactories
                 _staticDataService.GameStaticData.GameDatas[ActiveSceneName].FlowerSpawnData;
 
             Flower flower = _diContainer.InstantiatePrefabForComponent<Flower>(prefab, worldData.WorldPosition,
-                Quaternion.Euler(-90, worldData.WorldRotation.y, worldData.WorldRotation.z), null);
+                worldData.WorldRotation, null);
 
             IProduct product = flower.GetComponent<IProduct>();
             product.ProductType = productType;
@@ -119,8 +135,7 @@ namespace Infastructure.Factories.GameFactories
             {
                 BatteryProduct batteryProduct =
                     _diContainer.InstantiatePrefabForComponent<BatteryProduct>(prefab, worldData.WorldPosition,
-                        worldData.WorldRotation,
-                        null);
+                        worldData.WorldRotation, null);
 
                 IProduct product = batteryProduct.GetComponent<IProduct>();
                 product.ProductType = productType;
@@ -179,6 +194,33 @@ namespace Infastructure.Factories.GameFactories
             }
         }
 
+        public void CreateSkillProducts()
+        {
+            List<ProductSkillData> productSkillDatas =
+                _staticDataService.GameStaticData.GameDatas[ActiveSceneName].SkillsData;
+
+            foreach (ProductSkillData skillData in productSkillDatas)
+            {
+                ProductType productType = skillData.ProductType;
+
+                ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
+                GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
+
+                SkillProduct skillProduct = _diContainer.InstantiatePrefabForComponent<SkillProduct>(prefab,
+                    skillData.WorldPosition,
+                    skillData.WorldRotation,
+                    null);
+
+                IProduct product = skillProduct.GetComponent<IProduct>();
+                product.ProductType = productType;
+
+                XRayMarker xRayMarker = skillProduct.GetComponent<XRayMarker>();
+                xRayMarker.Type = productType;
+
+                _xRayService.Add(xRayMarker);
+            }
+        }
+
 
         public void CreateStartGameCutSceneTimeline(Spider spider)
         {
@@ -206,5 +248,8 @@ namespace Infastructure.Factories.GameFactories
                 terrainScanObject.GetComponentInChildren<TerrainScanIconsRenderer>();
             terrainScanIconsRenderer.Initialize(cameraTransform);
         }
+
+        private bool IsBiospherePoint(int i, List<WorldData> checkPoints) =>
+            i == checkPoints.Count - 1;
     }
 }

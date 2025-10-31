@@ -19,7 +19,7 @@ namespace Infastructure.States
         private readonly IGameUIFactory _uiFactory;
         private readonly IPersistentProgressService _progressService;
         private readonly ISceneLoader _sceneLoader;
-        private readonly ICheckPointService _checkPointService;
+        private readonly IBiospherePointService _biospherePointService;
         private readonly IInputService _inputService;
         private IWindowService _windowService;
 
@@ -29,7 +29,7 @@ namespace Infastructure.States
             IGameUIFactory uiFactory,
             IPersistentProgressService progressService,
             ISceneLoader sceneLoader,
-            ICheckPointService checkPointService,
+            IBiospherePointService biospherePointService,
             IInputService inputService,
             IWindowService windowService
         )
@@ -40,7 +40,7 @@ namespace Infastructure.States
             _uiFactory = uiFactory;
             _progressService = progressService;
             _sceneLoader = sceneLoader;
-            _checkPointService = checkPointService;
+            _biospherePointService = biospherePointService;
             _inputService = inputService;
         }
 
@@ -62,7 +62,6 @@ namespace Infastructure.States
             _inputService.Initialize();
 
             InitGameWorld();
-            GoToCheckPoints();
         }
 
 
@@ -86,6 +85,7 @@ namespace Infastructure.States
             InitBatteryProducts(spider);
             InitElephantProducts(spider);
             InitEnergyProducts();
+            InitSkillProducts();
         }
 
         private void InitTerrainScan(Spider spider) =>
@@ -95,7 +95,7 @@ namespace Infastructure.States
             _gameFactory.CreateAllBatteryProducts(spider);
 
         private void InitCheckPoints() =>
-            _gameFactory.CreateCheckPointIndicator();
+            _gameFactory.CreateCheckPoints();
 
 
         private Spider InitSpider(Flower flower) =>
@@ -119,7 +119,7 @@ namespace Infastructure.States
         private void InitElephantProducts(Spider spider) =>
             _gameFactory.CreateElephantProduct(spider);
 
-        private void GoToCheckPoints() =>
-            _checkPointService.GoToNextPoint();
+        private void InitSkillProducts() =>
+            _gameFactory.CreateSkillProducts();
     }
 }

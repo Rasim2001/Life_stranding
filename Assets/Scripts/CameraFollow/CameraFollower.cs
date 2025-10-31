@@ -52,7 +52,7 @@ namespace CameraFollow
         }
 
         private void Awake() =>
-            _mouseSensitivity = 3;
+            _mouseSensitivity = 2;
 
         public void Initialize(CameraSystem cameraSystem) =>
             _cameraSystem = cameraSystem;

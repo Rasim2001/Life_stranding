@@ -3,6 +3,7 @@ using Infastructure.StaticData.Materials;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.Stikers;
+using Infastructure.StaticData.Task;
 using Infastructure.StaticData.VolumeProfiles;
 using Infastructure.StaticData.XRay;
 
@@ -19,5 +20,6 @@ namespace Infastructure.StaticData.StaticDataService
         XRayCollectionStaticData XRayCollectionStaticData { get; }
         ProductsStaticData ProductsStaticData { get; }
         StickersStaticData StickersStaticData { get; }
+        TasksStaticData TasksStaticData { get; }
     }
 }

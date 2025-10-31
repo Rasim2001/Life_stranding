@@ -17,6 +17,7 @@ namespace HUD
         [SerializeField] private RectTransform _canvasRectTransform;
         [SerializeField] private Transform _arrowContainer;
         [SerializeField] private Transform _xRayCollectionContainer;
+        [SerializeField] private CanvasGroup _canvasGroup;
         public FlowerPointIndicator FlowerPointIndicator => _flowerPointIndicator;
         public Transform XRayCollectionContainer => _xRayCollectionContainer;
 
@@ -24,7 +25,6 @@ namespace HUD
         private FlowerPointIndicator _flowerPointIndicator;
 
         private ArrowUI _arrowUIPrefab;
-        private CanvasGroup _canvasGroup;
         private ICutSceneService _cutSceneService;
 
         private bool _cutSceneIsActive;
@@ -35,11 +35,8 @@ namespace HUD
         public void Construct(ICutSceneService cutSceneService) =>
             _cutSceneService = cutSceneService;
 
-        private void Awake()
-        {
-            _canvasGroup = _arrowContainer.GetComponent<CanvasGroup>();
+        private void Awake() =>
             _canvasGroup.alpha = 0;
-        }
 
 
         public void Initialize(ArrowUI arrowUIPrefab) =>

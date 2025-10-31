@@ -1,6 +1,8 @@
 using Infastructure.Common.Pickup;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.Window;
+using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
 using SpiderController.TriggerChecker;
 using SpiderController.UI.Health;
@@ -12,15 +14,18 @@ namespace SpiderController.PickUp
         private readonly IInputService _inputService;
         private readonly IPickupDisplayer _pickupDisplayer;
         private readonly IPlatformObjectsService _platformObjectsService;
+        private readonly IWindowService _windowService;
 
         private readonly FlowerChecker _flowerChecker;
         private readonly Flower _flower;
+
         private readonly HealthBarUI _healthBar;
 
         public FlowerPickup(
             IInputService inputService,
             IPickupDisplayer pickupDisplayer,
             IPlatformObjectsService platformObjectsService,
+            IWindowService windowService,
             FlowerChecker flowerChecker,
             Flower flower,
             HealthBarUI healthBar)
@@ -28,6 +33,7 @@ namespace SpiderController.PickUp
             _inputService = inputService;
             _pickupDisplayer = pickupDisplayer;
             _platformObjectsService = platformObjectsService;
+            _windowService = windowService;
             _flowerChecker = flowerChecker;
             _flower = flower;
             _healthBar = healthBar;
@@ -49,6 +55,8 @@ namespace SpiderController.PickUp
 
             if (canDisplay && _inputService.PickupPressed && _platformObjectsService.IsEmpty())
             {
+                _windowService.OpenProductDescriptionPopup(ProductType.Flower);
+
                 _flower.StopSimulatePhysics();
                 _healthBar.PlayFadeHologramEffect();
             }

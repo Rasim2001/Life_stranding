@@ -81,9 +81,6 @@ namespace CameraFollow
         private void StopCutScene()
         {
             _thirdPersonFollow.GetComponent<CinemachineCamera>().Priority = 1;
-
-            //_thirdPersonFollow.gameObject.SetActive(false);
-            //_thirdPersonFollow.gameObject.SetActive(true);
         }
     }
 }
