@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:23fc9fe9ce450c6337fe500c989bd50389c084578af9a5d6e00a545c337f263c
-size 594
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95c835d611027ef4e8f42f58386c1d3f, type: 3}
+  m_Name: ConversionProperty_AOMapStrength
+  m_EditorClassIdentifier: 
+  propertyType: 0
+  propertyName: _AOMapStrength
+  nameTo: 
+  belongingToEffect: AOMAP
+  requiredProperty: 0
+  alternativeNames:
+  - _OcclusionStrength

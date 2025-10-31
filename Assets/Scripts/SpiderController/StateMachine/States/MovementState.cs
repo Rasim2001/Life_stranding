@@ -113,7 +113,8 @@ namespace SpiderController.StateMachine.States
 
         private void InputHandler()
         {
-            if (_inputService.RightMousePressed)
+            if (_inputService.RightMousePressed &&
+                Spider.AbilityService.IsExploredAbility(ProductType.MagnetSkillProduct))
             {
                 Spider.SpiderUI.MagnetIndicatorUI.Show();
                 Spider.MagnetFreezingService.Freeze();
@@ -198,7 +199,7 @@ namespace SpiderController.StateMachine.States
 
         private void CheckFlowerAndReduceHp()
         {
-            if (_flower.WasOnPlatform && _flower.IsOnPlatform == false)
+            if (_flower.WasOnPlatform && _flower.IsOnPlatform == false && _flower.IsPuttingDown == false)
                 SpiderHealth.TakeDamage(SpiderStaticData.DamageAmount);
         }
 

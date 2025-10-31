@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
-using Common.SceneMarkers;
 using HighlightPlus;
 using HUD;
 using Infastructure.Common.Pickup;
 using Infastructure.PlatformRegistry;
+using Infastructure.Services.Ability;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Magnet;
+using Infastructure.Services.Pause;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Window;
@@ -40,6 +41,8 @@ namespace SpiderController
         [SerializeField] private BatteryProductChecker _batteryChecker;
         [SerializeField] private EnergyChecker _energyChecker;
         [SerializeField] private ElephantChecker _elephantChecker;
+        [SerializeField] private SkillProductChecker _skillChecker;
+        [SerializeField] private CheckpointChecker _checkpointChecker;
         [SerializeField] private Stickers _stickers;
 
         [SerializeField] private Transform _rotationPlaneTransform;
@@ -51,6 +54,7 @@ namespace SpiderController
 
         public IMagnetFreezingService MagnetFreezingService => _magnetFreezingService;
         public IEventSystemSelector EventSystemSelector => _eventSystemSelector;
+        public IAbilityService AbilityService => _abilityService;
         public Rigidbody Rigidbody => _rigidbody;
         public GroundChecker GroundChecker => _groundChecker;
         public SpiderUI SpiderUI => _spiderUI;
@@ -66,7 +70,6 @@ namespace SpiderController
         private Rigidbody _rigidbody;
         private SpiderStateMachine _spiderStateMachine;
         private SpiderPlane _spiderPlane;
-        private CheckPointChanger _checkPointChanger;
         private SpiderImpactReceiver _spiderImpactReceiver;
         private PlatformSelector _platformSelector;
 
@@ -74,14 +77,14 @@ namespace SpiderController
         private BatteryProductPickup _batteryProductPickup;
         private EnergyPickup _energyPickup;
         private ElephantProductPickup _elephantProductPickup;
+        private SkillProductPickup _skillProductPickup;
+        private CheckpointPickup _checkpointPickup;
 
         private HudUI _hudUI;
 
         private IInputService _inputService;
         private IStaticDataService _staticDataService;
         private IPickupDisplayer _pickupDisplayer;
-        private IStateMachine _stateMachine;
-        private ICheckPointService _checkPointService;
         private ICutSceneService _cutSceneService;
         private IMagnetFreezingService _magnetFreezingService;
         private IPlatformObjectsService _platformObjectsService;
@@ -89,6 +92,8 @@ namespace SpiderController
         private IPlatformRegistryService _platformRegistryService;
         private IWindowService _windowService;
         private IEventSystemSelector _eventSystemSelector;
+        private IPauseService _pauseService;
+        private IAbilityService _abilityService;
 
 
         [Inject]
@@ -97,15 +102,19 @@ namespace SpiderController
             IStaticDataService staticDataService,
             IPickupDisplayer pickupDisplayer,
             IStateMachine stateMachine,
-            ICheckPointService checkPointService,
+            IBiospherePointService biospherePointService,
             ICutSceneService cutSceneService,
             IMagnetFreezingService magnetFreezingService,
             IPlatformObjectsService platformObjectsService,
             IXRayService xRayService,
             IPlatformRegistryService platformRegistryService,
             IWindowService windowService,
-            IEventSystemSelector eventSystemSelector)
+            IEventSystemSelector eventSystemSelector,
+            IPauseService pauseService,
+            IAbilityService abilityService)
         {
+            _abilityService = abilityService;
+            _pauseService = pauseService;
             _eventSystemSelector = eventSystemSelector;
             _windowService = windowService;
             _platformRegistryService = platformRegistryService;
@@ -113,8 +122,6 @@ namespace SpiderController
             _platformObjectsService = platformObjectsService;
             _magnetFreezingService = magnetFreezingService;
             _cutSceneService = cutSceneService;
-            _checkPointService = checkPointService;
-            _stateMachine = stateMachine;
             _pickupDisplayer = pickupDisplayer;
             _staticDataService = staticDataService;
             _inputService = inputService;
@@ -130,6 +137,8 @@ namespace SpiderController
             _flowerPickup.Destroy();
             _energyPickup.Destroy();
             _elephantProductPickup.Destroy();
+            _skillProductPickup.Destroy();
+            _checkpointPickup.Destroy();
         }
 
         public void Initialize(Flower flower)
@@ -146,13 +155,12 @@ namespace SpiderController
 
             _spiderImpactReceiver = new SpiderImpactReceiver(stateMachineData, transform);
 
-            _checkPointChanger = new CheckPointChanger(transform, _checkPointService);
             _spiderPlane = new SpiderPlane(_spiderUI.PlaneIndicatorUI, _rotationPlaneTransform, _inputService,
-                _staticDataService, stateMachineData);
+                _abilityService, _staticDataService, stateMachineData);
             _spiderPlane.Initialize();
 
-            _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _platformObjectsService, _flowerChecker,
-                flower, _spiderUI.HealthBar);
+            _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _platformObjectsService, _windowService,
+                _flowerChecker, flower, _spiderUI.HealthBar);
             _flowerPickup.Initialize();
 
             _batteryProductPickup = new BatteryProductPickup(_inputService, _pickupDisplayer, _platformObjectsService,
@@ -168,6 +176,17 @@ namespace SpiderController
                 _elephantChecker);
             _elephantProductPickup.Initialize();
 
+            _skillProductPickup = new SkillProductPickup(_inputService, _pickupDisplayer, _xRayService, _windowService,
+                _skillChecker);
+            _skillProductPickup.Initialize();
+            
+            _platformSelector = new PlatformSelector(_staticDataService, _platformRegistryService);
+            _platformSelector.Initialize();
+
+            _checkpointPickup = new CheckpointPickup(_inputService, _pickupDisplayer, _windowService,
+                _checkpointChecker, flower, _platformSelector);
+            _checkpointPickup.Initialize();
+
             _spiderStateMachine =
                 new SpiderStateMachine(this,
                     stateMachineData,
@@ -178,8 +197,7 @@ namespace SpiderController
                     flower,
                     energySystem);
 
-            _platformSelector = new PlatformSelector(_staticDataService, _platformRegistryService);
-            _platformSelector.Initialize();
+         
         }
 
 
@@ -192,7 +210,7 @@ namespace SpiderController
 
         private void Update()
         {
-            if (_spiderStateMachine == null)
+            if (_spiderStateMachine == null || _pauseService.IsPaused)
                 return;
 
             _spiderStateMachine.HandleInput();
@@ -200,16 +218,17 @@ namespace SpiderController
             _spiderPlane.Update();
             _flowerPickup.Update();
             _batteryProductPickup.Update();
-            _checkPointChanger.Update();
             _spiderImpactReceiver.Update();
             _energyPickup.Update();
             _platformSelector.Update();
             _elephantProductPickup.Update();
+            _skillProductPickup.Update();
+            _checkpointPickup.Update();
         }
 
         private void FixedUpdate()
         {
-            if (_spiderStateMachine == null)
+            if (_spiderStateMachine == null || _pauseService.IsPaused)
                 return;
 
             _spiderStateMachine.FixedUpdate();
@@ -218,7 +237,7 @@ namespace SpiderController
 
         private void LateUpdate()
         {
-            if (_spiderStateMachine == null)
+            if (_spiderStateMachine == null || _pauseService.IsPaused)
                 return;
 
             _spiderStateMachine.LateUpdate();

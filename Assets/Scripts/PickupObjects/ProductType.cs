@@ -5,6 +5,11 @@ namespace PickupObjects
         Energy = 0,
         Battery = 1,
         Elephant = 2,
-        Flower,
+        Flower = 3,
+        JumpSkillProduct = 4,
+        FastRunSkillProduct = 5,
+        JerkSkillProduct = 6,
+        TerrainScanSkillProduct = 7,
+        MagnetSkillProduct = 8,
     }
 }

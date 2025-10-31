@@ -44,7 +44,7 @@ namespace PickupObjects.PickUpOnPlatform
             _flowerPointIndicator.HideTargetPoint();
         }
 
-        protected override void StartSimulatePhysics()
+        public override void StartSimulatePhysics()
         {
             base.StartSimulatePhysics();
 

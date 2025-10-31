@@ -1,7 +1,9 @@
+using Infastructure.Services.Ability;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
+using PickupObjects;
 using SpiderController.StateMachine;
 using SpiderController.UI;
 using UnityEngine;
@@ -12,6 +14,7 @@ namespace SpiderController.Platform
     public class SpiderPlane
     {
         private readonly IInputService _inputService;
+        private readonly IAbilityService _abilityService;
         private readonly IStaticDataService _staticDataService;
         private readonly StateMachineData _stateMachineData;
         private readonly PressedMouseButtonIndicatorUI _pressedMouseButtonIndicatorUI;
@@ -34,10 +37,12 @@ namespace SpiderController.Platform
             PressedMouseButtonIndicatorUI pressedMouseButtonIndicatorUI,
             Transform rotationPlaneTransform,
             IInputService inputService,
+            IAbilityService abilityService,
             IStaticDataService staticDataService,
             StateMachineData stateMachineData)
         {
             _inputService = inputService;
+            _abilityService = abilityService;
             _staticDataService = staticDataService;
             _pressedMouseButtonIndicatorUI = pressedMouseButtonIndicatorUI;
             _rotationPlaneTransform = rotationPlaneTransform;
@@ -55,7 +60,8 @@ namespace SpiderController.Platform
 
         public void Update()
         {
-            if (_stateMachineData.IsFallingDownWithoutEnergyState)
+            if (_stateMachineData.IsFallingDownWithoutEnergyState ||
+                !_abilityService.IsExploredAbility(ProductType.Flower))
                 return;
 
             if (_inputService.LeftMousePressed)

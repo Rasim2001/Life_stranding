@@ -3,8 +3,10 @@ using System.Linq;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
+using Infastructure.Services.Window;
 using Sirenix.Utilities;
 using SpiderController;
+using UI;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -19,6 +21,7 @@ namespace Infastructure.CutScene
 
         [SerializeField] private CinemachineCamera _firstCamera;
         [SerializeField] private CinemachineCamera[] _cameras;
+        [SerializeField] private float _startTime;
 
         private IInputService _inputService;
         private ICutSceneService _cutSceneService;
@@ -30,6 +33,7 @@ namespace Infastructure.CutScene
         private CutSceneInputSource _cutSceneInputSource;
         private PlayableDirector _playableDirector;
         private CinemachineBrain _mainBrainCamera;
+
 
         [Inject]
         public void Construct(IInputService inputService, ICutSceneService cutSceneService)
@@ -75,13 +79,30 @@ namespace Infastructure.CutScene
             _cutSceneService.OnCutsceneActiveChanged -= ActiveCutsceneChanged;
         }
 
+        public void FastRunMovingSignal() =>
+            _cutSceneInputSource.IsLeftShiftPressed = true;
+
+        public void StopFastRunMovingSignal() =>
+            _cutSceneInputSource.IsLeftShiftUp = true;
+
+        public void ShakeCamera() =>
+            _spider.OnShakeCameraHappened?.Invoke(20);
+
         private void StopCutScene(PlayableDirector obj) =>
             SkipCustom();
 
         private void ActiveCutsceneChanged(bool isActive)
         {
             if (isActive)
-                _playableDirector.Play();
+                Play();
+        }
+
+        private void Play()
+        {
+            _playableDirector.RebuildGraph();
+            _playableDirector.time = Mathf.Max(0, _startTime);
+            _playableDirector.Evaluate();
+            _playableDirector.Play();
         }
 
         private void SkipCutscene()
@@ -100,17 +121,18 @@ namespace Infastructure.CutScene
             _mainBrainCamera.UpdateMethod = CinemachineBrain.UpdateMethods.FixedUpdate;
             _inputService.SetInputSource(new PlayerInputSource());
 
-            _firstCamera.Priority = 0;
+            Destroy(gameObject);
         }
 
+        private void CameraBlendChange()
+        {
+            CinemachineBlendDefinition newDefault = new CinemachineBlendDefinition
+            {
+                Style = CinemachineBlendDefinition.Styles.EaseInOut,
+                Time = 2
+            };
 
-        public void FastRunMovingSignal() =>
-            _cutSceneInputSource.IsLeftShiftPressed = true;
-
-        public void StopFastRunMovingSignal() =>
-            _cutSceneInputSource.IsLeftShiftUp = true;
-
-        public void ShakeCamera() =>
-            _spider.OnShakeCameraHappened?.Invoke(20);
+            _mainBrainCamera.DefaultBlend = newDefault;
+        }
     }
 }

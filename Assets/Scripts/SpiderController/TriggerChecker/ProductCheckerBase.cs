@@ -38,6 +38,13 @@ namespace SpiderController.TriggerChecker
             return false;
         }
 
+        protected bool TryGetProduct(Collider col, Type type)
+        {
+            bool value = col.GetComponent(type) != null;
+
+            return value;
+        }
+
         private void TriggerEnter(Collider obj)
         {
             if (!Accept(obj))

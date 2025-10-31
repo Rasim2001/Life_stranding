@@ -3,16 +3,19 @@ using Infastructure.Common.Pickup;
 using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Factories.GameFactories;
 using Infastructure.PlatformRegistry;
+using Infastructure.Services.Ability;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Explosion;
 using Infastructure.Services.Magnet;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.TaskPopupChecker;
 using Infastructure.Services.Window;
 using Infastructure.Services.XRay;
 using Infastructure.States;
 using UI.MVVM.View.Root;
+using UI.MVVM.View.TaskPopup;
 using Zenject;
 
 namespace Infastructure.CompositionRoot
@@ -51,6 +54,8 @@ namespace Infastructure.CompositionRoot
             BindXRayService();
 
             BindPlatformRegistryService();
+
+            BindAbilityService();
         }
 
         private void BindUI()
@@ -64,7 +69,12 @@ namespace Infastructure.CompositionRoot
             BindWindowService();
 
             BindEventSystemSelector();
+
+            BindTaskPopupCheckerService();
         }
+
+        private void BindAbilityService() =>
+            Container.BindInterfacesAndSelfTo<AbilityService>().AsSingle();
 
         private void BindPlatformRegistryService() =>
             Container.BindInterfacesAndSelfTo<PlatformRegistryService>().AsSingle();
@@ -85,7 +95,7 @@ namespace Infastructure.CompositionRoot
             Container.BindInterfacesAndSelfTo<CutSceneService>().AsSingle();
 
         private void BindCheckPointInstaller() =>
-            Container.BindInterfacesAndSelfTo<CheckPointService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<BiospherePointService>().AsSingle();
 
         private void BindStableWorldUp()
         {
@@ -142,5 +152,8 @@ namespace Infastructure.CompositionRoot
 
         private void BindWindowService() =>
             Container.BindInterfacesAndSelfTo<WindowService>().AsSingle();
+
+        private void BindTaskPopupCheckerService() =>
+            Container.BindInterfacesAndSelfTo<TaskPopupCheckerService>().AsSingle();
     }
 }

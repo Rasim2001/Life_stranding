@@ -19,6 +19,7 @@ namespace PickupObjects.PickUpOnPlatform
 
         public bool IsFreezingOnPlatform;
         public bool WasOnPlatform;
+        public bool IsPuttingDown;
 
         protected Vector3 StartPosition { get; set; }
         protected Quaternion StartRotation { get; set; }
@@ -65,7 +66,7 @@ namespace PickupObjects.PickUpOnPlatform
             if (IsOnPlatform)
                 transform.localRotation = Quaternion.Euler(StartRotation.eulerAngles.x, 0, 0);
 
-            if (!IsOnPlatform || IsFreezingOnPlatform)
+            if (!IsOnPlatform || IsFreezingOnPlatform || IsPuttingDown)
                 return;
 
             IsOnPlatform = _platformSelector.IsOnPlatform(_collider);
@@ -78,7 +79,7 @@ namespace PickupObjects.PickUpOnPlatform
 
         private void FixedUpdate()
         {
-            if (!IsOnPlatform)
+            if (!IsOnPlatform || IsPuttingDown)
                 return;
 
             if (Rigidbody.constraints == RigidbodyConstraints.FreezeRotation)
@@ -125,7 +126,7 @@ namespace PickupObjects.PickUpOnPlatform
         }
 
 
-        protected virtual void StartSimulatePhysics()
+        public virtual void StartSimulatePhysics()
         {
             _platformSelector.ReturnToDefaultMaterial();
 

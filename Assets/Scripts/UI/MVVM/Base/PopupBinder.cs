@@ -16,7 +16,7 @@ namespace UI.MVVM.Base
         public void Construct(IEventSystemSelector eventSystemSelector) =>
             _eventSystemSelector = eventSystemSelector;
 
-        private void Awake() =>
+        protected virtual void Awake() =>
             _eventSystemSelector.SelectButton(_btnClose.gameObject);
 
         protected virtual void Start()

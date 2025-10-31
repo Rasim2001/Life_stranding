@@ -4,5 +4,6 @@ namespace Infastructure.Services.Pause
     {
         void StartPause();
         void StopPause();
+        bool IsPaused { get; }
     }
 }

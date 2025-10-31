@@ -4,6 +4,7 @@ using Infastructure.StaticData.Materials;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.Stikers;
+using Infastructure.StaticData.Task;
 using Infastructure.StaticData.VolumeProfiles;
 using Infastructure.StaticData.XRay;
 using UnityEngine;
@@ -20,6 +21,7 @@ namespace Infastructure.StaticData.StaticDataService
         public XRayCollectionStaticData XRayCollectionStaticData { get; private set; }
         public ProductsStaticData ProductsStaticData { get; private set; }
         public StickersStaticData StickersStaticData { get; private set; }
+        public TasksStaticData TasksStaticData { get; private set; }
 
         public void LoadStaticData()
         {
@@ -32,6 +34,7 @@ namespace Infastructure.StaticData.StaticDataService
             XRayCollectionStaticData = Resources.Load<XRayCollectionStaticData>(AssetsPath.XRayCollectionDataPath);
             ProductsStaticData = Resources.Load<ProductsStaticData>(AssetsPath.ProductStaticDataPath);
             StickersStaticData = Resources.Load<StickersStaticData>(AssetsPath.StickersStaticDataPath);
+            TasksStaticData = Resources.Load<TasksStaticData>(AssetsPath.TasksStaticDataPath);
         }
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,6 +9,7 @@ namespace HUD
         [SerializeField] private Image _image;
         private RectTransform uiElement => _image.rectTransform;
 
+        private readonly Vector3 _offset = new Vector3(0, 1.4f, 0);
         private Transform _targetWorldObject;
         private Camera _mainCamera;
 
@@ -33,7 +33,7 @@ namespace HUD
             if (_targetWorldObject == null || uiElement == null)
                 return;
 
-            Vector3 screenPos = _mainCamera.WorldToScreenPoint(_targetWorldObject.position);
+            Vector3 screenPos = _mainCamera.WorldToScreenPoint(_targetWorldObject.position + _offset);
 
             if (screenPos.z > 0)
                 uiElement.position = screenPos;
