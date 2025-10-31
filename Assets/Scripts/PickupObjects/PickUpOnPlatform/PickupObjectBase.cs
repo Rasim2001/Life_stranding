@@ -19,18 +19,19 @@ namespace PickupObjects.PickUpOnPlatform
 
         public bool IsFreezingOnPlatform;
         public bool WasOnPlatform;
+        public bool IsPuttingDown;
 
         protected Vector3 StartPosition { get; set; }
         protected Quaternion StartRotation { get; set; }
         protected float Speed { get; set; }
+        protected Collider Collider { get; private set; }
+        protected PlatformSelector PlatformSelector { get; private set; }
 
         private Vector3 _customPositionOffset = Vector3.zero;
 
         private Transform _platformArmature;
         private IPlatformObjectsService _platformObjectsService;
-        private PlatformSelector _platformSelector;
 
-        private Collider _collider;
         private Rigidbody _spiderRigidbody;
 
 
@@ -44,7 +45,7 @@ namespace PickupObjects.PickUpOnPlatform
 
         public virtual void Initialize(Transform platformTransform, PlatformSelector platformSelector)
         {
-            _platformSelector = platformSelector;
+            PlatformSelector = platformSelector;
             _platformArmature = platformTransform;
 
             _spiderRigidbody = _platformArmature.GetComponentInParent<Spider>().Rigidbody;
@@ -57,7 +58,7 @@ namespace PickupObjects.PickUpOnPlatform
             _linearDefaultDamping = Rigidbody.linearDamping;
             _angularDefaultDamping = Rigidbody.angularDamping;
 
-            _collider = GetComponent<Collider>();
+            Collider = GetComponent<Collider>();
         }
 
         private void Update()
@@ -65,10 +66,10 @@ namespace PickupObjects.PickUpOnPlatform
             if (IsOnPlatform)
                 transform.localRotation = Quaternion.Euler(StartRotation.eulerAngles.x, 0, 0);
 
-            if (!IsOnPlatform || IsFreezingOnPlatform)
+            if (!IsOnPlatform || IsFreezingOnPlatform || IsPuttingDown)
                 return;
 
-            IsOnPlatform = _platformSelector.IsOnPlatform(_collider);
+            IsOnPlatform = PlatformSelector.IsOnPlatform(Collider);
 
             if (IsOnPlatform)
                 SimulateRotation();
@@ -78,7 +79,7 @@ namespace PickupObjects.PickUpOnPlatform
 
         private void FixedUpdate()
         {
-            if (!IsOnPlatform)
+            if (!IsOnPlatform || IsPuttingDown)
                 return;
 
             if (Rigidbody.constraints == RigidbodyConstraints.FreezeRotation)
@@ -86,13 +87,13 @@ namespace PickupObjects.PickUpOnPlatform
                     new Vector3(_spiderRigidbody.linearVelocity.x, 0, _spiderRigidbody.linearVelocity.z);
         }
 
-        private void OnCollisionEnter(Collision other)
+        protected virtual void OnCollisionEnter(Collision other)
         {
             if (other.gameObject.layer == LayerMask.NameToLayer("Default"))
                 Rigidbody.constraints = IsOnPlatform ? RigidbodyConstraints.FreezeRotation : RigidbodyConstraints.None;
         }
 
-        private void OnCollisionExit(Collision other)
+        protected virtual void OnCollisionExit(Collision other)
         {
             if (other.gameObject.layer == LayerMask.NameToLayer("Default"))
                 Rigidbody.constraints = IsOnPlatform ? RigidbodyConstraints.FreezeAll : RigidbodyConstraints.None;
@@ -116,7 +117,7 @@ namespace PickupObjects.PickUpOnPlatform
             Rigidbody.linearDamping = _linearDamping;
             Rigidbody.constraints = RigidbodyConstraints.FreezeAll;
 
-            _platformSelector.SetExcludeLayerMask();
+            PlatformSelector.SetExcludeLayerMask();
 
             transform.SetParent(_platformArmature);
 
@@ -125,9 +126,9 @@ namespace PickupObjects.PickUpOnPlatform
         }
 
 
-        protected virtual void StartSimulatePhysics()
+        public virtual void StartSimulatePhysics()
         {
-            _platformSelector.ReturnToDefaultMaterial();
+            PlatformSelector.ReturnToDefaultMaterial();
 
             _platformObjectsService.PickupObjects.Remove(this);
 
@@ -137,7 +138,7 @@ namespace PickupObjects.PickUpOnPlatform
             Rigidbody.linearDamping = _linearDefaultDamping;
             Rigidbody.constraints = RigidbodyConstraints.None;
 
-            _platformSelector.ResetExcludeLayerMask();
+            PlatformSelector.ResetExcludeLayerMask();
 
             transform.SetParent(null);
         }

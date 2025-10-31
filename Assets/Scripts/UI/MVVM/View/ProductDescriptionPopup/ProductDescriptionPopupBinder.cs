@@ -30,10 +30,10 @@ namespace UI.MVVM.View.ProductDescriptionPopup
         [SerializeField] private Transform _gifLinesTransform;
         [SerializeField] private FramePiece[] _framePieces;
 
-        private readonly UIFlicker _uiFlicker = new UIFlicker();
+        private UIFlicker _uiFlicker;
 
         private IPauseService _pauseService;
-        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private CancellationTokenSource _cancellationTokenSource;
         private Tween _gifRotateTween;
         private Tween _discriptionRotateTween;
         private Tween _scaleLines;
@@ -43,6 +43,14 @@ namespace UI.MVVM.View.ProductDescriptionPopup
         [Inject]
         public void Construct(IPauseService pauseService) =>
             _pauseService = pauseService;
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            _uiFlicker = new UIFlicker();
+            _cancellationTokenSource = new CancellationTokenSource();
+        }
 
         protected override void Start()
         {

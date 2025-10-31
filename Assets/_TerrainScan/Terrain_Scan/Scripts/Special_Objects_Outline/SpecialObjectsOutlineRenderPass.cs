@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.Universal;
+
 
 namespace GameDevBuddies
 {
@@ -21,6 +23,11 @@ namespace GameDevBuddies
         private Material _outlineRenderMaterial;
         private int _outlineRenderMaterialPassIndex;
         private string _cameraTagId = string.Empty;
+
+        public override void RecordRenderGraph(RenderGraph rg, ContextContainer ctx)
+        {
+            // TODO: сделаем полноценную RG-реализацию позже.
+        }
 
         public SpecialObjectsOutlineRenderPass(string cameraTagId, SpecialObjectsOutlineNormalsPassSettings renderPassSettings)
         {

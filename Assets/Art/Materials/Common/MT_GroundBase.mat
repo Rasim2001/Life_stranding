@@ -25,8 +25,9 @@ Material:
   - _RECEIVE_SHADOWS_ON
   - _REFLECTIONS_NONE
   - _RIMLIGHTINGSTAGE_BEFORELIGHTING
-  - _SHADINGMODEL_BASIC
-  - _SPECULARMODEL_NONE
+  - _RIM_LIGHTING_ON
+  - _SHADINGMODEL_PBR
+  - _SPECULARMODEL_CLASSIC
   - _TEXTUREBLENDINGMODE_RGB
   - _TEXTUREBLENDINGSOURCE_VERTEXCOLOR
   - _TRIPLANARNORMALSPACE_WORLD
@@ -186,7 +187,7 @@ Material:
     - _AOMapEnabled: 0
     - _AOMapStrength: 1
     - _AddPrecomputedVelocity: 0
-    - _AdvancedConfigurationEnabled: 0
+    - _AdvancedConfigurationEnabled: 1
     - _AffectedByLightmaps: 0
     - _AlbedoVertexColorMode: 1
     - _AlbedoVertexColorOn: 0
@@ -314,13 +315,13 @@ Material:
     - _MaxFadeDistance: 250
     - _MaxGradientHeight: 0.75
     - _MaxInflate: 0.2
-    - _MaxRim: 1
+    - _MaxRim: 0.919
     - _Metallic: 0
     - _MetallicMapOn: 0
     - _MinDistanceToFade: 0
     - _MinGradientHeight: 0
     - _MinInflate: 0
-    - _MinRim: 0
+    - _MinRim: 0.886
     - _NearFade: 0
     - _NormalInfluence: 0.5
     - _NormalMapEnabled: 0
@@ -342,8 +343,8 @@ Material:
     - _Reflections: 0
     - _ReflectionsAtten: 0.5
     - _RenderPreset: 1
-    - _RimAttenuation: 1
-    - _RimLighting: 0
+    - _RimAttenuation: 0.235
+    - _RimLighting: 1
     - _RimLightingStage: 0
     - _SSSAtten: 1
     - _SSSFrontAtten: 0.3
@@ -354,7 +355,7 @@ Material:
     - _ScrollTextureOn: 0
     - _ScrollTextureX: 1
     - _ScrollTextureY: 1
-    - _ShadingModel: 0
+    - _ShadingModel: 1
     - _ShadowCutoff: 0.2
     - _ShakeBlend: 1
     - _ShakeSpeedMult: 1
@@ -363,7 +364,7 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularAtten: 0.5
     - _SpecularHighlights: 1
-    - _SpecularModel: 0
+    - _SpecularModel: 1
     - _SpecularToonCutoff: 0.35
     - _SpecularToonSmoothness: 0
     - _SpherizeNormals: 0

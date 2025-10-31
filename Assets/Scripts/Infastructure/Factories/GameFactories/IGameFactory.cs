@@ -11,7 +11,7 @@ namespace Infastructure.Factories.GameFactories
         Spider CreateSpider(Flower flower);
         void CreateCameraSystem(Spider spider);
         HudUI CreateHUD(Flower flower, Spider spider);
-        void CreateCheckPointIndicator();
+        void CreateCheckPoints();
         void CreateStartGameCutSceneTimeline(Spider spiderTransform);
         Flower CreateFlower();
         void CreateAllBatteryProducts(Spider spider);

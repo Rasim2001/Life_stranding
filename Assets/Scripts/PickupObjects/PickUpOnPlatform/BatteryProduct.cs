@@ -44,7 +44,7 @@ namespace PickupObjects.PickUpOnPlatform
             _xRayService.Remove(_xRayMarker);
         }
 
-        protected override void StartSimulatePhysics()
+        public override void StartSimulatePhysics()
         {
             base.StartSimulatePhysics();
 

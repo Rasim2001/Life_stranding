@@ -10,10 +10,12 @@ using Infastructure.Services.Explosion;
 using Infastructure.Services.Magnet;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.TaskPopupChecker;
 using Infastructure.Services.Window;
 using Infastructure.Services.XRay;
 using Infastructure.States;
 using UI.MVVM.View.Root;
+using UI.MVVM.View.TaskPopup;
 using Zenject;
 
 namespace Infastructure.CompositionRoot
@@ -67,6 +69,8 @@ namespace Infastructure.CompositionRoot
             BindWindowService();
 
             BindEventSystemSelector();
+
+            BindTaskPopupCheckerService();
         }
 
         private void BindAbilityService() =>
@@ -91,7 +95,7 @@ namespace Infastructure.CompositionRoot
             Container.BindInterfacesAndSelfTo<CutSceneService>().AsSingle();
 
         private void BindCheckPointInstaller() =>
-            Container.BindInterfacesAndSelfTo<CheckPointService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<BiospherePointService>().AsSingle();
 
         private void BindStableWorldUp()
         {
@@ -148,5 +152,8 @@ namespace Infastructure.CompositionRoot
 
         private void BindWindowService() =>
             Container.BindInterfacesAndSelfTo<WindowService>().AsSingle();
+
+        private void BindTaskPopupCheckerService() =>
+            Container.BindInterfacesAndSelfTo<TaskPopupCheckerService>().AsSingle();
     }
 }

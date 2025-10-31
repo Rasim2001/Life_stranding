@@ -16,7 +16,8 @@ namespace Infastructure.Services.XRay
         private readonly IPoolObjects<XRayOccluderUI> _pools;
         private readonly IStaticDataService _staticDataService;
 
-        private Transform _container;
+        private Transform _xRayContainer;
+        private Transform _hudTransform;
 
         public XRayService(IStaticDataService staticDataService, IPoolObjects<XRayOccluderUI> pools)
         {
@@ -24,8 +25,11 @@ namespace Infastructure.Services.XRay
             _pools = pools;
         }
 
-        public void Initialize(Transform container) =>
-            _container = container;
+        public void Initialize(Transform xRayContainer, Transform hudTransform)
+        {
+            _hudTransform = hudTransform;
+            _xRayContainer = xRayContainer;
+        }
 
         public void Add(XRayMarker xRayMarker)
         {
@@ -38,7 +42,7 @@ namespace Infastructure.Services.XRay
             Sprite sprite = _staticDataService.XRayCollectionStaticData.XRayObjects[xRayMarker.Type];
 
             XRayOccluderUI xRayOccluderUI = _pools.GetObjectFromPool();
-            xRayOccluderUI.transform.SetParent(_container);
+            xRayOccluderUI.transform.SetParent(_xRayContainer);
             xRayOccluderUI.Initialize(xRayMarker.transform, sprite);
 
             _xRayDictionary.Add(id, xRayOccluderUI);
@@ -54,6 +58,22 @@ namespace Infastructure.Services.XRay
 
             _pools.ReturnObjectToPool(xRayOccluderUI);
             _xRayDictionary.Remove(id);
+        }
+
+        public void Show(XRayMarker xRayMarker)
+        {
+            if (!_xRayDictionary.TryGetValue(xRayMarker.Id, out XRayOccluderUI xRayOccluderUI))
+                return;
+
+            xRayOccluderUI.transform.SetParent(_hudTransform);
+        }
+
+        public void Hide(XRayMarker xRayMarker)
+        {
+            if (!_xRayDictionary.TryGetValue(xRayMarker.Id, out XRayOccluderUI xRayOccluderUI))
+                return;
+
+            xRayOccluderUI.transform.SetParent(_xRayContainer);
         }
     }
 }

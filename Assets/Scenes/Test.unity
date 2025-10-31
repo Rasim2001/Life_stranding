@@ -301,7 +301,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &471915412
 Transform:
   m_ObjectHideFlags: 0
@@ -436,7 +436,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &710419583
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -532,7 +532,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -824,7 +824,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1028748962
 Transform:
   m_ObjectHideFlags: 0
@@ -987,6 +987,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PickupView: {fileID: 5488940531375383698, guid: a48253a4c0d6c4249b0becf7e0b9cddb, type: 3}
   PickupContainer: {fileID: 1438732217}
+  OccluderUI: {fileID: 0}
+  OccluderContainer: {fileID: 0}
 --- !u!114 &1382090979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -999,7 +1001,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e1f65b6e9ef43c98fb86a450e9ac0d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalVolume: {fileID: 950699499}
 --- !u!114 &1382090980
 MonoBehaviour:
   m_ObjectHideFlags: 0
