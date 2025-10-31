@@ -2,10 +2,12 @@ using Infastructure.Common.Pickup;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Window;
+using Infastructure.StaticData.Spider;
 using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
 using SpiderController.TriggerChecker;
 using SpiderController.UI.Health;
+using UnityEngine;
 
 namespace SpiderController.PickUp
 {
@@ -16,10 +18,14 @@ namespace SpiderController.PickUp
         private readonly IPlatformObjectsService _platformObjectsService;
         private readonly IWindowService _windowService;
 
+        private HealthBarUI HealthBar => _spiderUI.HealthBar;
+        private SpiderHealth SpiderHealth => _spiderUI.SpiderHealth;
+
         private readonly FlowerChecker _flowerChecker;
         private readonly Flower _flower;
+        private readonly SpiderUI _spiderUI;
 
-        private readonly HealthBarUI _healthBar;
+        private readonly SpiderStaticData _spiderStaticData;
 
         public FlowerPickup(
             IInputService inputService,
@@ -28,7 +34,8 @@ namespace SpiderController.PickUp
             IWindowService windowService,
             FlowerChecker flowerChecker,
             Flower flower,
-            HealthBarUI healthBar)
+            SpiderUI spiderUI,
+            SpiderStaticData spiderStaticData)
         {
             _inputService = inputService;
             _pickupDisplayer = pickupDisplayer;
@@ -36,18 +43,23 @@ namespace SpiderController.PickUp
             _windowService = windowService;
             _flowerChecker = flowerChecker;
             _flower = flower;
-            _healthBar = healthBar;
+            _spiderUI = spiderUI;
+            _spiderStaticData = spiderStaticData;
         }
 
         public void Initialize()
         {
             _flower.OnDroppedFromPlatform += DropFlowerHappened;
+            _flower.OnGroundTriggered += GroundTriggered;
 
-            _healthBar.PlayFadeHologramEffect();
+            HealthBar.PlayFadeHologramEffect();
         }
 
-        public void Destroy() =>
+        public void Destroy()
+        {
+            _flower.OnGroundTriggered -= GroundTriggered;
             _flower.OnDroppedFromPlatform -= DropFlowerHappened;
+        }
 
         public void Update()
         {
@@ -58,7 +70,7 @@ namespace SpiderController.PickUp
                 _windowService.OpenProductDescriptionPopup(ProductType.Flower);
 
                 _flower.StopSimulatePhysics();
-                _healthBar.PlayFadeHologramEffect();
+                HealthBar.PlayFadeHologramEffect();
             }
 
             if (canDisplay)
@@ -72,6 +84,9 @@ namespace SpiderController.PickUp
             _flowerChecker.IsTouching && _flower.Rigidbody.IsSleeping() && !_flower.IsOnPlatform;
 
         private void DropFlowerHappened() =>
-            _healthBar.ShowHologram();
+            HealthBar.ShowHologram();
+
+        private void GroundTriggered() =>
+            SpiderHealth.TakeDamage(_spiderStaticData.DamageAmount);
     }
 }

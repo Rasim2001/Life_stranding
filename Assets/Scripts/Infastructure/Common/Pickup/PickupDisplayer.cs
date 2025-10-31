@@ -59,5 +59,6 @@ namespace Infastructure.Common.Pickup
             _poolObjects.ReturnObjectToPool(pickupView);
             _pickups.Remove(id);
         }
+        
     }
 }

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: bc8dc9ef3a43fa14b9c8e343bc6b1c43
+guid: 6084678aab9bf7e4eaa722682ded54be
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -136,13 +136,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ICN_BarGlare
+      name: UI_Emogi_Checkpoint_icon_A
       rect:
         serializedVersion: 2
-        x: 932
-        y: 1244
-        width: 46
-        height: 182
+        x: 175
+        y: 138
+        width: 66
+        height: 83
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,327 +151,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: eebad01b4a63e9146baf0e76465323b4
-      internalID: -970391832
+      spriteID: 94e5110aca2f6814f95fbc7d2e338392
+      internalID: 1215660784
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ICN_Battery
-      rect:
-        serializedVersion: 2
-        x: 862
-        y: 1468
-        width: 71
-        height: 40
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b0bb0737100a38b418cc9fc21019ac8c
-      internalID: -924214454
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ICN_Colba
-      rect:
-        serializedVersion: 2
-        x: 835
-        y: 1310
-        width: 46
-        height: 66
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9f845d19225acf248b203b693e3fe0d8
-      internalID: 457142116
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ICN_EnergyBar
-      rect:
-        serializedVersion: 2
-        x: 917
-        y: 1960
-        width: 97
-        height: 82
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b237dbf35ddc909488649d4c8b1f5548
-      internalID: -948516150
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ICN_EnergyBar_Dots
+      name: UI_Emogi_Diamond__A
       rect:
         serializedVersion: 2
         x: 6
-        y: 1394
-        width: 643
-        height: 107
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e29bb7ce814706746a60adee7bfb954b
-      internalID: -1061665369
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ICN_GlowButton
-      rect:
-        serializedVersion: 2
-        x: 6
-        y: 778
-        width: 400
-        height: 373
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bb20bf96d8fefd94f93fac36ea62f463
-      internalID: -1223952257
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ICN_GlowDark
-      rect:
-        serializedVersion: 2
-        x: 6
-        y: 1624
-        width: 848
-        height: 210
-      alignment: 9
-      pivot: {x: 0.49823114, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6d69872b742589c419caa71832074bb9
-      internalID: 1021966567
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ICN_GlowLight
-      rect:
-        serializedVersion: 2
-        x: 6
-        y: 1844
-        width: 901
-        height: 198
-      alignment: 9
-      pivot: {x: 0.49833518, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4b5b5ab9573fd6c4c849b64e7812a6cf
-      internalID: 1296057306
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ICN_HealthBar_Dots_01
-      rect:
-        serializedVersion: 2
-        x: 6
-        y: 1376
-        width: 643
-        height: 8
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7d589f9fec64e0a4fb58d27a76ba815f
-      internalID: 670523553
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ICN_HealthBar_Hetch
-      rect:
-        serializedVersion: 2
-        x: 6
-        y: 1184
-        width: 612
-        height: 86
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e39cc959fd871134388ae9b841736be8
-      internalID: -1752268934
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ICN_HealthBar_Red
-      rect:
-        serializedVersion: 2
-        x: 6
-        y: 1280
-        width: 613
-        height: 86
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6439361fc95ec0445ac65826660672ed
-      internalID: 1463213029
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ICN_Magnet
-      rect:
-        serializedVersion: 2
-        x: 864
-        y: 1518
-        width: 107
-        height: 132
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c0da6a0092659a84890c8fa20c451bdd
-      internalID: -2091050923
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ICN_Paltform
-      rect:
-        serializedVersion: 2
-        x: 659
-        y: 1260
-        width: 166
-        height: 159
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2c5049c95a4e8184eaa3897486c3394d
-      internalID: -841053359
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ICN_ReloadBar
-      rect:
-        serializedVersion: 2
-        x: 6
-        y: 1161
-        width: 611
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5266fdb96b487f647b6a54b4af233b1f
-      internalID: 426356182
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ICN_ReloadDots
-      rect:
-        serializedVersion: 2
-        x: 6
-        y: 1511
-        width: 649
-        height: 103
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b83640d9d7b251c4fbb2571f51b7046b
-      internalID: -1299211804
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ICN_StickLeft
-      rect:
-        serializedVersion: 2
-        x: 917
-        y: 1856
-        width: 92
+        y: 116
+        width: 59
         height: 94
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -481,64 +173,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7f80150c9ae7b7044bb1739217796fa6
-      internalID: -1032885177
+      spriteID: a0480c2aecc77ae4bbef66bf0c0e72ea
+      internalID: -1222304389
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ICN_StickRight
+      name: UI_Emogi_Energy__A
       rect:
         serializedVersion: 2
-        x: 917
-        y: 1752
-        width: 92
-        height: 94
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d2edf099eb986dc44a1d4c3234165eb7
-      internalID: 1953074848
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ICN_TargetArrow
-      rect:
-        serializedVersion: 2
-        x: 864
-        y: 1660
-        width: 111
+        x: 453
+        y: 424
+        width: 44
         height: 82
-      alignment: 9
-      pivot: {x: 0.5, y: 0.32317072}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a05cd51b0b24d4749af265209de0a120
-      internalID: -1678303074
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ICN_TargetMain
-      rect:
-        serializedVersion: 2
-        x: 665
-        y: 1429
-        width: 187
-        height: 185
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -547,20 +195,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fd52590656dce2a43a0c5168477b5517
-      internalID: 1249190669
+      spriteID: 6f3eeafaa998f2749acf9ee44d535483
+      internalID: 256797005
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ICN_TriggerLeft
+      name: UI_Emogi_Jumper__A
       rect:
         serializedVersion: 2
-        x: 943
-        y: 1436
-        width: 60
-        height: 72
+        x: 453
+        y: 331
+        width: 41
+        height: 83
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -569,20 +217,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6777dc310534720468227a1f8e08c16c
-      internalID: -1835090440
+      spriteID: 1ce40889c06aac74eabc37d5affff5d0
+      internalID: -631143811
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ICN_TriggerRight
+      name: UI_Emogi_Like_A
       rect:
         serializedVersion: 2
-        x: 862
-        y: 1386
-        width: 60
-        height: 72
+        x: 251
+        y: 149
+        width: 81
+        height: 80
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -591,8 +239,316 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7f152328e35333a4183f7e3a115b11ce
-      internalID: 2062524897
+      spriteID: 8e67e83b4bf2fdb40846731cbcc1e2d6
+      internalID: -38865257
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Emogi_MainTarget_A
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 398
+        width: 110
+        height: 108
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dffd3fd706b05c74a88061043122dc22
+      internalID: 1790865584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Emogi_Skull_A
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 248
+        width: 85
+        height: 73
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e8c408bf19c7b2446a1e4ad651cd1a07
+      internalID: -601037012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Tuts_Button_A
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 16
+        width: 90
+        height: 90
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d3ad1c419590e3e4bbea1f1442fd5939
+      internalID: -1965538917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Tuts_Button_B
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 120
+        width: 90
+        height: 90
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3a46b69585c33d048b6d98b7ac6083a8
+      internalID: -465711003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Tuts_Button_L
+      rect:
+        serializedVersion: 2
+        x: 126
+        y: 405
+        width: 99
+        height: 101
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f1084014dbfd13b47ae734b578b02162
+      internalID: -868307270
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Tuts_Button_L3
+      rect:
+        serializedVersion: 2
+        x: 235
+        y: 405
+        width: 99
+        height: 101
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 75071901ba31ff04aac9ed05069ba7a2
+      internalID: 1904892802
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Tuts_Button_LB
+      rect:
+        serializedVersion: 2
+        x: 126
+        y: 336
+        width: 82
+        height: 59
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0516e004a1e868f4eb76a613a7f5ede9
+      internalID: 1162213750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Tuts_Button_LT
+      rect:
+        serializedVersion: 2
+        x: 215
+        y: 239
+        width: 68
+        height: 82
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3134e981f66c38c4d9e55f32ea237a8c
+      internalID: -2103599537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Tuts_Button_R
+      rect:
+        serializedVersion: 2
+        x: 344
+        y: 405
+        width: 99
+        height: 101
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f1e14629c9e7ceb498ba779a5d869ee2
+      internalID: 1420369943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Tuts_Button_R3
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 220
+        width: 99
+        height: 101
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e6efa59e28e13d342bb090419cd254ac
+      internalID: 875941367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Tuts_Button_RB
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 336
+        width: 82
+        height: 59
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 01b006b10aed90948bef917884cc981f
+      internalID: 711099424
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Tuts_Button_RT
+      rect:
+        serializedVersion: 2
+        x: 206
+        y: 46
+        width: 68
+        height: 82
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd98408378de86241b0116367f6fa3ab
+      internalID: 227512305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Tuts_Button_X
+      rect:
+        serializedVersion: 2
+        x: 115
+        y: 231
+        width: 90
+        height: 90
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eb0613d2df94ad54c924ce52b7b31101
+      internalID: -214249892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Tuts_Button_Y
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 20
+        width: 90
+        height: 90
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: db8b684bf194f7c49b972298312d56f8
+      internalID: -1047621352
       vertices: []
       indices: 
       edges: []
@@ -601,7 +557,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: a80fc068b5ce6f44694bb38a0927b43b
+    spriteID: abbc80eb30d18aa46b6739db9b69975d
     internalID: 0
     vertices: []
     indices: 
@@ -611,27 +567,25 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ICN_BarGlare: -970391832
-      ICN_Battery: -924214454
-      ICN_Colba: 457142116
-      ICN_EnergyBar: -948516150
-      ICN_EnergyBar_Dots: -1061665369
-      ICN_GlowButton: -1223952257
-      ICN_GlowDark: 1021966567
-      ICN_GlowLight: 1296057306
-      ICN_HealthBar_Dots_01: 670523553
-      ICN_HealthBar_Hetch: -1752268934
-      ICN_HealthBar_Red: 1463213029
-      ICN_Magnet: -2091050923
-      ICN_Paltform: -841053359
-      ICN_ReloadBar: 426356182
-      ICN_ReloadDots: -1299211804
-      ICN_StickLeft: -1032885177
-      ICN_StickRight: 1953074848
-      ICN_TargetArrow: -1678303074
-      ICN_TargetMain: 1249190669
-      ICN_TriggerLeft: -1835090440
-      ICN_TriggerRight: 2062524897
+      UI_Emogi_Checkpoint_icon_A: 1215660784
+      UI_Emogi_Diamond__A: -1222304389
+      UI_Emogi_Energy__A: 256797005
+      UI_Emogi_Jumper__A: -631143811
+      UI_Emogi_Like_A: -38865257
+      UI_Emogi_MainTarget_A: 1790865584
+      UI_Emogi_Skull_A: -601037012
+      UI_Tuts_Button_A: -1965538917
+      UI_Tuts_Button_B: -465711003
+      UI_Tuts_Button_L: -868307270
+      UI_Tuts_Button_L3: 1904892802
+      UI_Tuts_Button_LB: 1162213750
+      UI_Tuts_Button_LT: -2103599537
+      UI_Tuts_Button_R: 1420369943
+      UI_Tuts_Button_R3: 875941367
+      UI_Tuts_Button_RB: 711099424
+      UI_Tuts_Button_RT: 227512305
+      UI_Tuts_Button_X: -214249892
+      UI_Tuts_Button_Y: -1047621352
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

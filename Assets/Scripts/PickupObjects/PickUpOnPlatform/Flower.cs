@@ -1,4 +1,5 @@
 using System;
+using CheckPointManagement;
 using HUD;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
@@ -12,12 +13,17 @@ namespace PickupObjects.PickUpOnPlatform
     public class Flower : PickupObjectBase, IProduct
     {
         [SerializeField] private MMF_Player _feedbackPlayer;
+        [SerializeField] private LayerMask _groundLayer;
+
         public ProductType ProductType { get; set; }
 
         public Action OnDroppedFromPlatform;
+        public Action OnGroundTriggered;
 
         private FlowerPointIndicator _flowerPointIndicator;
         private IStaticDataService _staticDataService;
+
+        private bool _isTriggered;
 
         [Inject]
         public void Construct(IStaticDataService staticDataService) =>
@@ -37,10 +43,23 @@ namespace PickupObjects.PickUpOnPlatform
             StartRotation = Quaternion.Euler(productData.StartRotationEuler);
         }
 
+        protected override void OnCollisionEnter(Collision other)
+        {
+            base.OnCollisionEnter(other);
+
+            if (_isTriggered || _groundLayer != (_groundLayer | (1 << other.gameObject.layer)))
+                return;
+
+            _isTriggered = true;
+            OnGroundTriggered?.Invoke();
+        }
+
+
         public override void StopSimulatePhysics()
         {
             base.StopSimulatePhysics();
 
+            _isTriggered = false;
             _flowerPointIndicator.HideTargetPoint();
         }
 
@@ -52,6 +71,29 @@ namespace PickupObjects.PickUpOnPlatform
             _flowerPointIndicator.ShowTargetPoint();
 
             OnDroppedFromPlatform?.Invoke();
+        }
+
+        public void Putdown(CheckPoint checkPoint)
+        {
+            Rigidbody.isKinematic = true;
+            IsPuttingDown = true;
+            Collider.enabled = false;
+
+            transform.position = checkPoint.FlowerPutdownPosition;
+            transform.rotation = checkPoint.FlowerPutdownRotation;
+
+            PlatformSelector.IsOnPlatform(Collider);
+
+            StartSimulatePhysics();
+        }
+
+        public void PickUpAfterPutdown()
+        {
+            IsPuttingDown = false;
+            Rigidbody.isKinematic = false;
+            Collider.enabled = true;
+
+            StopSimulatePhysics();
         }
     }
 }

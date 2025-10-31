@@ -676,7 +676,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsFreezingOnPlatform: 0
   WasOnPlatform: 0
+  IsPuttingDown: 0
   _feedbackPlayer: {fileID: 7096200032643435946}
+  _groundLayer:
+    serializedVersion: 2
+    m_Bits: 31031
 --- !u!114 &3442978669235190482
 MonoBehaviour:
   m_ObjectHideFlags: 0

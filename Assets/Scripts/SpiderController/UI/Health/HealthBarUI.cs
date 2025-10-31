@@ -22,7 +22,7 @@ namespace SpiderController.UI.Health
         public void PlayFadeHologramEffect() =>
             _hologramEffect.Play();
 
-        public void ShowHologram() =>
+        public void ShowHologram() => 
             _hologramEffect.Stop();
 
         protected override void UpdateFirstSegmentColorReduced()

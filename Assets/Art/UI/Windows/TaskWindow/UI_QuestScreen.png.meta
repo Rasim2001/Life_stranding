@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9fcf907b071e11b45b4662946b82e271
+guid: 389033d7a65c87447b7b49982bca58b8
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -136,13 +136,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: UI_Loot_Button_A
+      name: UI_Quest_Dot_A
       rect:
         serializedVersion: 2
-        x: 65
-        y: 10
-        width: 50
-        height: 50
+        x: 6
+        y: 169
+        width: 1610
+        height: 849
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,42 +151,42 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 66df2df2ce5809d4992e91ec0dc9332b
-      internalID: 1029371703
+      spriteID: fc6e66f341e47d04b89e45d03bcd1767
+      internalID: 734808595
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Loot_Diamond__A
+      name: UI_Quest_Glow_A
       rect:
         serializedVersion: 2
-        x: 5
-        y: 60
-        width: 51
-        height: 81
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 6
+        y: 50
+        width: 1111
+        height: 109
+      alignment: 9
+      pivot: {x: 0.49639964, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2ea51462c1378764bbc4554ae9516d17
-      internalID: -1664595569
+      spriteID: 16f23731e0a7ecf4aacd01ccddeefabb
+      internalID: 1731125012
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Loot_Energy__A
+      name: UI_Quest_Rubby
       rect:
         serializedVersion: 2
-        x: 175
-        y: 71
-        width: 38
-        height: 70
+        x: 1127
+        y: 112
+        width: 12
+        height: 47
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -195,74 +195,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0872c12d4c7da97408ffb63c004f9452
-      internalID: 1765336676
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_Loot_Frame_A
-      rect:
-        serializedVersion: 2
-        x: 5
-        y: 150
-        width: 357
-        height: 101
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 054b78cd1efcb1045a71b8b4d3dc428f
-      internalID: -789175035
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_Loot_Jumper__A
-      rect:
-        serializedVersion: 2
-        x: 131
-        y: 70
-        width: 35
-        height: 71
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a74c8b7b67b2adb4884d93c2b31a036d
-      internalID: 119834871
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_Checkpoint_icon_A
-      rect:
-        serializedVersion: 2
-        x: 65
-        y: 69
-        width: 57
-        height: 72
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ef3fc507999e4c24e8fb400585503cd9
-      internalID: -1747154303
+      spriteID: 2295cab34de769e4088baf69f91a7e33
+      internalID: 353524353
       vertices: []
       indices: 
       edges: []
@@ -271,7 +205,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 303156774edce5f4698f424be527e170
+    spriteID: f7ad348400387854d893ffb4af03b795
     internalID: 0
     vertices: []
     indices: 
@@ -281,12 +215,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      UI_Checkpoint_icon_A: -1747154303
-      UI_Loot_Button_A: 1029371703
-      UI_Loot_Diamond__A: -1664595569
-      UI_Loot_Energy__A: 1765336676
-      UI_Loot_Frame_A: -789175035
-      UI_Loot_Jumper__A: 119834871
+      UI_Quest_Dot_A: 734808595
+      UI_Quest_Glow_A: 1731125012
+      UI_Quest_Rubby: 353524353
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
