@@ -109,10 +109,11 @@ MonoBehaviour:
   - {fileID: 7142369812359127595}
   - {fileID: -6734706143250269849}
   - {fileID: 4185625421522646557}
-  - {fileID: -4073068167946373817}
   - {fileID: 881955704625254598}
   - {fileID: 8181852232220159414}
-  m_RendererFeatureMap: adc0de57c6d2eee5ed721b6e04d6a7702ba223a080cb1e636739edd8718489a21db6b3fc2454163a47f59acf148e79c700000000000000000000000000000000
+  - {fileID: 1540128567878334572}
+  - {fileID: -4073068167946373817}
+  m_RendererFeatureMap: adc0de57c6d2eee5ed721b6e04d6a7702ba223a080cb1e636739edd8718489a21db6b3fc2454163a0000000000000000000000000000000047f59acf148e79c7
   m_UseNativeRenderPass: 0
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -181,6 +182,32 @@ MonoBehaviour:
       restoreCamera: 1
       offset: {x: 0, y: 0, z: 0, w: 0}
       cameraFieldOfView: 60
+--- !u!114 &1540128567878334572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c6e585d9d2317e438a403bbb1965d5e, type: 3}
+  m_Name: StylizedWater3.StylizedWaterRenderFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  transparencyRefraction: 0
+  screenSpaceReflectionSettings:
+    allow: 1
+    reflectEverything: 0
+  allowDirectionalCaustics: 0
+  heightPrePassSettings:
+    enable: 1
+    range: 500
+    cellsPerUnit: 4
+    maxResolution: 4096
+    disableInSceneView: 1
+  heightReadbackCS: {fileID: 7200000, guid: 768e0c28dfdbc6b429fd59518fa03f2d, type: 3}
+  heightProcessingShader: {fileID: 4800000, guid: a1cfcf2c2c8140c084fb10845093540e, type: 3}
 --- !u!114 &4185625421522646557
 MonoBehaviour:
   m_ObjectHideFlags: 0
