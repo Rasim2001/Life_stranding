@@ -30,6 +30,9 @@ namespace SpiderController.UI.Health
             MaxHp = maxHp;
         }
 
+        public void Reset() =>
+            CurrentHP = MaxHp;
+
 
         public void TakeDamage(float damage)
         {

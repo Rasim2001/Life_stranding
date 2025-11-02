@@ -6,6 +6,7 @@ using Infastructure.Services.Window;
 using PickupObjects.PickUpOnPlatform;
 using SpiderController.TriggerChecker;
 using SpiderController.UI.Health;
+using UI;
 using UnityEngine;
 
 namespace SpiderController.PickUp
@@ -17,7 +18,7 @@ namespace SpiderController.PickUp
         private readonly IWindowService _windowService;
         private readonly CheckpointChecker _checkpointChecker;
         private readonly Flower _flower;
-        private readonly HealthBarUI _healthBarUI;
+        private readonly SpiderUI _spiderUI;
 
         public CheckpointPickup(
             IInputService inputService,
@@ -25,10 +26,10 @@ namespace SpiderController.PickUp
             IWindowService windowService,
             CheckpointChecker checkpointChecker,
             Flower flower,
-            HealthBarUI healthBarUI)
+            SpiderUI spiderUI)
         {
             _flower = flower;
-            _healthBarUI = healthBarUI;
+            _spiderUI = spiderUI;
             _inputService = inputService;
             _pickupDisplayer = pickupDisplayer;
             _windowService = windowService;
@@ -82,7 +83,7 @@ namespace SpiderController.PickUp
             checkPoint.StartFlowerPutdown();
 
             _flower.Putdown(checkPoint);
-            _healthBarUI.PlayFadeHologramEffect();
+            _spiderUI.HealthBar.PlayFadeHologramEffect();
             _pickupDisplayer.Hide(checkPointCollider.transform);
         }
 
@@ -96,7 +97,10 @@ namespace SpiderController.PickUp
             CheckPoint checkPoint = checkPointCollider.GetComponent<CheckPoint>();
             if (!checkPoint.IsReady)
                 return;
+            
+            _windowService.OpenTaskPopup(TaskId.GeneratorTask);
 
+            _spiderUI.SpiderHealth.Reset();
             checkPoint.StartFlowerPickup();
 
             _flower.PickUpAfterPutdown();
