@@ -97,6 +97,19 @@ namespace GameDevBuddies
                 return _kernelId;
             }
         }
+
+        // ===== RenderGraph fix: безопасное создание ComputeBuffer =====
+        private static void EnsureComputeBuffer(ref ComputeBuffer buf, int count, int stride)
+        {
+            if (count <= 0) count = 1; // защита от нуля
+            if (buf == null || buf.count < count || buf.stride != stride)
+            {
+                buf?.Release();
+                buf = new ComputeBuffer(count, stride, ComputeBufferType.Structured);
+            }
+        }
+        // =================================================================
+
         private Vector3 MainCameraPosition
         {
             get
@@ -279,15 +292,15 @@ namespace GameDevBuddies
 
             // Terrain types data structure set up.
             TerrainTypeData[] terrainTypesData = _terrainTypesScriptable.GetTerrainTypes();
-            _terrainTypesDataBuffer = new ComputeBuffer(terrainTypesData.Length, TerrainTypeData.StructSize);
+            EnsureComputeBuffer(ref _terrainTypesDataBuffer, terrainTypesData.Length, TerrainTypeData.StructSize);
             _terrainTypesDataBuffer.SetData(terrainTypesData);
 
             // General terrain info set up.
-            _terrainGeneralInfoBuffer = new ComputeBuffer(1, TerrainTypesGeneralInfo.StructSize);
+            EnsureComputeBuffer(ref _terrainGeneralInfoBuffer, 1, TerrainTypesGeneralInfo.StructSize);
             _terrainGeneralInfoBuffer.SetData(GetTerrainGeneralInfoArray());
 
             // Terrain scan info structure set up.
-            _terrainIconsInfoBuffer = new ComputeBuffer(iconsCount, TerrainIconInfo.StructSize);
+            EnsureComputeBuffer(ref _terrainIconsInfoBuffer, iconsCount, TerrainIconInfo.StructSize);
             _terrainIconsInfoBuffer.SetData(_terrainIconsInfoArray);
 
             // Assigning the buffers to the compute shader and the rendering material.
@@ -340,11 +353,8 @@ namespace GameDevBuddies
             _iconsInfoComputeShader.SetBuffer(KernelId, "_TerrainTypesGeneralInfo", _terrainGeneralInfoBuffer);
 
 #if UNITY_EDITOR
-            if (_terrainTypesDataBuffer != null)
-                _terrainTypesDataBuffer.Release();
-
             TerrainTypeData[] terrainTypesData = _terrainTypesScriptable.GetTerrainTypes();
-            _terrainTypesDataBuffer = new ComputeBuffer(terrainTypesData.Length, TerrainTypeData.StructSize);
+            EnsureComputeBuffer(ref _terrainTypesDataBuffer, terrainTypesData.Length, TerrainTypeData.StructSize);
             _terrainTypesDataBuffer.SetData(terrainTypesData);
             _iconsInfoComputeShader.SetBuffer(KernelId, "_TerrainTypesData", _terrainTypesDataBuffer);
 #endif
@@ -411,5 +421,16 @@ namespace GameDevBuddies
             Vector3 upAxis = Vector3.Cross(forwardAxis, rightAxis);
             return (rightAxis, upAxis);
         }
+        private void OnDisable()
+        {
+            // те же методы, что в ReleaseComputeResources()
+            ReleaseResources();
+        }
+
+        private void OnApplicationQuit()
+        {
+            ReleaseResources();
+        }
+
     }
 }

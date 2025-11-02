@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.Rendering.RenderGraphModule;
+
 
 namespace GameDevBuddies
 {
@@ -79,7 +81,90 @@ namespace GameDevBuddies
                 // Cache the helper data class into a collection for all passes.
                 _renderPassesData.Add(renderPassData);
             }
+        }   // конец конструктора TerrainIconsRenderPass(...)
+
+        // === Render Graph support (URP 17+) ===
+        private class RGPassData
+        {
+            public RendererListHandle RendererList;
+            public bool DoClear;
+            public Color ClearColor;
         }
+
+
+        // Путь для Render Graph (работает, когда RG включен и режим совместимости выключен)
+        public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
+        {
+            var camData = frameData.Get<UniversalCameraData>();
+            // Если нужно снова фильтровать по камере-иконок, раскомментируй 2 строки ниже:
+             if (!camData.camera || !camData.camera.CompareTag(_cameraTagId))
+                 return;
+
+            var res = frameData.Get<UniversalResourceData>();
+            var urp = frameData.Get<UniversalRenderingData>();
+
+            foreach (var pass in _renderPassesData)
+            {
+                Debug.Log($"[IconsRG] Icons pass on camera '{camData.camera.name}'");
+
+                // Импорт/выбор целей
+                var colorTarget = pass.OutputColorRTHandle != null
+                    ? renderGraph.ImportTexture(pass.OutputColorRTHandle)
+                    : res.activeColorTexture;
+
+                var depthTarget = pass.OutputDepthRTHandle != null
+                    ? renderGraph.ImportTexture(pass.OutputDepthRTHandle)
+                    : res.activeDepthTexture;
+
+                // Сборка RendererList
+                var sortingSettings = new SortingSettings(camData.camera) { criteria = SortingCriteria.CommonTransparent };
+                
+                List<ShaderTagId> tagIds = pass.SupportedShaderTagIds;
+                if (pass.OverrideMaterial != null)
+                {
+                    tagIds = new List<ShaderTagId>(tagIds);
+                    tagIds.Insert(0, new ShaderTagId("SRPDefaultUnlit"));
+                }
+
+                var drawing = new DrawingSettings(tagIds[0], sortingSettings);
+                for (int i = 1; i < tagIds.Count; i++)
+                    drawing.SetShaderPassName(i, tagIds[i]);
+
+                if (pass.OverrideMaterial != null)
+                {
+                    drawing.overrideMaterial = pass.OverrideMaterial;
+                    drawing.overrideMaterialPassIndex = pass.OverrideMaterialPassIndex;
+                }
+
+                var filtering = pass.FilteringSettings;
+                filtering.renderQueueRange = RenderQueueRange.all;
+
+                var rlParams = new RendererListParams(urp.cullResults, drawing, filtering);
+
+                using (var builder = renderGraph.AddRasterRenderPass<RGPassData>("Terrain Icons", out var data, pass.ProfilingSampler))
+                {
+                    data.RendererList = renderGraph.CreateRendererList(rlParams);
+                    data.DoClear = pass.ShouldClearOutputTexture;
+                    data.ClearColor = Color.clear;
+
+                    builder.UseRendererList(data.RendererList);
+                    builder.SetRenderAttachment(colorTarget, 0, AccessFlags.ReadWrite);
+                    builder.SetRenderAttachmentDepth(depthTarget, AccessFlags.ReadWrite);
+                    builder.AllowPassCulling(false);
+
+                    builder.SetRenderFunc((RGPassData d, RasterGraphContext ctx) =>
+                    {
+                        if (d.DoClear)
+                            ctx.cmd.ClearRenderTarget(true, true, d.ClearColor);
+
+                        ctx.cmd.DrawRendererList(d.RendererList);
+                    });
+                }
+            }
+        }
+
+        // === /Render Graph support ===
+
 
         /// <inheritdoc/>
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
