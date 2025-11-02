@@ -10,6 +10,8 @@ namespace Infastructure.StaticData
     [CreateAssetMenu(fileName = "GameData", menuName = "StaticData/GameData")]
     public class GameStaticData : SerializedScriptableObject
     {
+        [FoldoutGroup("AdditiveScenes")] public string[] AdditiveScenes;
+
         public string LoadScene;
 
         public Dictionary<string, GameData> GameDatas = new Dictionary<string, GameData>();
