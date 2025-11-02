@@ -23,9 +23,8 @@ namespace Infastructure.States
         public void Enter() =>
             _sceneLoader.Load(_staticDataService.GameStaticData.LoadScene, OnLoaded);
 
-        private void OnLoaded()
-        {
-        }
+        private void OnLoaded() =>
+            _sceneLoader.LoadAllScenes(_staticDataService.GameStaticData.AdditiveScenes);
 
         public void Exit()
         {
