@@ -32,6 +32,8 @@ namespace SpiderController.UI
         {
             if (_terrain != null)
                 TerrainScan.Instance.OnTerrainScanStart -= TerrainStart;
+
+            _hologramEffect.Clear();
         }
 
 

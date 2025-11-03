@@ -1,4 +1,5 @@
 using Infastructure.Services.CutScene;
+using Infastructure.Services.Window;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.UI.Stickers;
@@ -27,10 +28,13 @@ namespace SpiderController.UI.Health
         private SpiderHealth _spiderHealth;
         private IStaticDataService _staticDataService;
         private ICutSceneService _cutSceneService;
+        private IWindowService _windowService;
 
         [Inject]
-        public void Construct(IStaticDataService staticDataService, ICutSceneService cutSceneService)
+        public void Construct(IStaticDataService staticDataService, ICutSceneService cutSceneService,
+            IWindowService windowService)
         {
+            _windowService = windowService;
             _cutSceneService = cutSceneService;
             _staticDataService = staticDataService;
         }
@@ -42,12 +46,14 @@ namespace SpiderController.UI.Health
         {
             _cutSceneService.OnCutsceneActiveChanged += CutsceneActiveChanged;
             _spiderHealth.HealthChanged += UpdateHealthBar;
+            _spiderHealth.OnDefeatHappened += Defeat;
         }
 
         private void OnDestroy()
         {
             _cutSceneService.OnCutsceneActiveChanged -= CutsceneActiveChanged;
             _spiderHealth.HealthChanged -= UpdateHealthBar;
+            _spiderHealth.OnDefeatHappened -= Defeat;
         }
 
         private void UpdateHealthBar() =>
@@ -55,5 +61,8 @@ namespace SpiderController.UI.Health
 
         private void CutsceneActiveChanged(bool cutSceneIsActive) =>
             _canvasRootUI.SetActive(!cutSceneIsActive);
+
+        private void Defeat() =>
+            _windowService.OpenDefeatPopup();
     }
 }

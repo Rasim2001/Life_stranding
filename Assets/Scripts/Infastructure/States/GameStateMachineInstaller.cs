@@ -9,6 +9,7 @@ namespace Infastructure.States
             Container.BindFactory<IStateMachine, BootstrapState, BootstrapState.Factory>();
             Container.BindFactory<IStateMachine, LoadProgressState, LoadProgressState.Factory>();
             Container.BindFactory<IStateMachine, LoadLevelState, LoadLevelState.Factory>();
+            Container.BindFactory<IStateMachine, ExitGameLoopState, ExitGameLoopState.Factory>();
 
             Container.BindFactory<MainMenuState, MainMenuState.Factory>();
 

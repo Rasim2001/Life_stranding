@@ -17,5 +17,22 @@ namespace UI.Curtain
             _fadeTween.Kill();
             _fadeTween = DOTween.To(() => _canvasGroup.alpha, x => _canvasGroup.alpha = x, 0, 5).SetDelay(1);
         }
+
+        public void Show()
+        {
+            if (Mathf.Approximately(_canvasGroup.alpha, 1))
+                return;
+
+            _canvasGroup.alpha = 1;
+        }
+
+        public void Hide()
+        {
+            if (_canvasGroup.alpha == 0)
+                return;
+
+            _fadeTween.Kill();
+            _fadeTween = DOTween.To(() => _canvasGroup.alpha, x => _canvasGroup.alpha = x, 0, 1);
+        }
     }
 }

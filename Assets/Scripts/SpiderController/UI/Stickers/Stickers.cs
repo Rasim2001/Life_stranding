@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Infastructure.StaticData.StaticDataService;
 using UnityEngine;
@@ -14,12 +15,27 @@ namespace SpiderController.UI.Stickers
         private readonly float _startLifeTime = 10;
         private IStaticDataService _staticDataService;
 
+        private CancellationTokenSource _cts;
+
         [Inject]
         public void Construct(IStaticDataService staticDataService) =>
             _staticDataService = staticDataService;
 
-        private void Awake() =>
+        private void Awake()
+        {
+            _cts = new CancellationTokenSource();
+
             CreateAllParticles();
+        }
+
+        private void OnDestroy()
+        {
+            _stickers.Clear();
+
+            _cts.Cancel();
+            _cts.Dispose();
+        }
+
 
         private void CreateAllParticles()
         {
@@ -53,9 +69,16 @@ namespace SpiderController.UI.Stickers
             sticker.gameObject.SetActive(true);
             sticker.Play();
 
-            await UniTask.Delay(TimeSpan.FromSeconds(_startLifeTime));
+            try
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(_startLifeTime), cancellationToken: _cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+            }
 
-            sticker.gameObject.SetActive(false);
+            if (sticker != null)
+                sticker.gameObject.SetActive(false);
         }
     }
 }
