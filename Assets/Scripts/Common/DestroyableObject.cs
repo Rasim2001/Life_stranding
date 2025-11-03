@@ -14,11 +14,7 @@ namespace Common
         private void OnDestroy() =>
             _observerTrigger.OnTriggerEnterHappened -= TriggerHappened;
 
-        private void TriggerHappened(Collider obj)
-        {
-            Debug.Log("Trigger");
-
+        private void TriggerHappened(Collider obj) =>
             _allRigidbodies.ForEach(x => x.isKinematic = false);
-        }
     }
 }
