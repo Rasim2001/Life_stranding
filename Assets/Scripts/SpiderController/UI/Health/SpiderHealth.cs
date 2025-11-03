@@ -6,6 +6,7 @@ namespace SpiderController.UI.Health
     public class SpiderHealth
     {
         public event Action HealthChanged;
+        public event Action OnDefeatHappened;
 
         public float MaxHp { get; }
         public float CurrentHP
@@ -30,13 +31,17 @@ namespace SpiderController.UI.Health
             MaxHp = maxHp;
         }
 
+        public void Reset() =>
+            CurrentHP = MaxHp;
+
 
         public void TakeDamage(float damage)
         {
-            if (CurrentHP <= 0)
-                return;
+            if (CurrentHP > 0)
+                CurrentHP -= damage;
 
-            CurrentHP -= damage;
+            if (CurrentHP <= 0)
+                OnDefeatHappened?.Invoke();
         }
     }
 }

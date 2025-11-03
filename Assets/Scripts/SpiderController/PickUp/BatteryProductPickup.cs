@@ -65,7 +65,7 @@ namespace SpiderController.PickUp
             int columns = Mathf.CeilToInt(Mathf.Sqrt(n));
             int rows = Mathf.CeilToInt((float)n / columns);
 
-            float spacing = 0.008f;
+            float spacing = 0.01f;
             float totalWidth = (columns - 1) * spacing;
             float totalHeight = (rows - 1) * spacing;
 

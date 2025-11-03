@@ -35,15 +35,19 @@ namespace SpiderController.UI
 
         public void Stop()
         {
+            Clear();
+            ResetAlpha();
+            ResetOtherObjects();
+        }
+
+        public void Clear()
+        {
             if (_cts == null)
                 return;
 
             _cts.Cancel();
             _cts.Dispose();
             _cts = null;
-
-            ResetAlpha();
-            ResetOtherObjects();
         }
 
         private async UniTaskVoid RunHologramEffectAsync(CancellationToken token)
@@ -52,7 +56,7 @@ namespace SpiderController.UI
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(2f), cancellationToken: token);
 
-                int count = _segments.Count(x => x.gameObject.activeSelf);
+                int count = _segments.Count(x => x != null && x.gameObject.activeSelf);
 
                 for (int i = 0; i < count; i++)
                 {
@@ -87,6 +91,9 @@ namespace SpiderController.UI
         {
             foreach (Image otherObject in _otherObjects)
             {
+                if (otherObject == null)
+                    return;
+
                 Color seg = otherObject.color;
                 seg.a = 0;
 
@@ -98,6 +105,9 @@ namespace SpiderController.UI
         {
             foreach (Image otherObject in _otherObjects)
             {
+                if (otherObject == null)
+                    return;
+
                 Color seg = otherObject.color;
                 seg.a = 1;
 
@@ -109,6 +119,9 @@ namespace SpiderController.UI
         {
             for (int y = i + 1; y < segments.Length; y++)
             {
+                if (segments[y] == null)
+                    return;
+
                 Color seg = segments[y].color;
                 Color con = containers[y].color;
 
@@ -122,6 +135,9 @@ namespace SpiderController.UI
 
         private void FadeFirstPiece(Image[] segments, Image[] containers, int i, int iteration)
         {
+            if (segments[i] == null)
+                return;
+
             Color seg = segments[i].color;
             Color con = containers[i].color;
 
@@ -134,6 +150,9 @@ namespace SpiderController.UI
 
         private void DisableFirstPiece(Image[] segments, Image[] containers, int i)
         {
+            if (segments[i] == null)
+                return;
+
             Color seg = segments[i].color;
             Color con = containers[i].color;
 
@@ -148,6 +167,9 @@ namespace SpiderController.UI
         {
             for (int i = 0; i < segments.Length; i++)
             {
+                if (segments[i] == null)
+                    return;
+
                 Color seg = segments[i].color;
                 Color con = containers[i].color;
 
@@ -163,6 +185,9 @@ namespace SpiderController.UI
         {
             for (int i = 0; i < _segments.Length; i++)
             {
+                if (_segments[i] == null)
+                    return;
+
                 Color seg = _segments[i].color;
 
                 seg.a = 1;
@@ -172,6 +197,9 @@ namespace SpiderController.UI
 
             for (int i = 0; i < _containers.Length; i++)
             {
+                if (_containers[i] == null)
+                    return;
+
                 Color con = _containers[i].color;
                 con.a = 1;
 

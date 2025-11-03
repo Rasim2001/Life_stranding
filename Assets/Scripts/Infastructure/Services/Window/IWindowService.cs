@@ -10,5 +10,6 @@ namespace Infastructure.Services.Window
         void OpenSettingsScreen();
         void OpenProductDescriptionPopup(ProductType productType);
         void OpenTaskPopup(TaskId taskId);
+        void OpenDefeatPopup();
     }
 }

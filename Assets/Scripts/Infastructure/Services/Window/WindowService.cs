@@ -8,6 +8,7 @@ using Infastructure.StaticData.StaticDataService;
 using Infastructure.StaticData.Task;
 using PickupObjects;
 using UI;
+using UI.MVVM.View.DefeatPopup;
 using UI.MVVM.View.ProductDescriptionPopup;
 using UI.MVVM.View.Root;
 using UI.MVVM.View.SettingsPopup;
@@ -62,6 +63,13 @@ namespace Infastructure.Services.Window
             SettingsScreenViewModel model = new SettingsScreenViewModel(this);
 
             _gamePlayViewModel.OpenScreen(model);
+        }
+
+        public void OpenDefeatPopup()
+        {
+            DefeatPopupViewModel model = new DefeatPopupViewModel();
+
+            _gamePlayViewModel.OpenPopup(model);
         }
 
         public void OpenProductDescriptionPopup(ProductType productType)

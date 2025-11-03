@@ -184,7 +184,7 @@ namespace SpiderController
             _platformSelector.Initialize();
 
             _checkpointPickup = new CheckpointPickup(_inputService, _pickupDisplayer, _windowService,
-                _checkpointChecker, flower, _spiderUI.HealthBar);
+                _checkpointChecker, flower, _spiderUI);
 
             _checkpointPickup.Initialize();
 
