@@ -1,3 +1,5 @@
+using System;
+using Cysharp.Threading.Tasks;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.Spider;
@@ -63,6 +65,14 @@ namespace SpiderController.UI.Health
             _canvasRootUI.SetActive(!cutSceneIsActive);
 
         private void Defeat() =>
+            DefeatAsync().Forget();
+
+
+        private async UniTask DefeatAsync()
+        {
+            await UniTask.Delay(TimeSpan.FromSeconds(3));
+
             _windowService.OpenDefeatPopup();
+        }
     }
 }

@@ -14,6 +14,7 @@ using Infastructure.StaticData.StaticDataService;
 using Infastructure.StaticData.XRay;
 using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using PickupObjects.Skills;
 using SpiderController;
 using SpiderController.UI.Health;

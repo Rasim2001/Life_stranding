@@ -8,6 +8,8 @@ namespace SpiderController.UI.Health
         public event Action HealthChanged;
         public event Action OnDefeatHappened;
 
+        public bool IsDeath;
+
         public float MaxHp { get; }
         public float CurrentHP
         {
@@ -41,7 +43,10 @@ namespace SpiderController.UI.Health
                 CurrentHP -= damage;
 
             if (CurrentHP <= 0)
+            {
+                IsDeath = true;
                 OnDefeatHappened?.Invoke();
+            }
         }
     }
 }

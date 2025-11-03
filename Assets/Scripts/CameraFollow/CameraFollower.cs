@@ -65,13 +65,7 @@ namespace CameraFollow
             _defaultY = _cameraSystem.RotationComposer.Composition.ScreenPosition.y;
 
             _joystickInputSource = _inputService.GetInputSource<JoystickInputSource>();
-
-            CinemachineCore.CameraUpdatedEvent.AddListener(UpdateAfterCinemachine);
         }
-
-        private void OnDestroy() =>
-            CinemachineCore.CameraUpdatedEvent.RemoveListener(UpdateAfterCinemachine);
-
 
         private void FixedUpdate()
         {
@@ -84,7 +78,7 @@ namespace CameraFollow
                 RotateToTarget();
         }
 
-        private void UpdateAfterCinemachine(CinemachineBrain _)
+        private void Update()
         {
             if (_target == null || _cutSceneService.IsActive)
                 return;

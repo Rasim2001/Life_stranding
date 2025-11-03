@@ -51,7 +51,7 @@ namespace PickupObjects.PickUpOnPlatform
             _spiderRigidbody = _platformArmature.GetComponentInParent<Spider>().Rigidbody;
         }
 
-        private void Awake()
+        protected virtual void Awake()
         {
             Rigidbody = GetComponent<Rigidbody>();
 
