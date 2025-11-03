@@ -4,6 +4,7 @@ using GameDevBuddies;
 using Infastructure.Services.CutScene;
 using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using Unity.Cinemachine;
 using UnityEngine;
 using Zenject;

@@ -2,6 +2,7 @@ using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects.PickUpOnPlatform;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
 using SpiderController.TriggerChecker;

@@ -7,6 +7,7 @@ using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects.PickUpOnPlatform;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController;
 using Zenject;
 

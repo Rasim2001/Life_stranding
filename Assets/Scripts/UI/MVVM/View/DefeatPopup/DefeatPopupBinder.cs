@@ -1,9 +1,9 @@
+using System;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Infastructure.Services.Pause;
 using Infastructure.States;
 using UI.MVVM.Base;
-using UI.MVVM.View.TaskPopup;
 using UnityEngine;
 using Zenject;
 
@@ -11,8 +11,11 @@ namespace UI.MVVM.View.DefeatPopup
 {
     public class DefeatPopupBinder : PopupBinder<DefeatPopupViewModel>
     {
+        private static readonly int StartTrigger = Animator.StringToHash("StartTrigger");
+
         [SerializeField] private Transform _container;
         [SerializeField] private FramePiecesUI _framePiecesUI;
+        [SerializeField] private Animator _flowerAnimator;
 
         private IPauseService _pauseService;
         private IStateMachine _stateMachine;
@@ -33,6 +36,7 @@ namespace UI.MVVM.View.DefeatPopup
 
             _pauseService.StartPause();
 
+            StartFlowerAnimation().Forget();
             _framePiecesUI.MoveFramePiecesAsync().Forget();
             _containerRotateTween = _container.DORotate(Vector3.zero, 0.2f).SetUpdate(true);
         }
@@ -50,6 +54,13 @@ namespace UI.MVVM.View.DefeatPopup
             base.OnCloseButtonClick();
 
             _stateMachine.Enter<ExitGameLoopState>();
+        }
+
+        private async UniTask StartFlowerAnimation()
+        {
+            await UniTask.Delay(TimeSpan.FromSeconds(0.75f), ignoreTimeScale: true);
+
+            _flowerAnimator.SetTrigger(StartTrigger);
         }
     }
 }

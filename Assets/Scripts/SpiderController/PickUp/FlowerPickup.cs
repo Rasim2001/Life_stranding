@@ -5,6 +5,7 @@ using Infastructure.Services.Window;
 using Infastructure.StaticData.Spider;
 using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.TriggerChecker;
 using SpiderController.UI.Health;
 using UnityEngine;
@@ -65,7 +66,7 @@ namespace SpiderController.PickUp
         {
             bool canDisplay = CanDisplay();
 
-            if (canDisplay && _inputService.PickupPressed && _platformObjectsService.IsEmpty())
+            if (canDisplay && _inputService.PickupPressed && _platformObjectsService.IsEmpty() && !IsDeath())
             {
                 _windowService.OpenProductDescriptionPopup(ProductType.Flower);
 
@@ -73,11 +74,14 @@ namespace SpiderController.PickUp
                 HealthBar.PlayFadeHologramEffect();
             }
 
-            if (canDisplay)
+            if (canDisplay && !IsDeath())
                 _pickupDisplayer.Show(_flower.transform);
             else
                 _pickupDisplayer.Hide(_flower.transform);
         }
+
+        private bool IsDeath() =>
+            _spiderUI.SpiderHealth.IsDeath;
 
 
         private bool CanDisplay() =>
