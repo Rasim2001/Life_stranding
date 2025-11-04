@@ -4,6 +4,7 @@ using Common;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Infastructure.Services.Window;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using UI;
 using UnityEngine;
 using VInspector;
@@ -66,8 +67,8 @@ namespace CheckPointManagement
             Clear();
         }
 
-        public void StartFlowerPutdown() =>
-            StartFlowerPutdownAsync().Forget();
+        public void StartFlowerPutdown(Flower flower) =>
+            StartFlowerPutdownAsync(flower).Forget();
 
         public void StartFlowerPickup() =>
             StartFlowerPickupAsync().Forget();
@@ -97,7 +98,7 @@ namespace CheckPointManagement
             _rotateBodyTween = _bodyTransform.DOLocalRotate(new Vector3(0f, 0, angle), 1f);
         }
 
-        private async UniTask StartFlowerPutdownAsync()
+        private async UniTask StartFlowerPutdownAsync(Flower flower)
         {
             Tween startRotateGlassTween = RotateGlass(-180);
             Tween redHealIndicatorTween = ShowHealIndicators();
@@ -108,6 +109,7 @@ namespace CheckPointManagement
                 .AsyncWaitForCompletion()
                 .AsUniTask();
 
+            flower.ResetFlowerVariant();
             Tween endRotateGlassTween = RotateGlass(0);
 
             await DOTween.Sequence()

@@ -81,7 +81,7 @@ namespace SpiderController.PickUp
             if (checkPoint.IsReady)
                 return;
 
-            checkPoint.StartFlowerPutdown();
+            checkPoint.StartFlowerPutdown(_flower);
 
             _flower.Putdown(checkPoint);
             _spiderUI.HealthBar.PlayFadeHologramEffect();

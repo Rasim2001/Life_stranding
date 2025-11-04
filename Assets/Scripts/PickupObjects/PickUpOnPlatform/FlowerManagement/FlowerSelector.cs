@@ -24,6 +24,15 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             _allColliders = _variants[^1].GetComponentsInChildren<Collider>();
         }
 
+        public void Reset()
+        {
+            _currentIndex = 0;
+
+            _currentVariant.gameObject.SetActive(false);
+            _currentVariant = _variants[_currentIndex];
+            _currentVariant.gameObject.SetActive(true);
+        }
+
         public void ShowNextVariant()
         {
             if (IsLastVariant())
