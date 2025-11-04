@@ -43,6 +43,8 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
         private void OnDestroy() =>
             _flowerSelector.Clear();
 
+        public void ResetFlowerVariant() =>
+            _flowerSelector.Reset();
 
         public void Initialize(FlowerPointIndicator flowerPointIndicator) =>
             _flowerPointIndicator = flowerPointIndicator;
