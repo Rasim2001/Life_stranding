@@ -74,6 +74,7 @@ namespace Infastructure.States
         private void InitGameWorld()
         {
             InitCheckPoints();
+            InitGenerators();
 
             Flower flower = InitFlower();
             Spider spider = InitSpider(flower);
@@ -88,6 +89,9 @@ namespace Infastructure.States
             InitEnergyProducts();
             InitSkillProducts();
         }
+
+        private void InitGenerators() =>
+            _gameFactory.CreateAllGenerators();
 
         private void InitTerrainScan(Spider spider) =>
             _gameFactory.CreateTerrainScan(spider);

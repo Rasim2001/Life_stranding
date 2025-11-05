@@ -30,6 +30,11 @@ namespace Editor
                     .Select(x => new WorldData(x.transform.position, x.transform.rotation))
                     .ToList();
 
+                gameData.GameDatas[nameScene].GeneratorPoints = FindObjectsOfType<GeneratorPointMarker>()
+                    .OrderBy(x => x.transform.GetSiblingIndex())
+                    .Select(x => new WorldData(x.transform.position, x.transform.rotation))
+                    .ToList();
+
                 gameData.GameDatas[nameScene].BatteriesPoints = FindObjectsOfType<BatteryPointMarker>()
                     .Select(x => new WorldData(x.transform.position, x.transform.rotation))
                     .ToList();

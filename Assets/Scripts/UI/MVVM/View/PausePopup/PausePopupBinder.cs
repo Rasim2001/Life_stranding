@@ -2,7 +2,7 @@ using UI.MVVM.Base;
 
 namespace UI.MVVM.View.SettingsPopup
 {
-    public class SettingsPopupBinder : PopupBinder<PausePopupViewModel>
+    public class PausePopupBinder : PopupBinder<PausePopupViewModel>
     {
     }
 }

@@ -1,7 +1,8 @@
+using UnityEngine;
+
 namespace Common.SceneMarkers
 {
-    public class GeneratorPointMarker
+    public class GeneratorPointMarker : MonoBehaviour
     {
-        
     }
 }

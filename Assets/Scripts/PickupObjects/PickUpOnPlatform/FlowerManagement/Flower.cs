@@ -1,5 +1,5 @@
 using System;
-using CheckPointManagement;
+using Common;
 using HUD;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;

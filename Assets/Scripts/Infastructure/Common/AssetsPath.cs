@@ -19,6 +19,7 @@ namespace Infastructure.Common
         public const string HUDPath = "Prefabs/HUD/HUD";
         public const string BiospherePointIndicatorPath = "Prefabs/Scene/BiospherePointIndicator";
         public const string CheckPointPath = "Prefabs/Scene/CheckPoint";
+        public const string GeneratorPath = "Prefabs/Generator/Generator";
         public const string StartGameCutSceneTimelinePath = "Prefabs/Timeline/StartGameTimeline";
         public const string TerrainScanPath = "Prefabs/TerrainScan/[Terrain_Scan]";
 

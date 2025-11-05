@@ -53,7 +53,7 @@ namespace Infastructure.Services.Window
 
         public void OpenSettingsPopup()
         {
-            SettingsPopupViewModel model = new SettingsPopupViewModel();
+            PausePopupViewModel model = new PausePopupViewModel();
 
             _gamePlayViewModel.OpenPopup(model);
         }

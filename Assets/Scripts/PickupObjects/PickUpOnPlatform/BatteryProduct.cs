@@ -1,3 +1,4 @@
+using Common;
 using Infastructure.Services.XRay;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
@@ -49,6 +50,20 @@ namespace PickupObjects.PickUpOnPlatform
             base.StartSimulatePhysics();
 
             _xRayService.Add(_xRayMarker);
+        }
+
+        public void PutdownOnGenerator(Generator generator)
+        {
+            transform.position = generator.PutdownBatteryPoint.position;
+            transform.rotation = generator.PutdownBatteryPoint.rotation;
+
+            Rigidbody.isKinematic = true;
+            IsPuttingDown = true;
+            Collider.enabled = false;
+            
+            PlatformSelector.IsOnPlatform(Collider);
+
+            base.StartSimulatePhysics();
         }
     }
 }

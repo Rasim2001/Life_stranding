@@ -92,7 +92,8 @@ namespace Infastructure.Factories.GameFactories
                 {
                     TargetPointIndicatorMarker indicatorMarker =
                         _diContainer.InstantiatePrefabResourceForComponent<TargetPointIndicatorMarker>(
-                            AssetsPath.BiospherePointIndicatorPath, checkPoints[i].WorldPosition, checkPoints[i].WorldRotation,
+                            AssetsPath.BiospherePointIndicatorPath, checkPoints[i].WorldPosition,
+                            checkPoints[i].WorldRotation,
                             null);
 
                     _biospherePointService.PointIndicator = indicatorMarker.transform;
@@ -219,6 +220,18 @@ namespace Infastructure.Factories.GameFactories
                 xRayMarker.Type = productType;
 
                 _xRayService.Add(xRayMarker);
+            }
+        }
+
+        public void CreateAllGenerators()
+        {
+            List<WorldData> generatorPoints =
+                _staticDataService.GameStaticData.GameDatas[ActiveSceneName].GeneratorPoints;
+
+            foreach (WorldData worldData in generatorPoints)
+            {
+                _diContainer.InstantiatePrefabResource(AssetsPath.GeneratorPath,
+                    worldData.WorldPosition, worldData.WorldRotation, null);
             }
         }
 

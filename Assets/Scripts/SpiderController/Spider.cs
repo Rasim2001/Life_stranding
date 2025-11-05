@@ -44,6 +44,7 @@ namespace SpiderController
         [SerializeField] private ElephantChecker _elephantChecker;
         [SerializeField] private SkillProductChecker _skillChecker;
         [SerializeField] private CheckpointChecker _checkpointChecker;
+        [SerializeField] private GeneratorChecker _generatorChecker;
         [SerializeField] private Stickers _stickers;
 
         [SerializeField] private Transform _rotationPlaneTransform;
@@ -80,6 +81,7 @@ namespace SpiderController
         private ElephantProductPickup _elephantProductPickup;
         private SkillProductPickup _skillProductPickup;
         private CheckpointPickup _checkpointPickup;
+        private GeneratorPickup _generatorPickup;
 
         private HudUI _hudUI;
 
@@ -140,6 +142,7 @@ namespace SpiderController
             _elephantProductPickup.Destroy();
             _skillProductPickup.Destroy();
             _checkpointPickup.Destroy();
+            _generatorPickup.Destroy();
         }
 
         public void Initialize(Flower flower)
@@ -186,8 +189,11 @@ namespace SpiderController
 
             _checkpointPickup = new CheckpointPickup(_inputService, _pickupDisplayer, _windowService,
                 _checkpointChecker, flower, _spiderUI);
-
             _checkpointPickup.Initialize();
+
+            _generatorPickup = new GeneratorPickup(_inputService, _pickupDisplayer, _platformObjectsService,
+                _generatorChecker);
+            _generatorPickup.Initialize();
 
             _spiderStateMachine =
                 new SpiderStateMachine(this,
@@ -224,6 +230,7 @@ namespace SpiderController
             _elephantProductPickup.Update();
             _skillProductPickup.Update();
             _checkpointPickup.Update();
+            _generatorPickup.Update();
         }
 
         private void FixedUpdate()
