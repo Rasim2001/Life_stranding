@@ -543,6 +543,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StartGameTimeline
       objectReference: {fileID: 0}
+    - target: {fileID: 3814781391213979840, guid: e129f771fc6dccb4894d3cf26bb0a789, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4673186436622895703, guid: e129f771fc6dccb4894d3cf26bb0a789, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -553,7 +557,7 @@ PrefabInstance:
       objectReference: {fileID: 1290023821}
     - target: {fileID: 6289267851670222189, guid: e129f771fc6dccb4894d3cf26bb0a789, type: 3}
       propertyPath: m_VersionIndex
-      value: 5052
+      value: 5055
       objectReference: {fileID: 0}
     - target: {fileID: 7094530912890991018, guid: e129f771fc6dccb4894d3cf26bb0a789, type: 3}
       propertyPath: m_Mesh
@@ -680,8 +684,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 851908667}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0015057711, y: 0.9796017, z: 0.20081015, w: -0.0073233666}
-  m_LocalPosition: {x: 4.4173374, y: 13.7997675, z: 166.45866}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071067}
+  m_LocalPosition: {x: -62.5495, y: 139.55385, z: 211.62329}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -806,7 +810,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 30
+  field of view: 35
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
