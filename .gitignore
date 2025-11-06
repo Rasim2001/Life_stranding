@@ -1,3 +1,4 @@
+# UPD_06 11 2025
 # This .gitignore file should be placed at the root of your Unity project directory
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
@@ -114,5 +115,9 @@ Assets/FR2_Cache.asset.meta
 Packages/**
 !Packages/manifest.json
 !Packages/packages-lock.json
+
+# Умышленно скрыл эту папку в ней 20 гб моделей не трогать.
+Assets/_SharedModels_DontAddToGit/
+	
 
 
