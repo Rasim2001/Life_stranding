@@ -56,7 +56,7 @@ namespace UI.MVVM.Base
 
         private void CloseAllPopups()
         {
-            foreach (WindowViewModel openedPopup in _openedPopups)
+            foreach (WindowViewModel openedPopup in _openedPopups.ToList())
             {
                 if (_openedPopups.Contains(openedPopup))
                     ClosePopup(openedPopup);

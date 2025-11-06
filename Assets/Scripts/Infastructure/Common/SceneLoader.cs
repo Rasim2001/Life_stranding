@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Cysharp.Threading.Tasks;
+using Infastructure.StaticData.StaticDataService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

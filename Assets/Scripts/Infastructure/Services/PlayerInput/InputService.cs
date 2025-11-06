@@ -1,6 +1,7 @@
 using System;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
 using UnityEngine;
+using Zenject;
 
 namespace Infastructure.Services.PlayerInput
 {
@@ -50,6 +51,9 @@ namespace Infastructure.Services.PlayerInput
                     : _joystickInputSource?.InputVector ?? Vector3.zero;
             }
         }
+
+        public bool PauseButtonPressed =>
+            _inputSource.PauseButtonPressed || (_joystickInputSource?.PauseButtonPressed ?? false);
 
         public bool TabPressed => _inputSource.TabPressed || (_joystickInputSource?.TabPressed ?? false);
 
@@ -119,5 +123,10 @@ namespace Infastructure.Services.PlayerInput
         public bool JerkPressed => _inputSource.JerkPressed || (_joystickInputSource?.JerkPressed ?? false);
 
         public bool PickupPressed => _inputSource.PickupPressed || (_joystickInputSource?.PickupPressed ?? false);
+
+        public void Tick()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

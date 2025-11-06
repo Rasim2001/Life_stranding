@@ -4,6 +4,6 @@ namespace UI.MVVM.View.SettingsPopup
 {
     public class PausePopupViewModel : WindowViewModel
     {
-        public override string Id => "SettingsPopup";
+        public override string Id => "PausePopup";
     }
 }

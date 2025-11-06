@@ -25,10 +25,11 @@ namespace Infastructure.Services.Ability
                 _pickedProducts.Add(product);
         }
 
-        public bool IsExploredAbility(ProductType pickedProduct)
-        {
-            return _isCheating || _cutSceneService.IsActive || _pickedProducts.Contains(pickedProduct);
-        }
+        public bool IsExploredAbility(ProductType pickedProduct) =>
+            _isCheating || _cutSceneService.IsActive || _pickedProducts.Contains(pickedProduct);
+
+        public List<ProductType> GetAllExploredAbilities() =>
+            _pickedProducts;
 
         public void Dispose() =>
             _pickedProducts.Clear();

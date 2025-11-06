@@ -29,11 +29,14 @@ namespace Infastructure.CutScene.Custom.Receivers
             _inputService = inputService;
         }
 
-        private void Awake() =>
+        private void Awake()
+        {
             _cutSceneInputSource = _inputService.GetInputSource<CutSceneInputSource>();
 
-        private void Start() =>
+            Debug.Log("Teleport Awake");
+
             _cutSceneService.OnSkipHappened += SkipCutScene;
+        }
 
         private void OnDestroy() =>
             _cutSceneService.OnSkipHappened -= SkipCutScene;

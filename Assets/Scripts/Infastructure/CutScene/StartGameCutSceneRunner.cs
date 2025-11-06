@@ -54,12 +54,6 @@ namespace Infastructure.CutScene
             _playableDirector = GetComponent<PlayableDirector>();
             _cutSceneInputSource = _inputService.GetInputSource<CutSceneInputSource>();
             _mainBrainCamera = Camera.main.GetComponent<CinemachineBrain>();
-        }
-
-
-        private void Start()
-        {
-            _firstCamera.Priority = 100;
 
             List<PlayableBinding> playableBindings = _playableDirector.playableAsset.outputs
                 .Where(x => x.streamName == CinemachineTrack).ToList();
@@ -70,6 +64,10 @@ namespace Infastructure.CutScene
             _cutSceneService.OnSkipHappened += SkipCutscene;
             _cutSceneService.OnCutsceneActiveChanged += ActiveCutsceneChanged;
         }
+
+
+        private void Start() =>
+            _firstCamera.Priority = 100;
 
 
         private void OnDestroy()

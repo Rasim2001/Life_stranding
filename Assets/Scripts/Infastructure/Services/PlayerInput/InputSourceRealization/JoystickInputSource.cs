@@ -95,6 +95,8 @@ namespace Infastructure.Services.PlayerInput.InputSourceRealization
                    || gp.rightTrigger.wasPressedThisFrame;
         }
 
+        public bool PauseButtonPressed { get; }
+
         public Vector3 InputVector => new Vector3(GameInputMovement.ReadValue<Vector2>().x, 0,
             GameInputMovement.ReadValue<Vector2>().y);
 
