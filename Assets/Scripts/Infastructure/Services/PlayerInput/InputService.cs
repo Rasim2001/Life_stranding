@@ -7,6 +7,8 @@ namespace Infastructure.Services.PlayerInput
 {
     public class InputService : IInputService, IDisposable
     {
+        public event Action<IInputSource> OnJoystickEnableHappend;
+
         private IInputSource _inputSource;
         private IInputSource _joystickInputSource;
 
@@ -20,13 +22,22 @@ namespace Infastructure.Services.PlayerInput
         {
             _joystickInputSource.Disable();
             _inputSource.Disable();
+
+            _joystickInputSource = null;
+            _inputSource = null;
         }
 
         public void SetInputSource(IInputSource inputSource)
         {
-            _joystickInputSource = new JoystickInputSource();
-            _joystickInputSource.Enable();
+            if (_joystickInputSource == null)
+            {
+                _joystickInputSource = new JoystickInputSource();
+                _joystickInputSource.Enable();
 
+                OnJoystickEnableHappend?.Invoke(_joystickInputSource);
+            }
+
+            _inputSource?.Disable();
             _inputSource = inputSource;
             _inputSource.Enable();
         }
@@ -38,7 +49,7 @@ namespace Infastructure.Services.PlayerInput
 
             return (T)_joystickInputSource;
         }
-
+        
 
         public Vector3 InputVector
         {
@@ -123,10 +134,5 @@ namespace Infastructure.Services.PlayerInput
         public bool JerkPressed => _inputSource.JerkPressed || (_joystickInputSource?.JerkPressed ?? false);
 
         public bool PickupPressed => _inputSource.PickupPressed || (_joystickInputSource?.PickupPressed ?? false);
-
-        public void Tick()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

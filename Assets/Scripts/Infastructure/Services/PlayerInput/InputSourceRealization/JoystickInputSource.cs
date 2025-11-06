@@ -1,287 +1,119 @@
+using Infastructure.Services.PlayerInput.InputSourceRealization;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Infastructure.Services.PlayerInput.InputSourceRealization
+public class JoystickInputSource : IInputSource
 {
-    public class JoystickInputSource : IInputSource
+    public bool IsRotationButtonPressed { get; private set; }
+
+    private const float Sensitivity = 1f;
+
+    private GameInput _gi;
+    private InputAction Move => _gi.Joystick.Movement;
+    private InputAction Jump => _gi.Joystick.Jump;
+    private InputAction Magnet => _gi.Joystick.Magnet;
+    private InputAction Jerk => _gi.Joystick.Jerk;
+    private InputAction Scan => _gi.Joystick.Scan;
+    private InputAction Pickup => _gi.Joystick.Pickup;
+    private InputAction Sitdown => _gi.Joystick.Sitdown;
+    private InputAction LookBtn => _gi.Joystick.LookButton;
+    private InputAction Shift => _gi.Joystick.ShiftMove;
+    private InputAction Scroll => _gi.Joystick.ScrollCamera;
+    private InputAction PlaneRot => _gi.Joystick.PlaneRotation;
+    private InputAction ChangePlatformX => _gi.Joystick.ChangePlatformLeft;
+    private InputAction ChangePlatformB => _gi.Joystick.ChangePlatformRight;
+    private InputAction Pause => _gi.Joystick.Pause;
+
+    private float _scroll;
+
+    public void Enable()
     {
-        public bool IsLeftButtonPressed { get; private set; }
-
-        private GameInput _gameInput;
-        private InputAction GameInputMovement => _gameInput.Joystick.Movement;
-
-        private bool _rightPressedThisFrame;
-        private bool _rightReleasedThisFrame;
-
-        private bool _jumpPressedThisFrame;
-        private bool _jumpReleasedThisFrame;
-
-        private bool _jerkPressedThisFrame;
-
-        private bool _sitdownPressedThisFrame;
-        private bool _sitdownReleasedThisFrame;
-
-        private bool _scanPressedThisFrame;
-        private bool _pickupPressedThisFrame;
-
-        private bool _centerMousePressedThisFrame;
-        private bool _centerMouseReleasedThisFrame;
-
-        private bool _shiftPressedThisFrame;
-        private bool _shiftMouseReleasedThisFrame;
-
-        public void Enable()
-        {
-            _gameInput = new GameInput();
-            _gameInput.Enable();
-
-            _gameInput.Joystick.Magnet.started += OnRightDown;
-            _gameInput.Joystick.Magnet.canceled += OnRightUp;
-
-            _gameInput.Joystick.Jump.started += OnJumpDown;
-            _gameInput.Joystick.Jump.canceled += OnJumpUp;
-
-            _gameInput.Joystick.Jerk.started += OnJerkDown;
-            _gameInput.Joystick.Scan.started += OnScanDown;
-            _gameInput.Joystick.Pickup.started += OnPickupDown;
-
-            _gameInput.Joystick.Sitdown.started += OnCtrlDown;
-            _gameInput.Joystick.Sitdown.canceled += OnCtrlUp;
-
-            _gameInput.Joystick.LookButton.started += OnCenterMouseDown;
-            _gameInput.Joystick.LookButton.canceled += OnCenterMouseUp;
-
-            _gameInput.Joystick.ShiftMove.started += OnShiftDown;
-            _gameInput.Joystick.ShiftMove.canceled += OnShiftUp;
-        }
-
-        public void Disable()
-        {
-            _gameInput.Joystick.Magnet.started -= OnRightDown;
-            _gameInput.Joystick.Magnet.canceled -= OnRightUp;
-
-            _gameInput.Joystick.Jump.started -= OnJumpDown;
-            _gameInput.Joystick.Jump.canceled -= OnJumpUp;
-
-            _gameInput.Joystick.Jerk.started -= OnJerkDown;
-            _gameInput.Joystick.Scan.started += OnScanDown;
-
-            _gameInput.Joystick.Sitdown.started -= OnCenterMouseDown;
-            _gameInput.Joystick.Sitdown.canceled -= OnCtrlUp;
-
-            _gameInput.Joystick.LookButton.started -= OnCenterMouseDown;
-            _gameInput.Joystick.LookButton.canceled -= OnCenterMouseUp;
-
-            _gameInput.Disable();
-        }
-
-        public bool IsGamepadActiveNow()
-        {
-            if (_gameInput == null)
-                return false;
-
-            Gamepad gp = Gamepad.current;
-            if (gp == null)
-                return false;
-
-            return gp.leftStick.ReadValue().sqrMagnitude > 0.01f
-                   || gp.rightStick.ReadValue().sqrMagnitude > 0.01f
-                   || gp.dpad.ReadValue().sqrMagnitude > 0
-                   || gp.aButton.wasPressedThisFrame
-                   || gp.bButton.wasPressedThisFrame
-                   || gp.xButton.wasPressedThisFrame
-                   || gp.yButton.wasPressedThisFrame
-                   || gp.leftTrigger.wasPressedThisFrame
-                   || gp.rightTrigger.wasPressedThisFrame;
-        }
-
-        public bool PauseButtonPressed { get; }
-
-        public Vector3 InputVector => new Vector3(GameInputMovement.ReadValue<Vector2>().x, 0,
-            GameInputMovement.ReadValue<Vector2>().y);
-
-        public bool LeftMousePressed { get; }
-
-
-        public bool LeftMouseUp { get; }
-
-
-        public bool RightMousePressed
-        {
-            get
-            {
-                bool v = _rightPressedThisFrame;
-                _rightPressedThisFrame = false;
-                return v;
-            }
-        }
-
-        public bool RightMouseUp
-        {
-            get
-            {
-                bool v = _rightReleasedThisFrame;
-                _rightReleasedThisFrame = false;
-                return v;
-            }
-        }
-
-        public bool CenterMousePressed
-        {
-            get
-            {
-                bool v = _centerMousePressedThisFrame;
-                _centerMousePressedThisFrame = false;
-                return v;
-            }
-        }
-
-        public bool CenterMouseUp
-        {
-            get
-            {
-                bool v = _centerMouseReleasedThisFrame;
-                _centerMouseReleasedThisFrame = false;
-                return v;
-            }
-        }
-
-        public float ScrollWheelAxis => _gameInput.Joystick.ScrollCamera.ReadValue<float>();
-
-        public float MouseXAxis => _gameInput.Joystick.PlaneRotation.ReadValue<Vector2>().x;
-
-        public float MouseYAxis => _gameInput.Joystick.PlaneRotation.ReadValue<Vector2>().y;
-
-        public bool IsLeftShiftPressed
-        {
-            get
-            {
-                bool v = _shiftPressedThisFrame;
-                _shiftPressedThisFrame = false;
-                _shiftMouseReleasedThisFrame = false;
-                return v;
-            }
-        }
-
-        public bool IsLeftShiftUp
-        {
-            get
-            {
-                bool v = _shiftMouseReleasedThisFrame;
-                _shiftMouseReleasedThisFrame = false;
-                _shiftPressedThisFrame = false;
-                return v;
-            }
-        }
-
-        public bool CtrlPressed
-        {
-            get
-            {
-                bool v = _sitdownPressedThisFrame;
-                _sitdownPressedThisFrame = false;
-                _sitdownReleasedThisFrame = false;
-                return v;
-            }
-        }
-
-        public bool CtrlUp
-        {
-            get
-            {
-                bool v = _sitdownReleasedThisFrame;
-                _sitdownReleasedThisFrame = false;
-                _sitdownPressedThisFrame = false;
-                return v;
-            }
-        }
-
-        public bool JumpPressed
-        {
-            get
-            {
-                bool v = _jumpPressedThisFrame;
-                _jumpReleasedThisFrame = false;
-                _jumpPressedThisFrame = false;
-                return v;
-            }
-        }
-
-        public bool JumpUp
-        {
-            get
-            {
-                bool v = _jumpReleasedThisFrame;
-                _jumpPressedThisFrame = false;
-                _jumpReleasedThisFrame = false;
-                return v;
-            }
-        }
-
-        public bool JerkPressed
-        {
-            get
-            {
-                bool v = _jerkPressedThisFrame;
-                _jerkPressedThisFrame = false;
-                return v;
-            }
-        }
-
-        public bool PickupPressed
-        {
-            get
-            {
-                bool v = _pickupPressedThisFrame;
-                _pickupPressedThisFrame = false;
-                return v;
-            }
-        }
-
-        public bool TabPressed
-        {
-            get
-            {
-                bool v = _scanPressedThisFrame;
-                _scanPressedThisFrame = false;
-                return v;
-            }
-        }
-
-        private void OnRightDown(InputAction.CallbackContext _) => _rightPressedThisFrame = true;
-
-        private void OnRightUp(InputAction.CallbackContext _) => _rightReleasedThisFrame = true;
-
-        private void OnJumpDown(InputAction.CallbackContext _) => _jumpPressedThisFrame = true;
-
-        private void OnJumpUp(InputAction.CallbackContext _) => _jumpReleasedThisFrame = true;
-
-        private void OnJerkDown(InputAction.CallbackContext obj) => _jerkPressedThisFrame = true;
-
-        private void OnCtrlDown(InputAction.CallbackContext obj) => _sitdownPressedThisFrame = true;
-
-        private void OnCtrlUp(InputAction.CallbackContext _) => _sitdownReleasedThisFrame = true;
-
-        private void OnScanDown(InputAction.CallbackContext _) => _scanPressedThisFrame = true;
-
-        private void OnPickupDown(InputAction.CallbackContext _) => _pickupPressedThisFrame = true;
-
-        private void OnCenterMouseDown(InputAction.CallbackContext obj)
-        {
-            IsLeftButtonPressed = true;
-
-            _centerMousePressedThisFrame = true;
-        }
-
-        private void OnCenterMouseUp(InputAction.CallbackContext _)
-        {
-            IsLeftButtonPressed = false;
-
-            _centerMouseReleasedThisFrame = true;
-        }
-
-        private void OnShiftDown(InputAction.CallbackContext obj) => _shiftPressedThisFrame = true;
-
-        private void OnShiftUp(InputAction.CallbackContext obj) => _shiftMouseReleasedThisFrame = true;
+        _gi = new GameInput();
+        _gi.Enable();
     }
+
+    public void Disable()
+    {
+        _gi?.Disable();
+        _gi = null;
+    }
+
+    public bool ChangePlatformLeftPressed => ChangePlatformX.WasPressedThisFrame();
+    public bool ChangePlatformRightPressed => ChangePlatformB.WasPressedThisFrame();
+    public bool PauseButtonPressed => Pause.WasPressedThisFrame();
+
+    public Vector3 InputVector =>
+        new Vector3(Move.ReadValue<Vector2>().x, 0f, Move.ReadValue<Vector2>().y);
+
+    public bool JumpPressed => Jump.WasPressedThisFrame();
+    public bool JumpUp => Jump.WasReleasedThisFrame();
+
+    public bool JerkPressed => Jerk.WasPressedThisFrame();
+
+    public bool CenterMousePressed
+    {
+        get
+        {
+            bool isPressed = LookBtn.WasPressedThisFrame();
+
+            if (isPressed)
+                IsRotationButtonPressed = true;
+
+            return isPressed;
+        }
+    }
+    public bool CenterMouseUp
+    {
+        get
+        {
+            bool isPressedUp = LookBtn.WasReleasedThisFrame();
+
+            if (isPressedUp)
+                IsRotationButtonPressed = false;
+
+            return isPressedUp;
+        }
+    }
+
+    public bool CtrlPressed => Sitdown.WasPressedThisFrame();
+    public bool CtrlUp => Sitdown.WasReleasedThisFrame();
+
+    public bool IsLeftShiftPressed => Shift.WasPressedThisFrame();
+    public bool IsLeftShiftUp => Shift.WasReleasedThisFrame();
+
+    public bool PickupPressed => Pickup.WasPressedThisFrame();
+    public bool TabPressed => Scan.WasPressedThisFrame();
+
+    //public bool PauseButtonPressed => Pause.WasPressedThisFrame();
+
+    public float ScrollWheelAxis
+    {
+        get
+        {
+            float raw = Scroll.ReadValue<float>();
+            if (Mathf.Abs(raw) > 0.001f)
+                _scroll = Mathf.MoveTowards(_scroll, Mathf.Sign(raw), 0.001f);
+            else
+                _scroll = Mathf.MoveTowards(_scroll, 0f, 0.001f);
+
+            return _scroll;
+        }
+    }
+    public float MouseXAxis => PlaneRot.ReadValue<Vector2>().x;
+    public float MouseYAxis => PlaneRot.ReadValue<Vector2>().y;
+
+    public bool IsGamepadActiveNow()
+        => _gi != null && (
+            Move.ReadValue<Vector2>().sqrMagnitude > 0.01f ||
+            PlaneRot.ReadValue<Vector2>().sqrMagnitude > 0.01f ||
+            Jump.triggered ||
+            Jerk.triggered ||
+            Pickup.triggered ||
+            Scan.triggered
+        );
+
+    public bool LeftMousePressed => false;
+    public bool LeftMouseUp => false;
+    public bool RightMousePressed => Magnet.WasPressedThisFrame();
+    public bool RightMouseUp => Magnet.WasReleasedThisFrame();
 }

@@ -57,6 +57,8 @@ namespace SpiderController
         public IMagnetFreezingService MagnetFreezingService => _magnetFreezingService;
         public IEventSystemSelector EventSystemSelector => _eventSystemSelector;
         public IAbilityService AbilityService => _abilityService;
+        public IPauseService PauseService => _pauseService;
+        public ICutSceneService CutSceneService => _cutSceneService;
         public Rigidbody Rigidbody => _rigidbody;
         public GroundChecker GroundChecker => _groundChecker;
         public SpiderUI SpiderUI => _spiderUI;
@@ -143,6 +145,7 @@ namespace SpiderController
             _skillProductPickup.Destroy();
             _checkpointPickup.Destroy();
             _generatorPickup.Destroy();
+            _platformSelector.Destroy();
         }
 
         public void Initialize(Flower flower)
@@ -184,7 +187,7 @@ namespace SpiderController
                 _skillChecker);
             _skillProductPickup.Initialize();
 
-            _platformSelector = new PlatformSelector(_staticDataService, _platformRegistryService);
+            _platformSelector = new PlatformSelector(_staticDataService, _platformRegistryService, _inputService);
             _platformSelector.Initialize();
 
             _checkpointPickup = new CheckpointPickup(_inputService, _pickupDisplayer, _windowService,

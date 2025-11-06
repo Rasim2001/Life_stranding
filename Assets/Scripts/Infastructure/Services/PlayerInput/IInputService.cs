@@ -1,3 +1,4 @@
+using System;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
 using UnityEngine;
 
@@ -28,5 +29,6 @@ namespace Infastructure.Services.PlayerInput
         void SetInputSource(IInputSource inputSource);
         T GetInputSource<T>();
         void Initialize();
+        event Action<IInputSource> OnJoystickEnableHappend;
     }
 }
