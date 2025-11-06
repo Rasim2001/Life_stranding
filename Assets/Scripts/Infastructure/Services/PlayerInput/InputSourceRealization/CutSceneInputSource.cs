@@ -12,6 +12,8 @@ namespace Infastructure.Services.PlayerInput.InputSourceRealization
         {
         }
 
+        public bool PauseButtonPressed { get; }
+
         public Vector3 InputVector { get; set; }
         public bool LeftMousePressed { get; }
         public bool LeftMouseUp { get; }

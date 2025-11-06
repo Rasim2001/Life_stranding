@@ -1,14 +1,19 @@
 using System;
 using Infastructure.Common;
 using Infastructure.Factories.GameFactories;
+using Infastructure.Services.Ability;
 using Infastructure.Services.CheckPoint;
+using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerProgressService;
+using Infastructure.Services.Restart;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.StaticDataService;
+using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController;
+using UnityEngine;
 using Zenject;
 
 namespace Infastructure.States
@@ -22,7 +27,10 @@ namespace Infastructure.States
         private readonly ISceneLoader _sceneLoader;
         private readonly IBiospherePointService _biospherePointService;
         private readonly IInputService _inputService;
-        private IWindowService _windowService;
+        private readonly IRestartService _restartService;
+        private readonly IAbilityService _abilityService;
+        private readonly ICutSceneService _cutSceneService;
+        private readonly IWindowService _windowService;
 
         public BuildLevelState(
             IGameFactory gameFactory,
@@ -32,10 +40,16 @@ namespace Infastructure.States
             ISceneLoader sceneLoader,
             IBiospherePointService biospherePointService,
             IInputService inputService,
-            IWindowService windowService
+            IWindowService windowService,
+            IRestartService restartService,
+            IAbilityService abilityService,
+            ICutSceneService cutSceneService
         )
         {
             _windowService = windowService;
+            _restartService = restartService;
+            _abilityService = abilityService;
+            _cutSceneService = cutSceneService;
             _gameFactory = gameFactory;
             _staticData = staticData;
             _uiFactory = uiFactory;
@@ -55,12 +69,16 @@ namespace Infastructure.States
         {
             _uiFactory.CreateGamplayRoot();
 
-            _windowService.OpenStartSplashScreen();
+            if (_restartService.IsRestarting)
+                RestartInitialize();
+            else
+                _windowService.OpenStartSplashScreen();
         }
 
         private void InitAll()
         {
             _inputService.Initialize();
+            _cutSceneService.Clear();
 
             InitGameWorld();
         }
@@ -71,9 +89,17 @@ namespace Infastructure.States
         }
 
 
+        private void RestartInitialize()
+        {
+            foreach (ProductType productType in _restartService.ExploredProducts)
+                _abilityService.PickUpAbility(productType);
+        }
+
+
         private void InitGameWorld()
         {
             InitCheckPoints();
+            InitGenerators();
 
             Flower flower = InitFlower();
             Spider spider = InitSpider(flower);
@@ -88,6 +114,9 @@ namespace Infastructure.States
             InitEnergyProducts();
             InitSkillProducts();
         }
+
+        private void InitGenerators() =>
+            _gameFactory.CreateAllGenerators();
 
         private void InitTerrainScan(Spider spider) =>
             _gameFactory.CreateTerrainScan(spider);

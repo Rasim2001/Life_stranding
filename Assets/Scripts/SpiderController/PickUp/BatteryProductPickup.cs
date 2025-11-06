@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Infastructure.Common.Pickup;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
@@ -52,7 +54,8 @@ namespace SpiderController.PickUp
             {
                 if (collider != null && collider.TryGetComponent(out BatteryProduct batteryProduct))
                 {
-                    if (batteryProduct.Rigidbody.IsSleeping() && !batteryProduct.IsOnPlatform)
+                    if (batteryProduct.Rigidbody.IsSleeping() && !batteryProduct.IsOnPlatform &&
+                        !batteryProduct.IsPuttingDown)
                         _pickupDisplayer.Show(batteryProduct.transform);
                 }
             }
@@ -61,7 +64,12 @@ namespace SpiderController.PickUp
 
         private void PickBatteries()
         {
-            int n = _batteryProductChecker.Results.Count;
+            List<BatteryProduct> batteryProducts = _batteryProductChecker.Results
+                .Select(x => x.GetComponent<BatteryProduct>())
+                .Where(x => !x.IsPuttingDown && !x.IsOnPlatform)
+                .ToList();
+
+            int n = batteryProducts.Count;
 
             int columns = Mathf.CeilToInt(Mathf.Sqrt(n));
             int rows = Mathf.CeilToInt((float)n / columns);
@@ -80,7 +88,7 @@ namespace SpiderController.PickUp
 
                 Vector3 offset = new Vector3(x, 0, z);
 
-                BatteryProduct batteryProduct = _batteryProductChecker.Results[i].GetComponent<BatteryProduct>();
+                BatteryProduct batteryProduct = batteryProducts[i].GetComponent<BatteryProduct>();
                 batteryProduct.SetCustomOffsetPosition(offset);
                 batteryProduct.StopSimulatePhysics();
 

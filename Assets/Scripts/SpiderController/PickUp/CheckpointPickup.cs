@@ -1,5 +1,5 @@
 using System.Linq;
-using CheckPointManagement;
+using Common;
 using Infastructure.Common.Pickup;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Window;

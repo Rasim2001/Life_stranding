@@ -8,6 +8,7 @@ using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Explosion;
 using Infastructure.Services.Magnet;
+using Infastructure.Services.PauseWindow;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.TaskPopupChecker;
@@ -41,8 +42,6 @@ namespace Infastructure.CompositionRoot
 
             BindCheckPointInstaller();
 
-            BindCutSceneService();
-
             BindExplosionService();
 
             BindPickupDisplayer();
@@ -71,7 +70,12 @@ namespace Infastructure.CompositionRoot
             BindEventSystemSelector();
 
             BindTaskPopupCheckerService();
+
+            BindPauseWindowService();
         }
+
+        private void BindPauseWindowService() =>
+            Container.BindInterfacesAndSelfTo<PauseWindowService>().AsSingle();
 
         private void BindAbilityService() =>
             Container.BindInterfacesAndSelfTo<AbilityService>().AsSingle();
@@ -91,8 +95,6 @@ namespace Infastructure.CompositionRoot
         private void BindExplosionService() =>
             Container.BindInterfacesAndSelfTo<ExplosionService>().AsSingle();
 
-        private void BindCutSceneService() =>
-            Container.BindInterfacesAndSelfTo<CutSceneService>().AsSingle();
 
         private void BindCheckPointInstaller() =>
             Container.BindInterfacesAndSelfTo<BiospherePointService>().AsSingle();

@@ -1,16 +1,13 @@
-using System;
 using System.Linq;
-using Common;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Infastructure.Services.Window;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using UI;
 using UnityEngine;
-using VInspector;
 using Zenject;
 
-namespace CheckPointManagement
+namespace Common
 {
     public class CheckPoint : MonoBehaviour
     {

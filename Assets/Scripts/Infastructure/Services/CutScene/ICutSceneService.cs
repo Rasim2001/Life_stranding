@@ -9,5 +9,7 @@ namespace Infastructure.Services.CutScene
         bool HasPlayed { get; set; }
         event Action<bool> OnCutsceneActiveChanged;
         event Action OnSkipHappened;
+        void Skip();
+        void Clear();
     }
 }

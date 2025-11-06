@@ -24,6 +24,7 @@ namespace Infastructure.Services.PlayerInput
         bool CtrlUp { get; }
         bool JumpUp { get; }
         bool TabPressed { get; }
+        bool PauseButtonPressed { get; }
         void SetInputSource(IInputSource inputSource);
         T GetInputSource<T>();
         void Initialize();

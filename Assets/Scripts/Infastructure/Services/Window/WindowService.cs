@@ -2,6 +2,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using Infastructure.Services.Ability;
 using Infastructure.Services.CutScene;
+using Infastructure.Services.Restart;
 using Infastructure.Services.TaskPopupChecker;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
@@ -15,6 +16,7 @@ using UI.MVVM.View.SettingsPopup;
 using UI.MVVM.View.SettingsScreen;
 using UI.MVVM.View.StartSplashScreen;
 using UI.MVVM.View.TaskPopup;
+using UnityEngine;
 using Zenject;
 
 namespace Infastructure.Services.Window
@@ -26,20 +28,27 @@ namespace Infastructure.Services.Window
         private readonly IAbilityService _abilityService;
         private readonly ITaskPopupCheckerService _taskPopupCheckerService;
         private readonly ICutSceneService _cutSceneService;
+        private readonly IRestartService _restartService;
 
         public WindowService(UIGameplayRootViewModel gamePlayViewModel, IStaticDataService staticDataService,
             IAbilityService abilityService, ITaskPopupCheckerService taskPopupCheckerService,
-            ICutSceneService cutSceneService)
+            ICutSceneService cutSceneService, IRestartService restartService)
         {
             _abilityService = abilityService;
             _taskPopupCheckerService = taskPopupCheckerService;
             _cutSceneService = cutSceneService;
+            _restartService = restartService;
             _staticDataService = staticDataService;
             _gamePlayViewModel = gamePlayViewModel;
         }
 
-        public void Initialize() =>
+        public void Initialize()
+        {
+            if (_restartService.IsRestarting)
+                TryOpenMainTaskPopup(false);
+
             _cutSceneService.OnCutsceneActiveChanged += TryOpenMainTaskPopup;
+        }
 
         public void Dispose() =>
             _cutSceneService.OnCutsceneActiveChanged -= TryOpenMainTaskPopup;
@@ -51,9 +60,9 @@ namespace Infastructure.Services.Window
             _gamePlayViewModel.OpenScreen(viewModel);
         }
 
-        public void OpenSettingsPopup()
+        public void OpenPausePopup()
         {
-            SettingsPopupViewModel model = new SettingsPopupViewModel();
+            PausePopupViewModel model = new PausePopupViewModel();
 
             _gamePlayViewModel.OpenPopup(model);
         }
@@ -100,7 +109,10 @@ namespace Infastructure.Services.Window
             _gamePlayViewModel.OpenPopup(model);
         }
 
-        private void TryOpenMainTaskPopup(bool isActive)
+        public void ClosePopup(string id) =>
+            _gamePlayViewModel.ClosePopup(id);
+
+        public void TryOpenMainTaskPopup(bool isActive)
         {
             if (!isActive)
                 OpenMainTaskPopupAsync().Forget();

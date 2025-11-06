@@ -24,6 +24,7 @@ namespace Infastructure.StaticData
         public WorldData FlowerSpawnData;
 
         public List<WorldData> CheckPoints;
+        public List<WorldData> GeneratorPoints;
         public List<WorldData> BatteriesPoints;
         public List<WorldData> EnergyPoints;
         public List<WorldData> ElephantPoints;

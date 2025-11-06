@@ -7,6 +7,7 @@ namespace Infastructure.Services.PlayerInput.InputSourceRealization
         void Enable();
         void Disable();
 
+        bool PauseButtonPressed { get; }
         Vector3 InputVector { get; }
         bool LeftMousePressed { get; }
         bool LeftMouseUp { get; }

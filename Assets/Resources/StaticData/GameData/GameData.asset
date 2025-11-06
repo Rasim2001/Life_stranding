@@ -34,7 +34,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 3
+      Data: 2
     - Name: 
       Entry: 7
       Data: 
@@ -215,6 +215,9 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 8
+      Data: 
+    - Name: GeneratorPoints
+      Entry: 6
       Data: 
     - Name: BatteriesPoints
       Entry: 7
@@ -793,13 +796,13 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: BatteriesPoints
+    - Name: GeneratorPoints
       Entry: 7
       Data: 26|System.Collections.Generic.List`1[[Infastructure.StaticData.WorldData,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
-      Data: 4
+      Data: 1
     - Name: 
       Entry: 7
       Data: 27|Infastructure.StaticData.WorldData, Assembly-CSharp
@@ -808,13 +811,13 @@ MonoBehaviour:
       Data: UnityEngine.Vector3, UnityEngine.CoreModule
     - Name: 
       Entry: 4
-      Data: 54.12879
+      Data: -50.0625839
     - Name: 
       Entry: 4
-      Data: 13.2369156
+      Data: 12.44
     - Name: 
       Entry: 4
-      Data: 126.76622
+      Data: 121.3899
     - Name: 
       Entry: 8
       Data: 
@@ -840,8 +843,21 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: BatteriesPoints
       Entry: 7
-      Data: 28|Infastructure.StaticData.WorldData, Assembly-CSharp
+      Data: 28|System.Collections.Generic.List`1[[Infastructure.StaticData.WorldData,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 4
+    - Name: 
+      Entry: 7
+      Data: 29|Infastructure.StaticData.WorldData, Assembly-CSharp
     - Name: WorldPosition
       Entry: 7
       Data: UnityEngine.Vector3, UnityEngine.CoreModule
@@ -880,7 +896,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 29|Infastructure.StaticData.WorldData, Assembly-CSharp
+      Data: 30|Infastructure.StaticData.WorldData, Assembly-CSharp
     - Name: WorldPosition
       Entry: 7
       Data: UnityEngine.Vector3, UnityEngine.CoreModule
@@ -919,7 +935,46 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 30|Infastructure.StaticData.WorldData, Assembly-CSharp
+      Data: 31|Infastructure.StaticData.WorldData, Assembly-CSharp
+    - Name: WorldPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -44.1
+    - Name: 
+      Entry: 4
+      Data: 13.2369156
+    - Name: 
+      Entry: 4
+      Data: 103.8
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WorldRotation
+      Entry: 7
+      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 32|Infastructure.StaticData.WorldData, Assembly-CSharp
     - Name: WorldPosition
       Entry: 7
       Data: UnityEngine.Vector3, UnityEngine.CoreModule
@@ -964,14 +1019,14 @@ MonoBehaviour:
       Data: 
     - Name: EnergyPoints
       Entry: 7
-      Data: 31|System.Collections.Generic.List`1[[Infastructure.StaticData.WorldData,
+      Data: 33|System.Collections.Generic.List`1[[Infastructure.StaticData.WorldData,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
       Data: 4
     - Name: 
       Entry: 7
-      Data: 32|Infastructure.StaticData.WorldData, Assembly-CSharp
+      Data: 34|Infastructure.StaticData.WorldData, Assembly-CSharp
     - Name: WorldPosition
       Entry: 7
       Data: UnityEngine.Vector3, UnityEngine.CoreModule
@@ -984,84 +1039,6 @@ MonoBehaviour:
     - Name: 
       Entry: 4
       Data: 159.226929
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: WorldRotation
-      Entry: 7
-      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0.0240978152
-    - Name: 
-      Entry: 4
-      Data: -0.97472
-    - Name: 
-      Entry: 4
-      Data: 0.130004287
-    - Name: 
-      Entry: 4
-      Data: 0.180108726
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 33|Infastructure.StaticData.WorldData, Assembly-CSharp
-    - Name: WorldPosition
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 13.6888866
-    - Name: 
-      Entry: 4
-      Data: 13.2369156
-    - Name: 
-      Entry: 4
-      Data: 103.52079
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: WorldRotation
-      Entry: 7
-      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0.0240978152
-    - Name: 
-      Entry: 4
-      Data: -0.97472
-    - Name: 
-      Entry: 4
-      Data: 0.130004287
-    - Name: 
-      Entry: 4
-      Data: 0.180108726
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 34|Infastructure.StaticData.WorldData, Assembly-CSharp
-    - Name: WorldPosition
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 21.84043
-    - Name: 
-      Entry: 4
-      Data: 13.2369194
-    - Name: 
-      Entry: 4
-      Data: 134.690857
     - Name: 
       Entry: 8
       Data: 
@@ -1126,439 +1103,8 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: ElephantPoints
       Entry: 7
-      Data: 36|System.Collections.Generic.List`1[[Infastructure.StaticData.WorldData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 7
-      Data: 37|Infastructure.StaticData.WorldData, Assembly-CSharp
-    - Name: WorldPosition
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 27.56439
-    - Name: 
-      Entry: 4
-      Data: 31.9532356
-    - Name: 
-      Entry: 4
-      Data: 23.9317474
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: WorldRotation
-      Entry: 7
-      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: -0.85052073
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0.5259416
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: SkillsData
-      Entry: 7
-      Data: 38|System.Collections.Generic.List`1[[Infastructure.StaticData.ProductSkillData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 1
-      Data: SCN_ForTutorialVideo
-    - Name: $v
-      Entry: 7
-      Data: 39|Infastructure.StaticData.GameData, Assembly-CSharp
-    - Name: SpiderSpawnData
-      Entry: 7
-      Data: 40|Infastructure.StaticData.WorldData, Assembly-CSharp
-    - Name: WorldPosition
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: -63.5975037
-    - Name: 
-      Entry: 4
-      Data: 110.842545
-    - Name: 
-      Entry: 4
-      Data: 221.294037
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: WorldRotation
-      Entry: 7
-      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: -0.8386707
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: -0.5446389
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: FlowerSpawnData
-      Entry: 7
-      Data: 41|Infastructure.StaticData.WorldData, Assembly-CSharp
-    - Name: WorldPosition
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 11.92
-    - Name: 
-      Entry: 4
-      Data: 15.0634
-    - Name: 
-      Entry: 4
-      Data: 163.18
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: WorldRotation
-      Entry: 7
-      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0.287397742
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0.957811356
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: CheckPoints
-      Entry: 7
-      Data: 42|System.Collections.Generic.List`1[[Infastructure.StaticData.WorldData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 2
-    - Name: 
-      Entry: 7
-      Data: 43|Infastructure.StaticData.WorldData, Assembly-CSharp
-    - Name: WorldPosition
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: -29.623558
-    - Name: 
-      Entry: 4
-      Data: 13.2369175
-    - Name: 
-      Entry: 4
-      Data: 139.048
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: WorldRotation
-      Entry: 7
-      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 44|Infastructure.StaticData.WorldData, Assembly-CSharp
-    - Name: WorldPosition
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: -17.3167953
-    - Name: 
-      Entry: 4
-      Data: 20.1299973
-    - Name: 
-      Entry: 4
-      Data: -265.2166
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: WorldRotation
-      Entry: 7
-      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: BatteriesPoints
-      Entry: 7
-      Data: 45|System.Collections.Generic.List`1[[Infastructure.StaticData.WorldData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 4
-    - Name: 
-      Entry: 7
-      Data: 46|Infastructure.StaticData.WorldData, Assembly-CSharp
-    - Name: WorldPosition
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 54.12879
-    - Name: 
-      Entry: 4
-      Data: 13.2369156
-    - Name: 
-      Entry: 4
-      Data: 126.76622
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: WorldRotation
-      Entry: 7
-      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 47|Infastructure.StaticData.WorldData, Assembly-CSharp
-    - Name: WorldPosition
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 31.0036
-    - Name: 
-      Entry: 4
-      Data: 13.2369156
-    - Name: 
-      Entry: 4
-      Data: 125.269119
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: WorldRotation
-      Entry: 7
-      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 48|Infastructure.StaticData.WorldData, Assembly-CSharp
-    - Name: WorldPosition
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 42.37147
-    - Name: 
-      Entry: 4
-      Data: 13.2369175
-    - Name: 
-      Entry: 4
-      Data: 113.192917
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: WorldRotation
-      Entry: 7
-      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 49|Infastructure.StaticData.WorldData, Assembly-CSharp
-    - Name: WorldPosition
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 38.10752
-    - Name: 
-      Entry: 4
-      Data: 13.2369175
-    - Name: 
-      Entry: 4
-      Data: 139.46524
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: WorldRotation
-      Entry: 7
-      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: EnergyPoints
-      Entry: 7
-      Data: 50|System.Collections.Generic.List`1[[Infastructure.StaticData.WorldData,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 4
-    - Name: 
-      Entry: 7
-      Data: 51|Infastructure.StaticData.WorldData, Assembly-CSharp
+      Data: 36|Infastructure.StaticData.WorldData, Assembly-CSharp
     - Name: WorldPosition
       Entry: 7
       Data: UnityEngine.Vector3, UnityEngine.CoreModule
@@ -1597,7 +1143,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 52|Infastructure.StaticData.WorldData, Assembly-CSharp
+      Data: 37|Infastructure.StaticData.WorldData, Assembly-CSharp
     - Name: WorldPosition
       Entry: 7
       Data: UnityEngine.Vector3, UnityEngine.CoreModule
@@ -1635,84 +1181,6 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: 
-      Entry: 7
-      Data: 53|Infastructure.StaticData.WorldData, Assembly-CSharp
-    - Name: WorldPosition
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 37.5775375
-    - Name: 
-      Entry: 4
-      Data: 13.2369118
-    - Name: 
-      Entry: 4
-      Data: 159.226929
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: WorldRotation
-      Entry: 7
-      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0.0240978152
-    - Name: 
-      Entry: 4
-      Data: -0.97472
-    - Name: 
-      Entry: 4
-      Data: 0.130004287
-    - Name: 
-      Entry: 4
-      Data: 0.180108726
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 54|Infastructure.StaticData.WorldData, Assembly-CSharp
-    - Name: WorldPosition
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 17.8104248
-    - Name: 
-      Entry: 4
-      Data: 13.2369156
-    - Name: 
-      Entry: 4
-      Data: 120.636063
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: WorldRotation
-      Entry: 7
-      Data: UnityEngine.Quaternion, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0.0240978152
-    - Name: 
-      Entry: 4
-      Data: -0.97472
-    - Name: 
-      Entry: 4
-      Data: 0.130004287
-    - Name: 
-      Entry: 4
-      Data: 0.180108726
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
       Entry: 13
       Data: 
     - Name: 
@@ -1720,14 +1188,14 @@ MonoBehaviour:
       Data: 
     - Name: ElephantPoints
       Entry: 7
-      Data: 55|System.Collections.Generic.List`1[[Infastructure.StaticData.WorldData,
+      Data: 38|System.Collections.Generic.List`1[[Infastructure.StaticData.WorldData,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
       Data: 1
     - Name: 
       Entry: 7
-      Data: 56|Infastructure.StaticData.WorldData, Assembly-CSharp
+      Data: 39|Infastructure.StaticData.WorldData, Assembly-CSharp
     - Name: WorldPosition
       Entry: 7
       Data: UnityEngine.Vector3, UnityEngine.CoreModule
@@ -1772,7 +1240,7 @@ MonoBehaviour:
       Data: 
     - Name: SkillsData
       Entry: 7
-      Data: 57|System.Collections.Generic.List`1[[Infastructure.StaticData.ProductSkillData,
+      Data: 40|System.Collections.Generic.List`1[[Infastructure.StaticData.ProductSkillData,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12

@@ -18,6 +18,8 @@ namespace Infastructure.Services.PlayerInput.InputSourceRealization
         {
         }
 
+        public bool PauseButtonPressed => Input.GetKeyDown(KeyCode.Escape);
+
         public Vector3 InputVector =>
             new Vector3(Input.GetAxis(Horizontal), 0, Input.GetAxis(Vertical));
 
