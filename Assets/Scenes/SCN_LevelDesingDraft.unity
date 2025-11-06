@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: d104071a9bc12aa45ba04b53becffc5f, type: 2}
+  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
   m_HaloStrength: 0.487
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -93,7 +93,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000004, guid: bba4956d4ba738e4ea0dac1f17faf303, type: 2}
+  m_LightingDataAsset: {fileID: 112000000, guid: bba4956d4ba738e4ea0dac1f17faf303, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 7d5e8607b5ee2d44eb85c13d5f30c44f, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -5988,15 +5988,15 @@ MonoBehaviour:
   borderVariation: 0.95
   fogDensity: 1
   usePhysicalSunHeight: 1
-  sunDirection: 301
+  sunDirection: 120
   sunPitch: 0
-  moonDirection: {x: 0.7515524, y: 0.4823612, z: -0.44999635}
+  moonDirection: {x: -0.7592914, y: 0.48236114, z: 0.4368116}
   skyZenithColor: {r: 0.082579084, g: 0.15691113, b: 0.2673454, a: 1}
   skyHorizonColor: {r: 0.48595557, g: 0.6944499, b: 0.8213839, a: 1}
   cloudColor: {r: 0.82305515, g: 0.74025035, b: 0.74025035, a: 1}
   cloudHighlightColor: {r: 4.5523906, g: 3.8688674, b: 3.3397903, a: 1}
   highAltitudeCloudColor: {r: 1.1724757, g: 1.430444, b: 1.4213502, a: 1}
-  sunlightColor: {r: 0.90092534, g: 0.90092534, b: 0.90092534, a: 1}
+  sunlightColor: {r: 1.375392, g: 1.3476623, b: 1.1535546, a: 1}
   starColor: {r: 0, g: 0, b: 0, a: 1}
   ambientLightHorizonColor: {r: 0.47098613, g: 0.61487424, b: 0.6792453, a: 1}
   ambientLightZenithColor: {r: 0.4261303, g: 0.6387468, b: 0.6792453, a: 1}
@@ -6247,7 +6247,7 @@ Transform:
   m_GameObject: {fileID: 301340140}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0000000037252899, y: -0, z: -0.0000000074505797, w: 1}
-  m_LocalPosition: {x: 8.905258, y: 21.671999, z: 142.01056}
+  m_LocalPosition: {x: -3.796197, y: -1.1253418, z: 33.876842}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6882,7 +6882,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 706635031}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.21664594, y: -0.47756293, z: 0.122793816, w: 0.84256744}
+  m_LocalRotation: {x: 0.12467967, y: 0.83836794, z: -0.21556613, w: 0.48489738}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -7135,7 +7135,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_LensFlareData: {fileID: 11400000, guid: b7bd2fcbf47c015488d42ef693c6db7d, type: 2}
   version: 0
-  intensity: 0.90092534
+  intensity: 1.3338252
   maxAttenuationDistance: 100
   maxAttenuationScale: 100
   distanceAttenuationCurve:
@@ -7317,7 +7317,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 1
-  m_Color: {r: 0.90092534, g: 0.90092534, b: 0.90092534, a: 0}
+  m_Color: {r: 1.375392, g: 1.3476623, b: 1.1535546, a: 0}
   m_Intensity: 2
   m_Range: 10
   m_SpotAngle: 30
@@ -7363,7 +7363,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 8.479e-42, y: 2.524355e-29, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ForceVisible: 0
@@ -8119,7 +8119,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1331422898}
   serializedVersion: 2
-  m_LocalRotation: {x: -4.265146e-10, y: 0.49242365, z: -0.000000008319075, w: -0.87035567}
+  m_LocalRotation: {x: -0.000000008315037, y: 0.86602545, z: 4.990939e-10, w: 0.49999997}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -13408,7 +13408,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 11.757443, y: 11.757443, z: 11.757443}
+  m_LocalScale: {x: 21.079561, y: 21.079561, z: 21.079561}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 601353708}
