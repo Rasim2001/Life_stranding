@@ -1,6 +1,7 @@
 using System;
 using Cysharp.Threading.Tasks;
 using Infastructure.Services.CutScene;
+using Infastructure.Services.Defeat;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
@@ -31,31 +32,31 @@ namespace SpiderController.UI.Health
         private IStaticDataService _staticDataService;
         private ICutSceneService _cutSceneService;
         private IWindowService _windowService;
+        private IDefeatWindowService _defeatWindowService;
 
         [Inject]
         public void Construct(IStaticDataService staticDataService, ICutSceneService cutSceneService,
-            IWindowService windowService)
+            IWindowService windowService, IDefeatWindowService defeatWindowService)
         {
+            _defeatWindowService = defeatWindowService;
             _windowService = windowService;
             _cutSceneService = cutSceneService;
             _staticDataService = staticDataService;
         }
 
         public void Initialize() =>
-            _spiderHealth = new SpiderHealth(SpiderStaticData.MaxHealth);
+            _spiderHealth = new SpiderHealth(_defeatWindowService, SpiderStaticData.MaxHealth);
 
         private void Start()
         {
             _cutSceneService.OnCutsceneActiveChanged += CutsceneActiveChanged;
             _spiderHealth.HealthChanged += UpdateHealthBar;
-            _spiderHealth.OnDefeatHappened += Defeat;
         }
 
         private void OnDestroy()
         {
             _cutSceneService.OnCutsceneActiveChanged -= CutsceneActiveChanged;
             _spiderHealth.HealthChanged -= UpdateHealthBar;
-            _spiderHealth.OnDefeatHappened -= Defeat;
         }
 
         private void UpdateHealthBar() =>

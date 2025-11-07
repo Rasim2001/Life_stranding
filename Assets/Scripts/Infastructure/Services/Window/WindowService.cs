@@ -16,6 +16,7 @@ using UI.MVVM.View.SettingsPopup;
 using UI.MVVM.View.SettingsScreen;
 using UI.MVVM.View.StartSplashScreen;
 using UI.MVVM.View.TaskPopup;
+using UI.MVVM.View.WinPopup;
 using UnityEngine;
 using Zenject;
 
@@ -72,6 +73,13 @@ namespace Infastructure.Services.Window
             SettingsScreenViewModel model = new SettingsScreenViewModel(this);
 
             _gamePlayViewModel.OpenScreen(model);
+        }
+
+        public void OpenWinPopup()
+        {
+            WinPopupViewModel model = new WinPopupViewModel();
+
+            _gamePlayViewModel.OpenPopup(model);
         }
 
         public void OpenDefeatPopup()

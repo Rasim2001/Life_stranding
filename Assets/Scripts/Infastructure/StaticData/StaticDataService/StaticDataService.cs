@@ -1,4 +1,5 @@
 ﻿using Infastructure.Common;
+using Infastructure.StaticData.GlobalWater;
 using Infastructure.StaticData.HUD;
 using Infastructure.StaticData.Materials;
 using Infastructure.StaticData.Product;
@@ -22,6 +23,7 @@ namespace Infastructure.StaticData.StaticDataService
         public ProductsStaticData ProductsStaticData { get; private set; }
         public StickersStaticData StickersStaticData { get; private set; }
         public TasksStaticData TasksStaticData { get; private set; }
+        public WaterStaticData WaterStaticData { get; private set; }
 
         public void LoadStaticData()
         {
@@ -35,6 +37,7 @@ namespace Infastructure.StaticData.StaticDataService
             ProductsStaticData = Resources.Load<ProductsStaticData>(AssetsPath.ProductStaticDataPath);
             StickersStaticData = Resources.Load<StickersStaticData>(AssetsPath.StickersStaticDataPath);
             TasksStaticData = Resources.Load<TasksStaticData>(AssetsPath.TasksStaticDataPath);
+            WaterStaticData = Resources.Load<WaterStaticData>(AssetsPath.WaterStaticDataPath);
         }
     }
 }

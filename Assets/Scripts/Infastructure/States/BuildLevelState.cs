@@ -7,6 +7,7 @@ using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.Restart;
+using Infastructure.Services.Timer;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
@@ -30,6 +31,7 @@ namespace Infastructure.States
         private readonly IRestartService _restartService;
         private readonly IAbilityService _abilityService;
         private readonly ICutSceneService _cutSceneService;
+        private readonly ITimerService _timerService;
         private readonly IWindowService _windowService;
 
         public BuildLevelState(
@@ -43,13 +45,15 @@ namespace Infastructure.States
             IWindowService windowService,
             IRestartService restartService,
             IAbilityService abilityService,
-            ICutSceneService cutSceneService
+            ICutSceneService cutSceneService,
+            ITimerService timerService
         )
         {
             _windowService = windowService;
             _restartService = restartService;
             _abilityService = abilityService;
             _cutSceneService = cutSceneService;
+            _timerService = timerService;
             _gameFactory = gameFactory;
             _staticData = staticData;
             _uiFactory = uiFactory;
@@ -79,6 +83,7 @@ namespace Infastructure.States
         {
             _inputService.Initialize();
             _cutSceneService.Clear();
+            _timerService.StartTimer();
 
             InitGameWorld();
         }
@@ -113,7 +118,12 @@ namespace Infastructure.States
             InitElephantProducts(spider);
             InitEnergyProducts();
             InitSkillProducts();
+
+            InitGlobalWater();
         }
+
+        private void InitGlobalWater() =>
+            _gameFactory.CreateGlobalWater();
 
         private void InitGenerators() =>
             _gameFactory.CreateAllGenerators();

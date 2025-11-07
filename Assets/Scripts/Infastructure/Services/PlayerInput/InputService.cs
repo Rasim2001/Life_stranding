@@ -1,7 +1,6 @@
 using System;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
 using UnityEngine;
-using Zenject;
 
 namespace Infastructure.Services.PlayerInput
 {
@@ -49,7 +48,7 @@ namespace Infastructure.Services.PlayerInput
 
             return (T)_joystickInputSource;
         }
-        
+
 
         public Vector3 InputVector
         {

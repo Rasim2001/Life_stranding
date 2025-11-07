@@ -30,6 +30,8 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Enter();
 
+            Spider.WaterObserverTrigger.OnTriggerEnterHappened += OnTriggerEnterWithWater;
+
             Data.GlobalY = Spider.transform.position.y;
             Data.AirbornSpeed = SpiderStaticData.FallWithoutEnergySpeed;
 
@@ -39,6 +41,8 @@ namespace SpiderController.StateMachine.States.Airborn
         public override void Exit()
         {
             base.Exit();
+
+            Spider.WaterObserverTrigger.OnTriggerEnterHappened -= OnTriggerEnterWithWater;
 
             SetUncrossLegs();
         }
@@ -64,5 +68,7 @@ namespace SpiderController.StateMachine.States.Airborn
                     StateMachine.SwitchState<RunningState>();
             }
         }
+
+       
     }
 }

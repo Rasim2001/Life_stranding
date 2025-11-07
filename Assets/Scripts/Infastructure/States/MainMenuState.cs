@@ -11,7 +11,7 @@ namespace Infastructure.States
             _sceneLoader = sceneLoader;
 
         public void Enter() =>
-            _sceneLoader.Load(AssetsPath.MainMenuScene, OnLoaded);
+            _sceneLoader.Load("", OnLoaded);
 
         public void Exit()
         {

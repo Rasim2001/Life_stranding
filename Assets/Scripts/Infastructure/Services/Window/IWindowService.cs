@@ -13,5 +13,6 @@ namespace Infastructure.Services.Window
         void OpenDefeatPopup();
         void ClosePopup(string id);
         void TryOpenMainTaskPopup(bool isActive);
+        void OpenWinPopup();
     }
 }

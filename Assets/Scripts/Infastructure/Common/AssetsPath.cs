@@ -2,13 +2,11 @@ namespace Infastructure.Common
 {
     public class AssetsPath
     {
-        public const string GameScene = "GameScene";
-        public const string MainMenuScene = "MainMenuScene";
-
         public const string GameBootstrapperPath = "Prefabs/GameBootstrapper";
         public const string CoroutineRunnerPath = "Prefabs/CoroutineRunner";
         public const string CurtainRootPath = "Prefabs/UI/CurtainRoot";
         public const string PickupDisplayerPath = "Prefabs/UI/PickupDisplayerRoot";
+        public const string GlobalWaterPath = "Prefabs/Water/GlobalWater";
         public const string StableWorldUpPath = "Prefabs/CameraSystem/StableWorldUp";
         public const string UIRootPath = "Prefabs/UI/Windows/Root/UIRoot";
         public const string GamePlayUIPath = "Prefabs/UI/Windows/Root/GameplayUI";
@@ -32,5 +30,6 @@ namespace Infastructure.Common
         public const string ProductStaticDataPath = "StaticData/Products/ProductsData";
         public const string StickersStaticDataPath = "StaticData/Stickers/StickersData";
         public const string TasksStaticDataPath = "StaticData/UI/TasksPopupData";
+        public const string WaterStaticDataPath = "StaticData/GlobalWater/WaterData";
     }
 }

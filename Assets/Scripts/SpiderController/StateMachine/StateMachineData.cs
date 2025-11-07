@@ -46,6 +46,13 @@ namespace SpiderController.StateMachine
         public float TerrainTimer;
         public float TerrainTimerDefault;
 
+        public void Clear()
+        {
+            Input = Vector3.zero;
+            Velocity = Vector3.zero;
+            ExplosionAngularVector = Vector3.zero;
+        }
+
         private bool _IsFallingDownWithoutEnergyState;
     }
 }

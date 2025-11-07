@@ -1,5 +1,6 @@
 using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Services.CutScene;
+using Infastructure.Services.Defeat;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
 using Infastructure.StaticData.Spider;
@@ -18,6 +19,7 @@ namespace CameraFollow
         private IStaticDataService _staticDataService;
         private IStableWorldUp _stableWorldUp;
         private ICutSceneService _cutSceneService;
+        private IDefeatWindowService _defeatWindowService;
 
         private Transform _target;
         private Vector3 _velocity;
@@ -43,8 +45,10 @@ namespace CameraFollow
             IInputService inputService,
             IStaticDataService staticDataService,
             IStableWorldUp stableWorldUp,
-            ICutSceneService cutSceneService)
+            ICutSceneService cutSceneService,
+            IDefeatWindowService defeatWindowService)
         {
+            _defeatWindowService = defeatWindowService;
             _cutSceneService = cutSceneService;
             _stableWorldUp = stableWorldUp;
             _staticDataService = staticDataService;
@@ -69,7 +73,7 @@ namespace CameraFollow
 
         private void FixedUpdate()
         {
-            if (_target == null)
+            if (_target == null || _defeatWindowService.IsDefeated)
                 return;
 
             MoveToTarget();
@@ -80,7 +84,7 @@ namespace CameraFollow
 
         private void Update()
         {
-            if (_target == null || _cutSceneService.IsActive)
+            if (_target == null || _cutSceneService.IsActive || _defeatWindowService.IsDefeated)
                 return;
 
             HandleScrollWheel();

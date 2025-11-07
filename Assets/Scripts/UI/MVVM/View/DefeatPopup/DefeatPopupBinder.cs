@@ -2,7 +2,10 @@ using System;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Infastructure.Services.Pause;
+using Infastructure.Services.SpiderTrack;
 using Infastructure.States;
+using SpiderController.StateMachine;
+using TMPro;
 using UI.MVVM.Base;
 using UnityEngine;
 using Zenject;
@@ -13,18 +16,22 @@ namespace UI.MVVM.View.DefeatPopup
     {
         private static readonly int StartTrigger = Animator.StringToHash("StartTrigger");
 
+        [SerializeField] private TextMeshProUGUI _distanceToGoalText;
         [SerializeField] private Transform _container;
         [SerializeField] private FramePiecesUI _framePiecesUI;
         [SerializeField] private Animator _flowerAnimator;
 
         private IPauseService _pauseService;
         private IStateMachine _stateMachine;
+        private ISpiderTrackService _spiderTrackService;
 
         private Tween _containerRotateTween;
 
         [Inject]
-        public void Construct(IPauseService pauseService, IStateMachine stateMachine)
+        public void Construct(IPauseService pauseService, IStateMachine stateMachine,
+            ISpiderTrackService spiderTrackService)
         {
+            _spiderTrackService = spiderTrackService;
             _stateMachine = stateMachine;
             _pauseService = pauseService;
         }
@@ -39,6 +46,8 @@ namespace UI.MVVM.View.DefeatPopup
             StartFlowerAnimation().Forget();
             _framePiecesUI.MoveFramePiecesAsync().Forget();
             _containerRotateTween = _container.DORotate(Vector3.zero, 0.2f).SetUpdate(true);
+
+            _distanceToGoalText.text = _spiderTrackService.GetDistanceToGoal();
         }
 
         protected override void OnDestroy()

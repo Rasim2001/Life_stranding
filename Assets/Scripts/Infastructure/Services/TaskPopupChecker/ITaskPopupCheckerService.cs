@@ -1,3 +1,4 @@
+using System;
 using UI;
 
 namespace Infastructure.Services.TaskPopupChecker
@@ -6,5 +7,6 @@ namespace Infastructure.Services.TaskPopupChecker
     {
         void AddTask(TaskId taskId);
         bool IsWasOpened(TaskId taskId);
+        event Action AllTasksCompleted;
     }
 }
