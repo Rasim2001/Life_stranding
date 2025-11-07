@@ -15,8 +15,6 @@ namespace SpiderController.StateMachine.States.Airborn
 {
     public class FallingWithoutEnergyState : AirbornState
     {
-        //private Sticker Sticker => Spider.SpiderUI.Sticker;
-
         private readonly GroundChecker _spiderGroundChecker;
 
         public FallingWithoutEnergyState(ISpiderStateMachine stateMachine, IInputService inputService,
@@ -33,6 +31,8 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Enter();
 
+            Spider.WaterObserverTrigger.OnTriggerEnterHappened += OnTriggerEnterWithWater;
+
             Data.GlobalY = Spider.transform.position.y;
             Data.AirbornSpeed = SpiderStaticData.FallWithoutEnergySpeed;
             Data.IsFallingDownWithoutEnergyState = true;
@@ -46,6 +46,8 @@ namespace SpiderController.StateMachine.States.Airborn
         public override void Exit()
         {
             base.Exit();
+
+            Spider.WaterObserverTrigger.OnTriggerEnterHappened -= OnTriggerEnterWithWater;
 
             Spider.Stickers.PlaySticker(StickerEnum.FallingDown);
             Data.IsFallingDownWithoutEnergyState = false;

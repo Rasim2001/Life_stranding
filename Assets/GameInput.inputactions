@@ -103,6 +103,33 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "ChangePlatformLeft",
+                    "type": "Button",
+                    "id": "b9cc5700-44af-4f58-8f77-0f8df7ade372",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ChangePlatformRight",
+                    "type": "Button",
+                    "id": "31cc3501-0a72-44dc-8f53-482540cd74f5",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "b2b5a8a2-349c-4148-bb79-43d611aff5d4",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -263,10 +290,10 @@
                 {
                     "name": "",
                     "id": "d5631065-b69a-49ae-ab20-74814f6c21e9",
-                    "path": "<Gamepad>/buttonSouth",
+                    "path": "<Gamepad>/buttonNorth",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad;Joystick",
+                    "groups": ";Joystick",
                     "action": "Scan",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -274,7 +301,7 @@
                 {
                     "name": "",
                     "id": "a02dfaaf-7c50-49c1-af49-a6ec9e855d51",
-                    "path": "<Gamepad>/buttonWest",
+                    "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad;Joystick",
@@ -336,6 +363,39 @@
                     "action": "ScrollCamera",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "f47038e2-bef4-4f87-b49b-ce85a4f87dd9",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad;Joystick",
+                    "action": "ChangePlatformLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3e8dce77-6c8a-4144-a889-e5882a4ebf32",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad;Joystick",
+                    "action": "ChangePlatformRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "111dd089-004f-401a-af34-cb46a158e81e",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad;Joystick",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },

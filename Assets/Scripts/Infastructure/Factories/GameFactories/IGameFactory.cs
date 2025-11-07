@@ -21,5 +21,6 @@ namespace Infastructure.Factories.GameFactories
         void CreateElephantProduct(Spider spider);
         void CreateSkillProducts();
         void CreateAllGenerators();
+        void CreateGlobalWater();
     }
 }

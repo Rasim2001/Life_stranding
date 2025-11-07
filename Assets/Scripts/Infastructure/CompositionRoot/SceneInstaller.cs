@@ -6,17 +6,21 @@ using Infastructure.PlatformRegistry;
 using Infastructure.Services.Ability;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
+using Infastructure.Services.Defeat;
 using Infastructure.Services.Explosion;
 using Infastructure.Services.Magnet;
 using Infastructure.Services.PauseWindow;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.SpiderTrack;
 using Infastructure.Services.TaskPopupChecker;
+using Infastructure.Services.Timer;
 using Infastructure.Services.Window;
 using Infastructure.Services.XRay;
 using Infastructure.States;
 using UI.MVVM.View.Root;
 using UI.MVVM.View.TaskPopup;
+using WaterSystem;
 using Zenject;
 
 namespace Infastructure.CompositionRoot
@@ -55,6 +59,12 @@ namespace Infastructure.CompositionRoot
             BindPlatformRegistryService();
 
             BindAbilityService();
+
+            BindSpiderTrackService();
+
+            BindTimerService();
+
+            BindDefeatWindowService();
         }
 
         private void BindUI()
@@ -73,6 +83,15 @@ namespace Infastructure.CompositionRoot
 
             BindPauseWindowService();
         }
+
+        private void BindDefeatWindowService() =>
+            Container.BindInterfacesAndSelfTo<DefeatWindowService>().AsSingle();
+
+        private void BindTimerService() =>
+            Container.BindInterfacesAndSelfTo<TimerService>().AsSingle();
+
+        private void BindSpiderTrackService() =>
+            Container.BindInterfacesAndSelfTo<SpiderTrackService>().AsSingle();
 
         private void BindPauseWindowService() =>
             Container.BindInterfacesAndSelfTo<PauseWindowService>().AsSingle();
@@ -126,6 +145,7 @@ namespace Infastructure.CompositionRoot
                 .FromComponentInNewPrefabResource(AssetsPath.PickupDisplayerPath)
                 .AsSingle();
         }
+
 
         private void BindGameFactory() =>
             Container.BindInterfacesAndSelfTo<GameFactory>().AsSingle();

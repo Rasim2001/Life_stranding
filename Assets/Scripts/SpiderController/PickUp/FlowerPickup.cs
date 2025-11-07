@@ -1,4 +1,5 @@
 using Infastructure.Common.Pickup;
+using Infastructure.Services.Defeat;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Window;
@@ -18,6 +19,7 @@ namespace SpiderController.PickUp
         private readonly IPickupDisplayer _pickupDisplayer;
         private readonly IPlatformObjectsService _platformObjectsService;
         private readonly IWindowService _windowService;
+        private readonly IDefeatWindowService _defeatWindowService;
 
         private HealthBarUI HealthBar => _spiderUI.HealthBar;
         private SpiderHealth SpiderHealth => _spiderUI.SpiderHealth;
@@ -33,6 +35,7 @@ namespace SpiderController.PickUp
             IPickupDisplayer pickupDisplayer,
             IPlatformObjectsService platformObjectsService,
             IWindowService windowService,
+            IDefeatWindowService defeatWindowService,
             FlowerChecker flowerChecker,
             Flower flower,
             SpiderUI spiderUI,
@@ -42,6 +45,7 @@ namespace SpiderController.PickUp
             _pickupDisplayer = pickupDisplayer;
             _platformObjectsService = platformObjectsService;
             _windowService = windowService;
+            _defeatWindowService = defeatWindowService;
             _flowerChecker = flowerChecker;
             _flower = flower;
             _spiderUI = spiderUI;
@@ -81,7 +85,7 @@ namespace SpiderController.PickUp
         }
 
         private bool IsDeath() =>
-            _spiderUI.SpiderHealth.IsDeath;
+            _defeatWindowService.IsDefeated;
 
 
         private bool CanDisplay() =>

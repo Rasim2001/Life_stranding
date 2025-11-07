@@ -81,7 +81,7 @@ namespace GameDevBuddies
                 // Cache the helper data class into a collection for all passes.
                 _renderPassesData.Add(renderPassData);
             }
-        }   // конец конструктора TerrainIconsRenderPass(...)
+        } // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ TerrainIconsRenderPass(...)
 
         // === Render Graph support (URP 17+) ===
         private class RGPassData
@@ -92,22 +92,20 @@ namespace GameDevBuddies
         }
 
 
-        // Путь для Render Graph (работает, когда RG включен и режим совместимости выключен)
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ Render Graph (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ RG пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
         public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
         {
             var camData = frameData.Get<UniversalCameraData>();
-            // Если нужно снова фильтровать по камере-иконок, раскомментируй 2 строки ниже:
-             if (!camData.camera || !camData.camera.CompareTag(_cameraTagId))
-                 return;
+            // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 2 пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ:
+            if (!camData.camera || !camData.camera.CompareTag(_cameraTagId))
+                return;
 
             var res = frameData.Get<UniversalResourceData>();
             var urp = frameData.Get<UniversalRenderingData>();
 
             foreach (var pass in _renderPassesData)
             {
-                Debug.Log($"[IconsRG] Icons pass on camera '{camData.camera.name}'");
-
-                // Импорт/выбор целей
+                // пїЅпїЅпїЅпїЅпїЅпїЅ/пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
                 var colorTarget = pass.OutputColorRTHandle != null
                     ? renderGraph.ImportTexture(pass.OutputColorRTHandle)
                     : res.activeColorTexture;
@@ -116,9 +114,10 @@ namespace GameDevBuddies
                     ? renderGraph.ImportTexture(pass.OutputDepthRTHandle)
                     : res.activeDepthTexture;
 
-                // Сборка RendererList
-                var sortingSettings = new SortingSettings(camData.camera) { criteria = SortingCriteria.CommonTransparent };
-                
+                // пїЅпїЅпїЅпїЅпїЅпїЅ RendererList
+                var sortingSettings = new SortingSettings(camData.camera)
+                    { criteria = SortingCriteria.CommonTransparent };
+
                 List<ShaderTagId> tagIds = pass.SupportedShaderTagIds;
                 if (pass.OverrideMaterial != null)
                 {
@@ -141,7 +140,9 @@ namespace GameDevBuddies
 
                 var rlParams = new RendererListParams(urp.cullResults, drawing, filtering);
 
-                using (var builder = renderGraph.AddRasterRenderPass<RGPassData>("Terrain Icons", out var data, pass.ProfilingSampler))
+                using (var builder =
+                       renderGraph.AddRasterRenderPass<RGPassData>("Terrain Icons", out var data,
+                           pass.ProfilingSampler))
                 {
                     data.RendererList = renderGraph.CreateRendererList(rlParams);
                     data.DoClear = pass.ShouldClearOutputTexture;

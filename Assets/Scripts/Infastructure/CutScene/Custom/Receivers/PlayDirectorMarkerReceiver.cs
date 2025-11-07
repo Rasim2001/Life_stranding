@@ -33,8 +33,6 @@ namespace Infastructure.CutScene.Custom.Receivers
         {
             _cutSceneInputSource = _inputService.GetInputSource<CutSceneInputSource>();
 
-            Debug.Log("Teleport Awake");
-
             _cutSceneService.OnSkipHappened += SkipCutScene;
         }
 

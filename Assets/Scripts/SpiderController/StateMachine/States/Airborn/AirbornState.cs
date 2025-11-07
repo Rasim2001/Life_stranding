@@ -1,7 +1,6 @@
 using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
-using PickupObjects.PickUpOnPlatform;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
 using UnityEngine;
@@ -89,6 +88,15 @@ namespace SpiderController.StateMachine.States.Airborn
                 Data.GlobalY = 0;
                 Data.OnShakeHappened?.Invoke(distanceFalling);
             }
+        }
+
+        protected void OnTriggerEnterWithWater(Collider obj)
+        {
+            GameObject prefab = Spider.WaterStaticData.WaterSplashPrefab;
+
+            Object.Instantiate(prefab,
+                Spider.transform.position + new Vector3(0, 0),
+                Quaternion.identity);
         }
 
 

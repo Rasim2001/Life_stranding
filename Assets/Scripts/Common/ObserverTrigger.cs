@@ -17,7 +17,6 @@ namespace Common
                 return;
 
             OnTriggerEnterHappened?.Invoke(other);
-            
         }
 
         private void OnTriggerExit(Collider other)

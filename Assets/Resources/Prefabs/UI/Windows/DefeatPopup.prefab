@@ -256,6 +256,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _btnClose: {fileID: 4534836681776880730}
   _btnCloseAlt: {fileID: 0}
+  _distanceToGoalText: {fileID: 5286493663922167984}
   _container: {fileID: 8527024253781284123}
   _framePiecesUI: {fileID: 3141495792505345044}
   _flowerAnimator: {fileID: 1579728642375388708}
@@ -1843,6 +1844,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ab0949a034b36024daf24df5702e10a5, type: 3}
+--- !u!114 &5286493663922167984 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 296971770360106648, guid: ab0949a034b36024daf24df5702e10a5, type: 3}
+  m_PrefabInstance: {fileID: 5567130536021667368}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &6248059243534967560 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2015355873696828704, guid: ab0949a034b36024daf24df5702e10a5, type: 3}

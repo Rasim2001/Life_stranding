@@ -21,7 +21,6 @@ namespace SpiderController.StateMachine.States
         protected readonly Spider Spider;
         protected readonly LegDataStruct[] Legs;
         protected readonly EnergySystem EnergySystem;
-
         protected IInputService InputService => _inputService;
         protected Rigidbody Rigidbody => Spider.Rigidbody;
         protected SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;

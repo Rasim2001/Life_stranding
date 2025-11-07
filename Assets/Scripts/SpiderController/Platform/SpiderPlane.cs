@@ -51,12 +51,15 @@ namespace SpiderController.Platform
 
         public void Initialize()
         {
-            _joystickInputSource = _inputService.GetInputSource<JoystickInputSource>();
+            _inputService.OnJoystickEnableHappend += EnableJoystick;
             _stateMachineData.OnFallingDownStateChanged += OnFallingDownStateEnter;
         }
 
-        public void Destroy() =>
+        public void Destroy()
+        {
+            _inputService.OnJoystickEnableHappend -= EnableJoystick;
             _stateMachineData.OnFallingDownStateChanged -= OnFallingDownStateEnter;
+        }
 
         public void Update()
         {
@@ -89,10 +92,13 @@ namespace SpiderController.Platform
 
                 _waitTimeJoystick -= Time.deltaTime;
 
-                if (_joystickInputSource.IsLeftButtonPressed == false && _waitTimeJoystick > 0)
+                if (_joystickInputSource.IsRotationButtonPressed == false && _waitTimeJoystick > 0)
                     HandleJoystickPosition();
             }
         }
+
+        private void EnableJoystick(IInputSource obj) =>
+            _joystickInputSource = (JoystickInputSource)obj;
 
         private void OnFallingDownStateEnter(bool isTrue)
         {

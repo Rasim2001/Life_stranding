@@ -7,6 +7,7 @@ using Infastructure.CutScene;
 using Infastructure.CutScene.Custom;
 using Infastructure.CutScene.Custom.Receivers;
 using Infastructure.Services.CheckPoint;
+using Infastructure.Services.SpiderTrack;
 using Infastructure.Services.XRay;
 using Infastructure.StaticData;
 using Infastructure.StaticData.Product;
@@ -31,12 +32,15 @@ namespace Infastructure.Factories.GameFactories
         private readonly IStaticDataService _staticDataService;
         private readonly IBiospherePointService _biospherePointService;
         private readonly IXRayService _xRayService;
+        private readonly ISpiderTrackService _spiderTrackService;
 
         private string ActiveSceneName => SceneManager.GetActiveScene().name;
 
         public GameFactory(DiContainer diContainer, IStaticDataService staticDataService,
-            IBiospherePointService biospherePointService, IXRayService xRayService)
+            IBiospherePointService biospherePointService, IXRayService xRayService,
+            ISpiderTrackService spiderTrackService)
         {
+            _spiderTrackService = spiderTrackService;
             _diContainer = diContainer;
             _staticDataService = staticDataService;
             _biospherePointService = biospherePointService;
@@ -53,6 +57,8 @@ namespace Infastructure.Factories.GameFactories
 
             SpiderUI spiderUI = spider.GetComponent<SpiderUI>();
             spiderUI.Initialize();
+
+            _spiderTrackService.Spider = spider;
 
             return spider;
         }
@@ -262,6 +268,9 @@ namespace Infastructure.Factories.GameFactories
                 terrainScanObject.GetComponentInChildren<TerrainScanIconsRenderer>();
             terrainScanIconsRenderer.Initialize(cameraTransform);
         }
+
+        public void CreateGlobalWater() =>
+            _diContainer.InstantiatePrefabResource(AssetsPath.GlobalWaterPath);
 
         private bool IsBiospherePoint(int i, List<WorldData> checkPoints) =>
             i == checkPoints.Count - 1;

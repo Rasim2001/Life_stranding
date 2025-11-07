@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using Infastructure.PlatformRegistry;
+using Infastructure.Services.PlayerInput;
+using Infastructure.Services.PlayerInput.InputSourceRealization;
 using Infastructure.StaticData.StaticDataService;
 using UnityEngine;
 
@@ -13,39 +15,57 @@ namespace SpiderController.Platform
         private readonly int _excludeLayers =
             1 << LayerMask.NameToLayer("Product") | 1 << LayerMask.NameToLayer("Flower");
 
+        private readonly Dictionary<int, PlatformId> _platformIds = new Dictionary<int, PlatformId>
+        {
+            { 0, PlatformId.Circle },
+            { 1, PlatformId.Box },
+            { 2, PlatformId.Surf },
+        };
         private Material _defaultMaterial;
 
+        private readonly IInputService _inputService;
         private bool _isBlinking;
         private float _blinkSpeed;
         private bool _IsOnPlatform;
 
         private Collider _productColliderCached;
+        private JoystickInputSource _joystick;
+
+
+        private int _currentIndex = 0;
 
         public PlatformSelector(
             IStaticDataService staticDataService,
-            IPlatformRegistryService platformRegistryService)
+            IPlatformRegistryService platformRegistryService,
+            IInputService inputService)
         {
+            _inputService = inputService;
             _platformRegistryService = platformRegistryService;
             _planeBlinkMaterial = new Material(staticDataService.MaterialsStaticData.PlaneBlinkMaterial);
         }
 
-        public void Initialize() =>
-            InitializePlatform(PlatformId.Circle);
+        public void Initialize()
+        {
+            _inputService.OnJoystickEnableHappend += JoystickEnabled;
+
+            InitializePlatform(_platformIds[_currentIndex]);
+        }
+
+        public void Destroy() =>
+            _inputService.OnJoystickEnableHappend -= JoystickEnabled;
+
+        private void JoystickEnabled(IInputSource obj) =>
+            _joystick = (JoystickInputSource)obj;
 
         public void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-                SelectPlatform(PlatformId.Circle);
-
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-                SelectPlatform(PlatformId.Box);
-
-            if (Input.GetKeyDown(KeyCode.Alpha3))
-                SelectPlatform(PlatformId.Surf);
+            KeyboardInput();
+            JoystickInput();
 
             if (_IsOnPlatform)
                 ChangeMaterial();
         }
+
 
         public void ReturnToDefaultMaterial()
         {
@@ -71,6 +91,44 @@ namespace SpiderController.Platform
 
         public void ResetExcludeLayerMask() =>
             _platformRegistryService.CurrentPlatformData.Collider.excludeLayers = 0;
+
+
+        private void KeyboardInput()
+        {
+            for (int i = 0; i < _platformIds.Count; i++)
+            {
+                if (Input.GetKeyDown(KeyCode.Alpha1 + i))
+                {
+                    if (_currentIndex == i)
+                        break;
+
+                    _currentIndex = i;
+                    SelectPlatform(_platformIds[i]);
+                    break;
+                }
+            }
+        }
+
+        private void JoystickInput()
+        {
+            if (_joystick != null)
+            {
+                if (_joystick.ChangePlatformLeftPressed && _currentIndex > 0)
+                {
+                    _currentIndex--;
+
+                    SelectPlatform(_platformIds[_currentIndex]);
+                }
+
+                if (_joystick.ChangePlatformRightPressed && _currentIndex < _platformIds.Count - 1)
+                {
+                    _currentIndex++;
+
+                    SelectPlatform(_platformIds[_currentIndex]);
+                }
+            }
+        }
+
 
         private void InitializePlatform(PlatformId platformId)
         {

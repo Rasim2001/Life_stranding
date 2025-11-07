@@ -53,8 +53,7 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Update();
 
-            if (InputService.TabPressed && !Spider.EventSystemSelector.HasFocusUI() &&
-                Spider.AbilityService.IsExploredAbility(ProductType.TerrainScanSkillProduct))
+            if (CanUse())
                 StartTerrainScan().Forget();
 
             if (IsNotMoveableLayer())
@@ -70,6 +69,14 @@ namespace SpiderController.StateMachine.States.Ground
             if (InputService.JerkPressed && Data.CurrentEnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling &&
                 Spider.AbilityService.IsExploredAbility(ProductType.JerkSkillProduct))
                 StateMachine.SwitchState<JerkState>();
+        }
+
+        private bool CanUse()
+        {
+            return InputService.TabPressed && !Spider.EventSystemSelector.HasFocusUI() &&
+                   Spider.AbilityService.IsExploredAbility(ProductType.TerrainScanSkillProduct) &&
+                   !Spider.PauseService.IsPaused &&
+                   !Spider.CutSceneService.IsActive;
         }
 
         private async UniTask StartTerrainScan()

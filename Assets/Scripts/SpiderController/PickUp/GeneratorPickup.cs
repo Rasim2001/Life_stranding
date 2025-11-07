@@ -6,6 +6,7 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Window;
 using PickupObjects.PickUpOnPlatform;
 using SpiderController.TriggerChecker;
+using UI;
 using UnityEngine;
 
 namespace SpiderController.PickUp
@@ -15,17 +16,20 @@ namespace SpiderController.PickUp
         private readonly IInputService _inputService;
         private readonly IPickupDisplayer _pickupDisplayer;
         private readonly IPlatformObjectsService _platformObjectsService;
+        private readonly IWindowService _windowService;
         private readonly GeneratorChecker _generatorChecker;
 
         public GeneratorPickup(
             IInputService inputService,
             IPickupDisplayer pickupDisplayer,
             IPlatformObjectsService platformObjectsService,
+            IWindowService windowService,
             GeneratorChecker generatorChecker)
         {
             _inputService = inputService;
             _pickupDisplayer = pickupDisplayer;
             _platformObjectsService = platformObjectsService;
+            _windowService = windowService;
             _generatorChecker = generatorChecker;
         }
 
@@ -79,6 +83,8 @@ namespace SpiderController.PickUp
 
             generator.StartGenerator();
             battery.PutdownOnGenerator(generator);
+
+            _windowService.OpenTaskPopup(TaskId.LastTask);
         }
     }
 }

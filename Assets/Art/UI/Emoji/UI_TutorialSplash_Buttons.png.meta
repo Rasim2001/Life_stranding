@@ -139,8 +139,8 @@ TextureImporter:
       name: UI_Emogi_Checkpoint_icon_A
       rect:
         serializedVersion: 2
-        x: 175
-        y: 138
+        x: 6
+        y: 10
         width: 66
         height: 83
       alignment: 0
@@ -162,7 +162,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 6
-        y: 116
+        y: 103
         width: 59
         height: 94
       alignment: 0
@@ -184,7 +184,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 453
-        y: 424
+        y: 318
         width: 44
         height: 82
       alignment: 0
@@ -205,8 +205,8 @@ TextureImporter:
       name: UI_Emogi_Jumper__A
       rect:
         serializedVersion: 2
-        x: 453
-        y: 331
+        x: 182
+        y: 25
         width: 41
         height: 83
       alignment: 0
@@ -227,8 +227,8 @@ TextureImporter:
       name: UI_Emogi_Like_A
       rect:
         serializedVersion: 2
-        x: 251
-        y: 149
+        x: 281
+        y: 228
         width: 81
         height: 80
       alignment: 0
@@ -271,8 +271,8 @@ TextureImporter:
       name: UI_Emogi_Skull_A
       rect:
         serializedVersion: 2
-        x: 293
-        y: 248
+        x: 190
+        y: 322
         width: 85
         height: 73
       alignment: 0
@@ -293,8 +293,8 @@ TextureImporter:
       name: UI_Tuts_Button_A
       rect:
         serializedVersion: 2
-        x: 6
-        y: 16
+        x: 75
+        y: 107
         width: 90
         height: 90
       alignment: 0
@@ -315,8 +315,8 @@ TextureImporter:
       name: UI_Tuts_Button_B
       rect:
         serializedVersion: 2
-        x: 75
-        y: 120
+        x: 82
+        y: 7
         width: 90
         height: 90
       alignment: 0
@@ -381,8 +381,8 @@ TextureImporter:
       name: UI_Tuts_Button_LB
       rect:
         serializedVersion: 2
-        x: 126
-        y: 336
+        x: 6
+        y: 329
         width: 82
         height: 59
       alignment: 0
@@ -403,8 +403,8 @@ TextureImporter:
       name: UI_Tuts_Button_LT
       rect:
         serializedVersion: 2
-        x: 215
-        y: 239
+        x: 233
+        y: 26
         width: 68
         height: 82
       alignment: 0
@@ -448,7 +448,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 6
-        y: 220
+        y: 207
         width: 99
         height: 101
       alignment: 0
@@ -469,8 +469,8 @@ TextureImporter:
       name: UI_Tuts_Button_RB
       rect:
         serializedVersion: 2
-        x: 218
-        y: 336
+        x: 98
+        y: 329
         width: 82
         height: 59
       alignment: 0
@@ -491,8 +491,8 @@ TextureImporter:
       name: UI_Tuts_Button_RT
       rect:
         serializedVersion: 2
-        x: 206
-        y: 46
+        x: 275
+        y: 133
         width: 68
         height: 82
       alignment: 0
@@ -514,7 +514,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 115
-        y: 231
+        y: 218
         width: 90
         height: 90
       alignment: 0
@@ -535,8 +535,8 @@ TextureImporter:
       name: UI_Tuts_Button_Y
       rect:
         serializedVersion: 2
-        x: 106
-        y: 20
+        x: 175
+        y: 118
         width: 90
         height: 90
       alignment: 0
@@ -549,6 +549,72 @@ TextureImporter:
       bones: []
       spriteID: db8b684bf194f7c49b972298312d56f8
       internalID: -1047621352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ICN_Colba
+      rect:
+        serializedVersion: 2
+        x: 215
+        y: 225
+        width: 56
+        height: 83
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c4a4884fb6099f946a7df6b2c18be0b6
+      internalID: -658092523
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Button_HP
+      rect:
+        serializedVersion: 2
+        x: 453
+        y: 410
+        width: 48
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a904c1bbac11f874aa6c30a59e2fa074
+      internalID: 1861261955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_RoboEnergy_A
+      rect:
+        serializedVersion: 2
+        x: 453
+        y: 465
+        width: 49
+        height: 41
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e4d3ca584c4a369478c9218e0f098b27
+      internalID: -873816359
       vertices: []
       indices: 
       edges: []
@@ -567,6 +633,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      ICN_Colba: -658092523
+      UI_Button_HP: 1861261955
       UI_Emogi_Checkpoint_icon_A: 1215660784
       UI_Emogi_Diamond__A: -1222304389
       UI_Emogi_Energy__A: 256797005
@@ -574,6 +642,7 @@ TextureImporter:
       UI_Emogi_Like_A: -38865257
       UI_Emogi_MainTarget_A: 1790865584
       UI_Emogi_Skull_A: -601037012
+      UI_RoboEnergy_A: -873816359
       UI_Tuts_Button_A: -1965538917
       UI_Tuts_Button_B: -465711003
       UI_Tuts_Button_L: -868307270

@@ -27,6 +27,8 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Enter();
 
+            Spider.WaterObserverTrigger.OnTriggerEnterHappened += OnTriggerEnterWithWater;
+
             Data.YVelocity = 0;
             Data.GlobalY = Spider.transform.position.y;
             Data.AirbornSpeed = SpiderStaticData.FallSpeed;
@@ -40,6 +42,8 @@ namespace SpiderController.StateMachine.States.Airborn
         public override void Exit()
         {
             base.Exit();
+
+            Spider.WaterObserverTrigger.OnTriggerEnterHappened -= OnTriggerEnterWithWater;
 
             Spider.ThrusterSystem.Open(false);
             Spider.MagnetFreezingService.Unfreeze();

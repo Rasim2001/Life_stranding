@@ -4,7 +4,6 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Infastructure.Services.Pause;
-using R3;
 using TMPro;
 using UI.MVVM.Base;
 using UnityEngine;
@@ -75,6 +74,8 @@ namespace UI.MVVM.View.ProductDescriptionPopup
 
         protected override void OnBind(ProductDescriptionPopupViewModel viewModel)
         {
+            base.OnBind(viewModel);
+
             _titleText.text = viewModel.Description.TitleText;
             _howToUseText.text = viewModel.Description.HowToUseText;
             _descriptionText.text = viewModel.Description.DescriptionText;
