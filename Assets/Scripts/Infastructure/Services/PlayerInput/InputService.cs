@@ -1,6 +1,7 @@
 using System;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
 using UnityEngine;
+using Zenject;
 
 namespace Infastructure.Services.PlayerInput
 {
@@ -133,5 +134,10 @@ namespace Infastructure.Services.PlayerInput
         public bool JerkPressed => _inputSource.JerkPressed || (_joystickInputSource?.JerkPressed ?? false);
 
         public bool PickupPressed => _inputSource.PickupPressed || (_joystickInputSource?.PickupPressed ?? false);
+
+        public void Tick()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
