@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Common;
 using HighlightPlus;
-using HUD;
 using Infastructure.Common.Pickup;
 using Infastructure.PlatformRegistry;
 using Infastructure.Services.Ability;
@@ -18,7 +17,6 @@ using Infastructure.Services.XRay;
 using Infastructure.States;
 using Infastructure.StaticData.GlobalWater;
 using Infastructure.StaticData.StaticDataService;
-using PickupObjects.PickUpOnPlatform;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using Sirenix.OdinInspector;
 using SpiderController.PickUp;
@@ -107,7 +105,7 @@ namespace SpiderController
         private IPauseService _pauseService;
         private IAbilityService _abilityService;
         private IDefeatWindowService _defeatWindowService;
-        
+
         private StateMachineData _stateMachineData;
 
 
@@ -256,7 +254,7 @@ namespace SpiderController
             _generatorPickup.Update();
         }
 
-        private void Defeat() => 
+        private void Defeat() =>
             _stateMachineData.Clear();
 
         private void FixedUpdate()

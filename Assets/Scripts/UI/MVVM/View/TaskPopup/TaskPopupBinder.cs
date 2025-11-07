@@ -3,6 +3,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Infastructure.Services.Pause;
+using TMPro;
 using UI.MVVM.Base;
 using UI.MVVM.View.ProductDescriptionPopup;
 using UnityEngine;
@@ -18,6 +19,9 @@ namespace UI.MVVM.View.TaskPopup
         [SerializeField] private FlickerParams _params;
         [SerializeField] private FramePiece[] _framePieces;
         [SerializeField] private Transform _container;
+
+        [SerializeField] private TextMeshProUGUI _taskNameText;
+        [SerializeField] private TextMeshProUGUI _taskDescriptionText;
 
 
         private UIFlicker _uiFlicker;
@@ -42,11 +46,20 @@ namespace UI.MVVM.View.TaskPopup
         {
             base.Start();
 
+
             _pauseService.StartPause();
 
             StartFlickAsync().Forget();
             MoveFramePiecesAsync().Forget();
             Rotate();
+        }
+
+        protected override void OnBind(TaskPopupViewModel viewModel)
+        {
+            base.OnBind(viewModel);
+
+            _taskNameText.text = ViewModel.TaskData.TaskName;
+            _taskDescriptionText.text = ViewModel.TaskData.TaskDescription;
         }
 
         protected override void OnDestroy()

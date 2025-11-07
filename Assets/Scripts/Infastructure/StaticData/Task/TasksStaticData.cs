@@ -15,6 +15,7 @@ namespace Infastructure.StaticData.Task
     [Serializable]
     public class TaskData
     {
+        public string TaskName;
         public string TaskDescription;
     }
 }
