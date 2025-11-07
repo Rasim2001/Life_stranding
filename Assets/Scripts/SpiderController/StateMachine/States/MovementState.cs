@@ -177,6 +177,9 @@ namespace SpiderController.StateMachine.States
         protected bool IsNotMoveableLayer() =>
             Legs.Select(x => x.Raycast).Any(x => x.IsNotMoveableLayer);
 
+        protected void SetSpeed(float newValue) =>
+            Data.Speed = newValue;
+
 
         private void UpdateTerranTime()
         {

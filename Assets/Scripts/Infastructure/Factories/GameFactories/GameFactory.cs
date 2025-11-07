@@ -80,7 +80,7 @@ namespace Infastructure.Factories.GameFactories
             hud.RegisterFlowerPoint(flower);
             hud.RegisterFinishTarget(_biospherePointService.PointIndicator);
 
-            flower.Initialize(hud.FlowerPointIndicator);
+            flower.Initialize(hud.FlowerPointIndicator, spider.StateMachineData);
             flower.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
 
             _xRayService.Initialize(hud.XRayCollectionContainer, hud.transform);
@@ -154,6 +154,7 @@ namespace Infastructure.Factories.GameFactories
                 _xRayService.Add(xRayMarker);
 
                 batteryProduct.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
+                batteryProduct.Initialize(spider.StateMachineData);
             }
         }
 
@@ -199,6 +200,7 @@ namespace Infastructure.Factories.GameFactories
                 product.ProductType = productType;
 
                 elephantProduct.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
+                elephantProduct.Initialize(spider.StateMachineData);
             }
         }
 

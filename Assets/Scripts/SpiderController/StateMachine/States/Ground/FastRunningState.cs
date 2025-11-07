@@ -24,9 +24,10 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Enter();
 
-            Data.Speed = SpiderStaticData.FastSpeed;
+            Data.OnTotalWeightChanged += WeightChanged;
             Data.DistanceFromGround = SpiderStaticData.DistanceFromGround;
 
+            SetSpeed(SpiderStaticData.FastSpeed);
             ApplyFastRunning();
 
             EnergyBarUI.ShowHologram();
@@ -36,8 +37,13 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Exit();
 
+            Data.OnTotalWeightChanged -= WeightChanged;
+
             ApplyDefaultSpeed();
         }
+
+        private void WeightChanged() =>
+            SetSpeed(SpiderStaticData.FastSpeed);
 
         public override void Update()
         {

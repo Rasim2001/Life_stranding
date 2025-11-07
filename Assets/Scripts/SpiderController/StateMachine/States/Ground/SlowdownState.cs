@@ -30,8 +30,9 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Enter();
 
+            Data.OnTotalWeightChanged += WeightChanged;
             Data.DistanceFromGround = SpiderStaticData.SlowdownDistanceFromGround;
-            Data.Speed = SpiderStaticData.SlowdownSpeed;
+            SetSpeed(SpiderStaticData.SlowdownSpeed);
 
             _localMoveTween?.Kill();
             _localMoveTween = Spider.RotationPlaneTransform.DOLocalMove(Vector3.zero, 0.5f);
@@ -42,6 +43,8 @@ namespace SpiderController.StateMachine.States.Ground
         public override void Exit()
         {
             base.Exit();
+
+            Data.OnTotalWeightChanged -= WeightChanged;
 
             _localMoveTween?.Kill();
             _localMoveTween = Spider.RotationPlaneTransform.DOLocalMove(_defaultPosition, 0.5f);
@@ -64,5 +67,8 @@ namespace SpiderController.StateMachine.States.Ground
             else
                 StateMachine.SwitchState<RunningState>();
         }
+
+        private void WeightChanged() =>
+            SetSpeed(SpiderStaticData.SlowdownSpeed);
     }
 }

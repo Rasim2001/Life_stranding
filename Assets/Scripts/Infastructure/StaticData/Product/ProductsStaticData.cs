@@ -21,7 +21,7 @@ namespace Infastructure.StaticData.Product
         [FoldoutGroup("OnPlatformSettings")] public float Speed;
         [FoldoutGroup("OnPlatformSettings")] public Vector3 StartRotationEuler;
         [FoldoutGroup("OnPlatformSettings")] public Vector3 StartPositionVector;
-        [FoldoutGroup("OnPlatformSettings")] public PlatformId PlatformId;
+        [FoldoutGroup("OnPlatformSettings")] public float Weight;
 
         [FoldoutGroup("Description")] public ProductDescription ProductDescription;
     }

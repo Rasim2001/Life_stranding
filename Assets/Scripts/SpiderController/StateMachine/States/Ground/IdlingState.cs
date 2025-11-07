@@ -24,12 +24,22 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Enter();
 
-            Data.Speed = 0;
+            Data.OnTotalWeightChanged += WeightChanged;
             Data.DistanceFromGround = SpiderStaticData.DistanceFromGround;
+            SetSpeed(0);
 
             EnergyBarUI.PlayFadeHologramEffect();
         }
 
+        public override void Exit()
+        {
+            base.Exit();
+
+            Data.OnTotalWeightChanged -= WeightChanged;
+        }
+
+        private void WeightChanged() =>
+            SetSpeed(0);
 
         public override void Update()
         {

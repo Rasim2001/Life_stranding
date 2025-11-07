@@ -72,6 +72,7 @@ namespace SpiderController
         public PlatformSelector PlatformSelector => _platformSelector;
         public ObserverTrigger WaterObserverTrigger => _waterObserverTrigger;
         public WaterStaticData WaterStaticData => _staticDataService.WaterStaticData;
+        public StateMachineData StateMachineData => _stateMachineData;
 
         public Stickers Stickers => _stickers;
 
@@ -205,7 +206,8 @@ namespace SpiderController
                 _skillChecker);
             _skillProductPickup.Initialize();
 
-            _platformSelector = new PlatformSelector(_staticDataService, _platformRegistryService, _inputService);
+            _platformSelector = new PlatformSelector(_stateMachineData, _staticDataService, _platformRegistryService,
+                _inputService);
             _platformSelector.Initialize();
 
             _checkpointPickup = new CheckpointPickup(_inputService, _pickupDisplayer, _windowService,

@@ -42,7 +42,8 @@ namespace SpiderController.PickUp
 
         public void Update()
         {
-            if (_inputService.PickupPressed && !_platformObjectsService.HasAny<Flower>() && !_flowerChecker.IsTouching)
+            if (_inputService.PickupPressed && !_platformObjectsService.HasAny<Flower>() &&
+                !_platformObjectsService.HasAny<ElephantProduct>() && !_flowerChecker.IsTouching)
                 PickBatteries();
 
             TryShow();
@@ -64,9 +65,15 @@ namespace SpiderController.PickUp
 
         private void PickBatteries()
         {
+            bool canPickUp = _batteryProductChecker.Results.Any(x =>
+                x.GetComponent<BatteryProduct>() != null && x.GetComponent<BatteryProduct>().IsOnPlatform == false);
+
+            if (!canPickUp)
+                return;
+
             List<BatteryProduct> batteryProducts = _batteryProductChecker.Results
                 .Select(x => x.GetComponent<BatteryProduct>())
-                .Where(x => !x.IsPuttingDown && !x.IsOnPlatform)
+                .Where(x => !x.IsPuttingDown)
                 .ToList();
 
             int n = batteryProducts.Count;

@@ -33,11 +33,22 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Enter();
 
+            Data.OnTotalWeightChanged += WeightChanged;
             Data.DistanceFromGround = SpiderStaticData.DistanceFromGround;
-            Data.Speed = SpiderStaticData.Speed;
 
+            SetSpeed(SpiderStaticData.Speed);
             EnergyBarUI.PlayFadeHologramEffect();
         }
+
+        public override void Exit()
+        {
+            base.Exit();
+
+            Data.OnTotalWeightChanged -= WeightChanged;
+        }
+
+        private void WeightChanged() =>
+            SetSpeed(SpiderStaticData.Speed);
 
         public override void Update()
         {

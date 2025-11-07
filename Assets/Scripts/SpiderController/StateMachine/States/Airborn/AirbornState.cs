@@ -22,18 +22,23 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Enter();
 
-            SetAirbornLegs();
+            Data.OnTotalWeightChanged += WeightChanged;
 
-            Data.Speed = SpiderStaticData.Speed;
+            SetAirbornLegs();
+            SetSpeed(SpiderStaticData.Speed);
         }
 
         public override void Exit()
         {
             base.Exit();
 
+            Data.OnTotalWeightChanged -= WeightChanged;
 
             SetGroundLegs();
         }
+
+        private void WeightChanged() =>
+            SetSpeed(SpiderStaticData.Speed);
 
 
         public override void Update()
