@@ -215,7 +215,7 @@ namespace Infastructure.Factories.GameFactories
 
                 ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
                 GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
-
+                
                 SkillProduct skillProduct = _diContainer.InstantiatePrefabForComponent<SkillProduct>(prefab,
                     skillData.WorldPosition,
                     skillData.WorldRotation,

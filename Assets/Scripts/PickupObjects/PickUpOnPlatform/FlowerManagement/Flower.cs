@@ -101,7 +101,7 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             OnDroppedFromPlatform?.Invoke();
         }
 
-        public void Putdown(CheckPoint checkPoint)
+        public void Putdown(ICheckpointInfo checkPoint)
         {
             Rigidbody.isKinematic = true;
             IsPuttingDown = true;

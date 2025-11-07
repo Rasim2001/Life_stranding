@@ -46,6 +46,7 @@ namespace SpiderController
         [SerializeField] private SkillProductChecker _skillChecker;
         [SerializeField] private CheckpointChecker _checkpointChecker;
         [SerializeField] private GeneratorChecker _generatorChecker;
+        [SerializeField] private BiosphereChecker _biosphereChecker;
         [SerializeField] private ObserverTrigger _waterObserverTrigger;
 
         [SerializeField] private Stickers _stickers;
@@ -92,6 +93,7 @@ namespace SpiderController
         private SkillProductPickup _skillProductPickup;
         private CheckpointPickup _checkpointPickup;
         private GeneratorPickup _generatorPickup;
+        private BiosphereProductPickup _biosphereProductPickup;
 
         private IInputService _inputService;
         private IStaticDataService _staticDataService;
@@ -162,6 +164,7 @@ namespace SpiderController
             _checkpointPickup.Destroy();
             _generatorPickup.Destroy();
             _platformSelector.Destroy();
+            _biosphereProductPickup.Destroy();
 
             _defeatWindowService.OnDefeatHappened -= Defeat;
         }
@@ -218,6 +221,10 @@ namespace SpiderController
                 _windowService, _generatorChecker);
             _generatorPickup.Initialize();
 
+            _biosphereProductPickup =
+                new BiosphereProductPickup(_inputService, _pickupDisplayer, _biosphereChecker, flower);
+            _biosphereProductPickup.Initialize();
+
             _spiderStateMachine =
                 new SpiderStateMachine(this,
                     _stateMachineData,
@@ -254,6 +261,7 @@ namespace SpiderController
             _skillProductPickup.Update();
             _checkpointPickup.Update();
             _generatorPickup.Update();
+            _biosphereProductPickup.Update();
         }
 
         private void Defeat() =>

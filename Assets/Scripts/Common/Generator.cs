@@ -1,5 +1,7 @@
 using DG.Tweening;
+using Infastructure.Services.GeneratorLaunchTracker;
 using UnityEngine;
+using Zenject;
 
 namespace Common
 {
@@ -7,6 +9,7 @@ namespace Common
     {
         private const string Emission = "_EMISSION";
 
+        [SerializeField] private BiosphereFx _biosphereFx;
         [SerializeField] private Material _material;
         [SerializeField] private Transform _putdownBatteryPoint;
         [SerializeField] private Transform _pickUpDisplayPoint;
@@ -19,14 +22,22 @@ namespace Common
 
         private readonly Vector3 _rotationSpeed = new Vector3(0, 360, 0);
 
+        private IGeneratorLaunchTrackerService _generatorLaunchTrackerService;
         private Sequence _sequenceMove;
         private Tween _rotateTween;
+
+        [Inject]
+        public void Construct(IGeneratorLaunchTrackerService generatorLaunchTrackerService) =>
+            _generatorLaunchTrackerService = generatorLaunchTrackerService;
 
 
         public void StartGenerator()
         {
             IsLaunched = true;
 
+            _generatorLaunchTrackerService.OnGeneratorLaunchHappened?.Invoke();
+
+            _biosphereFx.ShowFx(1);
             _sequenceMove?.Kill();
             _sequenceMove = DOTween.Sequence();
 

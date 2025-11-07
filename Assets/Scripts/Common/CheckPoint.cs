@@ -9,8 +9,9 @@ using Zenject;
 
 namespace Common
 {
-    public class CheckPoint : MonoBehaviour
+    public class CheckPoint : MonoBehaviour, ICheckpointInfo
     {
+        [SerializeField] private BiosphereFx _biosphereFx;
         [SerializeField] private ObserverTrigger _observerTrigger;
         [SerializeField] private Transform _flowerPutdownPoint;
         [SerializeField] private Transform _bodyTransform;
@@ -79,6 +80,7 @@ namespace Common
 
             _isLaunched = true;
 
+            _biosphereFx.ShowFx(1);
             DeployAntenna();
             OpenWindow();
         }

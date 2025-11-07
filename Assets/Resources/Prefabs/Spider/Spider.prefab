@@ -7579,7 +7579,7 @@ GameObject:
   - component: {fileID: 6324603647754745984}
   - component: {fileID: 20405108569065392}
   m_Layer: 15
-  m_Name: WinChecker
+  m_Name: BiosphereChecker
   m_TagString: Untagged
   m_Icon: {fileID: 3443629218296621865, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -7649,6 +7649,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _observerTrigger: {fileID: 6324603647754745984}
+  Results: []
 --- !u!1 &7066780285649380161
 GameObject:
   m_ObjectHideFlags: 0
@@ -12078,6 +12079,7 @@ MonoBehaviour:
   _skillChecker: {fileID: 5344825924384677612}
   _checkpointChecker: {fileID: 6870405991774368476}
   _generatorChecker: {fileID: 7170742958055070815}
+  _biosphereChecker: {fileID: 20405108569065392}
   _waterObserverTrigger: {fileID: 7026933390002660705}
   _stickers: {fileID: 1295488752135891832}
   _rotationPlaneTransform: {fileID: 5895152827964624774}
