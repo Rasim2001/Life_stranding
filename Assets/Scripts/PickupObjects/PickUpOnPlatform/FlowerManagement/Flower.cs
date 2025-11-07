@@ -5,6 +5,7 @@ using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
 using MoreMountains.Feedbacks;
 using SpiderController.Platform;
+using SpiderController.StateMachine;
 using UnityEngine;
 using Zenject;
 
@@ -23,6 +24,8 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
 
         private FlowerPointIndicator _flowerPointIndicator;
         private FlowerSelector _flowerSelector;
+        private StateMachineData _stateMachineData;
+        private ProductData _productData;
 
         private IStaticDataService _staticDataService;
 
@@ -46,17 +49,20 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
         public void ResetFlowerVariant() =>
             _flowerSelector.Reset();
 
-        public void Initialize(FlowerPointIndicator flowerPointIndicator) =>
+        public void Initialize(FlowerPointIndicator flowerPointIndicator, StateMachineData stateMachineData)
+        {
+            _stateMachineData = stateMachineData;
             _flowerPointIndicator = flowerPointIndicator;
+        }
 
         public override void Initialize(Transform platformTransform, PlatformSelector platformSelector)
         {
             base.Initialize(platformTransform, platformSelector);
 
-            ProductData productData = _staticDataService.ProductsStaticData.ProductsDictionary[ProductType];
-            Speed = productData.Speed;
-            StartPosition = productData.StartPositionVector;
-            StartRotation = Quaternion.Euler(productData.StartRotationEuler);
+            _productData = _staticDataService.ProductsStaticData.ProductsDictionary[ProductType];
+            Speed = _productData.Speed;
+            StartPosition = _productData.StartPositionVector;
+            StartRotation = Quaternion.Euler(_productData.StartRotationEuler);
         }
 
         protected override void OnCollisionEnter(Collision other)
@@ -79,6 +85,8 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
 
             _isTriggered = false;
             _flowerPointIndicator.HideTargetPoint();
+
+            _stateMachineData.TotalWeight += _productData.Weight;
         }
 
         public override void StartSimulatePhysics()
@@ -88,10 +96,12 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             _feedbackPlayer.PlayFeedbacks();
             _flowerPointIndicator.ShowTargetPoint();
 
+            _stateMachineData.TotalWeight -= _productData.Weight;
+
             OnDroppedFromPlatform?.Invoke();
         }
 
-        public void Putdown(CheckPoint checkPoint)
+        public void Putdown(ICheckpointInfo checkPoint)
         {
             Rigidbody.isKinematic = true;
             IsPuttingDown = true;
@@ -99,6 +109,8 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
 
             transform.position = checkPoint.FlowerPutdownPosition;
             transform.rotation = checkPoint.FlowerPutdownRotation;
+
+            _stateMachineData.TotalWeight -= _productData.Weight;
 
             PlatformSelector.IsOnPlatform(Collider);
 

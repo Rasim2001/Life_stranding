@@ -4,6 +4,7 @@ using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
 using Infastructure.StaticData.XRay;
 using SpiderController.Platform;
+using SpiderController.StateMachine;
 using UnityEngine;
 using Zenject;
 
@@ -17,6 +18,9 @@ namespace PickupObjects.PickUpOnPlatform
         private IXRayService _xRayService;
         private IStaticDataService _staticDataService;
 
+        private ProductData _productData;
+        private StateMachineData _stateMachineData;
+
         [Inject]
         public void Construct(IXRayService xRayService, IStaticDataService staticDataService)
         {
@@ -28,11 +32,14 @@ namespace PickupObjects.PickUpOnPlatform
         {
             base.Initialize(platformTransform, platformSelector);
 
-            ProductData productData = _staticDataService.ProductsStaticData.ProductsDictionary[ProductType];
-            Speed = productData.Speed;
-            StartPosition = productData.StartPositionVector;
-            StartRotation = Quaternion.Euler(productData.StartRotationEuler);
+            _productData = _staticDataService.ProductsStaticData.ProductsDictionary[ProductType];
+            Speed = _productData.Speed;
+            StartPosition = _productData.StartPositionVector;
+            StartRotation = Quaternion.Euler(_productData.StartRotationEuler);
         }
+
+        public void Initialize(StateMachineData stateMachineData) =>
+            _stateMachineData = stateMachineData;
 
 
         private void Start() =>
@@ -40,6 +47,9 @@ namespace PickupObjects.PickUpOnPlatform
 
         public override void StopSimulatePhysics()
         {
+            if (!IsOnPlatform)
+                _stateMachineData.TotalWeight += _productData.Weight;
+
             base.StopSimulatePhysics();
 
             _xRayService.Remove(_xRayMarker);
@@ -48,6 +58,8 @@ namespace PickupObjects.PickUpOnPlatform
         public override void StartSimulatePhysics()
         {
             base.StartSimulatePhysics();
+
+            _stateMachineData.TotalWeight -= _productData.Weight;
 
             _xRayService.Add(_xRayMarker);
         }
@@ -60,7 +72,7 @@ namespace PickupObjects.PickUpOnPlatform
             Rigidbody.isKinematic = true;
             IsPuttingDown = true;
             Collider.enabled = false;
-            
+
             PlatformSelector.IsOnPlatform(Collider);
 
             base.StartSimulatePhysics();

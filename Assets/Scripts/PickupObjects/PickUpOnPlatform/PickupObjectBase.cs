@@ -40,7 +40,7 @@ namespace PickupObjects.PickUpOnPlatform
 
 
         [Inject]
-        public void Construct(IStaticDataService staticDataService, IPlatformObjectsService platformObjectsService) =>
+        public void Construct(IPlatformObjectsService platformObjectsService) =>
             _platformObjectsService = platformObjectsService;
 
         public virtual void Initialize(Transform platformTransform, PlatformSelector platformSelector)

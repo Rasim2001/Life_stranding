@@ -44,8 +44,6 @@ namespace UI.MVVM.View.WinPopup
             _framePiecesUI.MoveFramePiecesAsync().Forget();
             _containerRotateTween = _container.DORotate(Vector3.zero, 0.2f).SetUpdate(true);
 
-            Debug.Log(_timerService.GetTravelledTime());
-
             _timerText.text = _timerService.GetTravelledTime();
         }
 

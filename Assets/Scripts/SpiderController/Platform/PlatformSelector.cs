@@ -3,6 +3,7 @@ using Infastructure.PlatformRegistry;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
 using Infastructure.StaticData.StaticDataService;
+using SpiderController.StateMachine;
 using UnityEngine;
 
 namespace SpiderController.Platform
@@ -23,6 +24,7 @@ namespace SpiderController.Platform
         };
         private Material _defaultMaterial;
 
+        private readonly StateMachineData _stateMachineData;
         private readonly IInputService _inputService;
         private bool _isBlinking;
         private float _blinkSpeed;
@@ -35,10 +37,12 @@ namespace SpiderController.Platform
         private int _currentIndex = 0;
 
         public PlatformSelector(
+            StateMachineData stateMachineData,
             IStaticDataService staticDataService,
             IPlatformRegistryService platformRegistryService,
             IInputService inputService)
         {
+            _stateMachineData = stateMachineData;
             _inputService = inputService;
             _platformRegistryService = platformRegistryService;
             _planeBlinkMaterial = new Material(staticDataService.MaterialsStaticData.PlaneBlinkMaterial);
@@ -132,7 +136,11 @@ namespace SpiderController.Platform
 
         private void InitializePlatform(PlatformId platformId)
         {
+            /*PlatformId lastId = _platformRegistryService.CurrentPlatformId;
+            _stateMachineData.TotalWeight = _platformRegistryService.TryGetPlatformData(lastId).Weight;*/
+
             _platformRegistryService.CurrentPlatformId = platformId;
+            _stateMachineData.TotalWeight += _platformRegistryService.TryGetPlatformData(platformId).Weight;
 
             foreach (KeyValuePair<PlatformId, PlatformData> pair in _platformRegistryService.GetAllPlatforms())
             {
@@ -161,6 +169,10 @@ namespace SpiderController.Platform
 
             Activate(platformData, true);
             Activate(_platformRegistryService.CurrentPlatformData, false);
+
+            PlatformId lastId = _platformRegistryService.CurrentPlatformId;
+            _stateMachineData.TotalWeight -= _platformRegistryService.TryGetPlatformData(lastId).Weight;
+            _stateMachineData.TotalWeight += _platformRegistryService.TryGetPlatformData(platformId).Weight;
 
             _platformRegistryService.CurrentPlatformData = platformData;
             _platformRegistryService.CurrentPlatformId = platformId;

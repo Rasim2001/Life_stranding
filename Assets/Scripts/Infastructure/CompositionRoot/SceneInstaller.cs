@@ -8,6 +8,7 @@ using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
 using Infastructure.Services.Explosion;
+using Infastructure.Services.GeneratorLaunchTracker;
 using Infastructure.Services.Magnet;
 using Infastructure.Services.PauseWindow;
 using Infastructure.Services.PlatformObjects;
@@ -65,6 +66,8 @@ namespace Infastructure.CompositionRoot
             BindTimerService();
 
             BindDefeatWindowService();
+
+            BindGeneratorLaunchTrackerService();
         }
 
         private void BindUI()
@@ -83,6 +86,10 @@ namespace Infastructure.CompositionRoot
 
             BindPauseWindowService();
         }
+
+
+        private void BindGeneratorLaunchTrackerService() =>
+            Container.BindInterfacesAndSelfTo<GeneratorLaunchTrackerService>().AsSingle();
 
         private void BindDefeatWindowService() =>
             Container.BindInterfacesAndSelfTo<DefeatWindowService>().AsSingle();
