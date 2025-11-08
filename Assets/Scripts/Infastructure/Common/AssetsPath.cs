@@ -7,6 +7,7 @@ namespace Infastructure.Common
         public const string CurtainRootPath = "Prefabs/UI/CurtainRoot";
         public const string PickupDisplayerPath = "Prefabs/UI/PickupDisplayerRoot";
         public const string GlobalWaterPath = "Prefabs/Water/GlobalWater";
+        public const string WaterFallsPath = "Prefabs/Water/WaterFalls";
         public const string StableWorldUpPath = "Prefabs/CameraSystem/StableWorldUp";
         public const string UIRootPath = "Prefabs/UI/Windows/Root/UIRoot";
         public const string GamePlayUIPath = "Prefabs/UI/Windows/Root/GameplayUI";

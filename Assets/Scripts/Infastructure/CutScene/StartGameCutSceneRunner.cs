@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Infastructure.Common;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
@@ -119,18 +120,9 @@ namespace Infastructure.CutScene
             _mainBrainCamera.UpdateMethod = CinemachineBrain.UpdateMethods.FixedUpdate;
             _inputService.SetInputSource(new PlayerInputSource());
 
+            Instantiate(Resources.Load<GameObject>(AssetsPath.WaterFallsPath));
+
             Destroy(gameObject);
-        }
-
-        private void CameraBlendChange()
-        {
-            CinemachineBlendDefinition newDefault = new CinemachineBlendDefinition
-            {
-                Style = CinemachineBlendDefinition.Styles.EaseInOut,
-                Time = 2
-            };
-
-            _mainBrainCamera.DefaultBlend = newDefault;
         }
     }
 }
