@@ -15,6 +15,7 @@ namespace UI.MVVM.View.StartSplashScreen
 
         [SerializeField] private Button _startGameBtn;
         [SerializeField] private Button _settingsPopupBtn;
+        [SerializeField] private Button _exitBtn;
         [SerializeField] private Animator _flowerAnimator;
         [SerializeField] private CanvasGroup _canvasGroup;
 
@@ -39,6 +40,7 @@ namespace UI.MVVM.View.StartSplashScreen
 
             _startGameBtn.onClick.AddListener(StartGame);
             _settingsPopupBtn.onClick.AddListener(OpenSettingsPopup);
+            _exitBtn.onClick.AddListener(Exit);
 
             _cutSceneService.OnSkipHappened += Skip;
         }
@@ -47,6 +49,8 @@ namespace UI.MVVM.View.StartSplashScreen
         {
             _startGameBtn.onClick.RemoveListener(StartGame);
             _settingsPopupBtn.onClick.RemoveListener(OpenSettingsPopup);
+            _exitBtn.onClick.RemoveListener(Exit);
+
 
             _cutSceneService.OnSkipHappened -= Skip;
         }
@@ -73,5 +77,8 @@ namespace UI.MVVM.View.StartSplashScreen
 
             ViewModel.RequestClose();
         }
+
+        private void Exit() =>
+            Application.Quit();
     }
 }

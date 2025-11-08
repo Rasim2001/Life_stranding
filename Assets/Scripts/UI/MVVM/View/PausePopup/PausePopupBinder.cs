@@ -15,6 +15,7 @@ namespace UI.MVVM.View.PausePopup
     {
         [SerializeField] private Button _restartButton;
         [SerializeField] private Button _gotoMenu;
+        [SerializeField] private Button _exit;
 
         private IPauseService _pauseService;
         private IPauseWindowService _pauseWindowService;
@@ -39,6 +40,7 @@ namespace UI.MVVM.View.PausePopup
 
             _restartButton.onClick.AddListener(Restart);
             _gotoMenu.onClick.AddListener(GoToMenu);
+            _exit.onClick.AddListener(Exit);
 
             _pauseService.StartPause();
         }
@@ -49,6 +51,7 @@ namespace UI.MVVM.View.PausePopup
 
             _restartButton.onClick.RemoveListener(Restart);
             _gotoMenu.onClick.RemoveListener(GoToMenu);
+            _exit.onClick.RemoveListener(Exit);
 
             _pauseService.StopPause();
         }
@@ -67,7 +70,10 @@ namespace UI.MVVM.View.PausePopup
             _stateMachine.Enter<ExitGameLoopState>();
         }
 
-        private void GoToMenu() => 
+        private void GoToMenu() =>
             _stateMachine.Enter<ExitGameLoopState>();
+
+        private void Exit() =>
+            Application.Quit();
     }
 }

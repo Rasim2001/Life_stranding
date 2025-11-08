@@ -265,8 +265,13 @@ namespace SpiderController
             _biosphereProductPickup.Update();
         }
 
-        private void Defeat() =>
+        private void Defeat()
+        {
+            Rigidbody.linearVelocity = Vector3.zero;
+            Rigidbody.angularVelocity = Vector3.zero;
+
             _stateMachineData.Clear();
+        }
 
         private void FixedUpdate()
         {

@@ -64,15 +64,11 @@ namespace SpiderController.StateMachine.States
         }
 
 
-        public virtual void Enter()
-        {
+        public virtual void Enter() =>
             Spider.WindowService.OnWindowOpened += HideMagnet;
-        }
 
-        public virtual void Exit()
-        {
+        public virtual void Exit() =>
             Spider.WindowService.OnWindowOpened -= HideMagnet;
-        }
 
         public virtual void HandleInput()
         {

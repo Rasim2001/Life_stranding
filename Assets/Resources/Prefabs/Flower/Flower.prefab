@@ -115,8 +115,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.34877753, y: 0.5131468, z: 0.35045958}
-  m_Center: {x: -0.0004888177, y: 0.24342659, z: -0.005339712}
+  m_Size: {x: 0.26394302, y: 0.5131468, z: 0.25829625}
+  m_Center: {x: 0.0005867779, y: 0.24342659, z: 0.00035575777}
 --- !u!54 &3872679965610289599
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -681,6 +681,7 @@ MonoBehaviour:
   _groundLayer:
     serializedVersion: 2
     m_Bits: 31031
+  _flowerVariants: []
 --- !u!114 &3442978669235190482
 MonoBehaviour:
   m_ObjectHideFlags: 0

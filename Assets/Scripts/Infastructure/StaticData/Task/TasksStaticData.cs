@@ -18,6 +18,6 @@ namespace Infastructure.StaticData.Task
     {
         public string TaskName;
         public string TaskDescription;
-        public VideoClip VideoClip;
+        public Sprite ScreenIcon;
     }
 }

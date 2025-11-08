@@ -43,9 +43,6 @@ namespace Infastructure.Services.PlayerInput
             _isLeftShiftUpOnce = true;
             _ctrlUpOnce = true;
             _jumpUpOnce = true;
-
-
-            Debug.Log("WindowOpenedUI");
         }
 
         public void Dispose()
