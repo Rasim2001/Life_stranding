@@ -24,7 +24,7 @@ namespace UI.MVVM.Base
             _openedScreen.Value?.Dispose();
         }
 
-        public bool HasOpenedWindow() =>
+        public bool CanOpenWindow() =>
             _openedPopups.Count == 0 && _openedScreen.Value == null;
 
         public void OpenScreen(WindowViewModel screenViewModel)

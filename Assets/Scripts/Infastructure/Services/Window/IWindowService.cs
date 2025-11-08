@@ -14,5 +14,6 @@ namespace Infastructure.Services.Window
         void ClosePopup(string id);
         void TryOpenMainTaskPopup(bool isActive);
         void OpenWinPopup();
+        bool CanOpenWindow();
     }
 }

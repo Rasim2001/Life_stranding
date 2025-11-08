@@ -4,6 +4,7 @@ using PickupObjects;
 using Sirenix.OdinInspector;
 using SpiderController.Platform;
 using UnityEngine;
+using UnityEngine.Video;
 
 namespace Infastructure.StaticData.Product
 {
@@ -32,5 +33,7 @@ namespace Infastructure.StaticData.Product
         public string TitleText;
         public string HowToUseText;
         public string DescriptionText;
+
+        public VideoClip VideoClip;
     }
 }

@@ -167,6 +167,9 @@ namespace PickupObjects.PickUpOnPlatform
 
             transform.localPosition =
                 new Vector3(transform.localPosition.x, StartPosition.y, transform.localPosition.z);
+
+            Rigidbody.linearVelocity = Vector3.zero;
+            Rigidbody.angularVelocity = Vector3.zero;
         }
     }
 }

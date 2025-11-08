@@ -117,14 +117,18 @@ namespace Infastructure.Services.Window
             _gamePlayViewModel.OpenPopup(model);
         }
 
-        public void ClosePopup(string id) =>
-            _gamePlayViewModel.ClosePopup(id);
 
         public void TryOpenMainTaskPopup(bool isActive)
         {
             if (!isActive)
                 OpenMainTaskPopupAsync().Forget();
         }
+
+        public void ClosePopup(string id) =>
+            _gamePlayViewModel.ClosePopup(id);
+
+        public bool CanOpenWindow() =>
+            _gamePlayViewModel.CanOpenWindow();
 
         private async UniTask OpenMainTaskPopupAsync()
         {

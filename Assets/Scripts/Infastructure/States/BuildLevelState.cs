@@ -120,6 +120,7 @@ namespace Infastructure.States
             InitSkillProducts();
 
             InitGlobalWater();
+            InitCommonObjects();
         }
 
         private void InitGlobalWater() =>
@@ -137,6 +138,8 @@ namespace Infastructure.States
         private void InitCheckPoints() =>
             _gameFactory.CreateCheckPoints();
 
+        private void InitCommonObjects() =>
+            _gameFactory.CreateCommonObjects();
 
         private Spider InitSpider(Flower flower) =>
             _gameFactory.CreateSpider(flower);

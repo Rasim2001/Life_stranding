@@ -35,8 +35,7 @@ namespace Common
         {
             IsLaunched = true;
 
-            _generatorLaunchTrackerService.OnGeneratorLaunchHappened?.Invoke();
-
+            _generatorLaunchTrackerService.Launch();
             _biosphereFx.ShowFx(1);
             _sequenceMove?.Kill();
             _sequenceMove = DOTween.Sequence();

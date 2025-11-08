@@ -23,6 +23,9 @@ namespace Infastructure.Services.PauseWindow
         {
             if (_inputService.PauseButtonPressed)
             {
+                if (IsOpened == false && !_windowService.CanOpenWindow())
+                    return;
+
                 IsOpened = !IsOpened;
 
                 if (IsOpened)

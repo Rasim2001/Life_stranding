@@ -8,6 +8,7 @@ using TMPro;
 using UI.MVVM.Base;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 using Zenject;
 
 namespace UI.MVVM.View.ProductDescriptionPopup
@@ -28,6 +29,8 @@ namespace UI.MVVM.View.ProductDescriptionPopup
         [SerializeField] private Transform _discriptionContainer;
         [SerializeField] private Transform _gifLinesTransform;
         [SerializeField] private FramePiece[] _framePieces;
+
+        [SerializeField] private VideoPlayer _videoPlayer;
 
         private UIFlicker _uiFlicker;
 
@@ -79,6 +82,7 @@ namespace UI.MVVM.View.ProductDescriptionPopup
             _titleText.text = viewModel.Description.TitleText;
             _howToUseText.text = viewModel.Description.HowToUseText;
             _descriptionText.text = viewModel.Description.DescriptionText;
+            _videoPlayer.clip = viewModel.Description.VideoClip;
         }
 
         private async UniTask StartFlickAsync() =>

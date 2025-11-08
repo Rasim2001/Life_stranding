@@ -212,8 +212,6 @@ namespace Infastructure.Factories.GameFactories
             {
                 ProductType productType = skillData.ProductType;
 
-                Debug.Log(productType);
-
                 ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
                 GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
 
@@ -270,6 +268,11 @@ namespace Infastructure.Factories.GameFactories
             TerrainScanIconsRenderer terrainScanIconsRenderer =
                 terrainScanObject.GetComponentInChildren<TerrainScanIconsRenderer>();
             terrainScanIconsRenderer.Initialize(cameraTransform);
+        }
+
+        public void CreateCommonObjects()
+        {
+            _diContainer.InstantiatePrefabResource(AssetsPath.BridgePath);
         }
 
         public void CreateGlobalWater() =>
