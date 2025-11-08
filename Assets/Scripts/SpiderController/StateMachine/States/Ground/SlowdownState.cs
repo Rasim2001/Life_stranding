@@ -30,6 +30,7 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Enter();
 
+            Spider.WindowService.OnWindowOpened += ReturnToNormalMovement;
             Data.OnTotalWeightChanged += WeightChanged;
             Data.DistanceFromGround = SpiderStaticData.SlowdownDistanceFromGround;
             SetSpeed(SpiderStaticData.SlowdownSpeed);
@@ -44,6 +45,7 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Exit();
 
+            Spider.WindowService.OnWindowOpened -= ReturnToNormalMovement;
             Data.OnTotalWeightChanged -= WeightChanged;
 
             _localMoveTween?.Kill();
@@ -60,6 +62,11 @@ namespace SpiderController.StateMachine.States.Ground
             if (!SlowdownUp())
                 return;
 
+            ReturnToNormalMovement();
+        }
+
+        private void ReturnToNormalMovement()
+        {
             if (IsInputZero())
                 StateMachine.SwitchState<IdlingState>();
             else if (IsFastRunPressed() && Spider.AbilityService.IsExploredAbility(ProductType.FastRunSkillProduct))

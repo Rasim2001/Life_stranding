@@ -66,10 +66,12 @@ namespace SpiderController.StateMachine.States
 
         public virtual void Enter()
         {
+            Spider.WindowService.OnWindowOpened += HideMagnet;
         }
 
         public virtual void Exit()
         {
+            Spider.WindowService.OnWindowOpened -= HideMagnet;
         }
 
         public virtual void HandleInput()
@@ -112,30 +114,36 @@ namespace SpiderController.StateMachine.States
         {
             if (_inputService.RightMousePressed &&
                 Spider.AbilityService.IsExploredAbility(ProductType.MagnetSkillProduct))
-            {
-                Spider.SpiderUI.MagnetIndicatorUI.Show();
-                Spider.MagnetFreezingService.Freeze();
-
-                Data.IsMouseHolding = true;
-
-                EnergyBarUI.ShowHologram();
-            }
+                ShowMagnet();
 
             else if (_inputService.RightMouseUp)
-            {
-                Spider.SpiderUI.MagnetIndicatorUI.Hide();
-                Spider.MagnetFreezingService.Unfreeze();
-
-                Data.IsMouseHolding = false;
-
-                EnergyBarUI.PlayFadeHologramEffect();
-            }
+                HideMagnet();
 
             if (Data.IsMouseHolding)
                 EnergySystem.SpendEnergy(SpiderStaticData.EnergySpendFreezingFlowerSpeed);
 
             if (Data.CurrentEnergyFillAmount <= 0)
                 Spider.MagnetFreezingService.Unfreeze();
+        }
+
+        private void HideMagnet()
+        {
+            Spider.SpiderUI.MagnetIndicatorUI.Hide();
+            Spider.MagnetFreezingService.Unfreeze();
+
+            Data.IsMouseHolding = false;
+
+            EnergyBarUI.PlayFadeHologramEffect();
+        }
+
+        private void ShowMagnet()
+        {
+            Spider.SpiderUI.MagnetIndicatorUI.Show();
+            Spider.MagnetFreezingService.Freeze();
+
+            Data.IsMouseHolding = true;
+
+            EnergyBarUI.ShowHologram();
         }
 
 

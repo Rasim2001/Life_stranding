@@ -212,8 +212,6 @@ namespace Infastructure.Factories.GameFactories
             {
                 ProductType productType = skillData.ProductType;
 
-                Debug.Log(productType);
-
                 ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
                 GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
 

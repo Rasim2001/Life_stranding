@@ -1,8 +1,10 @@
+using System;
 using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
+using Infastructure.Services.Window;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using Unity.Cinemachine;
@@ -20,6 +22,7 @@ namespace CameraFollow
         private IStableWorldUp _stableWorldUp;
         private ICutSceneService _cutSceneService;
         private IDefeatWindowService _defeatWindowService;
+        private IWindowService _windowService;
 
         private Transform _target;
         private Vector3 _velocity;
@@ -46,8 +49,10 @@ namespace CameraFollow
             IStaticDataService staticDataService,
             IStableWorldUp stableWorldUp,
             ICutSceneService cutSceneService,
-            IDefeatWindowService defeatWindowService)
+            IDefeatWindowService defeatWindowService,
+            IWindowService windowService)
         {
+            _windowService = windowService;
             _defeatWindowService = defeatWindowService;
             _cutSceneService = cutSceneService;
             _stableWorldUp = stableWorldUp;
@@ -66,10 +71,15 @@ namespace CameraFollow
 
         private void Start()
         {
+            _windowService.OnWindowOpened += ReleaseInput;
+
             _defaultY = _cameraSystem.RotationComposer.Composition.ScreenPosition.y;
 
             _joystickInputSource = _inputService.GetInputSource<JoystickInputSource>();
         }
+
+        private void OnDestroy() =>
+            _windowService.OnWindowOpened -= ReleaseInput;
 
         private void FixedUpdate()
         {
@@ -125,21 +135,10 @@ namespace CameraFollow
         private void HandleMouse()
         {
             if (_inputService.CenterMousePressed)
-            {
-                _isMouseRotating = true;
-
-                _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed;
-            }
+                StartInput();
 
             if (_inputService.CenterMouseUp)
-            {
-                _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed / 3;
-
-                _yRotation = _defaultY;
-                _xRotation = 0;
-
-                _isMouseRotating = false;
-            }
+                ReleaseInput();
 
 
             if (_isMouseRotating)
@@ -156,6 +155,23 @@ namespace CameraFollow
             _cameraSystem.RotationComposer.Composition.ScreenPosition =
                 Vector2.Lerp(_cameraSystem.RotationComposer.Composition.ScreenPosition, rotationVector,
                     _cameraRotationSpeed * Time.deltaTime);
+        }
+
+        private void ReleaseInput()
+        {
+            _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed / 3;
+
+            _yRotation = _defaultY;
+            _xRotation = 0;
+
+            _isMouseRotating = false;
+        }
+
+        private void StartInput()
+        {
+            _isMouseRotating = true;
+
+            _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed;
         }
 
 

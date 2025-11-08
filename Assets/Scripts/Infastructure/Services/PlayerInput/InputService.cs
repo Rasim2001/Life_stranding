@@ -1,7 +1,7 @@
 using System;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
+using Infastructure.Services.Window;
 using UnityEngine;
-using Zenject;
 
 namespace Infastructure.Services.PlayerInput
 {
@@ -9,17 +9,49 @@ namespace Infastructure.Services.PlayerInput
     {
         public event Action<IInputSource> OnJoystickEnableHappend;
 
+        private readonly IWindowService _windowService;
+
         private IInputSource _inputSource;
         private IInputSource _joystickInputSource;
 
+
+        private bool _leftMouseUpOnce;
+        private bool _rightMouseUpOnce;
+        private bool _centerMouseUpOnce;
+        private bool _isLeftShiftUpOnce;
+        private bool _ctrlUpOnce;
+        private bool _jumpUpOnce;
+
+
+        public InputService(IWindowService windowService) =>
+            _windowService = windowService;
+
         public void Initialize()
         {
+            _windowService.OnWindowOpened += WindowOpenedUI;
+
             _inputSource = new CutSceneInputSource();
             _inputSource.Enable();
         }
 
+        private void WindowOpenedUI()
+        {
+            _leftMouseUpOnce = true;
+            _rightMouseUpOnce = true;
+            _centerMouseUpOnce = true;
+            _isLeftShiftUpOnce = true;
+            _isLeftShiftUpOnce = true;
+            _ctrlUpOnce = true;
+            _jumpUpOnce = true;
+
+
+            Debug.Log("WindowOpenedUI");
+        }
+
         public void Dispose()
         {
+            _windowService.OnWindowOpened -= WindowOpenedUI;
+
             _joystickInputSource.Disable();
             _inputSource.Disable();
 
@@ -72,8 +104,19 @@ namespace Infastructure.Services.PlayerInput
 
         public bool LeftMouseUp => _inputSource.LeftMouseUp;
 
-        public bool RightMousePressed =>
-            _inputSource.RightMousePressed || (_joystickInputSource?.RightMousePressed ?? false);
+        public bool RightMousePressed
+        {
+            get
+            {
+                if (_leftMouseUpOnce)
+                {
+                    _leftMouseUpOnce = false;
+                    return _leftMouseUpOnce;
+                }
+
+                return _inputSource.RightMousePressed || (_joystickInputSource?.RightMousePressed ?? false);
+            }
+        }
 
         public bool RightMouseUp => _inputSource.RightMouseUp || (_joystickInputSource?.RightMouseUp ?? false);
 
@@ -134,10 +177,5 @@ namespace Infastructure.Services.PlayerInput
         public bool JerkPressed => _inputSource.JerkPressed || (_joystickInputSource?.JerkPressed ?? false);
 
         public bool PickupPressed => _inputSource.PickupPressed || (_joystickInputSource?.PickupPressed ?? false);
-
-        public void Tick()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

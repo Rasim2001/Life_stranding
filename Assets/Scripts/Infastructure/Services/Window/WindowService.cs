@@ -24,6 +24,8 @@ namespace Infastructure.Services.Window
 {
     public class WindowService : IWindowService, IInitializable, IDisposable
     {
+        public event Action OnWindowOpened;
+
         private readonly UIGameplayRootViewModel _gamePlayViewModel;
         private readonly IStaticDataService _staticDataService;
         private readonly IAbilityService _abilityService;
@@ -59,6 +61,7 @@ namespace Infastructure.Services.Window
             StartSplashScreenViewModel viewModel = new StartSplashScreenViewModel(this);
 
             _gamePlayViewModel.OpenScreen(viewModel);
+            OnWindowOpened?.Invoke();
         }
 
         public void OpenPausePopup()
@@ -66,6 +69,7 @@ namespace Infastructure.Services.Window
             PausePopupViewModel model = new PausePopupViewModel();
 
             _gamePlayViewModel.OpenPopup(model);
+            OnWindowOpened?.Invoke();
         }
 
         public void OpenSettingsScreen()
@@ -73,6 +77,7 @@ namespace Infastructure.Services.Window
             SettingsScreenViewModel model = new SettingsScreenViewModel(this);
 
             _gamePlayViewModel.OpenScreen(model);
+            OnWindowOpened?.Invoke();
         }
 
         public void OpenWinPopup()
@@ -80,6 +85,7 @@ namespace Infastructure.Services.Window
             WinPopupViewModel model = new WinPopupViewModel();
 
             _gamePlayViewModel.OpenPopup(model);
+            OnWindowOpened?.Invoke();
         }
 
         public void OpenDefeatPopup()
@@ -87,6 +93,7 @@ namespace Infastructure.Services.Window
             DefeatPopupViewModel model = new DefeatPopupViewModel();
 
             _gamePlayViewModel.OpenPopup(model);
+            OnWindowOpened?.Invoke();
         }
 
         public void OpenProductDescriptionPopup(ProductType productType)
@@ -102,6 +109,7 @@ namespace Infastructure.Services.Window
                 new ProductDescriptionPopupViewModel(productData.ProductDescription);
 
             _gamePlayViewModel.OpenPopup(model);
+            OnWindowOpened?.Invoke();
         }
 
         public void OpenTaskPopup(TaskId taskId)
@@ -115,6 +123,7 @@ namespace Infastructure.Services.Window
             TaskPopupViewModel model = new TaskPopupViewModel(taskData);
 
             _gamePlayViewModel.OpenPopup(model);
+            OnWindowOpened?.Invoke();
         }
 
 
