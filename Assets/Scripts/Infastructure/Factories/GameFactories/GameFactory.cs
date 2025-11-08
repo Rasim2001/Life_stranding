@@ -272,6 +272,11 @@ namespace Infastructure.Factories.GameFactories
             terrainScanIconsRenderer.Initialize(cameraTransform);
         }
 
+        public void CreateCommonObjects()
+        {
+            _diContainer.InstantiatePrefabResource(AssetsPath.BridgePath);
+        }
+
         public void CreateGlobalWater() =>
             _diContainer.InstantiatePrefabResource(AssetsPath.GlobalWaterPath);
 

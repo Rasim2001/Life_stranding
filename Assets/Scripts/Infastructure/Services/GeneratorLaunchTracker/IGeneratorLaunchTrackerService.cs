@@ -1,9 +1,10 @@
-using System;
+using R3;
 
 namespace Infastructure.Services.GeneratorLaunchTracker
 {
     public interface IGeneratorLaunchTrackerService
     {
-        Action OnGeneratorLaunchHappened { get; set; }
+        Observable<Unit> OnLaunchHappened { get; }
+        void Launch();
     }
 }

@@ -69,13 +69,14 @@ namespace PickupObjects.PickUpOnPlatform
             transform.position = generator.PutdownBatteryPoint.position;
             transform.rotation = generator.PutdownBatteryPoint.rotation;
 
-            Rigidbody.isKinematic = true;
             IsPuttingDown = true;
             Collider.enabled = false;
 
             PlatformSelector.IsOnPlatform(Collider);
 
             base.StartSimulatePhysics();
+
+            Rigidbody.isKinematic = true;
         }
     }
 }

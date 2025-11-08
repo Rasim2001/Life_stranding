@@ -103,7 +103,6 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
 
         public void Putdown(ICheckpointInfo checkPoint)
         {
-            Rigidbody.isKinematic = true;
             IsPuttingDown = true;
             Collider.enabled = false;
 
@@ -115,6 +114,8 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             PlatformSelector.IsOnPlatform(Collider);
 
             StartSimulatePhysics();
+
+            Rigidbody.isKinematic = true;
         }
 
         public void PickUpAfterPutdown()

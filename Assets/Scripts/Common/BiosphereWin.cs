@@ -1,8 +1,10 @@
 using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Infastructure.Services.GeneratorLaunchTracker;
 using Infastructure.Services.Window;
+using R3;
 using UnityEngine;
 using Zenject;
 
@@ -20,12 +22,15 @@ namespace Common
         public Quaternion FlowerPutdownRotation => _flowerPutdownPoint.rotation;
 
         private readonly float _launchOffset = 0.25f;
+        private readonly CompositeDisposable _disposable = new CompositeDisposable();
+
         private IGeneratorLaunchTrackerService _generatorLaunchTrackerService;
 
         private float _summary;
         private Tween _rotateGlassTween;
         private bool _isTriggered;
         private IWindowService _windowService;
+
 
         [Inject]
         public void Construct(IGeneratorLaunchTrackerService generatorLaunchTrackerService,
@@ -37,13 +42,17 @@ namespace Common
 
         private void Start()
         {
-            _generatorLaunchTrackerService.OnGeneratorLaunchHappened += GeneratorLaunched;
+            _generatorLaunchTrackerService.OnLaunchHappened
+                .Subscribe(_ => GeneratorLaunched())
+                .AddTo(_disposable);
+
             _observerTrigger.OnTriggerEnterHappened += TriggerEnter;
         }
 
         private void OnDestroy()
         {
-            _generatorLaunchTrackerService.OnGeneratorLaunchHappened -= GeneratorLaunched;
+            _disposable.Dispose();
+
             _observerTrigger.OnTriggerEnterHappened -= TriggerEnter;
         }
 
@@ -65,6 +74,8 @@ namespace Common
 
         private void GeneratorLaunched()
         {
+            Debug.Log("Generator launched");
+
             _summary += _launchOffset;
 
             _biosphereFx.ShowFx(_summary);

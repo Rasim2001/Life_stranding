@@ -22,5 +22,6 @@ namespace Infastructure.Factories.GameFactories
         void CreateSkillProducts();
         void CreateAllGenerators();
         void CreateGlobalWater();
+        void CreateCommonObjects();
     }
 }
