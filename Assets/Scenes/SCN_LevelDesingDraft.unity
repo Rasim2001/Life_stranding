@@ -136,7 +136,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!114 &65735148
 MonoBehaviour:
@@ -745,6 +745,10 @@ PrefabInstance:
     - target: {fileID: 5709922416441280020, guid: bc4a7a5e7985d0646a6ae62492fcabf9, type: 3}
       propertyPath: m_Name
       value: 'CS_Groung '
+      objectReference: {fileID: 0}
+    - target: {fileID: 5709922416441280020, guid: bc4a7a5e7985d0646a6ae62492fcabf9, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1830,15 +1834,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3885013864746749913, guid: 4288a3d83606af64188d03dffadb38b8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -13846.53
+      value: -65.48648
       objectReference: {fileID: 0}
     - target: {fileID: 3885013864746749913, guid: 4288a3d83606af64188d03dffadb38b8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 15310.75
+      value: 112.56861
       objectReference: {fileID: 0}
     - target: {fileID: 3885013864746749913, guid: 4288a3d83606af64188d03dffadb38b8, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 8386.97
+      value: 221.59955
       objectReference: {fileID: 0}
     - target: {fileID: 3885013864746749913, guid: 4288a3d83606af64188d03dffadb38b8, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1926,15 +1930,15 @@ PrefabInstance:
       objectReference: {fileID: 851908672}
     - target: {fileID: 8064163460924754731, guid: 4288a3d83606af64188d03dffadb38b8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 22134.836
+      value: 8.12959
       objectReference: {fileID: 0}
     - target: {fileID: 8064163460924754731, guid: 4288a3d83606af64188d03dffadb38b8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 22134.836
+      value: 8.12959
       objectReference: {fileID: 0}
     - target: {fileID: 8064163460924754731, guid: 4288a3d83606af64188d03dffadb38b8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 22134.836
+      value: 8.12959
       objectReference: {fileID: 0}
     - target: {fileID: 8904227304648123187, guid: 4288a3d83606af64188d03dffadb38b8, type: 3}
       propertyPath: atmosphereProfile
