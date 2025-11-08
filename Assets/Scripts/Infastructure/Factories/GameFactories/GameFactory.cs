@@ -4,7 +4,6 @@ using GameDevBuddies;
 using HUD;
 using Infastructure.Common;
 using Infastructure.CutScene;
-using Infastructure.CutScene.Custom;
 using Infastructure.CutScene.Custom.Receivers;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.SpiderTrack;
@@ -215,7 +214,7 @@ namespace Infastructure.Factories.GameFactories
 
                 ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
                 GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
-                
+
                 SkillProduct skillProduct = _diContainer.InstantiatePrefabForComponent<SkillProduct>(prefab,
                     skillData.WorldPosition,
                     skillData.WorldRotation,
