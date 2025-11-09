@@ -1,6 +1,7 @@
 using Infastructure.Services.Ability;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
+using Infastructure.Services.Window;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
@@ -16,6 +17,7 @@ namespace SpiderController.Platform
         private readonly IInputService _inputService;
         private readonly IAbilityService _abilityService;
         private readonly IStaticDataService _staticDataService;
+        private IWindowService _windowService;
         private readonly StateMachineData _stateMachineData;
         private readonly PressedMouseButtonIndicatorUI _pressedMouseButtonIndicatorUI;
         private readonly Transform _rotationPlaneTransform;
@@ -39,8 +41,10 @@ namespace SpiderController.Platform
             IInputService inputService,
             IAbilityService abilityService,
             IStaticDataService staticDataService,
+            IWindowService windowService,
             StateMachineData stateMachineData)
         {
+            _windowService = windowService;
             _inputService = inputService;
             _abilityService = abilityService;
             _staticDataService = staticDataService;
@@ -51,12 +55,16 @@ namespace SpiderController.Platform
 
         public void Initialize()
         {
+            _windowService.OnWindowOpened += ReleaseInput;
+
             _inputService.OnJoystickEnableHappend += EnableJoystick;
             _stateMachineData.OnFallingDownStateChanged += OnFallingDownStateEnter;
         }
 
         public void Destroy()
         {
+            _windowService.OnWindowOpened -= ReleaseInput;
+
             _inputService.OnJoystickEnableHappend -= EnableJoystick;
             _stateMachineData.OnFallingDownStateChanged -= OnFallingDownStateEnter;
         }
@@ -68,18 +76,9 @@ namespace SpiderController.Platform
                 return;
 
             if (_inputService.LeftMousePressed)
-            {
-                _pressedMouseButtonIndicatorUI.Show();
-                _isMouseHold = true;
-                _initialMousePosition = Input.mousePosition;
-                _waitTimeJoystick = 0;
-            }
+                StartInput();
             else if (_inputService.LeftMouseUp)
-            {
-                _pressedMouseButtonIndicatorUI.Hide();
-                _isMouseHold = false;
-                _mouseInput = Vector2.zero;
-            }
+                ReleaseInput();
 
             if (_isMouseHold)
                 HandleMousePosition();
@@ -95,6 +94,21 @@ namespace SpiderController.Platform
                 if (_joystickInputSource.IsRotationButtonPressed == false && _waitTimeJoystick > 0)
                     HandleJoystickPosition();
             }
+        }
+
+        private void ReleaseInput()
+        {
+            _pressedMouseButtonIndicatorUI.Hide();
+            _isMouseHold = false;
+            _mouseInput = Vector2.zero;
+        }
+
+        private void StartInput()
+        {
+            _pressedMouseButtonIndicatorUI.Show();
+            _isMouseHold = true;
+            _initialMousePosition = Input.mousePosition;
+            _waitTimeJoystick = 0;
         }
 
         private void EnableJoystick(IInputSource obj) =>

@@ -20,6 +20,8 @@ namespace UI.MVVM.View.TaskPopup
         [SerializeField] private FramePiece[] _framePieces;
         [SerializeField] private Transform _container;
 
+        [Header("Description")]
+        [SerializeField] private Image _screenImage;
         [SerializeField] private TextMeshProUGUI _taskNameText;
         [SerializeField] private TextMeshProUGUI _taskDescriptionText;
 
@@ -60,6 +62,7 @@ namespace UI.MVVM.View.TaskPopup
 
             _taskNameText.text = ViewModel.TaskData.TaskName;
             _taskDescriptionText.text = ViewModel.TaskData.TaskDescription;
+            _screenImage.sprite = ViewModel.TaskData.ScreenIcon;
         }
 
         protected override void OnDestroy()

@@ -63,6 +63,7 @@ namespace SpiderController
         public IAbilityService AbilityService => _abilityService;
         public IPauseService PauseService => _pauseService;
         public ICutSceneService CutSceneService => _cutSceneService;
+        public IWindowService WindowService => _windowService;
         public Rigidbody Rigidbody => _rigidbody;
         public GroundChecker GroundChecker => _groundChecker;
         public SpiderUI SpiderUI => _spiderUI;
@@ -184,7 +185,7 @@ namespace SpiderController
             _spiderImpactReceiver = new SpiderImpactReceiver(_stateMachineData, transform);
 
             _spiderPlane = new SpiderPlane(_spiderUI.PlaneIndicatorUI, _rotationPlaneTransform, _inputService,
-                _abilityService, _staticDataService, _stateMachineData);
+                _abilityService, _staticDataService, _windowService, _stateMachineData);
             _spiderPlane.Initialize();
 
             _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _platformObjectsService, _windowService,
@@ -264,8 +265,13 @@ namespace SpiderController
             _biosphereProductPickup.Update();
         }
 
-        private void Defeat() =>
+        private void Defeat()
+        {
+            Rigidbody.linearVelocity = Vector3.zero;
+            Rigidbody.angularVelocity = Vector3.zero;
+
             _stateMachineData.Clear();
+        }
 
         private void FixedUpdate()
         {

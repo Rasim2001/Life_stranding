@@ -24,6 +24,8 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Enter();
 
+            Spider.WindowService.OnWindowOpened += ReturnToNormalMovement;
+
             Data.OnTotalWeightChanged += WeightChanged;
             Data.DistanceFromGround = SpiderStaticData.DistanceFromGround;
 
@@ -36,6 +38,8 @@ namespace SpiderController.StateMachine.States.Ground
         public override void Exit()
         {
             base.Exit();
+
+            Spider.WindowService.OnWindowOpened -= ReturnToNormalMovement;
 
             Data.OnTotalWeightChanged -= WeightChanged;
 
@@ -54,6 +58,11 @@ namespace SpiderController.StateMachine.States.Ground
             if (!IsFastRunUp() && Data.CurrentEnergyFillAmount > 0)
                 return;
 
+            ReturnToNormalMovement();
+        }
+
+        private void ReturnToNormalMovement()
+        {
             if (IsInputZero())
                 StateMachine.SwitchState<IdlingState>();
             else

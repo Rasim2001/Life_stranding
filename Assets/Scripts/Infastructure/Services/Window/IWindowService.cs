@@ -1,3 +1,4 @@
+using System;
 using PickupObjects;
 using UI;
 
@@ -15,5 +16,6 @@ namespace Infastructure.Services.Window
         void TryOpenMainTaskPopup(bool isActive);
         void OpenWinPopup();
         bool CanOpenWindow();
+        event Action OnWindowOpened;
     }
 }

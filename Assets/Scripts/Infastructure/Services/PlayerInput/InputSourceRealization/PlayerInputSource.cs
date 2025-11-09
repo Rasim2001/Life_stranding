@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 
 namespace Infastructure.Services.PlayerInput.InputSourceRealization
 {
@@ -14,9 +16,8 @@ namespace Infastructure.Services.PlayerInput.InputSourceRealization
         {
         }
 
-        public void Disable()
-        {
-        }
+        public void Disable() =>
+            InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState());
 
         public bool PauseButtonPressed => Input.GetKeyDown(KeyCode.Escape);
 

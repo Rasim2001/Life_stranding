@@ -16,6 +16,7 @@ Material:
   - _ALPHA_CUTOFF_ON
   - _CAST_SHADOWS_ON
   - _COLORRAMPLIGHTINGSTAGE_BEFORELIGHTING
+  - _EMISSION_ON
   - _GREYSCALESTAGE_BEFORELIGHTING
   - _HEIGHTGRADIENTPOSITIONSPACE_LOCAL
   - _LIGHTMODEL_TOON
@@ -245,7 +246,7 @@ Material:
     - _DitherScale: 1
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _EmissionEnabled: 0
+    - _EmissionEnabled: 1
     - _EmissionSelfGlow: 1
     - _EnvironmentReflections: 1
     - _FaceDownCutoff: 0.25
