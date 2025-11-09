@@ -22,7 +22,7 @@ namespace Infastructure.Common
         public const string StartGameCutSceneTimelinePath = "Prefabs/Timeline/StartGameTimeline";
         public const string TerrainScanPath = "Prefabs/TerrainScan/[Terrain_Scan]";
         public const string BridgePath = "Prefabs/Common/Bridge";
-        public const string LightFlashPath = "Prefabs/Common/Point Light";
+        public const string CozyWeather = "Prefabs/Common/Cozy Weather Sphere";
 
         public const string SpiderDataPath = "StaticData/Spider/SpiderData";
         public const string HudDataPath = "StaticData/HUD/HudData";

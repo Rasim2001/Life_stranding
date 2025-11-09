@@ -106,11 +106,15 @@ namespace Infastructure.CutScene
 
         private void SkipCutscene()
         {
+            ChangeWeather();
             SkipCustom();
 
             _playableDirector.time = _playableDirector.duration;
             _playableDirector.Stop();
         }
+
+        public void ChangeWeather() =>
+            _cutSceneService.OnWeatherChanged?.Invoke();
 
         private void SkipCustom()
         {

@@ -10,6 +10,21 @@ namespace UI
     {
         [SerializeField] private FramePiece[] _framePieces;
 
+        private Vector3[] _defaultParentPositions;
+        private Vector3[] _defaultMaskPositions;
+
+        private void Awake()
+        {
+            _defaultParentPositions = new Vector3[_framePieces.Length];
+            _defaultMaskPositions = new Vector3[_framePieces.Length];
+
+            for (int i = 0; i < _framePieces.Length; i++)
+            {
+                _defaultParentPositions[i] = _framePieces[i].ParentTransform.localPosition;
+                _defaultMaskPositions[i] = _framePieces[i].MaskTransform.localPosition;
+            }
+        }
+
         public async UniTask MoveFramePiecesAsync()
         {
             List<UniTask> tasks = new List<UniTask>();
@@ -36,6 +51,17 @@ namespace UI
             }
 
             await UniTask.WhenAll(tasks);
+        }
+
+        public void ResetFramePieces()
+        {
+            DOTween.Kill(gameObject);
+
+            for (int i = 0; i < _framePieces.Length; i++)
+            {
+                _framePieces[i].ParentTransform.localPosition = _defaultParentPositions[i];
+                _framePieces[i].MaskTransform.localPosition = _defaultMaskPositions[i];
+            }
         }
     }
 }

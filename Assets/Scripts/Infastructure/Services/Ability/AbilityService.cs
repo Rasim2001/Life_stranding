@@ -16,8 +16,10 @@ namespace Infastructure.Services.Ability
         public AbilityService(ICutSceneService cutSceneService) =>
             _cutSceneService = cutSceneService;
 
-        public void Initialize() =>
+        public void Initialize()
+        {
             _isCheating = true;
+        }
 
         public void PickUpAbility(ProductType product)
         {

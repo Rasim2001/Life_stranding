@@ -1,6 +1,7 @@
 using System.Linq;
 using Common;
 using Infastructure.Common.Pickup;
+using Infastructure.Services.Hint;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Window;
 using PickupObjects.PickUpOnPlatform;
@@ -17,11 +18,14 @@ namespace SpiderController.PickUp
         private readonly IInputService _inputService;
         private readonly IPickupDisplayer _pickupDisplayer;
         private readonly IWindowService _windowService;
+        private readonly IHintService _hintService;
+
         private readonly CheckpointChecker _checkpointChecker;
         private readonly Flower _flower;
         private readonly SpiderUI _spiderUI;
 
         public CheckpointPickup(
+            IHintService hintService,
             IInputService inputService,
             IPickupDisplayer pickupDisplayer,
             IWindowService windowService,
@@ -29,6 +33,7 @@ namespace SpiderController.PickUp
             Flower flower,
             SpiderUI spiderUI)
         {
+            _hintService = hintService;
             _flower = flower;
             _spiderUI = spiderUI;
             _inputService = inputService;
@@ -47,6 +52,15 @@ namespace SpiderController.PickUp
         {
             if (_inputService.PickupPressed)
             {
+                if (!_flower.IsOnPlatform)
+                {
+                    Collider checkPointCollider = _checkpointChecker.Results.FirstOrDefault();
+
+                    if (checkPointCollider != null)
+                        _hintService.OnCheckpointHint?.Invoke();
+                }
+
+
                 if (_flower.IsPuttingDown)
                     PickUp();
                 else if (_flower.IsOnPlatform)
@@ -98,7 +112,7 @@ namespace SpiderController.PickUp
             CheckPoint checkPoint = checkPointCollider.GetComponent<CheckPoint>();
             if (!checkPoint.IsReady)
                 return;
-            
+
             _windowService.OpenTaskPopup(TaskId.GeneratorTask);
 
             _spiderUI.SpiderHealth.Reset();
