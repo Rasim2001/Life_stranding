@@ -2079,6 +2079,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: b91fc9dcf37f02c49bacfaea1a79ce13, type: 2}
     - {fileID: 11400000, guid: 02a3a3f491a290f4ab5b4e706341ddbf, type: 2}
     - {fileID: 11400000, guid: e3f9b7c3f7af0f14a9627a0b909e1662, type: 2}
+    - {fileID: 11400000, guid: f37f8282d42a61141b2341683bd49923, type: 2}
     m_Events:
     - m_PersistentCalls:
         m_Calls:
@@ -2130,6 +2131,21 @@ MonoBehaviour:
         - m_Target: {fileID: 4443923360061729232}
           m_TargetAssemblyTypeName: Infastructure.CutScene.UI.BlinkEye, Assembly-CSharp
           m_MethodName: Blink
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2433183852874562214}
+          m_TargetAssemblyTypeName: Infastructure.CutScene.StartGameCutSceneRunner,
+            Assembly-CSharp
+          m_MethodName: ChangeWeather
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -6103,7 +6119,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5644685489067502851, guid: 71b56f1dd756d334dbe50e91b47aff1c, type: 3}
       propertyPath: m_VersionIndex
-      value: 5058
+      value: 5061
       objectReference: {fileID: 0}
     - target: {fileID: 6647664322910337969, guid: 71b56f1dd756d334dbe50e91b47aff1c, type: 3}
       propertyPath: m_LocalPosition.x

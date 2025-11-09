@@ -1,6 +1,7 @@
 using System.Linq;
 using Common;
 using Infastructure.Common.Pickup;
+using Infastructure.Services.Hint;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Window;
@@ -17,15 +18,18 @@ namespace SpiderController.PickUp
         private readonly IPickupDisplayer _pickupDisplayer;
         private readonly IPlatformObjectsService _platformObjectsService;
         private readonly IWindowService _windowService;
+        private IHintService _hintService;
         private readonly GeneratorChecker _generatorChecker;
 
         public GeneratorPickup(
+            IHintService hintService,
             IInputService inputService,
             IPickupDisplayer pickupDisplayer,
             IPlatformObjectsService platformObjectsService,
             IWindowService windowService,
             GeneratorChecker generatorChecker)
         {
+            _hintService = hintService;
             _inputService = inputService;
             _pickupDisplayer = pickupDisplayer;
             _platformObjectsService = platformObjectsService;
@@ -41,12 +45,17 @@ namespace SpiderController.PickUp
 
         public void Update()
         {
-            if (_inputService.PickupPressed && _platformObjectsService.HasAny<BatteryProduct>())
+            if (_inputService.PickupPressed)
             {
                 Collider generatorCollider = _generatorChecker.Results.FirstOrDefault();
 
                 if (generatorCollider != null)
-                    StartGenerator(generatorCollider);
+                {
+                    if (_platformObjectsService.HasAny<BatteryProduct>())
+                        StartGenerator(generatorCollider);
+                    else
+                        _hintService.OnGeneratorHint?.Invoke();
+                }
             }
 
             TryShow();

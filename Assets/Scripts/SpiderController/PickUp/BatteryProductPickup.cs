@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Infastructure.Common.Pickup;
+using Infastructure.Services.Hint;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using PickupObjects.PickUpOnPlatform;
@@ -17,16 +18,19 @@ namespace SpiderController.PickUp
         private readonly BatteryProductChecker _batteryProductChecker;
         private readonly FlowerChecker _flowerChecker;
         private readonly IPlatformObjectsService _platformObjectsService;
+        private IHintService _hintService;
 
         private bool _isShowed;
 
         public BatteryProductPickup(
+            IHintService hintService,
             IInputService inputService,
             IPickupDisplayer pickupDisplayer,
             IPlatformObjectsService platformObjectsService,
             BatteryProductChecker batteryProductChecker,
             FlowerChecker flowerChecker)
         {
+            _hintService = hintService;
             _platformObjectsService = platformObjectsService;
             _inputService = inputService;
             _pickupDisplayer = pickupDisplayer;
@@ -42,9 +46,16 @@ namespace SpiderController.PickUp
 
         public void Update()
         {
-            if (_inputService.PickupPressed && !_platformObjectsService.HasAny<Flower>() &&
-                !_platformObjectsService.HasAny<ElephantProduct>() && !_flowerChecker.IsTouching)
-                PickBatteries();
+            if (_inputService.PickupPressed)
+            {
+                if (_flowerChecker.IsTouching && _batteryProductChecker.Results.Count > 0)
+                    _hintService.OnProductHint?.Invoke();
+
+
+                if (!_platformObjectsService.HasAny<Flower>() &&
+                    !_platformObjectsService.HasAny<ElephantProduct>() && !_flowerChecker.IsTouching)
+                    PickBatteries();
+            }
 
             TryShow();
         }
