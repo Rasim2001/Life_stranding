@@ -273,6 +273,7 @@ namespace Infastructure.Factories.GameFactories
         public void CreateCommonObjects()
         {
             _diContainer.InstantiatePrefabResource(AssetsPath.BridgePath);
+            _diContainer.InstantiatePrefabResource(AssetsPath.CozyWeather);
         }
 
         public void CreateGlobalWater() =>

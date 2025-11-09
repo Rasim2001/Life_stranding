@@ -49,8 +49,8 @@ namespace Infastructure.Services.PlayerInput
         {
             _windowService.OnWindowOpened -= WindowOpenedUI;
 
-            _joystickInputSource.Disable();
-            _inputSource.Disable();
+            _joystickInputSource?.Disable();
+            _inputSource?.Disable();
 
             _joystickInputSource = null;
             _inputSource = null;

@@ -7,6 +7,7 @@ namespace Infastructure.Services.CutScene
         bool IsActive { get; set; }
         float LerpForwardSpeed { get; set; }
         bool HasPlayed { get; set; }
+        Action OnWeatherChanged { get; set; }
         event Action<bool> OnCutsceneActiveChanged;
         event Action OnSkipHappened;
         void Skip();
