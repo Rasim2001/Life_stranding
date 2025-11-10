@@ -116,6 +116,7 @@ namespace PickupObjects.PickUpOnPlatform
             Rigidbody.angularDamping = _angularDamping;
             Rigidbody.linearDamping = _linearDamping;
             Rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+            Rigidbody.isKinematic = false;
 
             PlatformSelector.SetExcludeLayerMask();
 
@@ -137,7 +138,7 @@ namespace PickupObjects.PickUpOnPlatform
             Rigidbody.angularDamping = _angularDefaultDamping;
             Rigidbody.linearDamping = _linearDefaultDamping;
             Rigidbody.constraints = RigidbodyConstraints.None;
-            Rigidbody.isKinematic = false;
+
 
             PlatformSelector.ResetExcludeLayerMask();
 
