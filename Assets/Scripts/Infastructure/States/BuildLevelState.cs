@@ -118,13 +118,7 @@ namespace Infastructure.States
             InitElephantProducts(spider);
             InitEnergyProducts();
             InitSkillProducts();
-
-            InitGlobalWater();
-            InitCommonObjects();
         }
-
-        private void InitGlobalWater() =>
-            _gameFactory.CreateGlobalWater();
 
         private void InitGenerators() =>
             _gameFactory.CreateAllGenerators();
@@ -137,9 +131,6 @@ namespace Infastructure.States
 
         private void InitCheckPoints() =>
             _gameFactory.CreateCheckPoints();
-
-        private void InitCommonObjects() =>
-            _gameFactory.CreateCommonObjects();
 
         private Spider InitSpider(Flower flower) =>
             _gameFactory.CreateSpider(flower);

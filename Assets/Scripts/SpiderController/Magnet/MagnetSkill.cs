@@ -66,10 +66,10 @@ namespace SpiderController.Magnet
 
         private void HideMagnet()
         {
+            _stateMachineData.IsMouseHolding = false;
+
             _spiderUI.MagnetIndicatorUI.Hide();
             _magnetFreezingService.Unfreeze();
-
-            _stateMachineData.IsMouseHolding = false;
 
             _spiderUI.EnergyBar.PlayFadeHologramEffect();
         }

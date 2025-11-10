@@ -73,10 +73,9 @@ namespace PickupObjects.PickUpOnPlatform
             Collider.enabled = false;
 
             PlatformSelector.IsOnPlatform(Collider);
+            Rigidbody.isKinematic = true;
 
             base.StartSimulatePhysics();
-
-            Rigidbody.isKinematic = true;
         }
     }
 }

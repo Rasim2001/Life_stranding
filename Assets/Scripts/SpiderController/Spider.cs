@@ -185,6 +185,8 @@ namespace SpiderController
             _stateMachineData.EnergyFillAmount = _staticDataService.SpiderStaticData.EnergyFillAmount;
             _stateMachineData.OnShakeHappened += distanceFalling => OnShakeCameraHappened?.Invoke(distanceFalling);
 
+            _magnetFreezingService.Initialize(_stateMachineData);
+
             EnergyLegs energyLegs = new EnergyLegs(_energyHighlightEffects);
 
             EnergySystem energySystem = new EnergySystem(_stateMachineData, _spiderUI.EnergyBar, _cutSceneService);
