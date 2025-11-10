@@ -20,6 +20,7 @@ using Infastructure.StaticData.GlobalWater;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using Sirenix.OdinInspector;
+using SpiderController.Magnet;
 using SpiderController.PickUp;
 using SpiderController.Platform;
 using SpiderController.Scanner;
@@ -113,6 +114,7 @@ namespace SpiderController
 
         private StateMachineData _stateMachineData;
         private IHintService _hintService;
+        private MagnetSkill _magnetSkill;
 
 
         [Inject]
@@ -170,6 +172,7 @@ namespace SpiderController
             _generatorPickup.Destroy();
             _platformSelector.Destroy();
             _biosphereProductPickup.Destroy();
+            _magnetSkill.Destroy();
 
             _defeatWindowService.OnDefeatHappened -= Defeat;
         }
@@ -232,6 +235,10 @@ namespace SpiderController
                 new BiosphereProductPickup(_inputService, _pickupDisplayer, _biosphereChecker, flower);
             _biosphereProductPickup.Initialize();
 
+            _magnetSkill = new MagnetSkill(_windowService, _inputService, _staticDataService, _abilityService,
+                _magnetFreezingService, _stateMachineData, energySystem, _spiderUI);
+            _magnetSkill.Initialize();
+
             _spiderStateMachine =
                 new SpiderStateMachine(this,
                     _stateMachineData,
@@ -269,6 +276,7 @@ namespace SpiderController
             _checkpointPickup.Update();
             _generatorPickup.Update();
             _biosphereProductPickup.Update();
+            _magnetSkill.Update();
         }
 
         private void Defeat()
