@@ -51,7 +51,6 @@ namespace SpiderController.PickUp
                 if (_flowerChecker.IsTouching && _batteryProductChecker.Results.Count > 0)
                     _hintService.OnProductHint?.Invoke();
 
-
                 if (!_platformObjectsService.HasAny<Flower>() &&
                     !_platformObjectsService.HasAny<ElephantProduct>() && !_flowerChecker.IsTouching)
                     PickBatteries();
