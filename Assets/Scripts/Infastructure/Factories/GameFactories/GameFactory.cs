@@ -270,14 +270,6 @@ namespace Infastructure.Factories.GameFactories
             terrainScanIconsRenderer.Initialize(cameraTransform);
         }
 
-        public void CreateCommonObjects()
-        {
-            _diContainer.InstantiatePrefabResource(AssetsPath.BridgePath);
-            _diContainer.InstantiatePrefabResource(AssetsPath.CozyWeather);
-        }
-
-        public void CreateGlobalWater() =>
-            _diContainer.InstantiatePrefabResource(AssetsPath.GlobalWaterPath);
 
         private bool IsBiospherePoint(int i, List<WorldData> checkPoints) =>
             i == checkPoints.Count - 1;

@@ -20,6 +20,7 @@ using Infastructure.StaticData.GlobalWater;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using Sirenix.OdinInspector;
+using SpiderController.Magnet;
 using SpiderController.PickUp;
 using SpiderController.Platform;
 using SpiderController.Scanner;
@@ -113,6 +114,7 @@ namespace SpiderController
 
         private StateMachineData _stateMachineData;
         private IHintService _hintService;
+        private MagnetSkill _magnetSkill;
 
 
         [Inject]
@@ -170,6 +172,7 @@ namespace SpiderController
             _generatorPickup.Destroy();
             _platformSelector.Destroy();
             _biosphereProductPickup.Destroy();
+            _magnetSkill.Destroy();
 
             _defeatWindowService.OnDefeatHappened -= Defeat;
         }
@@ -181,6 +184,8 @@ namespace SpiderController
             _stateMachineData = new StateMachineData();
             _stateMachineData.EnergyFillAmount = _staticDataService.SpiderStaticData.EnergyFillAmount;
             _stateMachineData.OnShakeHappened += distanceFalling => OnShakeCameraHappened?.Invoke(distanceFalling);
+
+            _magnetFreezingService.Initialize(_stateMachineData);
 
             EnergyLegs energyLegs = new EnergyLegs(_energyHighlightEffects);
 
@@ -220,7 +225,7 @@ namespace SpiderController
             _platformSelector.Initialize();
 
             _checkpointPickup = new CheckpointPickup(_hintService, _inputService, _pickupDisplayer, _windowService,
-                _checkpointChecker, flower, _spiderUI);
+                _platformObjectsService, _checkpointChecker, flower, _spiderUI);
             _checkpointPickup.Initialize();
 
             _generatorPickup = new GeneratorPickup(_hintService, _inputService, _pickupDisplayer,
@@ -231,6 +236,10 @@ namespace SpiderController
             _biosphereProductPickup =
                 new BiosphereProductPickup(_inputService, _pickupDisplayer, _biosphereChecker, flower);
             _biosphereProductPickup.Initialize();
+
+            _magnetSkill = new MagnetSkill(_windowService, _inputService, _staticDataService, _abilityService,
+                _magnetFreezingService, _stateMachineData, energySystem, _spiderUI);
+            _magnetSkill.Initialize();
 
             _spiderStateMachine =
                 new SpiderStateMachine(this,
@@ -269,6 +278,7 @@ namespace SpiderController
             _checkpointPickup.Update();
             _generatorPickup.Update();
             _biosphereProductPickup.Update();
+            _magnetSkill.Update();
         }
 
         private void Defeat()
