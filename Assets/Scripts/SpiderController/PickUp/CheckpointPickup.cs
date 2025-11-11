@@ -2,6 +2,7 @@ using System.Linq;
 using Common;
 using Infastructure.Common.Pickup;
 using Infastructure.Services.Hint;
+using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Window;
 using PickupObjects.PickUpOnPlatform;
@@ -18,6 +19,7 @@ namespace SpiderController.PickUp
         private readonly IInputService _inputService;
         private readonly IPickupDisplayer _pickupDisplayer;
         private readonly IWindowService _windowService;
+        private readonly IPlatformObjectsService _platformObjectsService;
         private readonly IHintService _hintService;
 
         private readonly CheckpointChecker _checkpointChecker;
@@ -29,6 +31,7 @@ namespace SpiderController.PickUp
             IInputService inputService,
             IPickupDisplayer pickupDisplayer,
             IWindowService windowService,
+            IPlatformObjectsService platformObjectsService,
             CheckpointChecker checkpointChecker,
             Flower flower,
             SpiderUI spiderUI)
@@ -39,6 +42,7 @@ namespace SpiderController.PickUp
             _inputService = inputService;
             _pickupDisplayer = pickupDisplayer;
             _windowService = windowService;
+            _platformObjectsService = platformObjectsService;
             _checkpointChecker = checkpointChecker;
         }
 
@@ -52,7 +56,7 @@ namespace SpiderController.PickUp
         {
             if (_inputService.PickupPressed)
             {
-                if (!_flower.IsOnPlatform)
+                if (!_flower.IsOnPlatform && _flower.IsPuttingDown == false)
                 {
                     Collider checkPointCollider = _checkpointChecker.Results.FirstOrDefault();
 
@@ -61,7 +65,7 @@ namespace SpiderController.PickUp
                 }
 
 
-                if (_flower.IsPuttingDown)
+                if (_flower.IsPuttingDown && _platformObjectsService.IsEmpty())
                     PickUp();
                 else if (_flower.IsOnPlatform)
                     Putdown();
@@ -97,6 +101,8 @@ namespace SpiderController.PickUp
 
             checkPoint.StartFlowerPutdown(_flower);
 
+            _windowService.OpenTaskPopup(TaskId.GeneratorTask);
+
             _flower.Putdown(checkPoint);
             _spiderUI.HealthBar.PlayFadeHologramEffect();
             _pickupDisplayer.Hide(checkPointCollider.transform);
@@ -112,8 +118,6 @@ namespace SpiderController.PickUp
             CheckPoint checkPoint = checkPointCollider.GetComponent<CheckPoint>();
             if (!checkPoint.IsReady)
                 return;
-
-            _windowService.OpenTaskPopup(TaskId.GeneratorTask);
 
             _spiderUI.SpiderHealth.Reset();
             checkPoint.StartFlowerPickup();

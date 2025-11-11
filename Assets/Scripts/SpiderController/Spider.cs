@@ -225,7 +225,7 @@ namespace SpiderController
             _platformSelector.Initialize();
 
             _checkpointPickup = new CheckpointPickup(_hintService, _inputService, _pickupDisplayer, _windowService,
-                _checkpointChecker, flower, _spiderUI);
+                _platformObjectsService, _checkpointChecker, flower, _spiderUI);
             _checkpointPickup.Initialize();
 
             _generatorPickup = new GeneratorPickup(_hintService, _inputService, _pickupDisplayer,

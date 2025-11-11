@@ -115,8 +115,11 @@ namespace SpiderController.SpiderMove
             {
                 float angle = _offsetAngle * x;
 
-                if (TryOffsetRay(baseDirection, origin, transform.right, angle)) return true;
-                if (TryOffsetRay(baseDirection, origin, transform.right, -angle)) return true;
+                if (TryOffsetRay(baseDirection, origin, transform.right, angle)) 
+                    return true;
+                
+                if (TryOffsetRay(baseDirection, origin, transform.right, -angle)) 
+                    return true;
             }
 
             return false;
@@ -135,10 +138,10 @@ namespace SpiderController.SpiderMove
             return false;
         }
 
-        // --- Gizmos визуализация ---
         private void OnDrawGizmos()
         {
-            if (!Application.isPlaying) return;
+            if (!Application.isPlaying)
+                return;
 
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(_smoothedPoint, 0.05f);
