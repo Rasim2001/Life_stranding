@@ -138,18 +138,18 @@ namespace SpiderController.Platform
 
         private void HandleMousePosition()
         {
-            Vector2 mousePos = Input.mousePosition;
-            Vector2 screenSize = new Vector2(Screen.width, Screen.height);
+            Vector2 delta = new Vector2(
+                _inputService.MouseXAxis,
+                _inputService.MouseYAxis
+            );
 
-            _mouseInput.x = (mousePos.x - _initialMousePosition.x) / (screenSize.x / 2);
-            _mouseInput.y = (mousePos.y - _initialMousePosition.y) / (screenSize.y / 2);
+            delta = -delta;
+
+            delta *= SpiderStaticData.PlaneSensitivity;
+
+            _mouseInput += delta;
 
             _mouseInput = Vector2.ClampMagnitude(_mouseInput, 1f);
-
-            _mouseInput.x = -_mouseInput.x;
-            _mouseInput.y = -_mouseInput.y;
-
-            _mouseInput *= SpiderStaticData.PlaneSensitivity;
         }
 
         private void HandleJoystickPosition()

@@ -60,8 +60,13 @@ namespace CameraFollow
             _inputService = inputService;
         }
 
-        private void Awake() =>
+        private void Awake()
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Confined;
+
             _mouseSensitivity = 2;
+        }
 
         public void Initialize(CameraSystem cameraSystem) =>
             _cameraSystem = cameraSystem;
@@ -136,11 +141,11 @@ namespace CameraFollow
 
         private void HandleMouse()
         {
-            if (_inputService.CenterMousePressed)
-                StartInput();
-
-            if (_inputService.CenterMouseUp)
+            if (_inputService.LeftMousePressed)
                 ReleaseInput();
+
+            if (_inputService.LeftMouseUp)
+                StartInput();
 
 
             if (_isMouseRotating)
@@ -174,7 +179,7 @@ namespace CameraFollow
 
         private void ReleaseInput()
         {
-            _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed / 3;
+            _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed / 20;
 
             _yRotation = _defaultY;
             _xRotation = 0;
