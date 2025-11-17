@@ -3,7 +3,6 @@ using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
 using Infastructure.Services.PlayerInput;
-using Infastructure.Services.PlayerInput.InputSourceRealization;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
@@ -41,6 +40,7 @@ namespace CameraFollow
         private JoystickInputSource _joystickInputSource;
 
         private float _defaultY;
+        private Quaternion _orbitStartRotation;
 
 
         [Inject]
@@ -72,8 +72,7 @@ namespace CameraFollow
         private void Start()
         {
             _windowService.OnWindowOpened += ReleaseInput;
-
-            _defaultY = _cameraSystem.RotationComposer.Composition.ScreenPosition.y;
+            _defaultY = _cameraSystem.ThirdPersonFollow.ShoulderOffset.y;
 
             _joystickInputSource = _inputService.GetInputSource<JoystickInputSource>();
         }
@@ -97,10 +96,13 @@ namespace CameraFollow
             if (_target == null || _cutSceneService.IsActive || _defeatWindowService.IsDefeated)
                 return;
 
-            HandleScrollWheel();
+            if (!_isMouseRotating)
+                HandleScrollWheel();
+
             HandleMouse();
             WorldUpRotate();
         }
+
 
         private void WorldUpRotate() =>
             _stableWorldUp.Rotate(_target.rotation);
@@ -143,18 +145,31 @@ namespace CameraFollow
 
             if (_isMouseRotating)
             {
-                float mouseXAxis = _inputService.MouseXAxis;
-                float mouseYAxis = _inputService.MouseYAxis;
+                float mouseX = _inputService.MouseXAxis;
+                float mouseY = _inputService.MouseYAxis;
 
-                _yRotation += mouseYAxis * SpiderStaticData.MouseRotationSpeedY * Time.deltaTime;
-                _xRotation += mouseXAxis * SpiderStaticData.MouseRotationSpeedX * Time.deltaTime;
+                _xRotation += mouseX * SpiderStaticData.MouseRotationSpeedX;
+                _yRotation -= mouseY * SpiderStaticData.MouseRotationSpeedY * Time.deltaTime;
+
+                Vector3 up = _target.transform.up;
+                Quaternion yaw = Quaternion.AngleAxis(_xRotation, up);
+
+                Quaternion targetRot = yaw * _orbitStartRotation;
+
+                transform.rotation = Quaternion.Slerp(
+                    transform.rotation,
+                    targetRot,
+                    Time.deltaTime * _cameraRotationSpeed
+                );
             }
 
-            Vector2 rotationVector = new Vector2(-_xRotation, _yRotation);
+            Vector2 rotationVector = new Vector2(0, _yRotation);
 
-            _cameraSystem.RotationComposer.Composition.ScreenPosition =
-                Vector2.Lerp(_cameraSystem.RotationComposer.Composition.ScreenPosition, rotationVector,
-                    _cameraRotationSpeed * Time.deltaTime);
+            _cameraSystem.ThirdPersonFollow.ShoulderOffset = new Vector3(
+                _cameraSystem.ThirdPersonFollow.ShoulderOffset.x,
+                Mathf.Lerp(_cameraSystem.ThirdPersonFollow.ShoulderOffset.y, rotationVector.y,
+                    _cameraRotationSpeed * Time.deltaTime),
+                _cameraSystem.ThirdPersonFollow.ShoulderOffset.z);
         }
 
         private void ReleaseInput()
@@ -172,6 +187,11 @@ namespace CameraFollow
             _isMouseRotating = true;
 
             _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed;
+
+            _yRotation = _defaultY;
+            _xRotation = 0f;
+
+            _orbitStartRotation = transform.rotation;
         }
 
 
