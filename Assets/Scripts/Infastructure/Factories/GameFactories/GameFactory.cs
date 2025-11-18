@@ -5,6 +5,7 @@ using HUD;
 using Infastructure.Common;
 using Infastructure.CutScene;
 using Infastructure.CutScene.Custom.Receivers;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.SpiderTrack;
 using Infastructure.Services.XRay;
@@ -32,14 +33,16 @@ namespace Infastructure.Factories.GameFactories
         private readonly IBiospherePointService _biospherePointService;
         private readonly IXRayService _xRayService;
         private readonly ISpiderTrackService _spiderTrackService;
+        private readonly ICameraProviderService _cameraProviderService;
 
         private string ActiveSceneName => SceneManager.GetActiveScene().name;
 
         public GameFactory(DiContainer diContainer, IStaticDataService staticDataService,
             IBiospherePointService biospherePointService, IXRayService xRayService,
-            ISpiderTrackService spiderTrackService)
+            ISpiderTrackService spiderTrackService, ICameraProviderService cameraProviderService)
         {
             _spiderTrackService = spiderTrackService;
+            _cameraProviderService = cameraProviderService;
             _diContainer = diContainer;
             _staticDataService = staticDataService;
             _biospherePointService = biospherePointService;
@@ -257,17 +260,15 @@ namespace Infastructure.Factories.GameFactories
 
         public void CreateTerrainScan(Spider spider)
         {
-            Transform cameraTransform = Camera.main.transform;
-
             GameObject terrainScanObject = _diContainer.InstantiatePrefabResource(AssetsPath.TerrainScanPath);
 
             TerrainScanOriginPositioner terrainScanOriginPositioner =
                 terrainScanObject.GetComponentInChildren<TerrainScanOriginPositioner>();
-            terrainScanOriginPositioner.Initialize(cameraTransform, spider.transform);
+            terrainScanOriginPositioner.Initialize(_cameraProviderService.CameraTransform, spider.transform);
 
             TerrainScanIconsRenderer terrainScanIconsRenderer =
                 terrainScanObject.GetComponentInChildren<TerrainScanIconsRenderer>();
-            terrainScanIconsRenderer.Initialize(cameraTransform);
+            terrainScanIconsRenderer.Initialize(_cameraProviderService.CameraTransform);
         }
 
 

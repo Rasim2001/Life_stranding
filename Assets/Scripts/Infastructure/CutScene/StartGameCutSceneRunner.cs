@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Infastructure.Common;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
@@ -26,6 +27,7 @@ namespace Infastructure.CutScene
 
         private IInputService _inputService;
         private ICutSceneService _cutSceneService;
+        private ICameraProviderService _cameraProviderService;
 
         private Spline _spline;
         private Vector3 _lastPoint;
@@ -37,8 +39,10 @@ namespace Infastructure.CutScene
 
 
         [Inject]
-        public void Construct(IInputService inputService, ICutSceneService cutSceneService)
+        public void Construct(IInputService inputService, ICutSceneService cutSceneService,
+            ICameraProviderService cameraProviderService)
         {
+            _cameraProviderService = cameraProviderService;
             _inputService = inputService;
             _cutSceneService = cutSceneService;
         }
@@ -54,7 +58,7 @@ namespace Infastructure.CutScene
         {
             _playableDirector = GetComponent<PlayableDirector>();
             _cutSceneInputSource = _inputService.GetInputSource<CutSceneInputSource>();
-            _mainBrainCamera = Camera.main.GetComponent<CinemachineBrain>();
+            _mainBrainCamera = _cameraProviderService.CameraTransform.GetComponent<CinemachineBrain>();
 
             List<PlayableBinding> playableBindings = _playableDirector.playableAsset.outputs
                 .Where(x => x.streamName == CinemachineTrack).ToList();

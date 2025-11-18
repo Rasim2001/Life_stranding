@@ -4,6 +4,7 @@ using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Factories.GameFactories;
 using Infastructure.PlatformRegistry;
 using Infastructure.Services.Ability;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
@@ -88,7 +89,12 @@ namespace Infastructure.CompositionRoot
             BindTaskPopupCheckerService();
 
             BindPauseWindowService();
+
+            BindCameraProviderService();
         }
+
+        private void BindCameraProviderService() =>
+            Container.BindInterfacesAndSelfTo<CameraProviderService>().AsSingle();
 
         private void BindHitService() =>
             Container.BindInterfacesAndSelfTo<HintService>().AsSingle();

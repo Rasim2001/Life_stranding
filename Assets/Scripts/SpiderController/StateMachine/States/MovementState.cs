@@ -4,12 +4,9 @@ using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
-using PickupObjects;
-using PickupObjects.PickUpOnPlatform;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
 using SpiderController.UI;
-using SpiderController.UI.Health;
 using UnityEngine;
 
 namespace SpiderController.StateMachine.States
@@ -25,6 +22,7 @@ namespace SpiderController.StateMachine.States
         protected Rigidbody Rigidbody => Spider.Rigidbody;
         protected SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
         protected EnergyBarUI EnergyBarUI => Spider.SpiderUI.EnergyBar;
+        protected Transform CameraTransform => Spider.CameraProviderService.CameraTransform;
 
         private readonly Flower _flower;
         private readonly IStaticDataService _staticDataService;
@@ -88,13 +86,13 @@ namespace SpiderController.StateMachine.States
         {
             TryMoveLegs();
             BackLegHandle();
+            UpdateLegRotationsByMovement();
             UpdateTerranTime();
         }
 
         public virtual void FixedUpdate()
         {
             MoveBodySpider();
-            RotateTowardsMoveDirection();
 
             if (!Mathf.Approximately(Data.YVelocity, 0))
                 return;
@@ -109,7 +107,7 @@ namespace SpiderController.StateMachine.States
 
 
         protected bool IsInputZero() =>
-            Mathf.Abs(Data.Input.z) < Mathf.Epsilon;
+            Data.Input.sqrMagnitude < Mathf.Epsilon;
 
         protected bool IsFastRunPressed() =>
             _inputService.IsLeftShiftPressed;
@@ -149,6 +147,24 @@ namespace SpiderController.StateMachine.States
         protected void SetSpeed(float newValue) =>
             Data.Speed = newValue;
 
+        protected virtual void MoveBodySpider()
+        {
+            Vector3 worldUp = CameraTransform.up;
+            Vector3 camForward = Vector3.ProjectOnPlane(CameraTransform.forward, worldUp).normalized;
+            Vector3 camRight = Vector3.ProjectOnPlane(CameraTransform.right, worldUp).normalized;
+
+            Vector3 forwardMovement = camForward * Data.Velocity.z;
+            Vector3 movementX = camRight * Data.Velocity.x;
+
+            Vector3 jerkMovement = camForward * Data.XVelocity;
+            Vector3 verticalMovement = Spider.transform.up * Data.YVelocity;
+            Vector3 explosionVector = Data.ExplosionVector;
+
+            Vector3 newVelocity = forwardMovement + movementX + verticalMovement + jerkMovement + explosionVector;
+
+            Rigidbody.linearVelocity =
+                Data.IsStandingUpAfterFalling || IsNotMoveableLayer() ? Vector3.zero : newVelocity;
+        }
 
         private void UpdateTerranTime()
         {
@@ -182,19 +198,6 @@ namespace SpiderController.StateMachine.States
                 foreach (BackLegRaycast backLeg in _backLegs)
                     backLeg.SetBackStateLeg();
             }
-        }
-
-        private void MoveBodySpider()
-        {
-            Vector3 forwardMovement = Spider.transform.forward * Data.Velocity.z;
-            Vector3 verticalMovement = Spider.transform.up * Data.YVelocity;
-            Vector3 jerkMovement = Spider.transform.forward * Data.XVelocity;
-            Vector3 explosionVector = Data.ExplosionVector;
-
-            Vector3 newVelocity = forwardMovement + verticalMovement + jerkMovement + explosionVector;
-
-            Rigidbody.linearVelocity =
-                Data.IsStandingUpAfterFalling || IsNotMoveableLayer() ? Vector3.zero : newVelocity;
         }
 
 
@@ -242,16 +245,6 @@ namespace SpiderController.StateMachine.States
         }
 
 
-        private void RotateTowardsMoveDirection()
-        {
-            float totalRotationZ = Data.Input.z >= 0 ? Data.RotationAmount : -Data.RotationAmount;
-
-            Vector3 rotationAxis = Spider.transform.up;
-            float rotationSpeedRad = totalRotationZ * Mathf.Deg2Rad;
-
-            Rigidbody.angularVelocity = rotationAxis * rotationSpeedRad;
-        }
-
         private void AdjustBodyOrientation()
         {
             Vector3[] legPositions = new Vector3[Legs.Length];
@@ -289,8 +282,8 @@ namespace SpiderController.StateMachine.States
                 Time.fixedDeltaTime * SpiderStaticData.LerpSpeedFromGround);
 
             Quaternion deltaRotation = smoothedRotation * Quaternion.Inverse(Rigidbody.rotation);
-
             deltaRotation.ToAngleAxis(out float angleDeg, out Vector3 axis);
+
             if (angleDeg > 180f)
                 angleDeg -= 360f;
 
@@ -298,7 +291,42 @@ namespace SpiderController.StateMachine.States
             Vector3 angularVel = axis.normalized * (angleRad / Time.fixedDeltaTime);
             Vector3 angularExplosionVector = Data.ExplosionAngularVector;
 
-            Rigidbody.angularVelocity += angularVel + angularExplosionVector;
+            Rigidbody.angularVelocity = angularVel + angularExplosionVector;
+        }
+
+        private void UpdateLegRotationsByMovement()
+        {
+            Vector3 moveWorld = GetMoveWorldDirection();
+
+            if (moveWorld.sqrMagnitude < Mathf.Epsilon)
+            {
+                foreach (LegDataStruct legData in Legs)
+                {
+                    if (legData.Raycast != null)
+                        legData.Raycast.UpdateRotationByMoveDirection(Vector3.zero, Spider.transform,
+                            CameraTransform.up);
+                }
+
+                return;
+            }
+
+            foreach (LegDataStruct legData in Legs)
+            {
+                if (legData.Raycast != null)
+                    legData.Raycast.UpdateRotationByMoveDirection(moveWorld, Spider.transform, CameraTransform.up);
+            }
+        }
+
+        private Vector3 GetMoveWorldDirection()
+        {
+            Vector3 worldUp = CameraTransform.up;
+
+            Vector3 camForward = Vector3.ProjectOnPlane(CameraTransform.forward, worldUp).normalized;
+            Vector3 camRight = Vector3.ProjectOnPlane(CameraTransform.right, worldUp).normalized;
+
+            Vector3 moveWorld = camForward * Data.Input.z + camRight * Data.Input.x;
+
+            return Vector3.ProjectOnPlane(moveWorld, worldUp);
         }
     }
 }

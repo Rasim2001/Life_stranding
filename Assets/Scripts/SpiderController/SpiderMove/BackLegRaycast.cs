@@ -11,22 +11,22 @@ namespace SpiderController.SpiderMove
 
         public void SetBackStateLeg()
         {
-            if (_isBackState)
+            /*if (_isBackState)
                 return;
 
             _isBackState = true;
 
-            transform.localEulerAngles = _backRotation;
+            transform.localEulerAngles = _backRotation;*/
         }
 
         public void SetForwardStateLeg()
         {
-            if (!_isBackState)
+            /*if (!_isBackState)
                 return;
 
             _isBackState = false;
 
-            transform.localEulerAngles = _forwardRotation;
+            transform.localEulerAngles = _forwardRotation;*/
         }
     }
 }

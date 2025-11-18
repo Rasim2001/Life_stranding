@@ -1,6 +1,7 @@
 using System;
 using DG.Tweening;
 using GameDevBuddies;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CutScene;
 using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
@@ -26,15 +27,20 @@ namespace HUD
         private FlowerPointIndicator _flowerPointIndicator;
 
         private ArrowUI _arrowUIPrefab;
+        private TerrainScan _terrain;
+
         private ICutSceneService _cutSceneService;
+        private ICameraProviderService _cameraProviderService;
 
         private bool _cutSceneIsActive;
 
-        private TerrainScan _terrain;
 
         [Inject]
-        public void Construct(ICutSceneService cutSceneService) =>
+        public void Construct(ICutSceneService cutSceneService, ICameraProviderService cameraProviderService)
+        {
+            _cameraProviderService = cameraProviderService;
             _cutSceneService = cutSceneService;
+        }
 
         private void Awake() =>
             _canvasGroup.alpha = 0;
@@ -48,7 +54,8 @@ namespace HUD
             ArrowUI arrowUI = Instantiate(_arrowUIPrefab, _arrowContainer);
 
             _finishPointIndicator = new
-                FinishPointIndicator(arrowUI, _canvasRectTransform, _finishPointLayer, finishTargetTransform);
+                FinishPointIndicator(arrowUI, _canvasRectTransform, _finishPointLayer, finishTargetTransform,
+                    _cameraProviderService);
         }
 
         public void RegisterFlowerPoint(Flower flower)
@@ -56,7 +63,8 @@ namespace HUD
             ArrowUI arrowUI = Instantiate(_arrowUIPrefab, _arrowContainer);
 
             _flowerPointIndicator =
-                new FlowerPointIndicator(arrowUI, _canvasRectTransform, _flowerPointLayer, flower);
+                new FlowerPointIndicator(arrowUI, _canvasRectTransform, _flowerPointLayer, flower,
+                    _cameraProviderService);
         }
 
 

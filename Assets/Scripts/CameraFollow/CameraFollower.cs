@@ -91,9 +91,6 @@ namespace CameraFollow
                 return;
 
             MoveToTarget();
-
-            if (!_isMouseRotating)
-                RotateToTarget();
         }
 
         private void Update()
@@ -207,15 +204,6 @@ namespace CameraFollow
                 _target.position,
                 ref _velocity,
                 SpiderStaticData.SmoothTime
-            );
-        }
-
-        private void RotateToTarget()
-        {
-            transform.rotation = Quaternion.Lerp(
-                transform.rotation,
-                _target.rotation,
-                Time.fixedDeltaTime * SpiderStaticData.CameraRotationSpeed
             );
         }
     }

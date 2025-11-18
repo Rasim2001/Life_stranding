@@ -2,6 +2,7 @@ using System;
 using Infastructure.Common;
 using Infastructure.Factories.GameFactories;
 using Infastructure.Services.Ability;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
@@ -33,6 +34,7 @@ namespace Infastructure.States
         private readonly ICutSceneService _cutSceneService;
         private readonly ITimerService _timerService;
         private readonly IWindowService _windowService;
+        private ICameraProviderService _cameraProviderService;
 
         public BuildLevelState(
             IGameFactory gameFactory,
@@ -46,9 +48,11 @@ namespace Infastructure.States
             IRestartService restartService,
             IAbilityService abilityService,
             ICutSceneService cutSceneService,
-            ITimerService timerService
+            ITimerService timerService,
+            ICameraProviderService cameraProviderService
         )
         {
+            _cameraProviderService = cameraProviderService;
             _windowService = windowService;
             _restartService = restartService;
             _abilityService = abilityService;
@@ -65,6 +69,8 @@ namespace Infastructure.States
 
         public void Initialize()
         {
+            _cameraProviderService.SetCamera(Camera.main);
+
             InitUI();
             InitAll();
         }

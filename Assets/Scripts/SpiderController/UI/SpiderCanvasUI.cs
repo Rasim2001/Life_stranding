@@ -1,4 +1,5 @@
 using Common;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CutScene;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -12,17 +13,19 @@ namespace SpiderController.UI
 
         private RotateToCamera _rotateToCamera;
         private ICutSceneService _cutSceneService;
+        private ICameraProviderService _cameraProviderService;
 
         [Inject]
-        public void Construct(ICutSceneService cutSceneService)
+        public void Construct(ICutSceneService cutSceneService, ICameraProviderService cameraProviderService)
         {
+            _cameraProviderService = cameraProviderService;
             _cutSceneService = cutSceneService;
         }
 
         private void Awake()
         {
             _canvasGroup = GetComponent<CanvasGroup>();
-            _rotateToCamera = new RotateToCamera();
+            _rotateToCamera = new RotateToCamera(_cameraProviderService);
 
             _cutSceneService.OnCutsceneActiveChanged += CutSceneActiveChanged;
         }

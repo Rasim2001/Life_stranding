@@ -13,6 +13,10 @@ namespace SpiderController.SpiderMove
         [SerializeField] private float _offsetAngle = 15f;
         [SerializeField] private int _offsetRayCount = 5;
 
+        [Header("Rotate by movement direction")]
+        [SerializeField] private float _maxRotateByInput = 15f; // макс. угол поворота ноги
+        [SerializeField] private float _rotateLerpSpeed = 10f; // скорость плавного поворота
+
         public Vector3 Position => _smoothedPoint;
         public bool IsGrounded => _hit.collider != null;
         public Vector3 AirbornPosition => _airbornHit.point;
@@ -34,6 +38,9 @@ namespace SpiderController.SpiderMove
         private Vector3 _defaultPosition;
         private IStaticDataService _staticDataService;
 
+        private Quaternion _defaultLocalRotation;
+        private Quaternion _targetLocalRotation;
+
         [Inject]
         public void Construct(IStaticDataService staticDataService) =>
             _staticDataService = staticDataService;
@@ -42,8 +49,12 @@ namespace SpiderController.SpiderMove
         {
             _rayDistance = _staticDataService.SpiderStaticData.GroundStateRayDistance;
             _defaultPosition = transform.localPosition;
-            _notMoveableLayer = LayerMask.NameToLayer(NotMoveableLayer);
             _smoothedPoint = transform.position;
+
+            _notMoveableLayer = LayerMask.NameToLayer(NotMoveableLayer);
+
+            _defaultLocalRotation = transform.localRotation;
+            _targetLocalRotation = _defaultLocalRotation;
         }
 
         public void SetGroundState()
@@ -75,6 +86,9 @@ namespace SpiderController.SpiderMove
             _smoothedPoint = Vector3.Lerp(_smoothedPoint, targetPoint,
                 1f - Mathf.Exp(-_positionSmoothSpeed * Time.deltaTime));
         }
+
+        private void LateUpdate() =>
+            transform.localRotation = _targetLocalRotation;
 
         public void ForceImmediateUpdate()
         {
@@ -115,10 +129,10 @@ namespace SpiderController.SpiderMove
             {
                 float angle = _offsetAngle * x;
 
-                if (TryOffsetRay(baseDirection, origin, transform.right, angle)) 
+                if (TryOffsetRay(baseDirection, origin, transform.right, angle))
                     return true;
-                
-                if (TryOffsetRay(baseDirection, origin, transform.right, -angle)) 
+
+                if (TryOffsetRay(baseDirection, origin, transform.right, -angle))
                     return true;
             }
 
@@ -157,6 +171,37 @@ namespace SpiderController.SpiderMove
                 Gizmos.color = Color.red;
                 Gizmos.DrawLine(transform.position, transform.position - transform.up * _rayDistance);
             }
+        }
+
+
+        public void UpdateRotationByMoveDirection(Vector3 moveWorld, Transform spiderTransform, Vector3 worldUp)
+        {
+            if (spiderTransform == null)
+                return;
+
+            Vector3 moveFlat = Vector3.ProjectOnPlane(moveWorld, worldUp);
+
+            if (moveFlat.sqrMagnitude < Mathf.Epsilon)
+            {
+                _targetLocalRotation = _defaultLocalRotation;
+                return;
+            }
+
+            moveFlat.Normalize();
+
+            Vector3 spiderForward = Vector3.ProjectOnPlane(spiderTransform.forward, worldUp).normalized;
+            Vector3 spiderRight = Vector3.ProjectOnPlane(spiderTransform.right, worldUp).normalized;
+
+            float forwardAmount = Mathf.Clamp(Vector3.Dot(spiderForward, moveFlat), -1f, 1f);
+            float sideAmount = Mathf.Clamp(Vector3.Dot(spiderRight, moveFlat), -1f, 1f);
+
+            float angleForwardBack = forwardAmount * _maxRotateByInput;
+            float angleLeftRight = sideAmount * _maxRotateByInput;
+
+            Quaternion rotX = Quaternion.AngleAxis(angleForwardBack, -Vector3.right);
+            Quaternion rotZ = Quaternion.AngleAxis(angleLeftRight, Vector3.forward);
+
+            _targetLocalRotation = _defaultLocalRotation * rotX * rotZ;
         }
     }
 }

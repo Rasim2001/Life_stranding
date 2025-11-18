@@ -1,3 +1,4 @@
+using Infastructure.Services.CameraProvider;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using Unity.Cinemachine;
@@ -14,13 +15,17 @@ namespace Infastructure.Common.StableWorlUpManagement
 
         private IStaticDataService _staticDataService;
         private CinemachineBrain _cinemachineBrain;
+        private ICameraProviderService _cameraProviderService;
 
         [Inject]
-        public void Construct(IStaticDataService staticDataService) =>
+        public void Construct(IStaticDataService staticDataService, ICameraProviderService cameraProviderService)
+        {
+            _cameraProviderService = cameraProviderService;
             _staticDataService = staticDataService;
+        }
 
         private void Awake() =>
-            _cinemachineBrain = Camera.main.GetComponent<CinemachineBrain>();
+            _cinemachineBrain = _cameraProviderService.CameraTransform.GetComponent<CinemachineBrain>();
 
         private void Start() =>
             _cinemachineBrain.WorldUpOverride = transform;

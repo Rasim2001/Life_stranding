@@ -1,3 +1,4 @@
+using Infastructure.Services.CameraProvider;
 using UnityEngine;
 
 namespace HUD
@@ -20,7 +21,8 @@ namespace HUD
         private readonly RectTransform _arrowRectTransform;
         private readonly RectTransform _arrowCenterRectTransform;
 
-        protected TargetPointIndicator(ArrowUI arrowUI, RectTransform canvasRect, LayerMask layerMask)
+        protected TargetPointIndicator(ArrowUI arrowUI, RectTransform canvasRect, LayerMask layerMask,
+            ICameraProviderService cameraProviderService)
         {
             _arrowUI = arrowUI;
             _canvasRect = canvasRect;
@@ -29,7 +31,7 @@ namespace HUD
             _arrowRectTransform = _arrowUI.GetComponent<RectTransform>();
             _arrowCenterRectTransform = _arrowUI.ArrowCenter.GetComponent<RectTransform>();
 
-            _mainCamera = Camera.main;
+            _mainCamera = cameraProviderService.Camera;
         }
 
         public void HideTargetPoint() =>

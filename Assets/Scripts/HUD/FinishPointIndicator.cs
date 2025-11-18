@@ -1,3 +1,4 @@
+using Infastructure.Services.CameraProvider;
 using UnityEngine;
 
 namespace HUD
@@ -7,8 +8,8 @@ namespace HUD
         private readonly Transform _finishPoint;
 
         public FinishPointIndicator(ArrowUI arrowUI, RectTransform canvasRect, LayerMask layerMask,
-            Transform finishPoint) : base(
-            arrowUI, canvasRect, layerMask)
+            Transform finishPoint, ICameraProviderService cameraProviderService) : base(
+            arrowUI, canvasRect, layerMask, cameraProviderService)
         {
             _finishPoint = finishPoint;
         }

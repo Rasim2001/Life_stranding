@@ -5,6 +5,7 @@ using HighlightPlus;
 using Infastructure.Common.Pickup;
 using Infastructure.PlatformRegistry;
 using Infastructure.Services.Ability;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
@@ -66,6 +67,7 @@ namespace SpiderController
         public IPauseService PauseService => _pauseService;
         public ICutSceneService CutSceneService => _cutSceneService;
         public IWindowService WindowService => _windowService;
+        public ICameraProviderService CameraProviderService => _cameraProviderService;
         public Rigidbody Rigidbody => _rigidbody;
         public GroundChecker GroundChecker => _groundChecker;
         public SpiderUI SpiderUI => _spiderUI;
@@ -115,6 +117,7 @@ namespace SpiderController
         private StateMachineData _stateMachineData;
         private IHintService _hintService;
         private MagnetSkill _magnetSkill;
+        private ICameraProviderService _cameraProviderService;
 
 
         [Inject]
@@ -134,8 +137,10 @@ namespace SpiderController
             IPauseService pauseService,
             IAbilityService abilityService,
             IDefeatWindowService defeatWindowService,
-            IHintService hintService)
+            IHintService hintService,
+            ICameraProviderService cameraProviderService)
         {
+            _cameraProviderService = cameraProviderService;
             _hintService = hintService;
             _defeatWindowService = defeatWindowService;
             _abilityService = abilityService;
@@ -194,7 +199,7 @@ namespace SpiderController
             _spiderImpactReceiver = new SpiderImpactReceiver(_stateMachineData, transform);
 
             _spiderPlane = new SpiderPlane(_spiderUI.PlaneIndicatorUI, _rotationPlaneTransform, _inputService,
-                _abilityService, _staticDataService, _windowService, _stateMachineData);
+                _abilityService, _staticDataService, _windowService, _cameraProviderService, _stateMachineData);
             _spiderPlane.Initialize();
 
             _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _platformObjectsService, _windowService,
