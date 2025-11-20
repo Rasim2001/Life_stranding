@@ -9,6 +9,8 @@ namespace Infastructure.Common.StableWorlUpManagement
 {
     public class StableWorldUp : MonoBehaviour, IStableWorldUp
     {
+        public Transform StableWorldUpTransform => transform;
+
         private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
 
         private IStaticDataService _staticDataService;
@@ -30,9 +32,14 @@ namespace Infastructure.Common.StableWorlUpManagement
 
         public void Rotate(Quaternion targetRotation)
         {
-            transform.rotation = Quaternion.Lerp(
+            Vector3 targetUp = targetRotation * Vector3.up;
+
+            Quaternion fromTo = Quaternion.FromToRotation(transform.up, targetUp);
+            Quaternion finalRotation = fromTo * transform.rotation;
+
+            transform.rotation = Quaternion.Slerp(
                 transform.rotation,
-                targetRotation,
+                finalRotation,
                 Time.deltaTime * SpiderStaticData.WorldUpSmoothRotation
             );
         }

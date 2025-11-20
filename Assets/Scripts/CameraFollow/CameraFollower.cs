@@ -42,6 +42,7 @@ namespace CameraFollow
         private float _defaultY;
         private Quaternion _orbitStartRotation;
 
+        private const float MaxUpDriftAngle = 30;
 
         [Inject]
         public void Construct(
@@ -101,8 +102,44 @@ namespace CameraFollow
             if (!_isMouseRotating)
                 HandleScrollWheel();
 
-            HandleMouse();
+            float upAngle = Vector3.Angle(transform.up, _stableWorldUp.StableWorldUpTransform.up);
+
+            if (upAngle > MaxUpDriftAngle)
+                RealignOrbitToWorldUp();
+
             WorldUpRotate();
+            HandleMouse();
+        }
+
+        private void LateUpdate()
+        {
+            if (_isMouseRotating)
+            {
+                float mouseX = _inputService.MouseXAxis;
+                float mouseY = _inputService.MouseYAxis;
+
+                _xRotation += mouseX * SpiderStaticData.MouseRotationSpeedX;
+                _yRotation -= mouseY * SpiderStaticData.MouseRotationSpeedY * Time.deltaTime;
+
+                Vector3 up = _stableWorldUp.StableWorldUpTransform.up;
+                Quaternion yaw = Quaternion.AngleAxis(_xRotation, up);
+
+                Quaternion targetRot = yaw * _orbitStartRotation;
+
+                transform.rotation = Quaternion.Slerp(
+                    transform.rotation,
+                    targetRot,
+                    Time.deltaTime * _cameraRotationSpeed
+                );
+            }
+
+            Vector2 rotationVector = new Vector2(0, _yRotation);
+
+            _cameraSystem.ThirdPersonFollow.ShoulderOffset = new Vector3(
+                _cameraSystem.ThirdPersonFollow.ShoulderOffset.x,
+                Mathf.Lerp(_cameraSystem.ThirdPersonFollow.ShoulderOffset.y, rotationVector.y,
+                    _cameraRotationSpeed * Time.deltaTime),
+                _cameraSystem.ThirdPersonFollow.ShoulderOffset.z);
         }
 
 
@@ -143,35 +180,6 @@ namespace CameraFollow
 
             if (_inputService.LeftMouseUp)
                 StartInput();
-
-
-            if (_isMouseRotating)
-            {
-                float mouseX = _inputService.MouseXAxis;
-                float mouseY = _inputService.MouseYAxis;
-
-                _xRotation += mouseX * SpiderStaticData.MouseRotationSpeedX;
-                _yRotation -= mouseY * SpiderStaticData.MouseRotationSpeedY * Time.deltaTime;
-
-                Vector3 up = _target.transform.up;
-                Quaternion yaw = Quaternion.AngleAxis(_xRotation, up);
-
-                Quaternion targetRot = yaw * _orbitStartRotation;
-
-                transform.rotation = Quaternion.Slerp(
-                    transform.rotation,
-                    targetRot,
-                    Time.deltaTime * _cameraRotationSpeed
-                );
-            }
-
-            Vector2 rotationVector = new Vector2(0, _yRotation);
-
-            _cameraSystem.ThirdPersonFollow.ShoulderOffset = new Vector3(
-                _cameraSystem.ThirdPersonFollow.ShoulderOffset.x,
-                Mathf.Lerp(_cameraSystem.ThirdPersonFollow.ShoulderOffset.y, rotationVector.y,
-                    _cameraRotationSpeed * Time.deltaTime),
-                _cameraSystem.ThirdPersonFollow.ShoulderOffset.z);
         }
 
         private void ReleaseInput()
@@ -193,7 +201,14 @@ namespace CameraFollow
             _yRotation = _defaultY;
             _xRotation = 0f;
 
-            _orbitStartRotation = transform.rotation;
+            Vector3 worldUp = _stableWorldUp.StableWorldUpTransform.up;
+            Vector3 forward = Vector3.ProjectOnPlane(transform.forward, worldUp);
+            if (forward.sqrMagnitude < 0.0001f)
+                forward = Vector3.Cross(worldUp, transform.right);
+
+            forward.Normalize();
+            _orbitStartRotation = Quaternion.LookRotation(forward, worldUp);
+            transform.rotation = _orbitStartRotation;
         }
 
 
@@ -205,6 +220,31 @@ namespace CameraFollow
                 ref _velocity,
                 SpiderStaticData.SmoothTime
             );
+        }
+
+        private void RealignOrbitToWorldUp()
+        {
+            Vector3 worldUp = _stableWorldUp.StableWorldUpTransform.up;
+
+            Vector3 forward = Vector3.ProjectOnPlane(transform.forward, worldUp);
+            if (forward.sqrMagnitude < Mathf.Epsilon)
+                forward = Vector3.Cross(worldUp, transform.right);
+
+            forward.Normalize();
+
+            Quaternion aligned = Quaternion.LookRotation(forward, worldUp);
+
+            //transform.rotation = aligned;
+
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                aligned,
+                Time.deltaTime * 5
+            );
+
+            _xRotation = 0f;
+            _yRotation = _cameraSystem.ThirdPersonFollow.ShoulderOffset.y;
+            _orbitStartRotation = aligned;
         }
     }
 }
