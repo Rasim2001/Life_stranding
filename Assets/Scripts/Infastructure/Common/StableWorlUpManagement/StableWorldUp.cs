@@ -9,8 +9,6 @@ namespace Infastructure.Common.StableWorlUpManagement
 {
     public class StableWorldUp : MonoBehaviour, IStableWorldUp
     {
-        [SerializeField] private bool _isActive = true;
-
         private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
 
         private IStaticDataService _staticDataService;
@@ -32,9 +30,6 @@ namespace Infastructure.Common.StableWorlUpManagement
 
         public void Rotate(Quaternion targetRotation)
         {
-            if (!_isActive)
-                return;
-
             transform.rotation = Quaternion.Lerp(
                 transform.rotation,
                 targetRotation,

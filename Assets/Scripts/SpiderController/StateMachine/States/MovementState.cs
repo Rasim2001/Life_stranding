@@ -32,6 +32,8 @@ namespace SpiderController.StateMachine.States
 
         private readonly List<BackLegRaycast> _backLegs;
 
+        private Vector3 _movementDirection;
+
 
         protected MovementState(
             ISpiderStateMachine stateMachine,
@@ -86,7 +88,7 @@ namespace SpiderController.StateMachine.States
         {
             TryMoveLegs();
             BackLegHandle();
-            UpdateLegRotationsByMovement();
+            //UpdateLegRotationsByMovement();
             UpdateTerranTime();
         }
 
@@ -156,11 +158,13 @@ namespace SpiderController.StateMachine.States
             Vector3 forwardMovement = camForward * Data.Velocity.z;
             Vector3 movementX = camRight * Data.Velocity.x;
 
+            _movementDirection = forwardMovement + movementX;
+
             Vector3 jerkMovement = camForward * Data.XVelocity;
             Vector3 verticalMovement = Spider.transform.up * Data.YVelocity;
             Vector3 explosionVector = Data.ExplosionVector;
 
-            Vector3 newVelocity = forwardMovement + movementX + verticalMovement + jerkMovement + explosionVector;
+            Vector3 newVelocity = _movementDirection + verticalMovement + jerkMovement + explosionVector;
 
             Rigidbody.linearVelocity =
                 Data.IsStandingUpAfterFalling || IsNotMoveableLayer() ? Vector3.zero : newVelocity;

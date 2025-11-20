@@ -14,8 +14,8 @@ namespace SpiderController.SpiderMove
         [SerializeField] private int _offsetRayCount = 5;
 
         [Header("Rotate by movement direction")]
-        [SerializeField] private float _maxRotateByInput = 15f; // макс. угол поворота ноги
-        [SerializeField] private float _rotateLerpSpeed = 10f; // скорость плавного поворота
+        [SerializeField] private float _maxRotateByInput = 15f;
+        [SerializeField] private float _rotateLerpSpeed = 10f;
 
         public Vector3 Position => _smoothedPoint;
         public bool IsGrounded => _hit.collider != null;
@@ -87,8 +87,10 @@ namespace SpiderController.SpiderMove
                 1f - Mathf.Exp(-_positionSmoothSpeed * Time.deltaTime));
         }
 
-        private void LateUpdate() =>
-            transform.localRotation = _targetLocalRotation;
+        private void LateUpdate()
+        {
+            //transform.localRotation = _targetLocalRotation;
+        }
 
         public void ForceImmediateUpdate()
         {
@@ -116,8 +118,10 @@ namespace SpiderController.SpiderMove
             {
                 float angle = _offsetAngle * z;
 
-                if (TryOffsetRay(baseDirection, origin, transform.forward, angle)) return true;
-                if (TryOffsetRay(baseDirection, origin, transform.forward, -angle)) return true;
+                if (TryOffsetRay(baseDirection, origin, transform.forward, angle))
+                    return true;
+                if (TryOffsetRay(baseDirection, origin, transform.forward, -angle))
+                    return true;
             }
 
             return false;

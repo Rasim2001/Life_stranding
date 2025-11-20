@@ -51,6 +51,7 @@ namespace SpiderController
         [SerializeField] private GeneratorChecker _generatorChecker;
         [SerializeField] private BiosphereChecker _biosphereChecker;
         [SerializeField] private ObserverTrigger _waterObserverTrigger;
+        [SerializeField] private BodyOrientation _bodyOrientation;
 
         [SerializeField] private Stickers _stickers;
 
@@ -79,6 +80,7 @@ namespace SpiderController
         public ObserverTrigger WaterObserverTrigger => _waterObserverTrigger;
         public WaterStaticData WaterStaticData => _staticDataService.WaterStaticData;
         public StateMachineData StateMachineData => _stateMachineData;
+        public BodyOrientation BodyOrientation => _bodyOrientation;
 
         public Stickers Stickers => _stickers;
 
