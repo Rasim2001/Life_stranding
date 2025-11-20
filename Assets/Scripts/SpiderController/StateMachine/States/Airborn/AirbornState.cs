@@ -99,24 +99,28 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             GameObject prefab = Spider.WaterStaticData.WaterSplashPrefab;
 
-            Object.Instantiate(prefab,
-                Spider.transform.position + new Vector3(0, 0),
-                Quaternion.identity);
+            Object.Instantiate(prefab, Spider.transform.position + new Vector3(0, 0), Quaternion.identity);
         }
 
 
         private void AlignRotationInFlight()
         {
-            Vector3 currentEuler = Rigidbody.rotation.eulerAngles;
+            Vector3 currentForward = Rigidbody.transform.forward;
 
-            float deltaX = Mathf.DeltaAngle(0, currentEuler.x);
-            float deltaZ = Mathf.DeltaAngle(0, currentEuler.z);
+            Vector3 targetForward = Vector3.ProjectOnPlane(currentForward, Vector3.up);
+            targetForward.Normalize();
 
-            float alignX = -deltaX * Time.fixedDeltaTime / 2;
-            float alignZ = -deltaZ * Time.fixedDeltaTime / 2;
+            Quaternion targetRotation = Quaternion.LookRotation(targetForward, Vector3.up);
 
-            Quaternion deltaRotation = Quaternion.Euler(alignX, 0, alignZ);
-            Rigidbody.MoveRotation(Rigidbody.rotation * deltaRotation);
+            float speed = 90;
+            float maxDegreesDelta = speed * Time.fixedDeltaTime;
+
+            Quaternion newRotation = Quaternion.RotateTowards(
+                Rigidbody.rotation,
+                targetRotation,
+                maxDegreesDelta);
+
+            Rigidbody.MoveRotation(newRotation);
         }
 
 

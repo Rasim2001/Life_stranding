@@ -30,8 +30,6 @@ namespace SpiderController.StateMachine.States
         private readonly IInputService _inputService;
         private readonly float _legMoveDeadzone = 0.04f;
 
-        private readonly List<BackLegRaycast> _backLegs;
-
         private Vector3 _movementDirection;
 
 
@@ -56,11 +54,6 @@ namespace SpiderController.StateMachine.States
             Spider = spider;
             Data = stateMachineData;
             Legs = legs;
-
-            _backLegs = Legs
-                .Select(x => x.Raycast.GetComponent<BackLegRaycast>())
-                .Where(x => x != null)
-                .ToList();
         }
 
 
@@ -87,8 +80,6 @@ namespace SpiderController.StateMachine.States
         public virtual void Update()
         {
             TryMoveLegs();
-            BackLegHandle();
-            //UpdateLegRotationsByMovement();
             UpdateTerranTime();
         }
 
@@ -187,24 +178,6 @@ namespace SpiderController.StateMachine.States
         }
 
 
-        private void BackLegHandle()
-        {
-            if (_backLegs == null)
-                return;
-
-            if (Data.Input.z > 0)
-            {
-                foreach (BackLegRaycast backLeg in _backLegs)
-                    backLeg.SetForwardStateLeg();
-            }
-            else if (Data.Input.z < 0)
-            {
-                foreach (BackLegRaycast backLeg in _backLegs)
-                    backLeg.SetBackStateLeg();
-            }
-        }
-
-
         private bool CanMove(int legIndex)
         {
             int legsCount = Legs.Length;
@@ -296,41 +269,6 @@ namespace SpiderController.StateMachine.States
             Vector3 angularExplosionVector = Data.ExplosionAngularVector;
 
             Rigidbody.angularVelocity = angularVel + angularExplosionVector;
-        }
-
-        private void UpdateLegRotationsByMovement()
-        {
-            Vector3 moveWorld = GetMoveWorldDirection();
-
-            if (moveWorld.sqrMagnitude < Mathf.Epsilon)
-            {
-                foreach (LegDataStruct legData in Legs)
-                {
-                    if (legData.Raycast != null)
-                        legData.Raycast.UpdateRotationByMoveDirection(Vector3.zero, Spider.transform,
-                            CameraTransform.up);
-                }
-
-                return;
-            }
-
-            foreach (LegDataStruct legData in Legs)
-            {
-                if (legData.Raycast != null)
-                    legData.Raycast.UpdateRotationByMoveDirection(moveWorld, Spider.transform, CameraTransform.up);
-            }
-        }
-
-        private Vector3 GetMoveWorldDirection()
-        {
-            Vector3 worldUp = CameraTransform.up;
-
-            Vector3 camForward = Vector3.ProjectOnPlane(CameraTransform.forward, worldUp).normalized;
-            Vector3 camRight = Vector3.ProjectOnPlane(CameraTransform.right, worldUp).normalized;
-
-            Vector3 moveWorld = camForward * Data.Input.z + camRight * Data.Input.x;
-
-            return Vector3.ProjectOnPlane(moveWorld, worldUp);
         }
     }
 }

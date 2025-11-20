@@ -2826,6 +2826,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6562933287002958290}
   - component: {fileID: 8687743643175502748}
+  - component: {fileID: 1807929927871567322}
   m_Layer: 6
   m_Name: LegL2
   m_TagString: Untagged
@@ -2863,10 +2864,21 @@ MonoBehaviour:
   _layerMask:
     serializedVersion: 2
     m_Bits: 8193
-  _offsetAngle: 15
-  _offsetRayCount: 4
-  _maxRotateByInput: 15
-  _rotateLerpSpeed: 10
+  _offsetAngle: 5
+  _offsetRayCount: 15
+--- !u!114 &1807929927871567322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2586299893691199646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7517fcbdcc38a5a4491b4b0967144ecc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _legType: 2
 --- !u!1 &2611304340422644356
 GameObject:
   m_ObjectHideFlags: 0
@@ -2877,6 +2889,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8639305757210517446}
   - component: {fileID: 7846976162505274813}
+  - component: {fileID: 6585488650988309138}
   m_Layer: 6
   m_Name: LegL1
   m_TagString: Untagged
@@ -2914,10 +2927,21 @@ MonoBehaviour:
   _layerMask:
     serializedVersion: 2
     m_Bits: 8193
-  _offsetAngle: 15
-  _offsetRayCount: 4
-  _maxRotateByInput: 15
-  _rotateLerpSpeed: 10
+  _offsetAngle: 5
+  _offsetRayCount: 15
+--- !u!114 &6585488650988309138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2611304340422644356}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7517fcbdcc38a5a4491b4b0967144ecc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _legType: 0
 --- !u!1 &2676405825997839598
 GameObject:
   m_ObjectHideFlags: 0
@@ -3414,6 +3438,7 @@ GameObject:
   m_Component:
   - component: {fileID: 729331492389689180}
   - component: {fileID: 4957002421866192317}
+  - component: {fileID: 2255647934371015228}
   m_Layer: 6
   m_Name: LegR2
   m_TagString: Untagged
@@ -3451,10 +3476,21 @@ MonoBehaviour:
   _layerMask:
     serializedVersion: 2
     m_Bits: 8193
-  _offsetAngle: 15
-  _offsetRayCount: 4
-  _maxRotateByInput: 15
-  _rotateLerpSpeed: 10
+  _offsetAngle: 5
+  _offsetRayCount: 15
+--- !u!114 &2255647934371015228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3279962089593541439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7517fcbdcc38a5a4491b4b0967144ecc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _legType: 3
 --- !u!1 &3306469546981090165
 GameObject:
   m_ObjectHideFlags: 0
@@ -9989,6 +10025,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7012977879617974153}
   - component: {fileID: 6395569757360196741}
+  - component: {fileID: 7027551767664700832}
   m_Layer: 6
   m_Name: LegR1
   m_TagString: Untagged
@@ -10026,10 +10063,21 @@ MonoBehaviour:
   _layerMask:
     serializedVersion: 2
     m_Bits: 8193
-  _offsetAngle: 15
-  _offsetRayCount: 4
-  _maxRotateByInput: 15
-  _rotateLerpSpeed: 10
+  _offsetAngle: 5
+  _offsetRayCount: 15
+--- !u!114 &7027551767664700832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8407797035302986919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7517fcbdcc38a5a4491b4b0967144ecc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _legType: 1
 --- !u!1 &8450746619889243910
 GameObject:
   m_ObjectHideFlags: 0

@@ -99,9 +99,6 @@ namespace CameraFollow
             if (_target == null || _cutSceneService.IsActive || _defeatWindowService.IsDefeated)
                 return;
 
-            if (!_isMouseRotating)
-                HandleScrollWheel();
-
             float upAngle = Vector3.Angle(transform.up, _stableWorldUp.StableWorldUpTransform.up);
 
             if (upAngle > MaxUpDriftAngle)
@@ -143,6 +140,15 @@ namespace CameraFollow
         }
 
 
+        private void HandleMouse()
+        {
+            if (_inputService.LeftMousePressed)
+                ReleaseInput();
+
+            if (_inputService.LeftMouseUp)
+                StartInput();
+        }
+
         private void WorldUpRotate() =>
             _stableWorldUp.Rotate(_target.rotation);
 
@@ -173,20 +179,11 @@ namespace CameraFollow
                 _cameraSystem.ThirdPersonFollow.ShoulderOffset.z);
         }
 
-        private void HandleMouse()
-        {
-            if (_inputService.LeftMousePressed)
-                ReleaseInput();
-
-            if (_inputService.LeftMouseUp)
-                StartInput();
-        }
-
         private void ReleaseInput()
         {
             _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed / 20;
 
-            _yRotation = _defaultY;
+            //_yRotation = _defaultY;
             _xRotation = 0;
 
             _isMouseRotating = false;
@@ -198,7 +195,7 @@ namespace CameraFollow
 
             _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed;
 
-            _yRotation = _defaultY;
+            //_yRotation = _defaultY;
             _xRotation = 0f;
 
             Vector3 worldUp = _stableWorldUp.StableWorldUpTransform.up;
@@ -233,8 +230,6 @@ namespace CameraFollow
             forward.Normalize();
 
             Quaternion aligned = Quaternion.LookRotation(forward, worldUp);
-
-            //transform.rotation = aligned;
 
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
