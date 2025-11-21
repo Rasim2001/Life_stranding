@@ -57,9 +57,6 @@ namespace Infastructure.Factories.GameFactories
                 worldData.WorldPosition, worldData.WorldRotation, null);
             spider.Initialize(flower);
 
-            SpiderUI spiderUI = spider.GetComponent<SpiderUI>();
-            spiderUI.Initialize();
-
             _spiderTrackService.Spider = spider;
 
             return spider;
