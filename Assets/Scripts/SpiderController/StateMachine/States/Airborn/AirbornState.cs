@@ -3,15 +3,12 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
-using SpiderController.TriggerChecker;
 using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Airborn
 {
     public class AirbornState : MovementState
     {
-        private readonly GroundChecker _spiderGroundChecker;
-
         protected AirbornState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, ICutSceneService cutSceneService, Spider spider,
             StateMachineData stateMachineData,
@@ -19,7 +16,6 @@ namespace SpiderController.StateMachine.States.Airborn
             staticDataService, cutSceneService, spider,
             stateMachineData, legs, flower, energySystem)
         {
-            _spiderGroundChecker = spider.GroundChecker;
         }
 
         public override void Enter()

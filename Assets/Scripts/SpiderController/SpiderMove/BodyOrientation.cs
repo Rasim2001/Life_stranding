@@ -1,4 +1,5 @@
 using Infastructure.Services.CameraProvider;
+using Infastructure.Services.PlayerInput;
 using UnityEngine;
 using Zenject;
 
@@ -15,10 +16,14 @@ namespace SpiderController.SpiderMove
         private Vector3 _raycastDefaultLocalEuler;
 
         private ICameraProviderService _cameraProviderService;
+        private IInputService _inputService;
 
         [Inject]
-        public void Construct(ICameraProviderService cameraProviderService) =>
+        public void Construct(ICameraProviderService cameraProviderService, IInputService inputService)
+        {
+            _inputService = inputService;
             _cameraProviderService = cameraProviderService;
+        }
 
         private void Awake()
         {
@@ -34,6 +39,9 @@ namespace SpiderController.SpiderMove
 
         private void Update()
         {
+            if (_inputService.InputVector.sqrMagnitude <= Mathf.Epsilon)
+                return;
+
             Vector3 camForward = Vector3.ProjectOnPlane(
                 _cameraProviderService.CameraTransform.forward,
                 _cameraProviderService.CameraTransform.up).normalized;
