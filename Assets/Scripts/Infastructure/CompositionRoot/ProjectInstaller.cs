@@ -1,6 +1,7 @@
 using Infastructure.Common;
 using Infastructure.Common.Pickup;
 using Infastructure.Factories.ProjectFactories;
+using Infastructure.Services.CursorVisible;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Pause;
 using Infastructure.Services.PlayerProgressService;
@@ -41,7 +42,12 @@ namespace Infastructure.CompositionRoot
             BindRestartService();
 
             BindCutSceneService();
+
+            BindCursorVisibleService();
         }
+
+        private void BindCursorVisibleService() =>
+            Container.BindInterfacesAndSelfTo<CursorVisibleService>().AsSingle();
 
         private void BindCutSceneService() =>
             Container.BindInterfacesAndSelfTo<CutSceneService>().AsSingle();

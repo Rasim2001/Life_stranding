@@ -64,8 +64,7 @@ namespace CameraFollow
 
         private void Awake()
         {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Confined;
+           
 
             _mouseSensitivity = 2;
         }
