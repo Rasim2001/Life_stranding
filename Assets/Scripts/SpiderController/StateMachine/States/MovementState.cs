@@ -138,6 +138,9 @@ namespace SpiderController.StateMachine.States
         protected void SetSpeed(float newValue) =>
             Data.Speed = newValue;
 
+        protected virtual Vector3 GetMovementY() =>
+            Spider.transform.up * Data.YVelocity;
+
         private void MoveBodySpider()
         {
             Vector3 worldUp = CameraTransform.up;
@@ -150,7 +153,7 @@ namespace SpiderController.StateMachine.States
             Vector3 movementDirection = forwardMovement + movementX;
 
             Vector3 jerkMovement = camForward * Data.XVelocity;
-            Vector3 verticalMovement = Spider.transform.up * Data.YVelocity;
+            Vector3 verticalMovement = GetMovementY();
             Vector3 explosionVector = Data.ExplosionVector;
 
             Vector3 newVelocity = movementDirection + verticalMovement + jerkMovement + explosionVector;

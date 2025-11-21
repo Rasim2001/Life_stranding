@@ -219,7 +219,6 @@ namespace CameraFollow
 
         private void ReleaseInput()
         {
-            //_cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed / 20;
             _xRotation = 0;
 
             _isMouseRotating = false;
@@ -228,8 +227,6 @@ namespace CameraFollow
         private void StartInput()
         {
             _isMouseRotating = true;
-
-            //_cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed;
             _xRotation = 0f;
 
             Vector3 worldUp = _stableWorldUp.StableWorldUpTransform.up;

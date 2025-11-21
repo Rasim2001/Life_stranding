@@ -10,6 +10,7 @@ using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
 using SpiderController.TriggerChecker;
 using SpiderController.UI.Stickers;
+using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Airborn
 {
@@ -65,6 +66,9 @@ namespace SpiderController.StateMachine.States.Airborn
             if (_spiderGroundChecker.IsTouchesWithLegs)
                 StandUpAsync().Forget();
         }
+
+        protected override Vector3 GetMovementY() =>
+            Vector3.up * Data.YVelocity;
 
 
         private async UniTask StandUpAsync()

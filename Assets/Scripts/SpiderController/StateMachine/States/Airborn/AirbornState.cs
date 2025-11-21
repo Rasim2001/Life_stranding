@@ -66,8 +66,7 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.FixedUpdate();
 
-            if (!_spiderGroundChecker.IsTouchesWithLegs)
-                AlignRotationInFlight();
+            AlignRotationInFlight();
         }
 
         protected void SetCrossLegs()
@@ -111,13 +110,15 @@ namespace SpiderController.StateMachine.States.Airborn
         private void AlignRotationInFlight()
         {
             Quaternion currentRotation = Rigidbody.rotation;
-            Vector3 currentEuler = currentRotation.eulerAngles;
+            Vector3 worldUp = Vector3.up;
 
-            float yaw = currentEuler.y;
+            Vector3 forward = Spider.transform.forward;
+            Vector3 flatForward = Vector3.ProjectOnPlane(forward, worldUp);
 
-            Quaternion targetRotation = Quaternion.Euler(0f, yaw, 0f);
+            flatForward.Normalize();
+            Quaternion targetRotation = Quaternion.LookRotation(flatForward, worldUp);
 
-            float degreesPerSecond = 180f;
+            float degreesPerSecond = 180;
             float maxDegreesDelta = degreesPerSecond * Time.fixedDeltaTime;
 
             Quaternion newRotation = Quaternion.RotateTowards(
