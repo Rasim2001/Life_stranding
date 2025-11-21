@@ -34,6 +34,8 @@ namespace SpiderController.StateMachine.States.Ground
 
             if (IsNotMoveableLayer())
                 StateMachine.SwitchState<RecoveryState>();
+
+            Data.YVelocity = 0;
         }
 
 

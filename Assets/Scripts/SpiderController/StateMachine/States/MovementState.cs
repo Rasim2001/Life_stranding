@@ -30,8 +30,6 @@ namespace SpiderController.StateMachine.States
         private readonly IInputService _inputService;
         private readonly float _legMoveDeadzone = 0.04f;
 
-        private Vector3 _movementDirection;
-
 
         protected MovementState(
             ISpiderStateMachine stateMachine,
@@ -140,7 +138,7 @@ namespace SpiderController.StateMachine.States
         protected void SetSpeed(float newValue) =>
             Data.Speed = newValue;
 
-        protected virtual void MoveBodySpider()
+        private void MoveBodySpider()
         {
             Vector3 worldUp = CameraTransform.up;
             Vector3 camForward = Vector3.ProjectOnPlane(CameraTransform.forward, worldUp).normalized;
@@ -149,13 +147,13 @@ namespace SpiderController.StateMachine.States
             Vector3 forwardMovement = camForward * Data.Velocity.z;
             Vector3 movementX = camRight * Data.Velocity.x;
 
-            _movementDirection = forwardMovement + movementX;
+            Vector3 movementDirection = forwardMovement + movementX;
 
             Vector3 jerkMovement = camForward * Data.XVelocity;
             Vector3 verticalMovement = Spider.transform.up * Data.YVelocity;
             Vector3 explosionVector = Data.ExplosionVector;
 
-            Vector3 newVelocity = _movementDirection + verticalMovement + jerkMovement + explosionVector;
+            Vector3 newVelocity = movementDirection + verticalMovement + jerkMovement + explosionVector;
 
             Rigidbody.linearVelocity =
                 Data.IsStandingUpAfterFalling || IsNotMoveableLayer() ? Vector3.zero : newVelocity;
@@ -250,12 +248,64 @@ namespace SpiderController.StateMachine.States
             if (count == 0)
                 return;
 
+            if (count != Legs.Length)
+                CalculateAdhesion();
+            else
+                CalculateGroundWithAllLegs(normalSum, count);
+        }
+
+        private void CalculateGroundWithAllLegs(Vector3 normalSum, int count)
+        {
             Vector3 averageNormal = (normalSum / count).normalized;
 
             Quaternion targetRotation =
                 Quaternion.FromToRotation(Spider.transform.up, averageNormal) * Rigidbody.rotation;
 
             Quaternion smoothedRotation = Quaternion.Slerp(Rigidbody.rotation, targetRotation,
+                Time.fixedDeltaTime * SpiderStaticData.LerpSpeedFromGround);
+
+            Quaternion deltaRotation = smoothedRotation * Quaternion.Inverse(Rigidbody.rotation);
+            deltaRotation.ToAngleAxis(out float angleDeg, out Vector3 axis);
+
+            if (angleDeg > 180f)
+                angleDeg -= 360f;
+
+            float angleRad = angleDeg * Mathf.Deg2Rad;
+            Vector3 angularVel = axis.normalized * (angleRad / Time.fixedDeltaTime);
+            Vector3 angularExplosionVector = Data.ExplosionAngularVector;
+
+            Rigidbody.angularVelocity = angularVel + angularExplosionVector;
+        }
+
+        private void CalculateAdhesion()
+        {
+            Vector3 normalSum = Vector3.zero;
+            int groundedCount = 0;
+
+            for (int i = 0; i < Legs.Length; i++)
+            {
+                var raycast = Legs[i].Raycast;
+                if (!raycast.IsGrounded)
+                    continue;
+
+                normalSum += raycast.GroundNormal;
+                groundedCount++;
+            }
+
+            if (groundedCount == 0)
+                return;
+
+            Vector3 averageNormal = (normalSum / groundedCount).normalized;
+
+            float blend = Mathf.Clamp01(groundedCount / 4f);
+            averageNormal = Vector3.Slerp(Spider.transform.up, averageNormal, blend);
+
+            Quaternion targetRotation =
+                Quaternion.FromToRotation(Spider.transform.up, averageNormal) * Rigidbody.rotation;
+
+            Quaternion smoothedRotation = Quaternion.Slerp(
+                Rigidbody.rotation,
+                targetRotation,
                 Time.fixedDeltaTime * SpiderStaticData.LerpSpeedFromGround);
 
             Quaternion deltaRotation = smoothedRotation * Quaternion.Inverse(Rigidbody.rotation);

@@ -14,6 +14,7 @@ namespace SpiderController.SpiderMove
         [SerializeField] private int _offsetRayCount = 15;
 
         public Vector3 Position => _smoothedPoint;
+        public Vector3 GroundNormal => IsGrounded ? _hit.normal : transform.up;
         public bool IsGrounded => _hit.collider != null;
         public Vector3 AirbornPosition => _airbornHit.point;
         public bool IsNotMoveableLayer => IsGrounded && _hit.collider.gameObject.layer == _notMoveableLayer;

@@ -3,12 +3,15 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
+using SpiderController.TriggerChecker;
 using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Airborn
 {
     public class AirbornState : MovementState
     {
+        private readonly GroundChecker _spiderGroundChecker;
+
         protected AirbornState(ISpiderStateMachine stateMachine, IInputService inputService,
             IStaticDataService staticDataService, ICutSceneService cutSceneService, Spider spider,
             StateMachineData stateMachineData,
@@ -16,6 +19,7 @@ namespace SpiderController.StateMachine.States.Airborn
             staticDataService, cutSceneService, spider,
             stateMachineData, legs, flower, energySystem)
         {
+            _spiderGroundChecker = spider.GroundChecker;
         }
 
         public override void Enter()
@@ -62,7 +66,8 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.FixedUpdate();
 
-            AlignRotationInFlight();
+            if (!_spiderGroundChecker.IsTouchesWithLegs)
+                AlignRotationInFlight();
         }
 
         protected void SetCrossLegs()
@@ -105,18 +110,18 @@ namespace SpiderController.StateMachine.States.Airborn
 
         private void AlignRotationInFlight()
         {
-            Vector3 currentForward = Rigidbody.transform.forward;
+            Quaternion currentRotation = Rigidbody.rotation;
+            Vector3 currentEuler = currentRotation.eulerAngles;
 
-            Vector3 targetForward = Vector3.ProjectOnPlane(currentForward, Vector3.up);
-            targetForward.Normalize();
+            float yaw = currentEuler.y;
 
-            Quaternion targetRotation = Quaternion.LookRotation(targetForward, Vector3.up);
+            Quaternion targetRotation = Quaternion.Euler(0f, yaw, 0f);
 
-            float speed = 90;
-            float maxDegreesDelta = speed * Time.fixedDeltaTime;
+            float degreesPerSecond = 180f;
+            float maxDegreesDelta = degreesPerSecond * Time.fixedDeltaTime;
 
             Quaternion newRotation = Quaternion.RotateTowards(
-                Rigidbody.rotation,
+                currentRotation,
                 targetRotation,
                 maxDegreesDelta);
 

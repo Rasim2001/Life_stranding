@@ -14,6 +14,7 @@ namespace CameraFollow
 {
     public class CameraFollower : MonoBehaviour
     {
+        private const float MaxUpDriftAngle = 30;
         private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
 
         private IInputService _inputService;
@@ -42,7 +43,7 @@ namespace CameraFollow
         private float _defaultY;
         private Quaternion _orbitStartRotation;
 
-        private const float MaxUpDriftAngle = 30;
+        private float _maxRotationY = 3.0f;
 
         [Inject]
         public void Construct(
@@ -79,6 +80,7 @@ namespace CameraFollow
         {
             _windowService.OnWindowOpened += ReleaseInput;
             _defaultY = _cameraSystem.ThirdPersonFollow.ShoulderOffset.y;
+            _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed;
 
             _joystickInputSource = _inputService.GetInputSource<JoystickInputSource>();
         }
@@ -111,31 +113,68 @@ namespace CameraFollow
         private void LateUpdate()
         {
             if (_isMouseRotating)
+                DefaultMoveCamera();
+            else
+                ClimbMoveCamera();
+        }
+
+        private void ClimbMoveCamera()
+        {
+            float spiderPitch = Mathf.Abs(Mathf.DeltaAngle(0f, _target.transform.eulerAngles.z));
+            float targetY;
+
+            if (spiderPitch > 0f)
             {
-                float mouseX = _inputService.MouseXAxis;
-                float mouseY = _inputService.MouseYAxis;
+                float t = Mathf.InverseLerp(0f, 45, spiderPitch);
+                t = Mathf.Clamp01(t);
 
-                _xRotation += mouseX * SpiderStaticData.MouseRotationSpeedX;
-                _yRotation -= mouseY * SpiderStaticData.MouseRotationSpeedY * Time.deltaTime;
-
-                Vector3 up = _stableWorldUp.StableWorldUpTransform.up;
-                Quaternion yaw = Quaternion.AngleAxis(_xRotation, up);
-
-                Quaternion targetRot = yaw * _orbitStartRotation;
-
-                transform.rotation = Quaternion.Slerp(
-                    transform.rotation,
-                    targetRot,
-                    Time.deltaTime * _cameraRotationSpeed
-                );
+                targetY = Mathf.Lerp(_defaultY, 5, t);
             }
+            else
+                targetY = _defaultY;
 
-            Vector2 rotationVector = new Vector2(0, _yRotation);
+            _yRotation = Mathf.Lerp(
+                _yRotation,
+                targetY,
+                _cameraRotationSpeed * Time.deltaTime);
+
+
+            float yLerp = Mathf.Lerp(
+                _cameraSystem.ThirdPersonFollow.ShoulderOffset.y,
+                _yRotation,
+                _cameraRotationSpeed * Time.deltaTime);
 
             _cameraSystem.ThirdPersonFollow.ShoulderOffset = new Vector3(
                 _cameraSystem.ThirdPersonFollow.ShoulderOffset.x,
-                Mathf.Lerp(_cameraSystem.ThirdPersonFollow.ShoulderOffset.y, rotationVector.y,
-                    _cameraRotationSpeed * Time.deltaTime),
+                yLerp,
+                _cameraSystem.ThirdPersonFollow.ShoulderOffset.z);
+        }
+
+        private void DefaultMoveCamera()
+        {
+            float mouseX = _inputService.MouseXAxis;
+            float mouseY = _inputService.MouseYAxis;
+
+            _xRotation += mouseX * SpiderStaticData.MouseRotationSpeedX;
+            _yRotation -= mouseY * SpiderStaticData.MouseRotationSpeedY * Time.deltaTime;
+
+            Vector3 up = _stableWorldUp.StableWorldUpTransform.up;
+            Quaternion yaw = Quaternion.AngleAxis(_xRotation, up);
+
+            Quaternion targetRot = yaw * _orbitStartRotation;
+
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRot,
+                Time.deltaTime * _cameraRotationSpeed
+            );
+
+            _yRotation = Mathf.Clamp(_yRotation, 0, _maxRotationY);
+            float yLerp = Mathf.Lerp(_cameraSystem.ThirdPersonFollow.ShoulderOffset.y, _yRotation,
+                _cameraRotationSpeed * Time.deltaTime);
+
+            _cameraSystem.ThirdPersonFollow.ShoulderOffset = new Vector3(
+                _cameraSystem.ThirdPersonFollow.ShoulderOffset.x, yLerp,
                 _cameraSystem.ThirdPersonFollow.ShoulderOffset.z);
         }
 
@@ -163,7 +202,6 @@ namespace CameraFollow
             else
                 maxLenght = _joystickInputSource.IsGamepadActiveNow() ? 4 : 7;
 
-
             if (scrollInput != 0f)
             {
                 _mouseSensitivity -= scrollInput * SpiderStaticData.ScrollSensitivity;
@@ -181,9 +219,7 @@ namespace CameraFollow
 
         private void ReleaseInput()
         {
-            _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed / 20;
-
-            //_yRotation = _defaultY;
+            //_cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed / 20;
             _xRotation = 0;
 
             _isMouseRotating = false;
@@ -193,9 +229,7 @@ namespace CameraFollow
         {
             _isMouseRotating = true;
 
-            _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed;
-
-            //_yRotation = _defaultY;
+            //_cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed;
             _xRotation = 0f;
 
             Vector3 worldUp = _stableWorldUp.StableWorldUpTransform.up;
