@@ -1,3 +1,4 @@
+using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Services.Ability;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.PlayerInput;
@@ -21,6 +22,7 @@ namespace SpiderController.Platform
         private readonly IStaticDataService _staticDataService;
         private readonly IWindowService _windowService;
         private readonly ICameraProviderService _cameraProviderService;
+        private readonly IStableWorldUp _stableWorldUp;
         private readonly StateMachineData _stateMachineData;
         private readonly PressedMouseButtonIndicatorUI _pressedMouseButtonIndicatorUI;
         private readonly Transform _rotationPlaneTransform;
@@ -47,10 +49,12 @@ namespace SpiderController.Platform
             IStaticDataService staticDataService,
             IWindowService windowService,
             ICameraProviderService cameraProviderService,
+            IStableWorldUp stableWorldUp,
             StateMachineData stateMachineData)
         {
             _windowService = windowService;
             _cameraProviderService = cameraProviderService;
+            _stableWorldUp = stableWorldUp;
             _inputService = inputService;
             _abilityService = abilityService;
             _staticDataService = staticDataService;
@@ -116,9 +120,9 @@ namespace SpiderController.Platform
             _pressedMouseButtonIndicatorUI.Show();
             _isMouseHold = true;
 
-            Mouse.current.WarpCursorPosition(new Vector2(Screen.width / 2, Screen.height / 2));
+            Mouse.current.WarpCursorPosition(new Vector2((float)Screen.width / 2, (float)Screen.height / 2));
 
-            _initialMousePosition = new Vector2(Screen.width / 2, Screen.height / 2);
+            _initialMousePosition = new Vector2((float)Screen.width / 2, (float)Screen.height / 2);
             _waitTimeJoystick = 0;
         }
 
@@ -205,32 +209,27 @@ namespace SpiderController.Platform
 
         private Vector2 ConvertInputFromCameraToSpiderSpace(Vector2 input)
         {
-            if (_cameraTransform == null || _rotationPlaneTransform == null || _rotationPlaneTransform.parent == null)
-                return input;
+            Vector3 up = _stableWorldUp.StableWorldUpTransform.up;
 
-            Vector3 spiderForward = _rotationPlaneTransform.parent.forward;
-            Vector3 cameraForward = _cameraTransform.forward;
+            Vector3 spiderForward = Vector3.ProjectOnPlane(_rotationPlaneTransform.parent.forward, up);
+            Vector3 cameraForward = Vector3.ProjectOnPlane(_cameraTransform.forward, up);
 
-            spiderForward.y = 0f;
-            cameraForward.y = 0f;
-
-            if (spiderForward.sqrMagnitude < 0.001f || cameraForward.sqrMagnitude < 0.001f)
+            if (spiderForward.sqrMagnitude < Mathf.Epsilon || cameraForward.sqrMagnitude < Mathf.Epsilon)
                 return input;
 
             spiderForward.Normalize();
             cameraForward.Normalize();
 
-            float signedAngle = Vector3.SignedAngle(cameraForward, spiderForward, Vector3.up);
+            float signedAngle = Vector3.SignedAngle(cameraForward, spiderForward, up);
             float rad = signedAngle * Mathf.Deg2Rad;
 
             float cos = Mathf.Cos(rad);
             float sin = Mathf.Sin(rad);
 
-            Vector2 result;
-            result.x = input.x * cos - input.y * sin;
-            result.y = input.x * sin + input.y * cos;
-
-            return result;
+            return new Vector2(
+                input.x * cos - input.y * sin,
+                input.x * sin + input.y * cos
+            );
         }
     }
 }

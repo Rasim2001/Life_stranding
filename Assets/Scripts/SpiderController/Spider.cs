@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Common;
 using HighlightPlus;
 using Infastructure.Common.Pickup;
+using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.PlatformRegistry;
 using Infastructure.Services.Ability;
 using Infastructure.Services.CameraProvider;
@@ -120,6 +121,7 @@ namespace SpiderController
         private IHintService _hintService;
         private MagnetSkill _magnetSkill;
         private ICameraProviderService _cameraProviderService;
+        private IStableWorldUp _stableWorldUp;
 
 
         [Inject]
@@ -140,8 +142,10 @@ namespace SpiderController
             IAbilityService abilityService,
             IDefeatWindowService defeatWindowService,
             IHintService hintService,
-            ICameraProviderService cameraProviderService)
+            ICameraProviderService cameraProviderService,
+            IStableWorldUp stableWorldUp)
         {
+            _stableWorldUp = stableWorldUp;
             _cameraProviderService = cameraProviderService;
             _hintService = hintService;
             _defeatWindowService = defeatWindowService;
@@ -201,7 +205,8 @@ namespace SpiderController
             _spiderImpactReceiver = new SpiderImpactReceiver(_stateMachineData, transform);
 
             _spiderPlane = new SpiderPlane(_spiderUI.PlaneIndicatorUI, _rotationPlaneTransform, _inputService,
-                _abilityService, _staticDataService, _windowService, _cameraProviderService, _stateMachineData);
+                _abilityService, _staticDataService, _windowService, _cameraProviderService, _stableWorldUp,
+                _stateMachineData);
             _spiderPlane.Initialize();
 
             _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _platformObjectsService, _windowService,
