@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Infastructure.Services.CursorVisible
@@ -11,11 +10,7 @@ namespace Infastructure.Services.CursorVisible
         public void HideCursor() =>
             Cursor.visible = false;
 
-        public void Initialize()
-        {
-            Debug.Log("Initialize");
-
+        public void Initialize() =>
             Cursor.lockState = CursorLockMode.Confined;
-        }
     }
 }
