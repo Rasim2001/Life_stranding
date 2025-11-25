@@ -1,11 +1,14 @@
 using System.Collections.Generic;
+using Infastructure.Localization;
+using Localization;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Infastructure.StaticData.Windows
 {
-    [CreateAssetMenu(fileName = "WindowData", menuName = "StaticData/Window")]
-    public class WindowStaticData : ScriptableObject
+    [CreateAssetMenu(fileName = "WindowsLocalization", menuName = "StaticData/WindowsLocalizationStaticData")]
+    public class WindowsLocalizationStaticData : SerializedScriptableObject
     {
-        public List<WindowConfig> Configs;
+        public Dictionary<TextStaticId, LocalizationText> Texts = new Dictionary<TextStaticId, LocalizationText>();
     }
 }

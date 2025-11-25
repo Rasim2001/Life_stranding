@@ -1,6 +1,7 @@
 using Infastructure.Common;
 using Infastructure.Common.Pickup;
 using Infastructure.Factories.ProjectFactories;
+using Infastructure.Localization;
 using Infastructure.Services.CursorVisible;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Pause;
@@ -44,7 +45,12 @@ namespace Infastructure.CompositionRoot
             BindCutSceneService();
 
             BindCursorVisibleService();
+
+            BindLocalizationService();
         }
+
+        private void BindLocalizationService() =>
+            Container.BindInterfacesAndSelfTo<LocalizationService>().AsSingle();
 
         private void BindCursorVisibleService() =>
             Container.BindInterfacesAndSelfTo<CursorVisibleService>().AsSingle();

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Infastructure.Localization;
 using Infastructure.Services.Pause;
+using Localization;
 using TMPro;
 using UI.MVVM.Base;
 using UnityEngine;
@@ -35,6 +37,8 @@ namespace UI.MVVM.View.ProductDescriptionPopup
         private UIFlicker _uiFlicker;
 
         private IPauseService _pauseService;
+        private ILocalizationService _localizationService;
+
         private CancellationTokenSource _cancellationTokenSource;
         private Tween _gifRotateTween;
         private Tween _discriptionRotateTween;
@@ -43,8 +47,11 @@ namespace UI.MVVM.View.ProductDescriptionPopup
 
 
         [Inject]
-        public void Construct(IPauseService pauseService) =>
+        public void Construct(IPauseService pauseService, ILocalizationService localizationService)
+        {
+            _localizationService = localizationService;
             _pauseService = pauseService;
+        }
 
         protected override void Awake()
         {
@@ -79,9 +86,9 @@ namespace UI.MVVM.View.ProductDescriptionPopup
         {
             base.OnBind(viewModel);
 
-            _titleText.text = viewModel.Description.TitleText;
-            _howToUseText.text = viewModel.Description.HowToUseText;
-            _descriptionText.text = viewModel.Description.DescriptionText;
+            _titleText.text = viewModel.Description.TitleText.Get(_localizationService.CurrentLanguage);
+            _howToUseText.text = viewModel.Description.HowToUseText.Get(_localizationService.CurrentLanguage);
+            _descriptionText.text = viewModel.Description.DescriptionText.Get(_localizationService.CurrentLanguage);
             _videoPlayer.clip = viewModel.Description.VideoClip;
         }
 

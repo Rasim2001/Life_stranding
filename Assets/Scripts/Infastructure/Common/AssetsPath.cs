@@ -34,5 +34,6 @@ namespace Infastructure.Common
         public const string StickersStaticDataPath = "StaticData/Stickers/StickersData";
         public const string TasksStaticDataPath = "StaticData/UI/TasksPopupData";
         public const string WaterStaticDataPath = "StaticData/GlobalWater/WaterData";
+        public const string WindowsLocalizationStaticDataPath = "StaticData/UI/WindowStaticLocalizationData";
     }
 }
