@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UI;
 using UnityEngine;
-using UnityEngine.Video;
 
 namespace Infastructure.StaticData.Task
 {
