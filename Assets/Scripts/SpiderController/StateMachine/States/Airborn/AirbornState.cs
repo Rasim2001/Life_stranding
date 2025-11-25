@@ -106,23 +106,42 @@ namespace SpiderController.StateMachine.States.Airborn
         private void AlignRotationInFlight()
         {
             Quaternion currentRotation = Rigidbody.rotation;
+            Vector3 currentUp = currentRotation * Vector3.up;
+
             Vector3 worldUp = Vector3.up;
 
-            Vector3 forward = Spider.transform.forward;
-            Vector3 flatForward = Vector3.ProjectOnPlane(forward, worldUp);
+            Vector3 axis = Vector3.Cross(currentUp, worldUp);
+            float angle = Vector3.Angle(currentUp, worldUp);
 
-            flatForward.Normalize();
-            Quaternion targetRotation = Quaternion.LookRotation(flatForward, worldUp);
+            if (angle < 0.1f)
+            {
+                float damping = 5f;
+                Rigidbody.angularVelocity = Vector3.Lerp(
+                    Rigidbody.angularVelocity,
+                    Vector3.zero,
+                    damping * Time.fixedDeltaTime);
+                return;
+            }
 
-            float degreesPerSecond = 180;
-            float maxDegreesDelta = degreesPerSecond * Time.fixedDeltaTime;
+            if (axis.sqrMagnitude < 1e-6f)
+                axis = Spider.transform.right;
 
-            Quaternion newRotation = Quaternion.RotateTowards(
-                currentRotation,
-                targetRotation,
-                maxDegreesDelta);
+            axis.Normalize();
 
-            Rigidbody.MoveRotation(newRotation);
+            float angleRad = angle * Mathf.Deg2Rad;
+            float alignGain = 5f;
+
+            Vector3 desiredAngularVelocity = axis * (angleRad * alignGain);
+
+            float maxAngularSpeed = 10f;
+            if (desiredAngularVelocity.magnitude > maxAngularSpeed)
+                desiredAngularVelocity = desiredAngularVelocity.normalized * maxAngularSpeed;
+
+            float blend = 10f * Time.fixedDeltaTime;
+            Rigidbody.angularVelocity = Vector3.Lerp(
+                Rigidbody.angularVelocity,
+                desiredAngularVelocity,
+                blend);
         }
 
 
