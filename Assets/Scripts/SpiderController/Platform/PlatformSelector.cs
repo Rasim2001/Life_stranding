@@ -51,12 +51,19 @@ namespace SpiderController.Platform
         public void Initialize()
         {
             _inputService.OnJoystickEnableHappend += JoystickEnabled;
+            _inputService.OnJoystickDisableHappend += JoystickDisabled;
 
             InitializePlatform(_platformIds[_currentIndex]);
         }
 
-        public void Destroy() =>
+        public void Destroy()
+        {
             _inputService.OnJoystickEnableHappend -= JoystickEnabled;
+            _inputService.OnJoystickDisableHappend -= JoystickDisabled;
+        }
+
+        private void JoystickDisabled() =>
+            _joystick = null;
 
         private void JoystickEnabled(IInputSource obj) =>
             _joystick = (JoystickInputSource)obj;

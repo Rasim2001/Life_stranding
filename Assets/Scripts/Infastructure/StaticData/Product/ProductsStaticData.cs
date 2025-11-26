@@ -32,7 +32,8 @@ namespace Infastructure.StaticData.Product
     public class ProductDescription
     {
         public LocalizationText TitleText = new();
-        public LocalizationText HowToUseText = new();
+        public LocalizationText HowToUseTextGamepad = new();
+        public LocalizationText HowToUseTextKeyboard = new();
         public LocalizationText DescriptionText = new();
 
         public VideoClip VideoClip;

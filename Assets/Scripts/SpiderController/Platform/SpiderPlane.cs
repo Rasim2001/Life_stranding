@@ -70,6 +70,8 @@ namespace SpiderController.Platform
             _windowService.OnWindowOpened += ReleaseInput;
 
             _inputService.OnJoystickEnableHappend += EnableJoystick;
+            _inputService.OnJoystickDisableHappend += DisableJoystick;
+
             _stateMachineData.OnFallingDownStateChanged += OnFallingDownStateEnter;
         }
 
@@ -78,6 +80,8 @@ namespace SpiderController.Platform
             _windowService.OnWindowOpened -= ReleaseInput;
 
             _inputService.OnJoystickEnableHappend -= EnableJoystick;
+            _inputService.OnJoystickDisableHappend -= DisableJoystick;
+
             _stateMachineData.OnFallingDownStateChanged -= OnFallingDownStateEnter;
         }
 
@@ -125,6 +129,9 @@ namespace SpiderController.Platform
             _initialMousePosition = new Vector2((float)Screen.width / 2, (float)Screen.height / 2);
             _waitTimeJoystick = 0;
         }
+
+        private void DisableJoystick() =>
+            _joystickInputSource = null;
 
         private void EnableJoystick(IInputSource obj) =>
             _joystickInputSource = (JoystickInputSource)obj;

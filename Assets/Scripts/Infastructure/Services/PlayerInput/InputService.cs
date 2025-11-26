@@ -2,12 +2,14 @@ using System;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
 using Infastructure.Services.Window;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Infastructure.Services.PlayerInput
 {
     public class InputService : IInputService, IDisposable
     {
         public event Action<IInputSource> OnJoystickEnableHappend;
+        public event Action OnJoystickDisableHappend;
 
         private readonly IWindowService _windowService;
 
@@ -22,6 +24,8 @@ namespace Infastructure.Services.PlayerInput
         private bool _ctrlUpOnce;
         private bool _jumpUpOnce;
 
+        private bool _isConnected;
+
 
         public InputService(IWindowService windowService) =>
             _windowService = windowService;
@@ -32,6 +36,8 @@ namespace Infastructure.Services.PlayerInput
 
             _inputSource = new CutSceneInputSource();
             _inputSource.Enable();
+
+            InputSystem.onDeviceChange += DeviceChanged;
         }
 
         private void WindowOpenedUI()
@@ -54,30 +60,74 @@ namespace Infastructure.Services.PlayerInput
 
             _joystickInputSource = null;
             _inputSource = null;
+
+            InputSystem.onDeviceChange -= DeviceChanged;
+        }
+
+        private void DeviceChanged(InputDevice device, InputDeviceChange change)
+        {
+            switch (change)
+            {
+                case InputDeviceChange.Added:
+                case InputDeviceChange.Reconnected:
+                    SetGamepadState(true);
+                    break;
+
+                case InputDeviceChange.Removed:
+                case InputDeviceChange.Disconnected:
+                    SetGamepadState(false);
+                    break;
+            }
+        }
+
+        private void SetGamepadState(bool isConnected)
+        {
+            Debug.Log($"{isConnected}");
+
+            if (_isConnected == isConnected)
+                return;
+
+            Debug.Log($"IsConnected : {isConnected}");
+
+            if (isConnected)
+                SetInputSource(new JoystickInputSource());
+            else
+                SetInputSource(new PlayerInputSource());
+
+            _isConnected = isConnected;
         }
 
         public void SetInputSource(IInputSource inputSource)
         {
-            if (_joystickInputSource == null)
-            {
-                _joystickInputSource = new JoystickInputSource();
-                _joystickInputSource.Enable();
+            _inputSource?.Disable();
 
-                OnJoystickEnableHappend?.Invoke(_joystickInputSource);
+            if (Gamepad.current != null)
+            {
+                _inputSource = new JoystickInputSource();
+                OnJoystickEnableHappend?.Invoke(_inputSource);
+            }
+            else
+            {
+                _inputSource = new PlayerInputSource();
+                OnJoystickDisableHappend?.Invoke();
             }
 
-            _inputSource?.Disable();
-            _inputSource = inputSource;
+
             _inputSource.Enable();
         }
 
         public T GetInputSource<T>()
         {
+            return (T)_inputSource;
+
             if (_inputSource is T)
                 return (T)_inputSource;
 
             return (T)_joystickInputSource;
         }
+
+        public bool IsActiveSource<T>() =>
+            _inputSource is T;
 
 
         public Vector3 InputVector

@@ -30,5 +30,7 @@ namespace Infastructure.Services.PlayerInput
         T GetInputSource<T>();
         void Initialize();
         event Action<IInputSource> OnJoystickEnableHappend;
+        bool IsActiveSource<T>();
+        event Action OnJoystickDisableHappend;
     }
 }

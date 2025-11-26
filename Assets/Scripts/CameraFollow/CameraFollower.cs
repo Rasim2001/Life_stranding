@@ -3,6 +3,7 @@ using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.PlayerInput.InputSourceRealization;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
@@ -64,8 +65,6 @@ namespace CameraFollow
 
         private void Awake()
         {
-           
-
             _mouseSensitivity = 2;
         }
 
@@ -81,18 +80,16 @@ namespace CameraFollow
             _defaultY = _cameraSystem.ThirdPersonFollow.ShoulderOffset.y;
             _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed;
 
-            _joystickInputSource = _inputService.GetInputSource<JoystickInputSource>();
+            _inputService.OnJoystickEnableHappend += JoystickEnabled;
+            _inputService.OnJoystickDisableHappend += JoystickDisabled;
         }
 
-        private void OnDestroy() =>
+        private void OnDestroy()
+        {
             _windowService.OnWindowOpened -= ReleaseInput;
 
-        private void FixedUpdate()
-        {
-            if (_target == null || _defeatWindowService.IsDefeated)
-                return;
-
-            MoveToTarget();
+            _inputService.OnJoystickDisableHappend -= JoystickDisabled;
+            _inputService.OnJoystickEnableHappend -= JoystickEnabled;
         }
 
         private void Update()
@@ -109,6 +106,14 @@ namespace CameraFollow
             HandleMouse();
         }
 
+        private void FixedUpdate()
+        {
+            if (_target == null || _defeatWindowService.IsDefeated)
+                return;
+
+            MoveToTarget();
+        }
+
         private void LateUpdate()
         {
             if (_isMouseRotating)
@@ -116,6 +121,13 @@ namespace CameraFollow
             else
                 ClimbMoveCamera();
         }
+
+        private void JoystickDisabled() =>
+            _joystickInputSource = null;
+
+        private void JoystickEnabled(IInputSource obj) =>
+            _joystickInputSource = (JoystickInputSource)obj;
+
 
         private void ClimbMoveCamera()
         {

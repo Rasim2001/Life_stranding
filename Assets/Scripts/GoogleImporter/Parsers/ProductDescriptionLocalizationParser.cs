@@ -46,8 +46,12 @@ namespace GoogleImporter.Parsers
                     _tasksStaticData.ProductsDictionary[_productType].ProductDescription.TitleText
                         .Set(currentLanguage, value);
                     break;
-                case "HowToUseText":
-                    _tasksStaticData.ProductsDictionary[_productType].ProductDescription.HowToUseText
+                case "HowToUseTextGamepad":
+                    _tasksStaticData.ProductsDictionary[_productType].ProductDescription.HowToUseTextGamepad
+                        .Set(currentLanguage, value);
+                    break;
+                case "HowToUseTextKeyboard":
+                    _tasksStaticData.ProductsDictionary[_productType].ProductDescription.HowToUseTextKeyboard
                         .Set(currentLanguage, value);
                     break;
                 case "DescriptionText":
