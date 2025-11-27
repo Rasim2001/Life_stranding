@@ -5048,6 +5048,7 @@ GameObject:
   - component: {fileID: 1686649929621078890}
   - component: {fileID: 7942503836195147236}
   - component: {fileID: 3589825705249460726}
+  - component: {fileID: 7730115632626934234}
   m_Layer: 5
   m_Name: PausePopup
   m_TagString: Untagged
@@ -5107,6 +5108,20 @@ MonoBehaviour:
   _exit: {fileID: 2303914073850051338}
   _gamepadContainer: {fileID: 7192075673140349424}
   _keyboardContainer: {fileID: 1494111856683703792}
+--- !u!114 &7730115632626934234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6908893171227227932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3002c3bf8524d7fbd65aff6244349d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gamepad: {fileID: 7192075673140349424}
+  _keyboard: {fileID: 1494111856683703792}
 --- !u!1 &7087954813940317834
 GameObject:
   m_ObjectHideFlags: 0

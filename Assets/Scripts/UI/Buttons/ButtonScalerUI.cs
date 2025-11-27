@@ -1,4 +1,3 @@
-using System;
 using DG.Tweening;
 using Infastructure.Services.Window;
 using UnityEngine;
@@ -6,11 +5,13 @@ using UnityEngine.EventSystems;
 using Zenject;
 using Vector3 = UnityEngine.Vector3;
 
-namespace UI
+namespace UI.Buttons
 {
     public class ButtonScalerUI : MonoBehaviour, IPointerEnterHandler,
         ISelectHandler, IDeselectHandler
     {
+        public bool IsSelected => _isSelected;
+
         private readonly Vector3 _hoverSize = new Vector3(1.2f, 1.2f, 1.2f);
         private Tween _scaleTween;
 

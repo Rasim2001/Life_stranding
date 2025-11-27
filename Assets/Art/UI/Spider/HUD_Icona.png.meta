@@ -139,8 +139,8 @@ TextureImporter:
       name: ICN_BarGlare
       rect:
         serializedVersion: 2
-        x: 932
-        y: 1244
+        x: 896
+        y: 1169
         width: 46
         height: 182
       alignment: 0
@@ -184,7 +184,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 835
-        y: 1310
+        y: 1235
         width: 46
         height: 66
       alignment: 0
@@ -597,6 +597,50 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: ICN_Button_LMB
+      rect:
+        serializedVersion: 2
+        x: 932
+        y: 1361
+        width: 51
+        height: 65
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 974e812c111af744390d371ef9bd98ef
+      internalID: 1063300948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ICN_Button_RMB
+      rect:
+        serializedVersion: 2
+        x: 835
+        y: 1311
+        width: 51
+        height: 65
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9098da967d9b528489b853efa412964d
+      internalID: 818687472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -613,6 +657,8 @@ TextureImporter:
     nameFileIdTable:
       ICN_BarGlare: -970391832
       ICN_Battery: -924214454
+      ICN_Button_LMB: 1063300948
+      ICN_Button_RMB: 818687472
       ICN_Colba: 457142116
       ICN_EnergyBar: -948516150
       ICN_EnergyBar_Dots: -1061665369

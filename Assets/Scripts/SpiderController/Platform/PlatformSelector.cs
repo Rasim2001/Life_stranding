@@ -143,9 +143,6 @@ namespace SpiderController.Platform
 
         private void InitializePlatform(PlatformId platformId)
         {
-            /*PlatformId lastId = _platformRegistryService.CurrentPlatformId;
-            _stateMachineData.TotalWeight = _platformRegistryService.TryGetPlatformData(lastId).Weight;*/
-
             _platformRegistryService.CurrentPlatformId = platformId;
             _stateMachineData.TotalWeight += _platformRegistryService.TryGetPlatformData(platformId).Weight;
 
@@ -191,15 +188,6 @@ namespace SpiderController.Platform
                 ResetExcludeLayerMask();
         }
 
-        private void SetBlinkMaterial()
-        {
-            if (_isBlinking)
-                return;
-
-            _isBlinking = true;
-            _platformRegistryService.CurrentPlatformData.MeshRenderer.material = _planeBlinkMaterial;
-        }
-
         private void ChangeMaterial()
         {
             Collider blinkCollider = _platformRegistryService.CurrentPlatformData.BlinkDetectionCollider;
@@ -210,6 +198,15 @@ namespace SpiderController.Platform
                 ReturnToDefaultMaterial();
             else
                 SetBlinkMaterial();
+        }
+
+        private void SetBlinkMaterial()
+        {
+            if (_isBlinking)
+                return;
+
+            _isBlinking = true;
+            _platformRegistryService.CurrentPlatformData.MeshRenderer.material = _planeBlinkMaterial;
         }
 
         private void Activate(PlatformData platformData, bool value)

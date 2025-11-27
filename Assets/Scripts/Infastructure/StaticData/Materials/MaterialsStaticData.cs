@@ -6,5 +6,6 @@ namespace Infastructure.StaticData.Materials
     public class MaterialsStaticData : ScriptableObject
     {
         public Material PlaneBlinkMaterial;
+        public Material LitDefaultMaterial;
     }
 }

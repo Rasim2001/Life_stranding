@@ -18,6 +18,7 @@ namespace PickupObjects.PickUpOnPlatform
         public Rigidbody Rigidbody { get; private set; }
 
         public bool IsFreezingOnPlatform;
+        
         public bool WasOnPlatform;
         public bool IsPuttingDown;
 

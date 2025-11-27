@@ -1,3 +1,4 @@
+using System;
 using Infastructure.StaticData.StaticDataService;
 using Localization;
 using TMPro;
@@ -11,8 +12,10 @@ namespace Infastructure.Localization
         [SerializeField] private TextStaticId _textStaticId;
 
         private IStaticDataService _staticDataService;
-        private TextMeshProUGUI _text;
         private ILocalizationService _localizationService;
+
+        private TextMeshProUGUI _text;
+        private LocalizationText _localizationText;
 
         [Inject]
         public void Construct(IStaticDataService staticDataService, ILocalizationService localizationService)
@@ -21,13 +24,22 @@ namespace Infastructure.Localization
             _staticDataService = staticDataService;
         }
 
-        private void Awake() =>
-            _text = GetComponent<TextMeshProUGUI>();
-
-        private void Start()
+        private void Awake()
         {
-            LocalizationText localizationText = _staticDataService.WindowsLocalizationStaticData.Texts[_textStaticId];
-            _text.text = localizationText.Get(_localizationService.CurrentLanguage);
+            _text = GetComponent<TextMeshProUGUI>();
+            _localizationText = _staticDataService.WindowsLocalizationStaticData.Texts[_textStaticId];
+
+            UpdateLocalizationText();
         }
+
+        private void Start() =>
+            _localizationService.OnLanguageChanged += UpdateLocalizationText;
+
+        private void OnDestroy() =>
+            _localizationService.OnLanguageChanged -= UpdateLocalizationText;
+
+
+        private void UpdateLocalizationText() =>
+            _text.text = _localizationText.Get(_localizationService.CurrentLanguage);
     }
 }

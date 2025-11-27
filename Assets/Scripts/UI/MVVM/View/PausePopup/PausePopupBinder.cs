@@ -1,8 +1,6 @@
 using Infastructure.Services.Ability;
 using Infastructure.Services.Pause;
 using Infastructure.Services.PauseWindow;
-using Infastructure.Services.PlayerInput;
-using Infastructure.Services.PlayerInput.InputSourceRealization;
 using Infastructure.Services.Restart;
 using Infastructure.States;
 using UI.MVVM.Base;
@@ -19,22 +17,16 @@ namespace UI.MVVM.View.PausePopup
         [SerializeField] private Button _gotoMenu;
         [SerializeField] private Button _exit;
 
-        [SerializeField] private GameObject _gamepadContainer;
-        [SerializeField] private GameObject _keyboardContainer;
-
         private IPauseService _pauseService;
         private IPauseWindowService _pauseWindowService;
         private IRestartService _restartService;
         private IAbilityService _abilityService;
         private IStateMachine _stateMachine;
-        private IInputService _inputService;
 
         [Inject]
         public void Construct(IPauseService pauseService, IPauseWindowService pauseWindowService,
-            IRestartService restartService, IAbilityService abilityService, IStateMachine stateMachine,
-            IInputService inputService)
+            IRestartService restartService, IAbilityService abilityService, IStateMachine stateMachine)
         {
-            _inputService = inputService;
             _stateMachine = stateMachine;
             _abilityService = abilityService;
             _restartService = restartService;
@@ -50,13 +42,6 @@ namespace UI.MVVM.View.PausePopup
             _gotoMenu.onClick.AddListener(GoToMenu);
             _exit.onClick.AddListener(Exit);
 
-            _inputService.OnJoystickEnableHappend += JoystickEnabled;
-            _inputService.OnJoystickDisableHappend += JoystickDisabled;
-
-            bool isGamepadActive = _inputService.IsActiveSource<JoystickInputSource>();
-            _gamepadContainer.SetActive(isGamepadActive);
-            _keyboardContainer.SetActive(!isGamepadActive);
-
             _pauseService.StartPause();
         }
 
@@ -68,9 +53,6 @@ namespace UI.MVVM.View.PausePopup
             _gotoMenu.onClick.RemoveListener(GoToMenu);
             _exit.onClick.RemoveListener(Exit);
 
-            _inputService.OnJoystickEnableHappend -= JoystickEnabled;
-            _inputService.OnJoystickDisableHappend -= JoystickDisabled;
-
             _pauseService.StopPause();
         }
 
@@ -80,18 +62,6 @@ namespace UI.MVVM.View.PausePopup
             base.OnCloseButtonClick();
 
             _pauseWindowService.IsOpened = false;
-        }
-
-        private void JoystickDisabled()
-        {
-            _gamepadContainer.SetActive(false);
-            _keyboardContainer.SetActive(true);
-        }
-
-        private void JoystickEnabled(IInputSource obj)
-        {
-            _gamepadContainer.SetActive(true);
-            _keyboardContainer.SetActive(false);
         }
 
 
