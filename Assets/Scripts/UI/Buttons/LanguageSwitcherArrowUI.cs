@@ -13,18 +13,30 @@ namespace UI.Buttons
 
         private Sequence _scaleSequence;
 
+        private void Awake()
+        {
+            _scaleSequence = DOTween.Sequence()
+                .Append(transform.DOScale(_hoverSize, 0.1f))
+                .Append(transform.DOScale(Vector3.one, 0.1f))
+                .SetAutoKill(false)
+                .Pause();
+        }
+
         public void OnPointerClick(PointerEventData eventData) =>
             OnClickHappened?.Invoke();
 
         public void Select()
         {
-            if (_scaleSequence != null && _scaleSequence.IsActive())
+            if (_scaleSequence == null)
                 return;
 
-            _scaleSequence ??= DOTween.Sequence();
+            _scaleSequence.Restart();
+        }
 
-            _scaleSequence.Append(transform.DOScale(_hoverSize, 0.1f));
-            _scaleSequence.Append(transform.DOScale(Vector3.one, 0.1f));
+        private void OnDestroy()
+        {
+            _scaleSequence?.Kill();
+            _scaleSequence = null;
         }
     }
 }

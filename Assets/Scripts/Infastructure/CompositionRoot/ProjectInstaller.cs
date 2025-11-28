@@ -6,6 +6,7 @@ using Infastructure.Services.CursorVisible;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Pause;
 using Infastructure.Services.PlayerProgressService;
+using Infastructure.Services.QuitApplication;
 using Infastructure.Services.Restart;
 using Infastructure.Services.SaveLoadService;
 using Infastructure.States;
@@ -47,7 +48,12 @@ namespace Infastructure.CompositionRoot
             BindCursorVisibleService();
 
             BindLocalizationService();
+
+            BindQuitGameService();
         }
+
+        private void BindQuitGameService() =>
+            Container.BindInterfacesAndSelfTo<QuitGameService>().AsSingle();
 
         private void BindLocalizationService() =>
             Container.BindInterfacesAndSelfTo<LocalizationService>().AsSingle();

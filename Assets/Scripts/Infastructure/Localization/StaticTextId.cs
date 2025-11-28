@@ -5,6 +5,7 @@ namespace Infastructure.Localization
         StartGame_StartSplashScreen = 0,
         Option_StartSplashScreen = 1,
         Exit = 2,
+        Hint_StartSplashScreen = 3,
 
         Pause_PausePopup = 20,
         Continue_PausePopup = 21,
