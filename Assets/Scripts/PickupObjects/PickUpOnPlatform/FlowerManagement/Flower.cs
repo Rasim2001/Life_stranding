@@ -113,7 +113,7 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
 
             PlatformSelector.IsOnPlatform(Collider);
 
-            StartSimulatePhysics();
+            StartSimulatePhysicsAfterPutdown();
 
             Rigidbody.isKinematic = true;
         }
@@ -125,6 +125,17 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             Collider.enabled = true;
 
             StopSimulatePhysics();
+        }
+
+        private void StartSimulatePhysicsAfterPutdown()
+        {
+            base.StartSimulatePhysics();
+
+            _flowerPointIndicator.ShowTargetPoint();
+
+            _stateMachineData.TotalWeight -= _productData.Weight;
+
+            OnDroppedFromPlatform?.Invoke();
         }
     }
 }

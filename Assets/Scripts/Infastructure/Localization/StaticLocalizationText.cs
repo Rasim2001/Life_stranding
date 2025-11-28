@@ -28,9 +28,10 @@ namespace Infastructure.Localization
         {
             _text = GetComponent<TextMeshProUGUI>();
             _localizationText = _staticDataService.WindowsLocalizationStaticData.Texts[_textStaticId];
-
-            UpdateLocalizationText();
         }
+
+        private void OnEnable() =>
+            UpdateLocalizationText();
 
         private void Start() =>
             _localizationService.OnLanguageChanged += UpdateLocalizationText;

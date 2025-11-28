@@ -51,36 +51,43 @@ namespace SpiderController.PickUp
                 if (_flowerChecker.IsTouching && _batteryProductChecker.Results.Count > 0)
                     _hintService.OnProductHint?.Invoke();
 
-                if (!_platformObjectsService.HasAny<Flower>() &&
-                    !_platformObjectsService.HasAny<ElephantProduct>() && !_flowerChecker.IsTouching)
+                if (CanPickup())
                     PickBatteries();
             }
 
             TryShow();
         }
 
+        private bool CanPickup()
+        {
+            return !_platformObjectsService.HasAny<Flower>() && !_platformObjectsService.HasAny<ElephantProduct>() &&
+                   !_flowerChecker.IsTouching && _batteryProductChecker.Results.Any(IsBatteryReadyToPickup);
+        }
+
         private void TryShow()
         {
             foreach (Collider collider in _batteryProductChecker.Results)
             {
-                if (collider != null && collider.TryGetComponent(out BatteryProduct batteryProduct))
-                {
-                    if (batteryProduct.Rigidbody.IsSleeping() && !batteryProduct.IsOnPlatform &&
-                        !batteryProduct.IsPuttingDown)
-                        _pickupDisplayer.Show(batteryProduct.transform);
-                }
+                if (IsBatteryReadyToPickup(collider))
+                    _pickupDisplayer.Show(collider.transform);
             }
         }
 
+        private bool IsBatteryReadyToPickup(Collider col)
+        {
+            if (col == null)
+                return false;
+
+            if (!col.TryGetComponent(out BatteryProduct battery))
+                return false;
+
+            return battery.Rigidbody.IsSleeping() &&
+                   !battery.IsOnPlatform &&
+                   !battery.IsPuttingDown;
+        }
 
         private void PickBatteries()
         {
-            bool canPickUp = _batteryProductChecker.Results.Any(x =>
-                x.GetComponent<BatteryProduct>() != null && x.GetComponent<BatteryProduct>().IsOnPlatform == false);
-
-            if (!canPickUp)
-                return;
-
             List<BatteryProduct> batteryProducts = _batteryProductChecker.Results
                 .Select(x => x.GetComponent<BatteryProduct>())
                 .Where(x => !x.IsPuttingDown)

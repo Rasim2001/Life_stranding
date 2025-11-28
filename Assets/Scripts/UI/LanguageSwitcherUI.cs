@@ -61,9 +61,9 @@ namespace UI
             if (_buttonSelection == null || !_buttonSelection.IsSelected)
                 return;
 
-            if (Input.GetKeyDown(KeyCode.A))
+            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
                 MoveLeft();
-            else if (Input.GetKeyDown(KeyCode.D))
+            else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
                 MoveRight();
         }
 

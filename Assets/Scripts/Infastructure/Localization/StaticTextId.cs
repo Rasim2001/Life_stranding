@@ -36,5 +36,7 @@ namespace Infastructure.Localization
         ZoomInOut_PausePopup = 46,
 
         Mission_TaskPopup = 100,
+
+        Interact_PickupDisplayer = 150,
     }
 }
