@@ -1,9 +1,9 @@
+using System;
 using Infastructure.Services.Ability;
 using Infastructure.Services.PlatformObjects;
 using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
 using SpiderController.StateMachine;
-using UnityEngine;
 
 namespace Infastructure.Services.Magnet
 {
@@ -12,6 +12,26 @@ namespace Infastructure.Services.Magnet
         private readonly IPlatformObjectsService _platformObjectsService;
         private readonly IAbilityService _abilityService;
         private StateMachineData _stateMachineData;
+
+        public event Action<bool> OnFreezActiveChanged;
+
+        public bool IsActive
+        {
+            get => _isActive;
+            private set
+            {
+                bool newValue = _isActive;
+
+                if (newValue != value)
+                {
+                    _isActive = value;
+
+                    OnFreezActiveChanged?.Invoke(_isActive);
+                }
+            }
+        }
+
+        private bool _isActive;
 
         public MagnetFreezingService(IPlatformObjectsService platformObjectsService, IAbilityService abilityService)
         {
@@ -29,6 +49,8 @@ namespace Infastructure.Services.Magnet
 
             foreach (PickupObjectBase pickupObject in _platformObjectsService.PickupObjects)
                 pickupObject.IsFreezingOnPlatform = true;
+
+            IsActive = true;
         }
 
         public void Unfreeze()
@@ -41,6 +63,8 @@ namespace Infastructure.Services.Magnet
 
             foreach (PickupObjectBase pickupObject in _platformObjectsService.PickupObjects)
                 pickupObject.IsFreezingOnPlatform = false;
+
+            IsActive = false;
         }
     }
 }

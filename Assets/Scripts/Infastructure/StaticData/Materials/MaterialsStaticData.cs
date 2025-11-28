@@ -7,5 +7,6 @@ namespace Infastructure.StaticData.Materials
     {
         public Material PlaneBlinkMaterial;
         public Material LitDefaultMaterial;
+        public Material PlaneEmissionMaterial;
     }
 }

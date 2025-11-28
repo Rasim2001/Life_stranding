@@ -233,7 +233,7 @@ namespace SpiderController
             _skillProductPickup.Initialize();
 
             _platformSelector = new PlatformSelector(_stateMachineData, _staticDataService, _platformRegistryService,
-                _inputService);
+                _inputService, _magnetFreezingService);
             _platformSelector.Initialize();
 
             _checkpointPickup = new CheckpointPickup(_hintService, _inputService, _pickupDisplayer, _windowService,
