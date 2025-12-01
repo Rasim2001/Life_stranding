@@ -49,8 +49,6 @@ namespace Infastructure.States
                 _restartService.Clear();
 
                 HideCurtainAsync().Forget();
-
-                Debug.Log("Restarting game");
             }
             else
                 _curtainRoot.Hide();
@@ -65,9 +63,6 @@ namespace Infastructure.States
             await UniTask.Delay(TimeSpan.FromSeconds(1));
 
             _curtainRoot.Hide();
-
-
-            Debug.Log("Restarting game after coroutine");
         }
 
 

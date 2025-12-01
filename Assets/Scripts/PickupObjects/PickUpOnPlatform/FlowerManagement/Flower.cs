@@ -1,8 +1,11 @@
 using System;
 using Common;
 using HUD;
+using Infastructure.Services.QTE;
+using Infastructure.Services.XRay;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
+using Infastructure.StaticData.XRay;
 using MoreMountains.Feedbacks;
 using SpiderController.Platform;
 using SpiderController.StateMachine;
@@ -26,14 +29,22 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
         private FlowerSelector _flowerSelector;
         private StateMachineData _stateMachineData;
         private ProductData _productData;
+        private XRayMarker _xRayMarker;
 
         private IStaticDataService _staticDataService;
+        private ILastChanceQTEService _lastChanceQteService;
 
         private bool _isTriggered;
+        private IXRayService _xRayService;
 
         [Inject]
-        public void Construct(IStaticDataService staticDataService) =>
+        public void Construct(IStaticDataService staticDataService, ILastChanceQTEService lastChanceQteService,
+            IXRayService xRayService)
+        {
+            _xRayService = xRayService;
+            _lastChanceQteService = lastChanceQteService;
             _staticDataService = staticDataService;
+        }
 
         protected override void Awake()
         {
@@ -42,6 +53,9 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             _flowerSelector = new FlowerSelector(_flowerVariants);
             _flowerSelector.Initialize();
         }
+
+        private void Start() =>
+            _xRayMarker = GetComponent<XRayMarker>();
 
         private void OnDestroy() =>
             _flowerSelector.Clear();
@@ -87,18 +101,23 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             _flowerPointIndicator.HideTargetPoint();
 
             _stateMachineData.TotalWeight += _productData.Weight;
+
+            _xRayService.Remove(_xRayMarker);
         }
 
         public override void StartSimulatePhysics()
         {
             base.StartSimulatePhysics();
 
+            _lastChanceQteService.StartQTE();
             _feedbackPlayer.PlayFeedbacks();
             _flowerPointIndicator.ShowTargetPoint();
 
             _stateMachineData.TotalWeight -= _productData.Weight;
 
             OnDroppedFromPlatform?.Invoke();
+
+            _xRayService.Add(_xRayMarker);
         }
 
         public void Putdown(ICheckpointInfo checkPoint)

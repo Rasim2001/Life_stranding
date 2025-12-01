@@ -82,7 +82,12 @@ namespace Infastructure.Factories.GameFactories
             flower.Initialize(hud.FlowerPointIndicator, spider.StateMachineData);
             flower.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
 
-            _xRayService.Initialize(hud.XRayCollectionContainer, hud.transform);
+            XRayMarker xRayMarker = flower.GetComponent<XRayMarker>();
+            xRayMarker.Type = ProductType.Flower; //TODO:
+
+            _xRayService.Add(xRayMarker);
+
+            _xRayService.Initialize(hud.XRayCollectionContainer, hud.transform, hud.DisabledContainer);
 
             return hud;
         }
@@ -267,7 +272,6 @@ namespace Infastructure.Factories.GameFactories
                 terrainScanObject.GetComponentInChildren<TerrainScanIconsRenderer>();
             terrainScanIconsRenderer.Initialize(_cameraProviderService.CameraTransform);
         }
-
 
         private bool IsBiospherePoint(int i, List<WorldData> checkPoints) =>
             i == checkPoints.Count - 1;

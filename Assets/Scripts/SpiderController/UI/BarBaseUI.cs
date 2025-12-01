@@ -30,8 +30,6 @@ namespace SpiderController.UI
 
         public void SetValue(float normalizedValue)
         {
-            Debug.Log($"{normalizedValue} / {_segmentContainerCount}");
-
             for (int i = 0; i < _segmentContainerCount; i++)
             {
                 float segmentFill = Mathf.Clamp01((normalizedValue - i * 1f / _segmentContainerCount) / PerSegment);

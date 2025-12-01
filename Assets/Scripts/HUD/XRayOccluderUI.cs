@@ -9,13 +9,14 @@ namespace HUD
         [SerializeField] private Image _image;
         private RectTransform uiElement => _image.rectTransform;
 
+        public Transform TargetWorldObject { get; private set; }
+
         private readonly Vector3 _offset = new Vector3(0, 1.4f, 0);
-        private Transform _targetWorldObject;
         private Camera _mainCamera;
 
         public void Initialize(Transform targetWorldObject, Sprite sprite)
         {
-            _targetWorldObject = targetWorldObject;
+            TargetWorldObject = targetWorldObject;
             _image.sprite = sprite;
         }
 
@@ -30,10 +31,10 @@ namespace HUD
 
         private void UpdateCustom(CinemachineBrain arg0)
         {
-            if (_targetWorldObject == null || uiElement == null)
+            if (TargetWorldObject == null || uiElement == null)
                 return;
 
-            Vector3 screenPos = _mainCamera.WorldToScreenPoint(_targetWorldObject.position + _offset);
+            Vector3 screenPos = _mainCamera.WorldToScreenPoint(TargetWorldObject.position + _offset);
 
             if (screenPos.z > 0)
                 uiElement.position = screenPos;

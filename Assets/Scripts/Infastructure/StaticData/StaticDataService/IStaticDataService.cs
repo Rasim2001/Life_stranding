@@ -1,5 +1,6 @@
 ﻿using Infastructure.StaticData.GlobalWater;
 using Infastructure.StaticData.HUD;
+using Infastructure.StaticData.LastChance;
 using Infastructure.StaticData.Materials;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.Spider;
@@ -25,5 +26,6 @@ namespace Infastructure.StaticData.StaticDataService
         TasksStaticData TasksStaticData { get; }
         WaterStaticData WaterStaticData { get; }
         WindowsLocalizationStaticData WindowsLocalizationStaticData { get; }
+        LastChanceStaticData LastChanceStaticData { get; }
     }
 }

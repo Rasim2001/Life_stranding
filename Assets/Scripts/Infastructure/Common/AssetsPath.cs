@@ -11,6 +11,7 @@ namespace Infastructure.Common
         public const string StableWorldUpPath = "Prefabs/CameraSystem/StableWorldUp";
         public const string UIRootPath = "Prefabs/UI/Windows/Root/UIRoot";
         public const string GamePlayUIPath = "Prefabs/UI/Windows/Root/GameplayUI";
+        public const string LastChanceRoot = "Prefabs/UI/QTE/LastChanceRootQTE_UI";
         public const string EventSystemPath = "Prefabs/UI/EventSystem";
 
         public const string SpiderPath = "Prefabs/Spider/Spider";
@@ -35,5 +36,6 @@ namespace Infastructure.Common
         public const string TasksStaticDataPath = "StaticData/UI/TasksPopupData";
         public const string WaterStaticDataPath = "StaticData/GlobalWater/WaterData";
         public const string WindowsLocalizationStaticDataPath = "StaticData/UI/WindowStaticLocalizationData";
+        public const string LastChanceStaticDataPath = "StaticData/QTE/LastChanceData";
     }
 }

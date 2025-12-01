@@ -19,9 +19,11 @@ namespace HUD
         [SerializeField] private RectTransform _canvasRectTransform;
         [SerializeField] private Transform _arrowContainer;
         [SerializeField] private Transform _xRayCollectionContainer;
+        [SerializeField] private Transform _disabledContainer;
         [SerializeField] private CanvasGroup _canvasGroup;
         public FlowerPointIndicator FlowerPointIndicator => _flowerPointIndicator;
         public Transform XRayCollectionContainer => _xRayCollectionContainer;
+        public Transform DisabledContainer => _disabledContainer;
 
         private FinishPointIndicator _finishPointIndicator;
         private FlowerPointIndicator _flowerPointIndicator;

@@ -15,14 +15,18 @@ using Infastructure.Services.Magnet;
 using Infastructure.Services.PauseWindow;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.QTE;
 using Infastructure.Services.SpiderTrack;
 using Infastructure.Services.TaskPopupChecker;
 using Infastructure.Services.Timer;
+using Infastructure.Services.VolumeManagement;
 using Infastructure.Services.Window;
 using Infastructure.Services.XRay;
 using Infastructure.States;
 using UI.MVVM.View.Root;
 using UI.MVVM.View.TaskPopup;
+using UnityEngine;
+using UnityEngine.Rendering;
 using WaterSystem;
 using Zenject;
 
@@ -30,6 +34,8 @@ namespace Infastructure.CompositionRoot
 {
     public class SceneInstaller : MonoInstaller
     {
+        [SerializeField] private Volume _volume;
+
         public override void InstallBindings()
         {
             BindUI();
@@ -39,6 +45,10 @@ namespace Infastructure.CompositionRoot
 
         private void BindWorld()
         {
+            BindVolume();
+
+            BindVolumeService();
+
             BindBuildLevelState();
 
             BindGameFactory();
@@ -72,6 +82,8 @@ namespace Infastructure.CompositionRoot
             BindGeneratorLaunchTrackerService();
 
             BindHitService();
+
+            BindLastChanceQTEService();
         }
 
         private void BindUI()
@@ -90,6 +102,15 @@ namespace Infastructure.CompositionRoot
 
             BindCameraProviderService();
         }
+
+        private void BindVolumeService() =>
+            Container.BindInterfacesAndSelfTo<VolumeService>().AsSingle();
+
+        private void BindVolume() =>
+            Container.Bind<Volume>().FromInstance(_volume).AsSingle();
+
+        private void BindLastChanceQTEService() =>
+            Container.BindInterfacesAndSelfTo<LastChanceQTEService>().AsSingle();
 
         private void BindCameraProviderService() =>
             Container.BindInterfacesAndSelfTo<CameraProviderService>().AsSingle();

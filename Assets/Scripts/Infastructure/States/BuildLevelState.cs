@@ -71,11 +71,11 @@ namespace Infastructure.States
         {
             _cameraProviderService.SetCamera(Camera.main);
 
-            InitUI();
+            InitGameplayRootUI();
             InitAll();
         }
 
-        private void InitUI()
+        private void InitGameplayRootUI()
         {
             _uiFactory.CreateGamplayRoot();
 
@@ -124,7 +124,12 @@ namespace Infastructure.States
             InitElephantProducts(spider);
             InitEnergyProducts();
             InitSkillProducts();
+
+            InitLastChanceRoot(flower);
         }
+
+        private void InitLastChanceRoot(Flower flower) =>
+            _uiFactory.CreateLastChanceRoot(flower);
 
         private void InitGenerators() =>
             _gameFactory.CreateAllGenerators();

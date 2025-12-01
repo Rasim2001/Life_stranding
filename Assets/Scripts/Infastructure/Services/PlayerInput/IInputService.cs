@@ -26,6 +26,7 @@ namespace Infastructure.Services.PlayerInput
         bool JumpUp { get; }
         bool TabPressed { get; }
         bool PauseButtonPressed { get; }
+        bool AnyActionPressed { get; }
         void SetInputSource(IInputSource inputSource);
         T GetInputSource<T>();
         void Initialize();
