@@ -43,18 +43,17 @@ namespace Infastructure.States
 
         private void OnAdditiveSceneLoaded()
         {
-            
             if (_restartService.IsRestarting)
             {
                 _cutSceneService.Skip();
                 _restartService.Clear();
 
                 HideCurtainAsync().Forget();
+
+                Debug.Log("Restarting game");
             }
             else
-            {
                 _curtainRoot.Hide();
-            }
         }
 
         public void Exit()
@@ -66,6 +65,9 @@ namespace Infastructure.States
             await UniTask.Delay(TimeSpan.FromSeconds(1));
 
             _curtainRoot.Hide();
+
+
+            Debug.Log("Restarting game after coroutine");
         }
 
 

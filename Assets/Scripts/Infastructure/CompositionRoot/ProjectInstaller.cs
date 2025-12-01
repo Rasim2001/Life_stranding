@@ -9,6 +9,7 @@ using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.QuitApplication;
 using Infastructure.Services.Restart;
 using Infastructure.Services.SaveLoadService;
+using Infastructure.Services.Window;
 using Infastructure.States;
 using Infastructure.StaticData.StaticDataService;
 using UI;
@@ -50,6 +51,8 @@ namespace Infastructure.CompositionRoot
             BindLocalizationService();
 
             BindQuitGameService();
+
+            BindEventSystemSelector();
         }
 
         private void BindQuitGameService() =>
@@ -119,6 +122,15 @@ namespace Infastructure.CompositionRoot
                 .Bind<IStateMachine>()
                 .FromSubContainerResolve()
                 .ByInstaller<GameStateMachineInstaller>()
+                .AsSingle();
+        }
+
+        private void BindEventSystemSelector()
+        {
+            Container
+                .Bind<IEventSystemSelector>()
+                .To<EventSystemSelector>()
+                .FromComponentInNewPrefabResource(AssetsPath.EventSystemPath)
                 .AsSingle();
         }
     }

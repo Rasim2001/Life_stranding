@@ -15,7 +15,7 @@ namespace SpiderController.UI
         private int _segmentContainerCount;
         private bool _isReduced;
 
-        private void Start() =>
+        protected virtual void Start() =>
             _segmentContainerCount = _containers.Count(x => x.gameObject.activeSelf);
 
         public virtual void AddNewSegment()
@@ -30,6 +30,8 @@ namespace SpiderController.UI
 
         public void SetValue(float normalizedValue)
         {
+            Debug.Log($"{normalizedValue} / {_segmentContainerCount}");
+
             for (int i = 0; i < _segmentContainerCount; i++)
             {
                 float segmentFill = Mathf.Clamp01((normalizedValue - i * 1f / _segmentContainerCount) / PerSegment);

@@ -7,6 +7,10 @@ namespace Infastructure.Localization
         Exit = 2,
         Hint_StartSplashScreen = 3,
 
+        Platform_SpiderUI = 10,
+        Magnet_SpiderUI = 11,
+        Reloading_SpiderUI = 12,
+
         Pause_PausePopup = 20,
         Continue_PausePopup = 21,
         RestartLevel_PausePopup = 22,

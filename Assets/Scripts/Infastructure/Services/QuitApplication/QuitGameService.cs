@@ -1,4 +1,5 @@
 using Infastructure.Localization;
+using Localization;
 using UnityEngine;
 
 namespace Infastructure.Services.QuitApplication

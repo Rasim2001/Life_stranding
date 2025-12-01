@@ -84,8 +84,6 @@ namespace Infastructure.CompositionRoot
 
             BindWindowService();
 
-            BindEventSystemSelector();
-
             BindTaskPopupCheckerService();
 
             BindPauseWindowService();
@@ -179,14 +177,6 @@ namespace Infastructure.CompositionRoot
                 .AsSingle();
         }
 
-        private void BindEventSystemSelector()
-        {
-            Container
-                .Bind<IEventSystemSelector>()
-                .To<EventSystemSelector>()
-                .FromComponentInNewPrefabResource(AssetsPath.EventSystemPath)
-                .AsSingle();
-        }
 
         private void BindUIGameplayRootViewModel() =>
             Container.BindInterfacesAndSelfTo<UIGameplayRootViewModel>().AsSingle();
