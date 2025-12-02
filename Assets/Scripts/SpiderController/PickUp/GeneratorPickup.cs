@@ -18,18 +18,18 @@ namespace SpiderController.PickUp
         private readonly IPickupDisplayer _pickupDisplayer;
         private readonly IPlatformObjectsService _platformObjectsService;
         private readonly IWindowService _windowService;
-        private IHintService _hintService;
+        private IHintReceiverService _hintReceiverService;
         private readonly GeneratorChecker _generatorChecker;
 
         public GeneratorPickup(
-            IHintService hintService,
+            IHintReceiverService hintReceiverService,
             IInputService inputService,
             IPickupDisplayer pickupDisplayer,
             IPlatformObjectsService platformObjectsService,
             IWindowService windowService,
             GeneratorChecker generatorChecker)
         {
-            _hintService = hintService;
+            _hintReceiverService = hintReceiverService;
             _inputService = inputService;
             _pickupDisplayer = pickupDisplayer;
             _platformObjectsService = platformObjectsService;
@@ -54,7 +54,7 @@ namespace SpiderController.PickUp
                     if (_platformObjectsService.HasAny<BatteryProduct>())
                         StartGenerator(generatorCollider);
                     else
-                        _hintService.OnGeneratorHint?.Invoke();
+                        _hintReceiverService.OnGeneratorHint?.Invoke();
                 }
             }
 

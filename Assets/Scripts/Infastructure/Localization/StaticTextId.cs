@@ -42,5 +42,7 @@ namespace Infastructure.Localization
         Mission_TaskPopup = 100,
 
         Interact_PickupDisplayer = 150,
+
+        LastChance_Hint_QTE = 200,
     }
 }

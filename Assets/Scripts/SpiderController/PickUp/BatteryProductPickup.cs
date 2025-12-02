@@ -18,19 +18,19 @@ namespace SpiderController.PickUp
         private readonly BatteryProductChecker _batteryProductChecker;
         private readonly FlowerChecker _flowerChecker;
         private readonly IPlatformObjectsService _platformObjectsService;
-        private IHintService _hintService;
+        private IHintReceiverService _hintReceiverService;
 
         private bool _isShowed;
 
         public BatteryProductPickup(
-            IHintService hintService,
+            IHintReceiverService hintReceiverService,
             IInputService inputService,
             IPickupDisplayer pickupDisplayer,
             IPlatformObjectsService platformObjectsService,
             BatteryProductChecker batteryProductChecker,
             FlowerChecker flowerChecker)
         {
-            _hintService = hintService;
+            _hintReceiverService = hintReceiverService;
             _platformObjectsService = platformObjectsService;
             _inputService = inputService;
             _pickupDisplayer = pickupDisplayer;
@@ -49,7 +49,7 @@ namespace SpiderController.PickUp
             if (_inputService.PickupPressed)
             {
                 if (_flowerChecker.IsTouching && _batteryProductChecker.Results.Count > 0)
-                    _hintService.OnProductHint?.Invoke();
+                    _hintReceiverService.OnProductHint?.Invoke();
 
                 if (CanPickup())
                     PickBatteries();

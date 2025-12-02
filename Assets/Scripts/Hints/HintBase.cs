@@ -14,8 +14,6 @@ namespace Hints
         [SerializeField] private Ease _easyShow = Ease.Linear;
         [SerializeField] private Ease _easyHide = Ease.Linear;
 
-        protected RectTransform Container => _container;
-
         private Coroutine _coroutine;
         private Tween _containerTween;
 

@@ -118,7 +118,7 @@ namespace SpiderController
         private IDefeatWindowService _defeatWindowService;
 
         private StateMachineData _stateMachineData;
-        private IHintService _hintService;
+        private IHintReceiverService _hintReceiverService;
         private MagnetSkill _magnetSkill;
         private ICameraProviderService _cameraProviderService;
         private IStableWorldUp _stableWorldUp;
@@ -141,13 +141,13 @@ namespace SpiderController
             IPauseService pauseService,
             IAbilityService abilityService,
             IDefeatWindowService defeatWindowService,
-            IHintService hintService,
+            IHintReceiverService hintReceiverService,
             ICameraProviderService cameraProviderService,
             IStableWorldUp stableWorldUp)
         {
             _stableWorldUp = stableWorldUp;
             _cameraProviderService = cameraProviderService;
-            _hintService = hintService;
+            _hintReceiverService = hintReceiverService;
             _defeatWindowService = defeatWindowService;
             _abilityService = abilityService;
             _pauseService = pauseService;
@@ -214,7 +214,7 @@ namespace SpiderController
                 _flowerChecker, flower, _spiderUI, _staticDataService.SpiderStaticData);
             _flowerPickup.Initialize();
 
-            _batteryProductPickup = new BatteryProductPickup(_hintService, _inputService, _pickupDisplayer,
+            _batteryProductPickup = new BatteryProductPickup(_hintReceiverService, _inputService, _pickupDisplayer,
                 _platformObjectsService,
                 _batteryChecker, _flowerChecker);
             _batteryProductPickup.Initialize();
@@ -236,11 +236,11 @@ namespace SpiderController
                 _inputService, _magnetFreezingService);
             _platformSelector.Initialize();
 
-            _checkpointPickup = new CheckpointPickup(_hintService, _inputService, _pickupDisplayer, _windowService,
+            _checkpointPickup = new CheckpointPickup(_hintReceiverService, _inputService, _pickupDisplayer, _windowService,
                 _platformObjectsService, _checkpointChecker, flower, _spiderUI);
             _checkpointPickup.Initialize();
 
-            _generatorPickup = new GeneratorPickup(_hintService, _inputService, _pickupDisplayer,
+            _generatorPickup = new GeneratorPickup(_hintReceiverService, _inputService, _pickupDisplayer,
                 _platformObjectsService,
                 _windowService, _generatorChecker);
             _generatorPickup.Initialize();

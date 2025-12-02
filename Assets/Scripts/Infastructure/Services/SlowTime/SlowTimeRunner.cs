@@ -13,13 +13,7 @@ namespace Infastructure.Services.SlowTime
         public void SlowDown() =>
             _feedbackPlayer.PlayFeedbacks();
 
-        public void Resume() =>
-            _feedbackPlayer.ResumeFeedbacks();
-
         public void StopSlowDown() =>
             _feedbackPlayer.StopFeedbacks();
-
-        public void Pause() =>
-            _feedbackPlayer.PauseFeedbacks();
     }
 }

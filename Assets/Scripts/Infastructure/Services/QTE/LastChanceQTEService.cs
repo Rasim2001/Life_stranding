@@ -9,7 +9,6 @@ using Infastructure.Services.SlowTime;
 using Infastructure.Services.VolumeManagement;
 using Infastructure.StaticData.LastChance;
 using Infastructure.StaticData.StaticDataService;
-using Unity.VisualScripting;
 using Zenject;
 
 namespace Infastructure.Services.QTE
@@ -19,9 +18,11 @@ namespace Infastructure.Services.QTE
         private readonly IInputService _inputService;
         private readonly IStaticDataService _staticDataService;
         private readonly IVolumeService _volumeService;
-        private readonly IHintService _hintService;
+        private readonly IHintReceiverService _hintReceiverService;
         private readonly ISlowTimeRunner _slowTimeRunner;
         private readonly IPauseService _pauseService;
+
+        public event Action OnSaveHappened;
 
         private LastChanceStaticData lastChanceStaticData => _staticDataService.LastChanceStaticData;
 
@@ -35,13 +36,13 @@ namespace Infastructure.Services.QTE
 
 
         public LastChanceQTEService(IInputService inputService, IStaticDataService staticDataService,
-            IVolumeService volumeService, IHintService hintService, ISlowTimeRunner slowTimeRunner,
+            IVolumeService volumeService, IHintReceiverService hintReceiverService, ISlowTimeRunner slowTimeRunner,
             IPauseService pauseService)
         {
             _pauseService = pauseService;
             _slowTimeRunner = slowTimeRunner;
             _volumeService = volumeService;
-            _hintService = hintService;
+            _hintReceiverService = hintReceiverService;
             _staticDataService = staticDataService;
             _inputService = inputService;
         }
@@ -63,7 +64,7 @@ namespace Infastructure.Services.QTE
         public void StartQTE()
         {
             if (_isFirstChance)
-                _hintService.OnLastChanceHint?.Invoke();
+                _hintReceiverService.OnLastChanceHintShowHappened?.Invoke();
 
             _volumeService.SetSaturation(-100);
 
@@ -86,9 +87,8 @@ namespace Infastructure.Services.QTE
             if (_isFirstChance)
             {
                 _slowTimeRunner.StopSlowDown();
-                _pauseService.StopPause();
+                _pauseService.StartPause();
             }
-
 
             while (_isFirstChance)
                 await UniTask.Yield(cancellationToken: _cts.Token);
@@ -118,7 +118,12 @@ namespace Infastructure.Services.QTE
         {
             Clear();
 
-            _isFirstChance = false;
+            if (_isFirstChance)
+            {
+                _pauseService.StopPause();
+                _isFirstChance = false;
+                _hintReceiverService.OnLastChanceHintHideHappened?.Invoke();
+            }
 
             _lastChanceUI.PickUpFlower();
             _lastChanceUI.Clear();
@@ -126,6 +131,8 @@ namespace Infastructure.Services.QTE
             _cts.Cancel();
             _cts.Dispose();
             _cts = null;
+
+            OnSaveHappened?.Invoke();
         }
 
         private void Clear()

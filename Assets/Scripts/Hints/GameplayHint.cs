@@ -16,29 +16,29 @@ namespace Hints
 
         [SerializeField] private TextMeshProUGUI _description;
 
-        private IHintService _hintService;
+        private IHintReceiverService _hintReceiverService;
 
 
         [Inject]
-        public void Construct(IHintService hintService) =>
-            _hintService = hintService;
+        public void Construct(IHintReceiverService hintReceiverService) =>
+            _hintReceiverService = hintReceiverService;
 
         protected override void Start()
         {
             base.Start();
 
-            _hintService.OnProductHint += ShowProduct;
-            _hintService.OnCheckpointHint += ShowCheckpointHint;
-            _hintService.OnGeneratorHint += ShowGeneratorHint;
+            _hintReceiverService.OnProductHint += ShowProduct;
+            _hintReceiverService.OnCheckpointHint += ShowCheckpointHint;
+            _hintReceiverService.OnGeneratorHint += ShowGeneratorHint;
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
 
-            _hintService.OnProductHint -= ShowProduct;
-            _hintService.OnCheckpointHint -= ShowCheckpointHint;
-            _hintService.OnGeneratorHint -= ShowGeneratorHint;
+            _hintReceiverService.OnProductHint -= ShowProduct;
+            _hintReceiverService.OnCheckpointHint -= ShowCheckpointHint;
+            _hintReceiverService.OnGeneratorHint -= ShowGeneratorHint;
         }
 
         private void ShowProduct()
