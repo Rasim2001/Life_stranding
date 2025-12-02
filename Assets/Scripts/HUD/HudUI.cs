@@ -3,6 +3,7 @@ using DG.Tweening;
 using GameDevBuddies;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CutScene;
+using Infastructure.Services.SpiderTrack;
 using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
@@ -35,11 +36,14 @@ namespace HUD
         private ICameraProviderService _cameraProviderService;
 
         private bool _cutSceneIsActive;
+        private ISpiderTrackService _spiderTrackService;
 
 
         [Inject]
-        public void Construct(ICutSceneService cutSceneService, ICameraProviderService cameraProviderService)
+        public void Construct(ICutSceneService cutSceneService, ICameraProviderService cameraProviderService,
+            ISpiderTrackService spiderTrackService)
         {
+            _spiderTrackService = spiderTrackService;
             _cameraProviderService = cameraProviderService;
             _cutSceneService = cutSceneService;
         }
@@ -54,6 +58,7 @@ namespace HUD
         public void RegisterFinishTarget(Transform finishTargetTransform)
         {
             ArrowUI arrowUI = Instantiate(_arrowUIPrefab, _arrowContainer);
+            arrowUI.Initialize(_spiderTrackService.Spider.transform, finishTargetTransform);
 
             _finishPointIndicator = new
                 FinishPointIndicator(arrowUI, _canvasRectTransform, _finishPointLayer, finishTargetTransform,
@@ -63,6 +68,7 @@ namespace HUD
         public void RegisterFlowerPoint(Flower flower)
         {
             ArrowUI arrowUI = Instantiate(_arrowUIPrefab, _arrowContainer);
+            arrowUI.Initialize(_spiderTrackService.Spider.transform, flower.transform);
 
             _flowerPointIndicator =
                 new FlowerPointIndicator(arrowUI, _canvasRectTransform, _flowerPointLayer, flower,

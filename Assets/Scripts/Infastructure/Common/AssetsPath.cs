@@ -6,6 +6,7 @@ namespace Infastructure.Common
         public const string CoroutineRunnerPath = "Prefabs/CoroutineRunner";
         public const string CurtainRootPath = "Prefabs/UI/CurtainRoot";
         public const string PickupDisplayerPath = "Prefabs/UI/PickupDisplayerRoot";
+        public const string SlowTimeRunnerPath = "Prefabs/SlowTimeRunner";
         public const string GlobalWaterPath = "Prefabs/Water/GlobalWater";
         public const string WaterFallsPath = "Prefabs/Water/WaterFalls";
         public const string StableWorldUpPath = "Prefabs/CameraSystem/StableWorldUp";

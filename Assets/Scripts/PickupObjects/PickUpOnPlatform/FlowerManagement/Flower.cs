@@ -2,11 +2,11 @@ using System;
 using Common;
 using HUD;
 using Infastructure.Services.QTE;
+using Infastructure.Services.SlowTime;
 using Infastructure.Services.XRay;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
 using Infastructure.StaticData.XRay;
-using MoreMountains.Feedbacks;
 using SpiderController.Platform;
 using SpiderController.StateMachine;
 using UnityEngine;
@@ -16,7 +16,6 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
 {
     public class Flower : PickupObjectBase, IProduct
     {
-        [SerializeField] private MMF_Player _feedbackPlayer;
         [SerializeField] private LayerMask _groundLayer;
         [SerializeField] private GameObject[] _flowerVariants;
 
@@ -36,11 +35,13 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
 
         private bool _isTriggered;
         private IXRayService _xRayService;
+        private ISlowTimeRunner _slowTimeRunner;
 
         [Inject]
         public void Construct(IStaticDataService staticDataService, ILastChanceQTEService lastChanceQteService,
-            IXRayService xRayService)
+            IXRayService xRayService, ISlowTimeRunner slowTimeRunner)
         {
+            _slowTimeRunner = slowTimeRunner;
             _xRayService = xRayService;
             _lastChanceQteService = lastChanceQteService;
             _staticDataService = staticDataService;
@@ -110,7 +111,7 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             base.StartSimulatePhysics();
 
             _lastChanceQteService.StartQTE();
-            _feedbackPlayer.PlayFeedbacks();
+            _slowTimeRunner.SlowDown();
             _flowerPointIndicator.ShowTargetPoint();
 
             _stateMachineData.TotalWeight -= _productData.Weight;

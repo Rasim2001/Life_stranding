@@ -29,7 +29,7 @@ namespace HUD
             _layerMask = layerMask;
 
             _arrowRectTransform = _arrowUI.GetComponent<RectTransform>();
-            _arrowCenterRectTransform = _arrowUI.ArrowCenter.GetComponent<RectTransform>();
+            _arrowCenterRectTransform = _arrowUI.ArrowCenter;
 
             _mainCamera = cameraProviderService.Camera;
         }
@@ -43,57 +43,95 @@ namespace HUD
 
         public virtual void Update()
         {
-            Vector3 screenPos = _mainCamera.WorldToScreenPoint(FinishTargetPosition);
+            if (_mainCamera == null)
+                return;
 
-            bool isBehind = screenPos.z < 0;
-            Vector2 canvasSize = _canvasRect.sizeDelta;
+            Transform camTr = _mainCamera.transform;
 
-            if (isBehind)
-            {
-                screenPos.x = Screen.width - screenPos.x;
-                screenPos.y = Screen.height - screenPos.y;
-            }
+            Vector3 viewportPos = _mainCamera.WorldToViewportPoint(FinishTargetPosition);
+            bool inFront = viewportPos.z > 0f;
 
-            bool isOnScreen = screenPos.x > 0 && screenPos.x < Screen.width &&
-                              screenPos.y > 0 && screenPos.y < Screen.height &&
-                              !isBehind && IsTargetVisible();
+            bool insideViewport =
+                viewportPos.x > 0f && viewportPos.x < 1f &&
+                viewportPos.y > 0f && viewportPos.y < 1f &&
+                inFront;
+
+            bool isOnScreen = insideViewport && IsTargetVisible();
 
             Show(!isOnScreen);
+            if (isOnScreen)
+                return;
 
-            Vector3 camLocal = _mainCamera.transform.InverseTransformPoint(FinishTargetPosition);
-            camLocal.y = 0f;
+            Vector3 vpForDir = viewportPos;
+            if (vpForDir.z < 0f)
+            {
+                vpForDir.x = 1f - vpForDir.x;
+                vpForDir.y = 1f - vpForDir.y;
+            }
 
-            Vector2 direction = new Vector2(camLocal.x, camLocal.z).normalized;
+            Vector2 dirViewport = new Vector2(
+                vpForDir.x - 0.5f,
+                vpForDir.y - 0.5f
+            );
 
-            float halfWidth = canvasSize.x / 2f - _borderOffsetX;
-            float halfHeight = canvasSize.y / 2f - _borderOffsetY;
+            Vector3 toTarget = (FinishTargetPosition - camTr.position).normalized;
+            float camX = Vector3.Dot(toTarget, camTr.right);
+            float camY = Vector3.Dot(toTarget, camTr.forward);
+            Vector2 dirCamera = new Vector2(camX, camY);
 
-            Vector2 clampedPos = GetClampedPosition(direction, halfWidth, halfHeight);
+            if (dirViewport.sqrMagnitude < 0.0001f)
+                dirViewport = Vector2.up;
+            if (dirCamera.sqrMagnitude < 0.0001f)
+                dirCamera = Vector2.up;
+
+            dirViewport.Normalize();
+            dirCamera.Normalize();
+
+            float frontDot = Vector3.Dot(camTr.forward, toTarget); // -1..1
+
+            float t = Mathf.InverseLerp(0.2f, -0.4f, frontDot);
+            t = Mathf.Clamp01(t);
+
+            Vector2 dir = Vector2.Lerp(dirViewport, dirCamera, t);
+            dir.Normalize();
+
+            Vector2 canvasSize = _canvasRect.sizeDelta;
+            float halfWidth = canvasSize.x * 0.5f - _borderOffsetX;
+            float halfHeight = canvasSize.y * 0.5f - _borderOffsetY;
+
+            Vector2 clampedPos = GetClampedPosition(dir, halfWidth, halfHeight);
             _arrowRectTransform.anchoredPosition = clampedPos;
 
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            _arrowCenterRectTransform.rotation = Quaternion.Euler(0, 0, angle);
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            _arrowCenterRectTransform.localRotation = Quaternion.Euler(0f, 0f, angle);
         }
+
 
         private bool IsTargetVisible()
         {
             Vector3 cameraPos = _mainCamera.transform.position;
-            Vector3 direction = FinishTargetPosition - cameraPos;
-            float distance = direction.magnitude;
+            Vector3 dir = FinishTargetPosition - cameraPos;
+            float dist = dir.magnitude;
 
-            return Physics.Raycast(cameraPos, direction.normalized, out RaycastHit hit, distance, _layerMask)
-                ? hit.collider.GetComponent<TargetPointIndicatorMarker>()
-                : false;
+            if (!Physics.Raycast(cameraPos, dir.normalized, out RaycastHit hit, dist, _layerMask))
+                return false;
+
+            return hit.collider.GetComponent<TargetPointIndicatorMarker>() != null;
         }
 
-        private Vector2 GetClampedPosition(Vector2 direction, float halfWidth, float halfHeight)
+        private Vector2 GetClampedPosition(Vector2 dir, float halfWidth, float halfHeight)
         {
-            float t1 = halfWidth / Mathf.Abs(direction.x);
-            float t2 = halfHeight / Mathf.Abs(direction.y);
+            if (Mathf.Approximately(dir.x, 0f))
+                dir.x = 0.0001f;
+            if (Mathf.Approximately(dir.y, 0f))
+                dir.y = 0.0001f;
 
-            float t = Mathf.Min(t1, t2);
+            float tX = halfWidth / Mathf.Abs(dir.x);
+            float tY = halfHeight / Mathf.Abs(dir.y);
 
-            return direction * t;
+            float t = Mathf.Min(tX, tY);
+
+            return dir * t;
         }
 
 

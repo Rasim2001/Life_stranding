@@ -25,6 +25,7 @@ namespace Infastructure.StaticData.Spider
         public float PlaneSensitivity = 2f;
         public float MaxAngle = 45f;
         public float PlaneRotationSpeed;
+        public AnimationCurve PlaneReturnCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
         [Header("MouseLook")]
         public float SmoothTime = 0.3f;

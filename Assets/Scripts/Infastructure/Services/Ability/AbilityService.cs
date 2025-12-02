@@ -20,7 +20,7 @@ namespace Infastructure.Services.Ability
 
         public void Initialize()
         {
-            //_isCheating = true;
+            _isCheating = true;
         }
 
         public void PickUpAbility(ProductType product)

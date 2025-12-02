@@ -1,5 +1,6 @@
 using System;
 using Infastructure.Common.StableWorlUpManagement;
+using Infastructure.Services.CursorVisible;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
 using Infastructure.Services.PlayerInput;
@@ -24,6 +25,7 @@ namespace CameraFollow
         private ICutSceneService _cutSceneService;
         private IDefeatWindowService _defeatWindowService;
         private IWindowService _windowService;
+        private ICursorVisibleService _cursorVisibleService;
 
         private Transform _target;
         private Vector3 _velocity;
@@ -53,8 +55,10 @@ namespace CameraFollow
             IStableWorldUp stableWorldUp,
             ICutSceneService cutSceneService,
             IDefeatWindowService defeatWindowService,
-            IWindowService windowService)
+            IWindowService windowService,
+            ICursorVisibleService cursorVisibleService)
         {
+            _cursorVisibleService = cursorVisibleService;
             _windowService = windowService;
             _defeatWindowService = defeatWindowService;
             _cutSceneService = cutSceneService;
@@ -76,12 +80,15 @@ namespace CameraFollow
 
         private void Start()
         {
-            _windowService.OnWindowOpened += ReleaseInput;
             _defaultY = _cameraSystem.ThirdPersonFollow.ShoulderOffset.y;
             _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed;
 
+            _windowService.OnWindowOpened += ReleaseInput;
+
             _inputService.OnJoystickEnableHappend += JoystickEnabled;
             _inputService.OnJoystickDisableHappend += JoystickDisabled;
+
+            _cursorVisibleService.OnHideCursorHappened += StartInput;
         }
 
         private void OnDestroy()
@@ -90,6 +97,8 @@ namespace CameraFollow
 
             _inputService.OnJoystickDisableHappend -= JoystickDisabled;
             _inputService.OnJoystickEnableHappend -= JoystickEnabled;
+
+            _cursorVisibleService.OnHideCursorHappened -= StartInput;
         }
 
         private void Update()

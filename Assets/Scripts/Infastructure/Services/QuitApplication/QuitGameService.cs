@@ -22,7 +22,8 @@ namespace Infastructure.Services.QuitApplication
         {
             /*Application.OpenURL(_localizationService.CurrentLanguage == LanguageId.RU
                 ? GoogleFormURL_RU
-                : GoogleFormURL_EN);*/
+                : GoogleFormURL_EN);
+                */
 
             Application.Quit();
         }

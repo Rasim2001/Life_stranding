@@ -40,6 +40,8 @@ namespace SpiderController.Platform
         private float _waitTimeJoystick;
         private Transform _cameraTransform;
 
+        private float _returnTimer = 0;
+
 
         public SpiderPlane(
             PressedMouseButtonIndicatorUI pressedMouseButtonIndicatorUI,
@@ -123,6 +125,7 @@ namespace SpiderController.Platform
         {
             _pressedMouseButtonIndicatorUI.Show();
             _isMouseHold = true;
+            _returnTimer = 0;
 
             Mouse.current.WarpCursorPosition(new Vector2((float)Screen.width / 2, (float)Screen.height / 2));
 
@@ -208,10 +211,24 @@ namespace SpiderController.Platform
 
         private void RotateTo(Quaternion targetLocalRotation)
         {
-            _rotationPlaneTransform.localRotation = Quaternion.Slerp(
-                _rotationPlaneTransform.localRotation,
-                targetLocalRotation,
-                Time.fixedDeltaTime * SpiderStaticData.PlaneRotationSpeed);
+            if (!_isMouseHold)
+            {
+                _returnTimer = Mathf.Clamp01(_returnTimer + Time.fixedDeltaTime);
+
+                float curveT = SpiderStaticData.PlaneReturnCurve.Evaluate(_returnTimer);
+
+                _rotationPlaneTransform.localRotation = Quaternion.Slerp(
+                    _rotationPlaneTransform.localRotation,
+                    targetLocalRotation,
+                    curveT);
+            }
+            else
+            {
+                _rotationPlaneTransform.localRotation = Quaternion.Slerp(
+                    _rotationPlaneTransform.localRotation,
+                    targetLocalRotation,
+                    Time.fixedDeltaTime * SpiderStaticData.PlaneRotationSpeed);
+            }
         }
 
         private Vector2 ConvertInputFromCameraToSpiderSpace(Vector2 input)

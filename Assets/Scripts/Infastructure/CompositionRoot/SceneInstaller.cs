@@ -16,6 +16,7 @@ using Infastructure.Services.PauseWindow;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.QTE;
+using Infastructure.Services.SlowTime;
 using Infastructure.Services.SpiderTrack;
 using Infastructure.Services.TaskPopupChecker;
 using Infastructure.Services.Timer;
@@ -84,6 +85,8 @@ namespace Infastructure.CompositionRoot
             BindHitService();
 
             BindLastChanceQTEService();
+
+            BindSlowTimeService();
         }
 
         private void BindUI()
@@ -103,6 +106,15 @@ namespace Infastructure.CompositionRoot
             BindCameraProviderService();
         }
 
+        private void BindSlowTimeService()
+        {
+            Container
+                .Bind<ISlowTimeRunner>()
+                .To<SlowTimeRunner>()
+                .FromComponentInNewPrefabResource(AssetsPath.SlowTimeRunnerPath)
+                .AsSingle();
+        }
+
         private void BindVolumeService() =>
             Container.BindInterfacesAndSelfTo<VolumeService>().AsSingle();
 
@@ -116,7 +128,7 @@ namespace Infastructure.CompositionRoot
             Container.BindInterfacesAndSelfTo<CameraProviderService>().AsSingle();
 
         private void BindHitService() =>
-            Container.BindInterfacesAndSelfTo<HintService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<HintReceiverService>().AsSingle();
 
 
         private void BindGeneratorLaunchTrackerService() =>

@@ -1,3 +1,5 @@
+using System;
+
 namespace Infastructure.Services.CursorVisible
 {
     public interface ICursorVisibleService
@@ -5,5 +7,6 @@ namespace Infastructure.Services.CursorVisible
         void ShowCursor();
         void HideCursor();
         void Initialize();
+        event Action OnHideCursorHappened;
     }
 }
