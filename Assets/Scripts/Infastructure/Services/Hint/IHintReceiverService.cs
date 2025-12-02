@@ -2,7 +2,7 @@ using System;
 
 namespace Infastructure.Services.Hint
 {
-    public interface IHintService
+    public interface IHintReceiverService
     {
         Action OnProductHint { get; set; }
         Action OnCheckpointHint { get; set; }
