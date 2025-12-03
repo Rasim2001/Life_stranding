@@ -51,7 +51,6 @@ namespace UI.MVVM.View.StartSplashScreen
             _settingsPopupBtn.onClick.RemoveListener(OpenSettingsPopup);
             _exitBtn.onClick.RemoveListener(Exit);
 
-
             _cutSceneService.OnSkipHappened -= Skip;
         }
 

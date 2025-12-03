@@ -4,6 +4,7 @@ using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Factories.GameFactories;
 using Infastructure.PlatformRegistry;
 using Infastructure.Services.Ability;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
@@ -14,14 +15,19 @@ using Infastructure.Services.Magnet;
 using Infastructure.Services.PauseWindow;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.QTE;
+using Infastructure.Services.SlowTime;
 using Infastructure.Services.SpiderTrack;
 using Infastructure.Services.TaskPopupChecker;
 using Infastructure.Services.Timer;
+using Infastructure.Services.VolumeManagement;
 using Infastructure.Services.Window;
 using Infastructure.Services.XRay;
 using Infastructure.States;
 using UI.MVVM.View.Root;
 using UI.MVVM.View.TaskPopup;
+using UnityEngine;
+using UnityEngine.Rendering;
 using WaterSystem;
 using Zenject;
 
@@ -29,6 +35,8 @@ namespace Infastructure.CompositionRoot
 {
     public class SceneInstaller : MonoInstaller
     {
+        [SerializeField] private Volume _volume;
+
         public override void InstallBindings()
         {
             BindUI();
@@ -38,6 +46,10 @@ namespace Infastructure.CompositionRoot
 
         private void BindWorld()
         {
+            BindVolume();
+
+            BindVolumeService();
+
             BindBuildLevelState();
 
             BindGameFactory();
@@ -71,6 +83,10 @@ namespace Infastructure.CompositionRoot
             BindGeneratorLaunchTrackerService();
 
             BindHitService();
+
+            BindLastChanceQTEService();
+
+            BindSlowTimeService();
         }
 
         private void BindUI()
@@ -83,15 +99,36 @@ namespace Infastructure.CompositionRoot
 
             BindWindowService();
 
-            BindEventSystemSelector();
-
             BindTaskPopupCheckerService();
 
             BindPauseWindowService();
+
+            BindCameraProviderService();
         }
 
+        private void BindSlowTimeService()
+        {
+            Container
+                .Bind<ISlowTimeRunner>()
+                .To<SlowTimeRunner>()
+                .FromComponentInNewPrefabResource(AssetsPath.SlowTimeRunnerPath)
+                .AsSingle();
+        }
+
+        private void BindVolumeService() =>
+            Container.BindInterfacesAndSelfTo<VolumeService>().AsSingle();
+
+        private void BindVolume() =>
+            Container.Bind<Volume>().FromInstance(_volume).AsSingle();
+
+        private void BindLastChanceQTEService() =>
+            Container.BindInterfacesAndSelfTo<LastChanceQTEService>().AsSingle();
+
+        private void BindCameraProviderService() =>
+            Container.BindInterfacesAndSelfTo<CameraProviderService>().AsSingle();
+
         private void BindHitService() =>
-            Container.BindInterfacesAndSelfTo<HintService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<HintReceiverService>().AsSingle();
 
 
         private void BindGeneratorLaunchTrackerService() =>
@@ -173,14 +210,6 @@ namespace Infastructure.CompositionRoot
                 .AsSingle();
         }
 
-        private void BindEventSystemSelector()
-        {
-            Container
-                .Bind<IEventSystemSelector>()
-                .To<EventSystemSelector>()
-                .FromComponentInNewPrefabResource(AssetsPath.EventSystemPath)
-                .AsSingle();
-        }
 
         private void BindUIGameplayRootViewModel() =>
             Container.BindInterfacesAndSelfTo<UIGameplayRootViewModel>().AsSingle();

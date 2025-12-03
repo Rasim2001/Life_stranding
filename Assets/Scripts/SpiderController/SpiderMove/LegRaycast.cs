@@ -10,10 +10,11 @@ namespace SpiderController.SpiderMove
         private const string NotMoveableLayer = "NotMoveable";
 
         [SerializeField] private LayerMask _layerMask;
-        [SerializeField] private float _offsetAngle = 15f;
-        [SerializeField] private int _offsetRayCount = 5;
+        [SerializeField] private float _offsetAngle = 5f;
+        [SerializeField] private int _offsetRayCount = 15;
 
         public Vector3 Position => _smoothedPoint;
+        public Vector3 GroundNormal => IsGrounded ? _hit.normal : transform.up;
         public bool IsGrounded => _hit.collider != null;
         public Vector3 AirbornPosition => _airbornHit.point;
         public bool IsNotMoveableLayer => IsGrounded && _hit.collider.gameObject.layer == _notMoveableLayer;
@@ -42,8 +43,9 @@ namespace SpiderController.SpiderMove
         {
             _rayDistance = _staticDataService.SpiderStaticData.GroundStateRayDistance;
             _defaultPosition = transform.localPosition;
-            _notMoveableLayer = LayerMask.NameToLayer(NotMoveableLayer);
             _smoothedPoint = transform.position;
+
+            _notMoveableLayer = LayerMask.NameToLayer(NotMoveableLayer);
         }
 
         public void SetGroundState()
@@ -76,6 +78,7 @@ namespace SpiderController.SpiderMove
                 1f - Mathf.Exp(-_positionSmoothSpeed * Time.deltaTime));
         }
 
+
         public void ForceImmediateUpdate()
         {
             Vector3 origin = transform.position;
@@ -102,8 +105,10 @@ namespace SpiderController.SpiderMove
             {
                 float angle = _offsetAngle * z;
 
-                if (TryOffsetRay(baseDirection, origin, transform.forward, angle)) return true;
-                if (TryOffsetRay(baseDirection, origin, transform.forward, -angle)) return true;
+                if (TryOffsetRay(baseDirection, origin, transform.forward, angle))
+                    return true;
+                if (TryOffsetRay(baseDirection, origin, transform.forward, -angle))
+                    return true;
             }
 
             return false;
@@ -115,10 +120,10 @@ namespace SpiderController.SpiderMove
             {
                 float angle = _offsetAngle * x;
 
-                if (TryOffsetRay(baseDirection, origin, transform.right, angle)) 
+                if (TryOffsetRay(baseDirection, origin, transform.right, angle))
                     return true;
-                
-                if (TryOffsetRay(baseDirection, origin, transform.right, -angle)) 
+
+                if (TryOffsetRay(baseDirection, origin, transform.right, -angle))
                     return true;
             }
 

@@ -21,7 +21,7 @@ MonoBehaviour:
     ShouldClearOutputTexture: 0
     SupportedLayersMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 16384
     SupportedShaderPassNames:
     - Terrain_Icons_ID
     OverrideMaterial: {fileID: 2100000, guid: 3fd78ebc0acd9794ab17cbd5b0e8e927, type: 2}
@@ -149,11 +149,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b3d386ba5cd94485973aee1479b272e, type: 3}
-  m_Name: Render Feature - Outline Opaque
+  m_Name: Render Feature  Outline Opaque
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    passTag: RenderObjectsFeature
+    passTag: Render Feature  Outline Opaque
     Event: 300
     filterSettings:
       RenderQueueType: 0
@@ -226,7 +226,7 @@ MonoBehaviour:
     NormalsRT: {fileID: 8400000, guid: 627d3c9ff2a61144f94a75486caf6cca, type: 2}
     SupportedLayersMask:
       serializedVersion: 2
-      m_Bits: 512
+      m_Bits: 0
     SupportedShaderPassNames:
     - UniversalForward
     NormalsRenderMaterial: {fileID: 2100000, guid: ecec37968b097854ca99a3de0ece8557, type: 2}

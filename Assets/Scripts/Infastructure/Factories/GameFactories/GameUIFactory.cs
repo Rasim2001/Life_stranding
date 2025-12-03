@@ -1,6 +1,9 @@
 using Infastructure.Common;
+using Infastructure.Services.QTE;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using UI.MVVM.Base;
 using UI.MVVM.View.Root;
+using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
 
@@ -13,9 +16,12 @@ namespace Infastructure.Factories.GameFactories
         private readonly UIGameplayRootViewModel _gameplayRootViewModel;
 
         private IGameUIFactory _iuiFactory;
+        private ILastChanceQTEService _lastChanceQteService;
 
-        public GameUIFactory(DiContainer diContainer, UIGameplayRootViewModel gameplayRootViewModel, IUIRoot uiRoot)
+        public GameUIFactory(DiContainer diContainer, UIGameplayRootViewModel gameplayRootViewModel, IUIRoot uiRoot,
+            ILastChanceQTEService lastChanceQTEService)
         {
+            _lastChanceQteService = lastChanceQTEService;
             _diContainer = diContainer;
             _gameplayRootViewModel = gameplayRootViewModel;
             _uiRoot = uiRoot;
@@ -40,6 +46,16 @@ namespace Infastructure.Factories.GameFactories
             binder.Bind(viewModel);
 
             return binder;
+        }
+
+        public void CreateLastChanceRoot(Flower flower)
+        {
+            LastChanceUI lastChance =
+                _diContainer.InstantiatePrefabResourceForComponent<LastChanceUI>(AssetsPath.LastChanceRoot);
+
+            lastChance.SetFlowerTransform(flower);
+
+            _lastChanceQteService.Initialize(lastChance);
         }
 
 

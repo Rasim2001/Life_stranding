@@ -1,0 +1,11 @@
+using System;
+
+namespace Infastructure.Services.QTE
+{
+    public interface ILastChanceQTEService
+    {
+        void StartQTE();
+        void Initialize(LastChanceUI lastChanceUI);
+        event Action OnSaveHappened;
+    }
+}

@@ -1,3 +1,4 @@
+using System;
 using SpiderController.StateMachine;
 
 namespace Infastructure.Services.Magnet
@@ -7,5 +8,7 @@ namespace Infastructure.Services.Magnet
         void Freeze();
         void Unfreeze();
         void Initialize(StateMachineData stateMachineData);
+        bool IsActive { get; }
+        event Action<bool> OnFreezActiveChanged;
     }
 }

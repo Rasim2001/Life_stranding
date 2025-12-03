@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Infastructure.Localization;
 using Infastructure.Services.Pause;
+using Localization;
 using TMPro;
 using UI.MVVM.Base;
 using UI.MVVM.View.ProductDescriptionPopup;
@@ -30,11 +32,15 @@ namespace UI.MVVM.View.TaskPopup
         private CancellationTokenSource _cancellationTokenSource;
 
         private IPauseService _pauseService;
+        private ILocalizationService _localizationService;
         private Tween _containerRotateTween;
 
         [Inject]
-        public void Construct(IPauseService pauseService) =>
+        public void Construct(IPauseService pauseService, ILocalizationService localizationService)
+        {
+            _localizationService = localizationService;
             _pauseService = pauseService;
+        }
 
         protected override void Awake()
         {
@@ -60,8 +66,8 @@ namespace UI.MVVM.View.TaskPopup
         {
             base.OnBind(viewModel);
 
-            _taskNameText.text = ViewModel.TaskData.TaskName;
-            _taskDescriptionText.text = ViewModel.TaskData.TaskDescription;
+            _taskNameText.text = ViewModel.TaskData.TaskName.Get(_localizationService.CurrentLanguage);
+            _taskDescriptionText.text = ViewModel.TaskData.TaskDescription.Get(_localizationService.CurrentLanguage);
             _screenImage.sprite = ViewModel.TaskData.ScreenIcon;
         }
 

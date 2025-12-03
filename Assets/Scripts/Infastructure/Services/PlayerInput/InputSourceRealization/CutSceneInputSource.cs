@@ -70,6 +70,10 @@ namespace Infastructure.Services.PlayerInput.InputSourceRealization
         }
         public bool JumpUp { get; set; }
         public bool TabPressed { get; }
+
+        public bool AnyKeyPressed() =>
+            false;
+
         public bool JerkPressed { get; }
         public bool PickupPressed { get; }
 

@@ -4,12 +4,9 @@ using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
-using PickupObjects;
-using PickupObjects.PickUpOnPlatform;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
 using SpiderController.UI;
-using SpiderController.UI.Health;
 using UnityEngine;
 
 namespace SpiderController.StateMachine.States
@@ -25,14 +22,13 @@ namespace SpiderController.StateMachine.States
         protected Rigidbody Rigidbody => Spider.Rigidbody;
         protected SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
         protected EnergyBarUI EnergyBarUI => Spider.SpiderUI.EnergyBar;
+        protected Transform CameraTransform => Spider.CameraProviderService.CameraTransform;
 
         private readonly Flower _flower;
         private readonly IStaticDataService _staticDataService;
         private readonly ICutSceneService _cutSceneService;
         private readonly IInputService _inputService;
         private readonly float _legMoveDeadzone = 0.04f;
-
-        private readonly List<BackLegRaycast> _backLegs;
 
 
         protected MovementState(
@@ -56,11 +52,6 @@ namespace SpiderController.StateMachine.States
             Spider = spider;
             Data = stateMachineData;
             Legs = legs;
-
-            _backLegs = Legs
-                .Select(x => x.Raycast.GetComponent<BackLegRaycast>())
-                .Where(x => x != null)
-                .ToList();
         }
 
 
@@ -87,14 +78,12 @@ namespace SpiderController.StateMachine.States
         public virtual void Update()
         {
             TryMoveLegs();
-            BackLegHandle();
             UpdateTerranTime();
         }
 
         public virtual void FixedUpdate()
         {
             MoveBodySpider();
-            RotateTowardsMoveDirection();
 
             if (!Mathf.Approximately(Data.YVelocity, 0))
                 return;
@@ -109,7 +98,7 @@ namespace SpiderController.StateMachine.States
 
 
         protected bool IsInputZero() =>
-            Mathf.Abs(Data.Input.z) < Mathf.Epsilon;
+            Data.Input.sqrMagnitude < Mathf.Epsilon;
 
         protected bool IsFastRunPressed() =>
             _inputService.IsLeftShiftPressed;
@@ -149,6 +138,29 @@ namespace SpiderController.StateMachine.States
         protected void SetSpeed(float newValue) =>
             Data.Speed = newValue;
 
+        protected virtual Vector3 GetMovementY() =>
+            Spider.transform.up * Data.YVelocity;
+
+        private void MoveBodySpider()
+        {
+            Vector3 worldUp = CameraTransform.up;
+            Vector3 camForward = Vector3.ProjectOnPlane(CameraTransform.forward, worldUp).normalized;
+            Vector3 camRight = Vector3.ProjectOnPlane(CameraTransform.right, worldUp).normalized;
+
+            Vector3 forwardMovement = camForward * Data.Velocity.z;
+            Vector3 movementX = camRight * Data.Velocity.x;
+
+            Vector3 movementDirection = forwardMovement + movementX;
+
+            Vector3 jerkMovement = camForward * Data.XVelocity;
+            Vector3 verticalMovement = GetMovementY();
+            Vector3 explosionVector = Data.ExplosionVector;
+
+            Vector3 newVelocity = movementDirection + verticalMovement + jerkMovement + explosionVector;
+
+            Rigidbody.linearVelocity =
+                Data.IsStandingUpAfterFalling || IsNotMoveableLayer() ? Vector3.zero : newVelocity;
+        }
 
         private void UpdateTerranTime()
         {
@@ -164,37 +176,6 @@ namespace SpiderController.StateMachine.States
                     Data.TerrainTimer = Mathf.NegativeInfinity;
                 }
             }
-        }
-
-
-        private void BackLegHandle()
-        {
-            if (_backLegs == null)
-                return;
-
-            if (Data.Input.z > 0)
-            {
-                foreach (BackLegRaycast backLeg in _backLegs)
-                    backLeg.SetForwardStateLeg();
-            }
-            else if (Data.Input.z < 0)
-            {
-                foreach (BackLegRaycast backLeg in _backLegs)
-                    backLeg.SetBackStateLeg();
-            }
-        }
-
-        private void MoveBodySpider()
-        {
-            Vector3 forwardMovement = Spider.transform.forward * Data.Velocity.z;
-            Vector3 verticalMovement = Spider.transform.up * Data.YVelocity;
-            Vector3 jerkMovement = Spider.transform.forward * Data.XVelocity;
-            Vector3 explosionVector = Data.ExplosionVector;
-
-            Vector3 newVelocity = forwardMovement + verticalMovement + jerkMovement + explosionVector;
-
-            Rigidbody.linearVelocity =
-                Data.IsStandingUpAfterFalling || IsNotMoveableLayer() ? Vector3.zero : newVelocity;
         }
 
 
@@ -242,16 +223,6 @@ namespace SpiderController.StateMachine.States
         }
 
 
-        private void RotateTowardsMoveDirection()
-        {
-            float totalRotationZ = Data.Input.z >= 0 ? Data.RotationAmount : -Data.RotationAmount;
-
-            Vector3 rotationAxis = Spider.transform.up;
-            float rotationSpeedRad = totalRotationZ * Mathf.Deg2Rad;
-
-            Rigidbody.angularVelocity = rotationAxis * rotationSpeedRad;
-        }
-
         private void AdjustBodyOrientation()
         {
             Vector3[] legPositions = new Vector3[Legs.Length];
@@ -280,6 +251,14 @@ namespace SpiderController.StateMachine.States
             if (count == 0)
                 return;
 
+            if (count != Legs.Length)
+                CalculateAdhesion();
+            else
+                CalculateGroundWithAllLegs(normalSum, count);
+        }
+
+        private void CalculateGroundWithAllLegs(Vector3 normalSum, int count)
+        {
             Vector3 averageNormal = (normalSum / count).normalized;
 
             Quaternion targetRotation =
@@ -289,8 +268,8 @@ namespace SpiderController.StateMachine.States
                 Time.fixedDeltaTime * SpiderStaticData.LerpSpeedFromGround);
 
             Quaternion deltaRotation = smoothedRotation * Quaternion.Inverse(Rigidbody.rotation);
-
             deltaRotation.ToAngleAxis(out float angleDeg, out Vector3 axis);
+
             if (angleDeg > 180f)
                 angleDeg -= 360f;
 
@@ -298,7 +277,51 @@ namespace SpiderController.StateMachine.States
             Vector3 angularVel = axis.normalized * (angleRad / Time.fixedDeltaTime);
             Vector3 angularExplosionVector = Data.ExplosionAngularVector;
 
-            Rigidbody.angularVelocity += angularVel + angularExplosionVector;
+            Rigidbody.angularVelocity = angularVel + angularExplosionVector;
+        }
+
+        private void CalculateAdhesion()
+        {
+            Vector3 normalSum = Vector3.zero;
+            int groundedCount = 0;
+
+            for (int i = 0; i < Legs.Length; i++)
+            {
+                var raycast = Legs[i].Raycast;
+                if (!raycast.IsGrounded)
+                    continue;
+
+                normalSum += raycast.GroundNormal;
+                groundedCount++;
+            }
+
+            if (groundedCount == 0)
+                return;
+
+            Vector3 averageNormal = (normalSum / groundedCount).normalized;
+
+            float blend = Mathf.Clamp01(groundedCount / 4f);
+            averageNormal = Vector3.Slerp(Spider.transform.up, averageNormal, blend);
+
+            Quaternion targetRotation =
+                Quaternion.FromToRotation(Spider.transform.up, averageNormal) * Rigidbody.rotation;
+
+            Quaternion smoothedRotation = Quaternion.Slerp(
+                Rigidbody.rotation,
+                targetRotation,
+                Time.fixedDeltaTime * SpiderStaticData.LerpSpeedFromGround);
+
+            Quaternion deltaRotation = smoothedRotation * Quaternion.Inverse(Rigidbody.rotation);
+            deltaRotation.ToAngleAxis(out float angleDeg, out Vector3 axis);
+
+            if (angleDeg > 180f)
+                angleDeg -= 360f;
+
+            float angleRad = angleDeg * Mathf.Deg2Rad;
+            Vector3 angularVel = axis.normalized * (angleRad / Time.fixedDeltaTime);
+            Vector3 angularExplosionVector = Data.ExplosionAngularVector;
+
+            Rigidbody.angularVelocity = angularVel + angularExplosionVector;
         }
     }
 }

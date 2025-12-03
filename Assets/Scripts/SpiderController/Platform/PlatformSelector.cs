@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Infastructure.PlatformRegistry;
+using Infastructure.Services.Magnet;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
 using Infastructure.StaticData.StaticDataService;
@@ -22,10 +23,14 @@ namespace SpiderController.Platform
             { 1, PlatformId.Box },
             { 2, PlatformId.Surf },
         };
-        private Material _defaultMaterial;
 
         private readonly StateMachineData _stateMachineData;
         private readonly IInputService _inputService;
+        private readonly IMagnetFreezingService _magnetFreezingService;
+
+        private Material _defaultMaterial;
+        private Material _emissionMaterial;
+
         private bool _isBlinking;
         private float _blinkSpeed;
         private bool _IsOnPlatform;
@@ -33,30 +38,53 @@ namespace SpiderController.Platform
         private Collider _productColliderCached;
         private JoystickInputSource _joystick;
 
-
         private int _currentIndex = 0;
+        private bool _magnetIsActive;
 
         public PlatformSelector(
             StateMachineData stateMachineData,
             IStaticDataService staticDataService,
             IPlatformRegistryService platformRegistryService,
-            IInputService inputService)
+            IInputService inputService,
+            IMagnetFreezingService magnetFreezingService)
         {
+            _magnetFreezingService = magnetFreezingService;
             _stateMachineData = stateMachineData;
             _inputService = inputService;
             _platformRegistryService = platformRegistryService;
+
             _planeBlinkMaterial = new Material(staticDataService.MaterialsStaticData.PlaneBlinkMaterial);
+            _defaultMaterial = new Material(staticDataService.MaterialsStaticData.LitDefaultMaterial);
         }
 
         public void Initialize()
         {
             _inputService.OnJoystickEnableHappend += JoystickEnabled;
+            _inputService.OnJoystickDisableHappend += JoystickDisabled;
+
+            _magnetFreezingService.OnFreezActiveChanged += SetEmissionMaterial;
 
             InitializePlatform(_platformIds[_currentIndex]);
         }
 
-        public void Destroy() =>
+        private void SetEmissionMaterial(bool isActive)
+        {
+            _magnetIsActive = isActive;
+
+            _platformRegistryService.CurrentPlatformData.MeshRenderer.material =
+                isActive ? _emissionMaterial : _defaultMaterial;
+        }
+
+        public void Destroy()
+        {
             _inputService.OnJoystickEnableHappend -= JoystickEnabled;
+            _inputService.OnJoystickDisableHappend -= JoystickDisabled;
+
+            _magnetFreezingService.OnFreezActiveChanged -= SetEmissionMaterial;
+        }
+
+        private void JoystickDisabled() =>
+            _joystick = null;
 
         private void JoystickEnabled(IInputSource obj) =>
             _joystick = (JoystickInputSource)obj;
@@ -66,7 +94,7 @@ namespace SpiderController.Platform
             KeyboardInput();
             JoystickInput();
 
-            if (_IsOnPlatform)
+            if (_IsOnPlatform && !_magnetFreezingService.IsActive)
                 ChangeMaterial();
         }
 
@@ -77,6 +105,7 @@ namespace SpiderController.Platform
                 return;
 
             _isBlinking = false;
+
             _platformRegistryService.CurrentPlatformData.MeshRenderer.material = _defaultMaterial;
         }
 
@@ -136,9 +165,6 @@ namespace SpiderController.Platform
 
         private void InitializePlatform(PlatformId platformId)
         {
-            /*PlatformId lastId = _platformRegistryService.CurrentPlatformId;
-            _stateMachineData.TotalWeight = _platformRegistryService.TryGetPlatformData(lastId).Weight;*/
-
             _platformRegistryService.CurrentPlatformId = platformId;
             _stateMachineData.TotalWeight += _platformRegistryService.TryGetPlatformData(platformId).Weight;
 
@@ -151,8 +177,10 @@ namespace SpiderController.Platform
                 {
                     Activate(platformData, true);
 
-                    _defaultMaterial = platformData.MeshRenderer.material;
+                    _emissionMaterial = platformData.MeshRenderer.material;
                     _platformRegistryService.CurrentPlatformData = platformData;
+
+                    _platformRegistryService.CurrentPlatformData.MeshRenderer.material = _defaultMaterial;
                 }
                 else
                 {
@@ -171,26 +199,22 @@ namespace SpiderController.Platform
             Activate(_platformRegistryService.CurrentPlatformData, false);
 
             PlatformId lastId = _platformRegistryService.CurrentPlatformId;
+            PlatformData lastPlatformData = _platformRegistryService.CurrentPlatformData;
+            lastPlatformData.MeshRenderer.material = _emissionMaterial;
+
             _stateMachineData.TotalWeight -= _platformRegistryService.TryGetPlatformData(lastId).Weight;
             _stateMachineData.TotalWeight += _platformRegistryService.TryGetPlatformData(platformId).Weight;
 
             _platformRegistryService.CurrentPlatformData = platformData;
             _platformRegistryService.CurrentPlatformId = platformId;
-            _defaultMaterial = platformData.MeshRenderer.material;
+            _emissionMaterial = platformData.MeshRenderer.material;
+
+            SetEmissionMaterial(_magnetIsActive);
 
             if (_IsOnPlatform)
                 SetExcludeLayerMask();
             else
                 ResetExcludeLayerMask();
-        }
-
-        private void SetBlinkMaterial()
-        {
-            if (_isBlinking)
-                return;
-
-            _isBlinking = true;
-            _platformRegistryService.CurrentPlatformData.MeshRenderer.material = _planeBlinkMaterial;
         }
 
         private void ChangeMaterial()
@@ -203,6 +227,15 @@ namespace SpiderController.Platform
                 ReturnToDefaultMaterial();
             else
                 SetBlinkMaterial();
+        }
+
+        private void SetBlinkMaterial()
+        {
+            if (_isBlinking)
+                return;
+
+            _isBlinking = true;
+            _platformRegistryService.CurrentPlatformData.MeshRenderer.material = _planeBlinkMaterial;
         }
 
         private void Activate(PlatformData platformData, bool value)

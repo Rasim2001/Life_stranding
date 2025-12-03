@@ -23,8 +23,12 @@ namespace Infastructure.Services.TaskPopupChecker
             _taskIds.Add(taskId);
         }
 
-        public bool IsWasOpened(TaskId taskId) =>
-            _taskIds.Contains(taskId);
+        public bool IsWasOpened(TaskId taskId)
+        {
+            return true;
+
+            return _taskIds.Contains(taskId);
+        }
 
         public void Dispose() =>
             _taskIds.Clear();

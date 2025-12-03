@@ -43,7 +43,6 @@ namespace Infastructure.States
 
         private void OnAdditiveSceneLoaded()
         {
-            
             if (_restartService.IsRestarting)
             {
                 _cutSceneService.Skip();
@@ -52,9 +51,7 @@ namespace Infastructure.States
                 HideCurtainAsync().Forget();
             }
             else
-            {
                 _curtainRoot.Hide();
-            }
         }
 
         public void Exit()

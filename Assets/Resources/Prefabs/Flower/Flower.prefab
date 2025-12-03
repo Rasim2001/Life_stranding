@@ -68,6 +68,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8513859187771203891, guid: 9776ff48ccd46f945b05f0a82cbfd07d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -426,8 +430,8 @@ MonoBehaviour:
   AutoPlayOnEnable: 0
   ForceTimescaleMode: 0
   ForcedTimescaleMode: 1
-  DurationMultiplier: 1
-  TimescaleMultiplier: 1
+  DurationMultiplier: 5
+  TimescaleMultiplier: 5
   RandomizeDuration: 0
   RandomDurationMultiplier: {x: 0.5, y: 1.5}
   DisplayFullDurationDetails: 0

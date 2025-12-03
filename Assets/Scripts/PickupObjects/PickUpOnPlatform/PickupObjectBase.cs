@@ -18,6 +18,7 @@ namespace PickupObjects.PickUpOnPlatform
         public Rigidbody Rigidbody { get; private set; }
 
         public bool IsFreezingOnPlatform;
+
         public bool WasOnPlatform;
         public bool IsPuttingDown;
 
@@ -150,15 +151,13 @@ namespace PickupObjects.PickUpOnPlatform
         {
             Vector3 platformRotation = _platformArmature.eulerAngles;
 
-            //int sing = StartRotation.x >= 0 ? 1 : -1;
-
             float angleX = Mathf.Deg2Rad * platformRotation.x;
             float angleZ = Mathf.Deg2Rad * platformRotation.z;
 
             Vector3 gravityForce = new Vector3(
                 -Mathf.Sin(angleZ),
                 0f,
-                Mathf.Sin(angleX) //* sing
+                Mathf.Sin(angleX)
             );
 
             Vector3 movementVector = gravityForce * (Time.deltaTime * Speed);
@@ -168,9 +167,6 @@ namespace PickupObjects.PickUpOnPlatform
 
             transform.localPosition =
                 new Vector3(transform.localPosition.x, StartPosition.y, transform.localPosition.z);
-
-            /*Rigidbody.linearVelocity = Vector3.zero;
-            Rigidbody.angularVelocity = Vector3.zero;*/
         }
     }
 }

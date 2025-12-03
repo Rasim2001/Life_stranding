@@ -1,9 +1,12 @@
 using System;
 using Common;
 using HUD;
+using Infastructure.Services.QTE;
+using Infastructure.Services.SlowTime;
+using Infastructure.Services.XRay;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
-using MoreMountains.Feedbacks;
+using Infastructure.StaticData.XRay;
 using SpiderController.Platform;
 using SpiderController.StateMachine;
 using UnityEngine;
@@ -13,7 +16,6 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
 {
     public class Flower : PickupObjectBase, IProduct
     {
-        [SerializeField] private MMF_Player _feedbackPlayer;
         [SerializeField] private LayerMask _groundLayer;
         [SerializeField] private GameObject[] _flowerVariants;
 
@@ -26,14 +28,24 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
         private FlowerSelector _flowerSelector;
         private StateMachineData _stateMachineData;
         private ProductData _productData;
+        private XRayMarker _xRayMarker;
 
         private IStaticDataService _staticDataService;
+        private ILastChanceQTEService _lastChanceQteService;
 
         private bool _isTriggered;
+        private IXRayService _xRayService;
+        private ISlowTimeRunner _slowTimeRunner;
 
         [Inject]
-        public void Construct(IStaticDataService staticDataService) =>
+        public void Construct(IStaticDataService staticDataService, ILastChanceQTEService lastChanceQteService,
+            IXRayService xRayService, ISlowTimeRunner slowTimeRunner)
+        {
+            _slowTimeRunner = slowTimeRunner;
+            _xRayService = xRayService;
+            _lastChanceQteService = lastChanceQteService;
             _staticDataService = staticDataService;
+        }
 
         protected override void Awake()
         {
@@ -42,6 +54,9 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             _flowerSelector = new FlowerSelector(_flowerVariants);
             _flowerSelector.Initialize();
         }
+
+        private void Start() =>
+            _xRayMarker = GetComponent<XRayMarker>();
 
         private void OnDestroy() =>
             _flowerSelector.Clear();
@@ -87,18 +102,23 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             _flowerPointIndicator.HideTargetPoint();
 
             _stateMachineData.TotalWeight += _productData.Weight;
+
+            _xRayService.Remove(_xRayMarker);
         }
 
         public override void StartSimulatePhysics()
         {
             base.StartSimulatePhysics();
 
-            _feedbackPlayer.PlayFeedbacks();
+            _lastChanceQteService.StartQTE();
+            _slowTimeRunner.SlowDown();
             _flowerPointIndicator.ShowTargetPoint();
 
             _stateMachineData.TotalWeight -= _productData.Weight;
 
             OnDroppedFromPlatform?.Invoke();
+
+            _xRayService.Add(_xRayMarker);
         }
 
         public void Putdown(ICheckpointInfo checkPoint)
@@ -113,7 +133,7 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
 
             PlatformSelector.IsOnPlatform(Collider);
 
-            StartSimulatePhysics();
+            StartSimulatePhysicsAfterPutdown();
 
             Rigidbody.isKinematic = true;
         }
@@ -125,6 +145,17 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             Collider.enabled = true;
 
             StopSimulatePhysics();
+        }
+
+        private void StartSimulatePhysicsAfterPutdown()
+        {
+            base.StartSimulatePhysics();
+
+            _flowerPointIndicator.ShowTargetPoint();
+
+            _stateMachineData.TotalWeight -= _productData.Weight;
+
+            OnDroppedFromPlatform?.Invoke();
         }
     }
 }

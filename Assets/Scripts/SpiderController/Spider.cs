@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using Common;
 using HighlightPlus;
 using Infastructure.Common.Pickup;
+using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.PlatformRegistry;
 using Infastructure.Services.Ability;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
@@ -50,6 +52,7 @@ namespace SpiderController
         [SerializeField] private GeneratorChecker _generatorChecker;
         [SerializeField] private BiosphereChecker _biosphereChecker;
         [SerializeField] private ObserverTrigger _waterObserverTrigger;
+        [SerializeField] private BodyOrientation _bodyOrientation;
 
         [SerializeField] private Stickers _stickers;
 
@@ -66,6 +69,7 @@ namespace SpiderController
         public IPauseService PauseService => _pauseService;
         public ICutSceneService CutSceneService => _cutSceneService;
         public IWindowService WindowService => _windowService;
+        public ICameraProviderService CameraProviderService => _cameraProviderService;
         public Rigidbody Rigidbody => _rigidbody;
         public GroundChecker GroundChecker => _groundChecker;
         public SpiderUI SpiderUI => _spiderUI;
@@ -77,6 +81,7 @@ namespace SpiderController
         public ObserverTrigger WaterObserverTrigger => _waterObserverTrigger;
         public WaterStaticData WaterStaticData => _staticDataService.WaterStaticData;
         public StateMachineData StateMachineData => _stateMachineData;
+        public BodyOrientation BodyOrientation => _bodyOrientation;
 
         public Stickers Stickers => _stickers;
 
@@ -113,8 +118,10 @@ namespace SpiderController
         private IDefeatWindowService _defeatWindowService;
 
         private StateMachineData _stateMachineData;
-        private IHintService _hintService;
+        private IHintReceiverService _hintReceiverService;
         private MagnetSkill _magnetSkill;
+        private ICameraProviderService _cameraProviderService;
+        private IStableWorldUp _stableWorldUp;
 
 
         [Inject]
@@ -134,9 +141,13 @@ namespace SpiderController
             IPauseService pauseService,
             IAbilityService abilityService,
             IDefeatWindowService defeatWindowService,
-            IHintService hintService)
+            IHintReceiverService hintReceiverService,
+            ICameraProviderService cameraProviderService,
+            IStableWorldUp stableWorldUp)
         {
-            _hintService = hintService;
+            _stableWorldUp = stableWorldUp;
+            _cameraProviderService = cameraProviderService;
+            _hintReceiverService = hintReceiverService;
             _defeatWindowService = defeatWindowService;
             _abilityService = abilityService;
             _pauseService = pauseService;
@@ -194,7 +205,8 @@ namespace SpiderController
             _spiderImpactReceiver = new SpiderImpactReceiver(_stateMachineData, transform);
 
             _spiderPlane = new SpiderPlane(_spiderUI.PlaneIndicatorUI, _rotationPlaneTransform, _inputService,
-                _abilityService, _staticDataService, _windowService, _stateMachineData);
+                _abilityService, _staticDataService, _windowService, _cameraProviderService, _stableWorldUp,
+                _stateMachineData);
             _spiderPlane.Initialize();
 
             _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _platformObjectsService, _windowService,
@@ -202,7 +214,7 @@ namespace SpiderController
                 _flowerChecker, flower, _spiderUI, _staticDataService.SpiderStaticData);
             _flowerPickup.Initialize();
 
-            _batteryProductPickup = new BatteryProductPickup(_hintService, _inputService, _pickupDisplayer,
+            _batteryProductPickup = new BatteryProductPickup(_hintReceiverService, _inputService, _pickupDisplayer,
                 _platformObjectsService,
                 _batteryChecker, _flowerChecker);
             _batteryProductPickup.Initialize();
@@ -221,14 +233,14 @@ namespace SpiderController
             _skillProductPickup.Initialize();
 
             _platformSelector = new PlatformSelector(_stateMachineData, _staticDataService, _platformRegistryService,
-                _inputService);
+                _inputService, _magnetFreezingService);
             _platformSelector.Initialize();
 
-            _checkpointPickup = new CheckpointPickup(_hintService, _inputService, _pickupDisplayer, _windowService,
+            _checkpointPickup = new CheckpointPickup(_hintReceiverService, _inputService, _pickupDisplayer, _windowService,
                 _platformObjectsService, _checkpointChecker, flower, _spiderUI);
             _checkpointPickup.Initialize();
 
-            _generatorPickup = new GeneratorPickup(_hintService, _inputService, _pickupDisplayer,
+            _generatorPickup = new GeneratorPickup(_hintReceiverService, _inputService, _pickupDisplayer,
                 _platformObjectsService,
                 _windowService, _generatorChecker);
             _generatorPickup.Initialize();

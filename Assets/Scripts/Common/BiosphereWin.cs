@@ -74,8 +74,6 @@ namespace Common
 
         private void GeneratorLaunched()
         {
-            Debug.Log("Generator launched");
-
             _summary += _launchOffset;
 
             _biosphereFx.ShowFx(_summary);

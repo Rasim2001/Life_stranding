@@ -19,8 +19,10 @@ namespace SpiderController.UI
             _hologramEffect = new HologramEffect(GetSegments(), GetContainers(), GetOtherObjects());
         }
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
+
             ShowHologram();
 
             _terrain = TerrainScan.Instance;

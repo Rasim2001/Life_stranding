@@ -84,6 +84,9 @@ public class JoystickInputSource : IInputSource
     public bool PickupPressed => Pickup.WasPressedThisFrame();
     public bool TabPressed => Scan.WasPressedThisFrame();
 
+    public bool AnyKeyPressed() =>
+        false;
+
     //public bool PauseButtonPressed => Pause.WasPressedThisFrame();
 
     public float ScrollWheelAxis

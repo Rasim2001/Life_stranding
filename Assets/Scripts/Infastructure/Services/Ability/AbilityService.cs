@@ -8,6 +8,8 @@ namespace Infastructure.Services.Ability
 {
     public class AbilityService : IAbilityService, IDisposable, IInitializable
     {
+        public event Action<ProductType> OnAbilityAddHappened;
+
         private readonly ICutSceneService _cutSceneService;
         private readonly List<ProductType> _pickedProducts = new List<ProductType>();
 
@@ -24,7 +26,10 @@ namespace Infastructure.Services.Ability
         public void PickUpAbility(ProductType product)
         {
             if (!_pickedProducts.Contains(product))
+            {
                 _pickedProducts.Add(product);
+                OnAbilityAddHappened?.Invoke(product);
+            }
         }
 
         public bool IsExploredAbility(ProductType pickedProduct) =>

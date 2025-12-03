@@ -44,8 +44,9 @@ namespace SpiderController.UI.Health
             _staticDataService = staticDataService;
         }
 
-        public void Initialize() =>
+        private void Awake() =>
             _spiderHealth = new SpiderHealth(_defeatWindowService, SpiderStaticData.MaxHealth);
+
 
         private void Start()
         {

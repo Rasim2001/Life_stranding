@@ -55,10 +55,82 @@ MonoBehaviour:
       Entry: 7
       Data: 2|Infastructure.StaticData.Task.TaskData, Assembly-CSharp
     - Name: TaskName
+      Entry: 7
+      Data: 3|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 4|System.Collections.Generic.Dictionary`2[[Localization.LanguageId, Assembly-CSharp],[System.String,
+        mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 5|System.Collections.Generic.EnumEqualityComparer`1[[Localization.LanguageId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
       Entry: 1
       Data: "\u0421\u043F\u0430\u0441\u0438 \u0440\u043E\u0441\u0442\u043E\u043A
         - \u0441\u043F\u0430\u0441\u0438 \u043F\u043B\u0430\u043D\u0435\u0442\u0443"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: "Save the sprout \u2013 save the planet."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: TaskDescription
+      Entry: 7
+      Data: 6|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 7|System.Collections.Generic.Dictionary`2[[Localization.LanguageId, Assembly-CSharp],[System.String,
+        mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 5
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
       Entry: 1
       Data: "\u0412 \u043A\u043E\u043B\u0431\u0435<sprite=19> \u0445\u0440\u0430\u043D\u0438\u0442\u0441\u044F
         <color=#B9DDEA>\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u0438\u0439 \u0440\u043E\u0441\u0442\u043E\u043A</color>.
@@ -75,6 +147,33 @@ MonoBehaviour:
         \u0444\u043E\u043D\u0430, \u0440\u0436\u0430\u0432\u043E\u0439 \u0432\u043E\u0434\u044B
         \u0438 \u0437\u0430\u0433\u0440\u044F\u0437\u043D\u0435\u043D\u043D\u043E\u0433\u043E
         \u0432\u043E\u0437\u0434\u0443\u0445\u0430."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: "The last sprout<sprite=19> is stored in the capsule \u2014 deliver it
+        to an autonomous biosphere. Comets have shattered another dam; soon this
+        place will be underwater, as if radiation, rusty water and toxic air weren\u2019t
+        enough."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: ScreenIcon
       Entry: 10
       Data: 0
@@ -92,23 +191,121 @@ MonoBehaviour:
       Data: 1
     - Name: $v
       Entry: 7
-      Data: 3|Infastructure.StaticData.Task.TaskData, Assembly-CSharp
+      Data: 8|Infastructure.StaticData.Task.TaskData, Assembly-CSharp
     - Name: TaskName
+      Entry: 7
+      Data: 9|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 10|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 11|System.Collections.Generic.EnumEqualityComparer`1[[Localization.LanguageId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
       Entry: 1
       Data: "\u0421\u043F\u0430\u0441\u0430\u0442\u0435\u043B\u044C\u043D\u044B\u0439
         \u0447\u0435\u043A\u043F\u043E\u0438\u043D\u0442"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: Recovery Checkpoint
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: TaskDescription
+      Entry: 7
+      Data: 12|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 13|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 11
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
       Entry: 1
       Data: "\u0427\u0435\u043A\u043F\u043E\u0438\u043D\u0442<sprite=13> \u043D\u0435\u0437\u0430\u043C\u0435\u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E
         <color=#B9DDEA>\u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442
         \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u0435 \u043A\u043E\u043B\u0431\u044B</color><sprite=20>
-        \u0434\u043E 100%. \u0414\u043E\u0441\u0442\u0430\u0442\u043E\u0447\u043D\u043E
+        \u0434\u043E 100%<sprite=20> . \u0414\u043E\u0441\u0442\u0430\u0442\u043E\u0447\u043D\u043E
         \u0440\u0430\u0437\u043C\u0435\u0442\u0438\u0442\u044C \u0435\u0433\u043E
         \u0432\u043E \u0432\u043D\u0443\u0442\u0440\u044C \u0438 \u043D\u0435\u043C\u043D\u043E\u0433\u043E
         \u043F\u043E\u0434\u043E\u0436\u0434\u0430\u0442\u044C. \u0416\u0430\u043B\u044C
         \u0447\u0442\u043E \u044D\u0442\u043E \u043D\u0435 \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442
         \u0441 \u043C\u043E\u0438\u043C \u043F\u0441\u0438\u0445\u0438\u0447\u0435\u0441\u043A\u0438\u043C
         \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u0435\u043C"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: A checkpoint<sprite=13> instantly restores the capsule to 100% . Just
+        bring it inside and wait a moment. If only it worked on my mental health
+        too.
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: ScreenIcon
       Entry: 10
       Data: 1
@@ -126,12 +323,74 @@ MonoBehaviour:
       Data: 2
     - Name: $v
       Entry: 7
-      Data: 4|Infastructure.StaticData.Task.TaskData, Assembly-CSharp
+      Data: 14|Infastructure.StaticData.Task.TaskData, Assembly-CSharp
     - Name: TaskName
+      Entry: 7
+      Data: 15|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 16|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 11
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
       Entry: 1
       Data: "\u0417\u0430\u043F\u0443\u0441\u0442\u0438 \u0433\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440
         \u201C\u0417\u041F-NoN\u201D"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: "Start the \u201CZP-NoN\u201D generator"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: TaskDescription
+      Entry: 7
+      Data: 17|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 18|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 11
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
       Entry: 1
       Data: "\u0411\u0438\u043E\u0441\u0444\u0435\u0440\u0430 \u043D\u0430\u0445\u043E\u0434\u0438\u0442\u0441\u044F
         \u0432 \u0431\u0435\u0437\u0437\u0430\u0449\u0438\u0442\u043D\u043E\u043C
@@ -146,6 +405,33 @@ MonoBehaviour:
         \u0432\u0440\u0435\u043C\u044F \u0432\u043E\u0437\u0434\u0443\u0445 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0442\u0435\u043B\u044C\u043D\u043E
         \u0441\u0442\u0430\u043B \u0445\u0443\u0436\u0435, \u0441 \u0447\u0435\u0433\u043E
         \u0431\u044B \u044D\u0442\u043E."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: "The biosphere is currently exposed to falling comets, radiation and
+        polluted air. You must activate 4 generators to restore the integrity of
+        the protective field. Lately the air really has gotten worse \u2014 wonder
+        what could\u2019ve caused that."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: ScreenIcon
       Entry: 10
       Data: 2
@@ -163,12 +449,74 @@ MonoBehaviour:
       Data: 3
     - Name: $v
       Entry: 7
-      Data: 5|Infastructure.StaticData.Task.TaskData, Assembly-CSharp
+      Data: 19|Infastructure.StaticData.Task.TaskData, Assembly-CSharp
     - Name: TaskName
+      Entry: 7
+      Data: 20|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 21|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 11
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
       Entry: 1
       Data: "\u0418 \u0432\u043D\u043E\u0432\u044C \u0434\u043E\u0441\u0442\u0430\u0432\u0449\u0438\u043A
         \u0441\u043F\u0430\u0441\u0430\u0435\u0442 \u043F\u043B\u0430\u043D\u0435\u0442\u0443"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: Once again, the courier saves the planet
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: TaskDescription
+      Entry: 7
+      Data: 22|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 23|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 11
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
       Entry: 1
       Data: "\u0422\u0435\u043F\u0435\u0440\u044C \u0432\u0435\u0440\u043D\u0438\u0441\u044C
         \u043A \u0447\u0435\u043A\u043F\u043E\u0438\u043D\u0442\u0443, \u0437\u0430\u0431\u0435\u0440\u0438
@@ -181,6 +529,33 @@ MonoBehaviour:
         \u041C\u043E\u0436\u0435\u0448\u044C \u0438\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u0442\u044C
         \u043C\u0435\u0441\u0442\u043D\u043E\u0441\u0442\u044C, \u043D\u043E \u043D\u0435
         \u0437\u0430\u0431\u044B\u0432\u0430\u0439 - \u0432\u043E\u0434\u0430 \u0431\u043B\u0438\u0437\u043A\u043E."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: "Head back to the checkpoint, pick up the sprout capsule and set out
+        to restore life on this vast planet. While the capsule stays inside the checkpoint,
+        it\u2019s safe. You\u2019re free to explore \u2014 just remember, the water
+        is closing in."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: ScreenIcon
       Entry: 10
       Data: 3

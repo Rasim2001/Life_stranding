@@ -20,14 +20,14 @@ namespace SpiderController.PickUp
         private readonly IPickupDisplayer _pickupDisplayer;
         private readonly IWindowService _windowService;
         private readonly IPlatformObjectsService _platformObjectsService;
-        private readonly IHintService _hintService;
+        private readonly IHintReceiverService _hintReceiverService;
 
         private readonly CheckpointChecker _checkpointChecker;
         private readonly Flower _flower;
         private readonly SpiderUI _spiderUI;
 
         public CheckpointPickup(
-            IHintService hintService,
+            IHintReceiverService hintReceiverService,
             IInputService inputService,
             IPickupDisplayer pickupDisplayer,
             IWindowService windowService,
@@ -36,7 +36,7 @@ namespace SpiderController.PickUp
             Flower flower,
             SpiderUI spiderUI)
         {
-            _hintService = hintService;
+            _hintReceiverService = hintReceiverService;
             _flower = flower;
             _spiderUI = spiderUI;
             _inputService = inputService;
@@ -61,7 +61,7 @@ namespace SpiderController.PickUp
                     Collider checkPointCollider = _checkpointChecker.Results.FirstOrDefault();
 
                     if (checkPointCollider != null)
-                        _hintService.OnCheckpointHint?.Invoke();
+                        _hintReceiverService.OnCheckpointHint?.Invoke();
                 }
 
 

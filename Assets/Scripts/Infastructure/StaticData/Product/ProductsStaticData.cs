@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Localization;
 using PickupObjects;
 using Sirenix.OdinInspector;
 using SpiderController.Platform;
@@ -30,9 +31,10 @@ namespace Infastructure.StaticData.Product
     [Serializable]
     public class ProductDescription
     {
-        public string TitleText;
-        public string HowToUseText;
-        public string DescriptionText;
+        public LocalizationText TitleText = new();
+        public LocalizationText HowToUseTextGamepad = new();
+        public LocalizationText HowToUseTextKeyboard = new();
+        public LocalizationText DescriptionText = new();
 
         public VideoClip VideoClip;
     }

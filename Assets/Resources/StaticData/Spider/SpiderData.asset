@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SpiderData
   m_EditorClassIdentifier: 
   StepLength: 0.35
-  GroundStateRayDistance: 3
+  GroundStateRayDistance: 1.5
   AirbornStateRayDistance: 1.3
   Speed: 3
   LerpForwardSpeed: 60
@@ -60,6 +60,39 @@ MonoBehaviour:
   PlaneSensitivity: 2
   MaxAngle: 45
   PlaneRotationSpeed: 3
+  PlaneReturnCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2.8062336
+      outSlope: 0.116660096
+      tangentMode: 65
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.04892368
+    - serializedVersion: 3
+      time: 0.41621363
+      value: 0.048555523
+      inSlope: 0.116660096
+      outSlope: 2.0117555
+      tangentMode: 5
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: -0.020170953
+      outSlope: -0.020170953
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.18395305
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   SmoothTime: 0.1
   CameraRotationSpeed: 10
   MouseRotationSpeedX: 3

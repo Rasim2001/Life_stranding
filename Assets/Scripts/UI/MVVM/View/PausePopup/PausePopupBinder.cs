@@ -56,12 +56,14 @@ namespace UI.MVVM.View.PausePopup
             _pauseService.StopPause();
         }
 
+
         protected override void OnCloseButtonClick()
         {
             base.OnCloseButtonClick();
 
             _pauseWindowService.IsOpened = false;
         }
+
 
         private void Restart()
         {

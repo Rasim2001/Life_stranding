@@ -841,6 +841,8 @@ namespace MoreMountains.Feedbacks
         public override void StopFeedbacks(Vector3 position, float feedbacksIntensity = 1.0f,
             bool stopAllFeedbacks = true)
         {
+            Debug.Log("StopFeefbacks");
+
             Events.TriggerOnStop(this);
             if (stopAllFeedbacks)
             {

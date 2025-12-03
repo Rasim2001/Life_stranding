@@ -99,24 +99,49 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             GameObject prefab = Spider.WaterStaticData.WaterSplashPrefab;
 
-            Object.Instantiate(prefab,
-                Spider.transform.position + new Vector3(0, 0),
-                Quaternion.identity);
+            Object.Instantiate(prefab, Spider.transform.position + new Vector3(0, 0), Quaternion.identity);
         }
 
 
         private void AlignRotationInFlight()
         {
-            Vector3 currentEuler = Rigidbody.rotation.eulerAngles;
+            Quaternion currentRotation = Rigidbody.rotation;
+            Vector3 currentUp = currentRotation * Vector3.up;
 
-            float deltaX = Mathf.DeltaAngle(0, currentEuler.x);
-            float deltaZ = Mathf.DeltaAngle(0, currentEuler.z);
+            Vector3 worldUp = Vector3.up;
 
-            float alignX = -deltaX * Time.fixedDeltaTime / 2;
-            float alignZ = -deltaZ * Time.fixedDeltaTime / 2;
+            Vector3 axis = Vector3.Cross(currentUp, worldUp);
+            float angle = Vector3.Angle(currentUp, worldUp);
 
-            Quaternion deltaRotation = Quaternion.Euler(alignX, 0, alignZ);
-            Rigidbody.MoveRotation(Rigidbody.rotation * deltaRotation);
+            if (angle < 0.1f)
+            {
+                float damping = 5f;
+                Rigidbody.angularVelocity = Vector3.Lerp(
+                    Rigidbody.angularVelocity,
+                    Vector3.zero,
+                    damping * Time.fixedDeltaTime);
+                return;
+            }
+
+            if (axis.sqrMagnitude < 1e-6f)
+                axis = Spider.transform.right;
+
+            axis.Normalize();
+
+            float angleRad = angle * Mathf.Deg2Rad;
+            float alignGain = 5f;
+
+            Vector3 desiredAngularVelocity = axis * (angleRad * alignGain);
+
+            float maxAngularSpeed = 10f;
+            if (desiredAngularVelocity.magnitude > maxAngularSpeed)
+                desiredAngularVelocity = desiredAngularVelocity.normalized * maxAngularSpeed;
+
+            float blend = 10f * Time.fixedDeltaTime;
+            Rigidbody.angularVelocity = Vector3.Lerp(
+                Rigidbody.angularVelocity,
+                desiredAngularVelocity,
+                blend);
         }
 
 
