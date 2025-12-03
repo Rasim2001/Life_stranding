@@ -87,7 +87,7 @@ FragmentData BasicVertex(VertexData v)
 #ifdef LIGHTMAP_ON
 	UV_LIGHTMAP(o) = v.uvLightmap * unity_LightmapST.xy + unity_LightmapST.zw;
 #else
-	UV_LIGHTMAP(o) = 0;
+	UV_LIGHTMAP(o) = v.uvLightmap;
 #endif
 	FOGCOORD(o) = GetFogFactor(o.pos);
 
@@ -195,10 +195,14 @@ float4 BasicFragment(
 	float4 emissionMapCol = SAMPLE_TEX2D(_EmissionMap, emissionUV);
 	float4 emissionCol = emissionMapCol * ACCESS_PROP_FLOAT4(_EmissionColor) * ACCESS_PROP_FLOAT(_EmissionSelfGlow);
 
+	emissionCol.rgb += decalData.emissive;
+
 	col.rgb += emissionCol.rgb;
 #endif
 	
-	col = ApplyAlphaEffects(col, SCALED_MAIN_UV(i), sceneDepthDiff, data.camDistance, data.projPos);
+	col = ApplyAlphaEffects(col, 
+		SCALED_MAIN_UV(i), UV_LIGHTMAP(i), data.vertexWS, 
+		sceneDepthDiff, data.camDistance, data.projPos); 
 
 #ifdef _ALPHA_CUTOFF_ON
 	clip((col.a - ACCESS_PROP_FLOAT(_AlphaCutoffValue)) - 0.001);
@@ -215,7 +219,7 @@ float4 BasicFragment(
 	#if UNITY_VERSION >= 60020000
 		outRenderingLayers = EncodeMeshRenderingLayer();
 	#else
-		uint renderingLayers = GetMeshRenderingLayer();
+		uint renderingLayers = AllIn1GetMeshRenderingLayer();
 		outRenderingLayers = float4(EncodeMeshRenderingLayer(renderingLayers), 0, 0, 0);
 	#endif
 #endif

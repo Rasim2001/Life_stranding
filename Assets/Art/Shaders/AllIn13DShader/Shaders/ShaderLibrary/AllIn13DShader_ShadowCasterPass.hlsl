@@ -17,12 +17,19 @@ FragmentDataShadowCaster BasicVertexShadowCaster(VertexData v)
 
 	v.vertex = ApplyVertexEffects(v.vertex, v.normal, shaderTime);
 	
-	
 
-	o.mainUV.xy = SIMPLE_CUSTOM_TRANSFORM_TEX(v.uv, _MainTex);
+	float2 uv = v.uv;
+	uv = ApplyUVEffects_VertexStage(uv, o.positionWS, 0, shaderTime);
+	
+	o.mainUV.xy = SIMPLE_CUSTOM_TRANSFORM_TEX(uv, _MainTex);
 	o.positionOS = v.vertex;
 	o.positionWS = GetPositionWS(v.vertex);
+	o.uv2 = v.uvLightmap;
+	o.shaderTime = shaderTime;
+	o.normalOS = v.normal;
+	o.normalWS = GetNormalWS(v.normal);
 
+	
 	o = GetClipPosShadowCaster(v, o);
 
 	return o;
@@ -41,6 +48,9 @@ float4 BasicFragmentShadowCaster(FragmentDataShadowCaster i) : SV_Target
 		discard;
 	#endif
 #endif
+	
+	EffectsData data = CalculateEffectsData_ShadowCaster(i);
+	data = ApplyUVEffects_FragmentStage(data);
 
 	float4 col = SAMPLE_TEX2D(_MainTex, i.mainUV.xy);
 
@@ -48,7 +58,10 @@ float4 BasicFragmentShadowCaster(FragmentDataShadowCaster i) : SV_Target
 	float camDistance = distance(i.positionWS, _WorldSpaceCameraPos);
 	
 	float4 screenPos = ComputeScreenPos(i.pos);
-	col = ApplyAlphaEffects(col, i.mainUV, 1.0, camDistance, screenPos);
+	
+	col = ApplyAlphaEffects(col,
+		i.mainUV, i.uv2, data.vertexWS,
+		1.0, camDistance, screenPos);
 
 	col.a *= ACCESS_PROP_FLOAT(_GeneralAlpha);
 

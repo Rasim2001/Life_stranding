@@ -18,7 +18,11 @@
 	#endif
 
 	#ifdef ALLIN1_FOG_SUPPORT
-		#pragma multi_compile_fog
+		#if UNITY_VERSION >= 60020000
+			#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Fog.hlsl"
+		#else
+			#pragma multi_compile_fog
+		#endif
 	#endif
 
 	#ifdef ALLIN1_CAST_SHADOWS_SUPPORT
@@ -56,7 +60,17 @@
 	#endif
 
 	#ifdef ALLIN1_FORWARD_PLUS_SUPPORT_UNITY6
-		#pragma multi_compile _ _FORWARD_PLUS
+		#if UNITY_VERSION >= 60020000
+			#define ALLIN1_USE_FORWARD_PLUS						USE_CLUSTER_LIGHT_LOOP
+			#define ALLIN1_FORWARD_PLUS_SUBTRACTIVE_LIGHT_CHECK	CLUSTER_LIGHT_LOOP_SUBTRACTIVE_LIGHT_CHECK
+			
+			#pragma multi_compile _ _CLUSTER_LIGHT_LOOP
+		#else
+			#define ALLIN1_USE_FORWARD_PLUS						USE_FORWARD_PLUS
+			#define ALLIN1_FORWARD_PLUS_SUBTRACTIVE_LIGHT_CHECK	FORWARD_PLUS_SUBTRACTIVE_LIGHT_CHECK
+
+			#pragma multi_compile _ _FORWARD_PLUS
+		#endif
 	#endif
 
 	#ifdef ALLIN1_LIGHTMAPS_SUPPORT
@@ -114,7 +128,11 @@
 	#endif
 
 	#ifdef ALLIN1_FOG_SUPPORT
-		#pragma multi_compile_fog
+		#if UNITY_VERSION >= 60020000
+			#include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Fog.hlsl"
+		#else
+			#pragma multi_compile_fog
+		#endif
 	#endif
 	
 #endif

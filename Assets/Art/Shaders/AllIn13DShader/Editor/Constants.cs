@@ -4,7 +4,7 @@ namespace AllIn13DShader
 {
 	public static class Constants
 	{
-		public static string VERSION = "2.21";
+		public static string VERSION = "2.4";
 		
 		public const string EFFECT_ATTRIBUTE_PREFIX = "Effect(";
 		public const string EFFECT_PROPERTY_ATTRIBUTE_PREFIX = "EffectProperty(";
@@ -111,5 +111,15 @@ namespace AllIn13DShader
 
 		//Default Names
 		public const string DEFAULT_NAME_EFFECTS_PROFILE = "EffectsProfile";
+
+		//
+		public const string INCLUDE_LINE_FORMAT = @"#include ""{0}""";
+		public const string DEFINE_LINE_FORMAT = @"#define {0}";
+
+		//Effect IDs
+		public const string EFFECT_ID_TRIPLANAR_MAPPING = "TRIPLANAR_MAPPING";
+
+		//Effect Group IDs
+		public const string EFFECT_GROUP_ID_UV_EFFECTS = "UVEffects";
 	}
 }

@@ -2,6 +2,7 @@
 #define ALLIN13DSHADER_UV_EFFECTS
 
 #ifdef _SCROLL_TEXTURE_ON
+//<EffectsCode id=SCROLL_TEXTURE>
 float2 ScrollTexture(float2 inputUV, float3 shaderTime)
 {
 	float2 res = inputUV;
@@ -11,9 +12,12 @@ float2 ScrollTexture(float2 inputUV, float3 shaderTime)
 
 	return res;
 }
+//</EffectsCode>
 #endif
 
 #ifdef _WAVE_UV_ON
+//<EffectsCode id=WAVE_UV, initial_param_name=initialValue, return_type=float2>
+//<Replace from=res.mainUV to=initialValue>
 EffectsData WaveUV(EffectsData data)
 {
 	EffectsData res = data;
@@ -29,6 +33,7 @@ EffectsData WaveUV(EffectsData data)
 
 	return res;
 }
+//</EffectsCode>
 #endif
 
 #ifdef _SCREEN_SPACE_UV_ON
@@ -61,6 +66,7 @@ float2 ScreenSpaceUV(float2 inputUV, float3 vertexWS, float4 projPos)
 #endif
 
 #ifdef _HAND_DRAWN_ON
+//<EffectsCode id=HAND_DRAWN>
 float2 HandDrawn(float2 inputUV, float3 shaderTime)
 {
 	float2 uvCopy = inputUV;
@@ -74,6 +80,7 @@ float2 HandDrawn(float2 inputUV, float3 shaderTime)
 	
 	return res;
 }
+//</EffectsCode>
 #endif
 
 
@@ -128,6 +135,7 @@ EffectsData TriplanarMapping(EffectsData input)
 #endif
 
 #ifdef _UV_DISTORTION_ON
+//<EffectsCode id=UV_DISTORTION, initial_param_name=initialValue, return_type=float2>
 EffectsData UVDistortion(EffectsData data)
 {
 	EffectsData res = data;
@@ -144,9 +152,11 @@ EffectsData UVDistortion(EffectsData data)
 
 	return res;
 }
+//</EffectsCode>
 #endif
 
 #ifdef _PIXELATE_ON
+//<EffectsCode id=PIXELATE, initial_param_name=initialValue, return_type=float2>
 EffectsData Pixelate(EffectsData data)
 {
 	EffectsData res = data;
@@ -157,6 +167,7 @@ EffectsData Pixelate(EffectsData data)
 	QUANTIZE_ALL_UVS(res, pixelSize)
 	return res;
 }
+//</EffectsCode>
 #endif
 
 //#ifdef _STOCHASTIC_SAMPLING_ON

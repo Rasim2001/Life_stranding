@@ -5,6 +5,7 @@ struct DepthOnlyVertexData
 {
     float4 positionOS     : POSITION;
 	float2 uv : TEXCOORD0;
+	float2 uvLightmap : TEXCOORD1;
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -29,6 +30,7 @@ DepthOnlyFragmentData DepthOnlyVertex(DepthOnlyVertexData input)
 
 	res.interpolator_01 = float4(0, 0, 0, 0);
 	res.mainUV = float4(0, 0, 0, 0);
+	UV_LIGHTMAP(res) = input.uvLightmap;
 	SCALED_MAIN_UV(res) = CUSTOM_TRANSFORM_TEX(input.uv, UV_DIFF(res), _MainTex);
 
 	res.positionWS = GetPositionWS(input.positionOS);
@@ -45,7 +47,9 @@ float DepthOnlyFragment(DepthOnlyFragmentData input) : SV_TARGET
 	float4 screenPos = ComputeScreenPos(input.positionCS);
 	float camDistance = distance(input.positionWS, _WorldSpaceCameraPos);
 	float4 baseColor = SAMPLE_TEX2D(_MainTex, input.mainUV.xy);
-	baseColor = ApplyAlphaEffects(baseColor, SCALED_MAIN_UV(input), 1.0, camDistance, screenPos);
+	baseColor = ApplyAlphaEffects(baseColor, 
+		SCALED_MAIN_UV(input), UV_LIGHTMAP(input), input.positionWS, 
+		1.0, camDistance, screenPos);
 
 	float alphaClip = saturate(baseColor.a);
 	#ifdef _ALPHA_CUTOFF_ON

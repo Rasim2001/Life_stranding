@@ -318,6 +318,7 @@ Shader "AllIn13DShader/AllIn13DShader_NoShadowCaster"
 		//Fade
 		[Effect(EffectID# FADE, GroupID# AlphaEffects)][Toggle(_FADE_ON)]_FadeOn("Fade", Float) = 0
 		[EffectProperty(FADE)]_FadeTex("Fade Tex", 2D) = "white" {}
+		[EffectProperty(FADE)][KeywordEnum(UV1, UV2, WORLD_SPACE)]_FadeUVSet("UV Set", Float) = 0
 		[EffectProperty(FADE)]_FadeAmount("Fade Amount", Range(0, 1)) = 0.0
 		[EffectProperty(FADE)]_FadePower("Fade Power", Range(0.25, 4.0)) = 1.0
 		[EffectProperty(FADE)]_FadeTransition("Fade Transition", Range(0, 0.4)) = 0.2

@@ -479,5 +479,15 @@ namespace AllIn13DShader
 
 			return res;
 		}
+
+		public static string UnifyEOL(string target)
+		{
+			string res = target;
+
+			res = res.Replace("\n", System.Environment.NewLine);
+			res = res.Replace("\r\n", System.Environment.NewLine);
+
+			return res;
+		}
 	}
 }

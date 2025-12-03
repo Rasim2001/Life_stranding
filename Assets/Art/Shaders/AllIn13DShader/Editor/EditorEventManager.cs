@@ -1,5 +1,4 @@
 using UnityEditor;
-using UnityEngine;
 
 namespace AllIn13DShader
 {
@@ -36,6 +35,9 @@ namespace AllIn13DShader
 
 			GlobalConfiguration.instance.SetEffectsProfileCollection(effectsProfileCollection);
 			GlobalConfiguration.instance.shaderPassCollection = EditorUtils.FindAsset<ShaderPassCollection>("ShaderPassCollection");
+
+			URPSettingsUserPref urpSettingsUserPrefs = URPSettingsUserPref.InitIfNeeded();
+			GlobalConfiguration.instance.urpSettingsUserPref = urpSettingsUserPrefs;
 
 #if ALLIN13DSHADER_URP
 			URPConfigurator.AllAssetProcessed();

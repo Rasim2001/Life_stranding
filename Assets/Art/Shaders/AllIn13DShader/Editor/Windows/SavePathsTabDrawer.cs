@@ -40,7 +40,7 @@ namespace AllIn13DShader
 			GUILayout.Label("Material Save Path", commonStyles.bigLabel);
 			GUILayout.Space(20);
 			GUILayout.Label("Select the folder where new Materials will be saved when the Save Material To Folder button of the asset component is pressed", EditorStyles.boldLabel);
-			GlobalConfiguration.instance.MaterialSavePath = EditorUtils.DrawSelectorFolder(GlobalConfiguration.instance.MaterialSavePath, /*GlobalConfiguration.MATERIAL_SAVE_PATH_DEFAULT,*/ "New Material Folder");
+			GlobalConfiguration.instance.MaterialSavePath = EditorUtils.DrawSelectorFolder(GlobalConfiguration.instance.MaterialSavePath, "New Material Folder");
 
 			EditorUtils.DrawThinLine();
 			GUILayout.Label("Render Material to Image Save Path", commonStyles.bigLabel);
@@ -54,8 +54,19 @@ namespace AllIn13DShader
 				GlobalConfiguration.instance.RenderImageScale = 1f;
 			}
 			EditorGUILayout.EndHorizontal();
+			
+			GlobalConfiguration.instance.RenderImageSavePath = EditorUtils.DrawSelectorFolder(GlobalConfiguration.instance.RenderImageSavePath, "New Images Folder");
+			EditorUtils.DrawThinLine();
 
-			GlobalConfiguration.instance.RenderImageSavePath = EditorUtils.DrawSelectorFolder(GlobalConfiguration.instance.RenderImageSavePath, /*GlobalConfiguration.RENDER_IMAGE_SAVE_PATH_DEFAULT,*/"New Images Folder");
+			GUILayout.Label("Baked Shader Save Path", commonStyles.bigLabel);
+			GUILayout.Space(20);
+			GUILayout.Label("Select the folder where baked shaders will be saved when the Bake Shader Keywords button of the material inspector is pressed", EditorStyles.boldLabel);
+			GlobalConfiguration.instance.BakedShaderSavePath = EditorUtils.DrawSelectorFolder(GlobalConfiguration.instance.BakedShaderSavePath, "New Bake Shader Folder");
+			EditorUtils.DrawThinLine();
+
+			GUILayout.Label("Gradients Save Path", commonStyles.bigLabel);
+			GUILayout.Space(20);
+			GlobalConfiguration.instance.GradientsSavePath = EditorUtils.DrawSelectorFolder(GlobalConfiguration.instance.GradientsSavePath, "Gradients Folder");
 		}
 
 		public override string GetTabName()
