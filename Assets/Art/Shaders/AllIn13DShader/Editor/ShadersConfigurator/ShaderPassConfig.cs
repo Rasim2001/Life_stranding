@@ -270,7 +270,7 @@ namespace AllIn13DShader
 			for (int i = 0; i < keywordsEnabled.Count; i++)
 			{
 				res += CreateDefineEntry(keywordsEnabled[i]);
-				res += "\n";
+				res += Environment.NewLine;
 			}
 
 			return res;

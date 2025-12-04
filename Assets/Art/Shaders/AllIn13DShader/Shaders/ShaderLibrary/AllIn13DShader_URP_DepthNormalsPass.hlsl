@@ -6,6 +6,7 @@
 		float4 positionOS	: POSITION;
 		float3 normal		: NORMAL;
 		float2 uv			: TEXCOORD0;
+		float2 uvLightmap : TEXCOORD1;
 		float4 tangent		: TANGENT;
 		UNITY_VERTEX_INPUT_INSTANCE_ID
 	};
@@ -45,6 +46,7 @@
 		o.interpolator_02 = float4(0, 0, 0, 0);
 		o.mainUV = float4(0, 0, 0, 0);
 		SCALED_MAIN_UV(o) = CUSTOM_TRANSFORM_TEX(input.uv, UV_DIFF(o), _MainTex); 
+		UV_LIGHTMAP(o) = input.uvLightmap;
 
 #ifdef _SPHERIZE_NORMALS_ON
 		float3 normalOS = normalize(input.positionOS);
@@ -124,7 +126,9 @@
 
 		float camDistance = distance(input.positionWS, _WorldSpaceCameraPos); 
 		float4 screenPos = ComputeScreenPos(input.positionCS); 
-		baseColor = ApplyAlphaEffects(baseColor, SCALED_MAIN_UV(input), 1.0, camDistance, screenPos);
+		baseColor = ApplyAlphaEffects(baseColor, 
+			SCALED_MAIN_UV(input), UV_LIGHTMAP(input), input.positionWS, 
+			1.0, camDistance, screenPos);
 
 		float alphaClip = saturate(baseColor.a);
 		#ifdef _ALPHA_CUTOFF_ON
@@ -135,7 +139,7 @@
 			#if UNITY_VERSION >= 60020000
 				outRenderingLayers = EncodeMeshRenderingLayer();
 			#else
-				uint renderingLayers = GetMeshRenderingLayer();
+				uint renderingLayers = AllIn1GetMeshRenderingLayer();
 				outRenderingLayers = float4(EncodeMeshRenderingLayer(renderingLayers), 0, 0, 0);
 			#endif
 		#endif

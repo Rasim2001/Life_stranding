@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -71,7 +72,7 @@ namespace AllIn13DShader
 				matInfo: matInfo, 
 				propertiesConfig: propertiesConfig);
 
-			string folderPath = Path.Combine(Constants.SHADERS_FOLDER_PATH, SHADER_VARIANTS_FOLDER_NAME);
+			string folderPath = GlobalConfiguration.instance.BakedShaderSavePath;
 			Shader res = CreateVariant(effectsProfile, effectsProfileCollection, folderPath, false);
 			
 			return res;
@@ -82,18 +83,13 @@ namespace AllIn13DShader
 			EffectsProfile effectProfile = effectsProfileCollection.CreateNewProfile(profileName);
 			effectProfile.InitFromOtherProfile(effectsProfileCollection.generalProfile);
 
-			string folderPath = Path.Combine(Constants.SHADERS_FOLDER_PATH, SHADER_VARIANTS_FOLDER_NAME);
+			string folderPath = GlobalConfiguration.instance.BakedShaderSavePath;
 			Shader res = CreateVariant(effectProfile, effectsProfileCollection, folderPath, false);
 			return res;
 		}
 
 		public static Shader CreateVariant(EffectsProfile effectsProfile, EffectsProfileCollection effectsProfileCollection, string folderPath, bool overwrite)
 		{
-			if (!AssetDatabase.IsValidFolder(folderPath))
-			{
-				AssetDatabase.CreateFolder(Constants.SHADERS_FOLDER_PATH, SHADER_VARIANTS_FOLDER_NAME);
-			}
-
 			string txtShaderVariant = File.ReadAllText(TEMPLATE_PATH);
 
 			txtShaderVariant = ConfigureVariantName(txtShaderVariant, effectsProfile.profileName);
@@ -124,6 +120,8 @@ namespace AllIn13DShader
 
 			effectsProfile.shaderGUID = AssetDatabase.AssetPathToGUID(filePath);
 
+
+			txtShaderVariant = EditorUtils.UnifyEOL(txtShaderVariant);
 			SaveFile(filePath, txtShaderVariant);
 			AssetDatabase.Refresh();
 
@@ -177,7 +175,7 @@ namespace AllIn13DShader
 				currentPass = ConfigureShaderPass(effectsProfile, currentPass, shaderPasses[i], renderPipeline, hasStencilBlock, shaderFolderPath);
 
 				res += currentPass;
-				res += "\n";
+				res += Environment.NewLine;
 			}
 
 			return res;
@@ -260,7 +258,7 @@ namespace AllIn13DShader
 
 		public static string GetShaderVariantsFolderPath()
 		{
-			string res = Path.Combine(Constants.SHADERS_FOLDER_PATH, SHADER_VARIANTS_FOLDER_NAME);
+			string res = GlobalConfiguration.instance.BakedShaderSavePath;
 			return res;
 		}
 	}

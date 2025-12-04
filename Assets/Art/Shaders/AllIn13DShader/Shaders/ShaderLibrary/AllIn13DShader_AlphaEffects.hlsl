@@ -2,11 +2,12 @@
 #define ALLIN13DSHADER_ALPHA_EFFECTS
 
 #ifdef _FADE_ON
-
+//<EffectsCode id=FADE>
+//<EffectVersion kw=_FADE_BURN_ON suffix=Burn>
 float4 Fade(float4 inputColor, float2 uv)
 {
 	float4 res = inputColor;
-
+	
 	float2 fadeUV = SIMPLE_CUSTOM_TRANSFORM_TEX(uv, _FadeTex);
 	float fadeSample = SAMPLE_TEX2D(_FadeTex, fadeUV).r;
 	
@@ -32,7 +33,7 @@ float4 Fade(float4 inputColor, float2 uv)
 
 	return res;
 }
-
+//</EffectsCode>
 #endif
 
 #ifdef _INTERSECTION_FADE_ON
@@ -47,6 +48,7 @@ float4 IntersectionFade(float4 inputColor, float sceneDepthDiff)
 #endif
 
 #ifdef _FADE_BY_CAM_DISTANCE_ON
+//<EffectsCode id=FADE_BY_CAM_DISTANCE>
 float4 FadeByCamDistance(float4 inputColor, float camDistance, out float camFadeDistanceNormalized)
 {
 	float4 res = inputColor;
@@ -65,6 +67,7 @@ float4 FadeByCamDistance(float4 inputColor, float camDistance, out float camFade
 
 	return res;
 }
+//</EffectsCode>
 #endif
 
 #endif

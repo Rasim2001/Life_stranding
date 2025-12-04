@@ -115,12 +115,7 @@ float3 GetNormalWS(EffectsData data, FragmentData i, AllIn1DecalData decalData)
 		);
 
 		#ifdef ALLIN1_DECALS_READY_TO_USE
-			float3 decalNormalWS = 0;
-			decalNormalWS.x = dot(i.tspace0, decalData.unpackedNormal);
-			decalNormalWS.y = dot(i.tspace1, decalData.unpackedNormal);
-			decalNormalWS.z = dot(i.tspace2, decalData.unpackedNormal);
-
-			res = lerp(decalNormalWS, res, decalData.mask);
+			res = lerp(decalData.normalTS, res, decalData.mask);
 		#endif
 
 	#else
@@ -135,15 +130,19 @@ float3 GetNormalWS(EffectsData data, FragmentData i, AllIn1DecalData decalData)
 		
 		float3 tnormal = UnpackNormal(sampledNormal);
 		tnormal.xy *= ACCESS_PROP_FLOAT(_NormalStrength); 
-
-		#ifdef ALLIN1_DECALS_READY_TO_USE
+		
+		#if defined(ALLIN1_DECALS_READY_TO_USE) && defined(ALLIN1_DECAL_MODE_SCREEN_SPACE)
 			tnormal = BlendingUnpackedNormals(tnormal, decalData.unpackedNormal);
 		#endif
-
+		
 		res.x = dot(i.tspace0, tnormal);
 		res.y = dot(i.tspace1, tnormal);
 		res.z = dot(i.tspace2, tnormal);
     
+		#if defined(ALLIN1_DECALS_READY_TO_USE) && defined(ALLIN1_DECAL_MODE_DBUFFER)
+			res = lerp(decalData.normalTS, res, decalData.mask);
+		#endif
+	
 		res = normalize(res);
 	#endif
 
@@ -206,6 +205,29 @@ float3 GetNormalWS(EffectsData data, FragmentData i, AllIn1DecalData decalData)
 	return res;
 }
 
+
+EffectsData CalculateEffectsData_ShadowCaster(FragmentDataShadowCaster i)
+{
+	EffectsData res;
+	
+	INIT_EFFECTS_DATA(res)
+	
+	res.vertexColor = 1.0;
+	res.mainUV = SCALED_MAIN_UV(i);
+	res.rawMainUV = i.uv2;
+	res.shaderTime = i.shaderTime;
+	
+	res.uvMatrix = 0;
+	res.uvMatrix._m00_m01 = i.mainUV.xy;
+	res.normalOS = normalize(i.normalOS);
+	res.normalWS = normalize(i.normalWS);
+	
+	res.vertexOS = i.positionOS;
+	res.vertexWS = i.positionWS;
+	
+	return res;
+}
+
 EffectsData CalculateEffectsData(FragmentData i, AllIn1DecalData decalData)
 {
 	EffectsData res;
@@ -231,9 +253,9 @@ EffectsData CalculateEffectsData(FragmentData i, AllIn1DecalData decalData)
 	res.vertexWS = POSITION_WS(i);
 	res.vertexVS = mul(UNITY_MATRIX_MV, float4(res.vertexOS, 1.0)).xyz;
 
-	res.normalOS = NORMAL_OS(i);
+	res.normalOS = normalize(NORMAL_OS(i));
 	res.normalWS = normalize(i.normalWS);
-	res.viewDirWS = VIEWDIR_WS(i);
+	res.viewDirWS = normalize(VIEWDIR_WS(i));
 
 	res.tangentWS = 0;
 	res.bitangentWS = 0;
@@ -257,6 +279,8 @@ EffectsData CalculateEffectsData(FragmentData i, AllIn1DecalData decalData)
 	res.sceneDepthDiff = GetSceneDepthDiff(i.projPos);
 	res.normalizedDepth = GetNormalizedDepth(i.projPos);
 #endif
+
+	res.pos = i.pos;
 
 	res.camDistance = 0;
 #ifdef REQUIRE_CAM_DISTANCE
@@ -283,6 +307,11 @@ EffectsData CalculateEffectsData(FragmentData i, AllIn1DecalData decalData)
 	
 	res._ShadowCoord = i._ShadowCoord;
 
+#ifdef HAS_PBR_PROPERTIES
+	res.metallic = ACCESS_PROP_FLOAT(_Metallic) * decalData.MAOSAlpha + decalData.metallic;
+	res.smoothness = ACCESS_PROP_FLOAT(_Smoothness) * decalData.MAOSAlpha + decalData.smoothness;
+#endif
+	
 	return res;
 }
 
@@ -462,11 +491,24 @@ float4 ApplyColorEffectsAfterLighting(float4 inputColor, EffectsData data)
 	return res;
 }
 
-float4 ApplyAlphaEffects(float4 inputColor, float2 uv, float sceneDepthDiff, float camDistance, float4 screenPos)
+float4 ApplyAlphaEffects(float4 inputColor,
+	float2 uv, float2 uv2, float3 worldPos, 
+	float sceneDepthDiff, float camDistance, float4 screenPos)
 {
 	float4 res = inputColor;
+	
 #ifdef _FADE_ON
-	res = Fade(res, uv);
+		float2 selectedUV;
+		#if defined(_FADEUVSET_UV1)
+			selectedUV = uv;
+		#elif defined(_FADEUVSET_UV2)
+			selectedUV = uv2;
+		#else
+			selectedUV = worldPos.xy;
+		#endif
+		
+		res = Fade(res, selectedUV);
+	#endif
 #endif
 
 #ifdef _INTERSECTION_FADE_ON
@@ -488,5 +530,3 @@ float4 ApplyAlphaEffects(float4 inputColor, float2 uv, float sceneDepthDiff, flo
 
 	return res;
 }
-
-#endif
