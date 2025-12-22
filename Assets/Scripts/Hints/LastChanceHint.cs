@@ -30,12 +30,8 @@ namespace Hints
             _hintReceiverService.OnLastChanceHintHideHappened -= Hide;
         }
 
-        private void Show()
-        {
-            Debug.Log("Show");
-
+        private void Show() => 
             _container.SetActive(true);
-        }
 
         private void Hide() =>
             _container.SetActive(false);

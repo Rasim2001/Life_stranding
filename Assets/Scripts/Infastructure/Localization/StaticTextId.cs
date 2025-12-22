@@ -44,5 +44,20 @@ namespace Infastructure.Localization
         Interact_PickupDisplayer = 150,
 
         LastChance_Hint_QTE = 200,
+
+        Title_DefeatPopup = 300,
+        Distance_DefeatPopup = 301,
+        Description_DefeatPopup = 302,
+        BackToMenu_DefeatPopup = 303,
+
+        Title_WinPopup = 350,
+        Time_WinPopup = 351,
+        Description_WinPopup = 352,
+        BackToMenu_WinPopup = 353,
+        Minute_WinPopup = 354,
+
+        Product_HintPopup = 400,
+        Checkpoint_HintPopup = 401,
+        Generator_HintPopup = 402,
     }
 }

@@ -15,6 +15,7 @@ using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController;
+using SpiderController.UI.Health;
 using UnityEngine;
 using Zenject;
 
@@ -125,11 +126,15 @@ namespace Infastructure.States
             InitEnergyProducts();
             InitSkillProducts();
 
-            InitLastChanceRoot(flower);
+            InitLastChanceRoot(flower, spider);
         }
 
-        private void InitLastChanceRoot(Flower flower) =>
-            _uiFactory.CreateLastChanceRoot(flower);
+        private void InitLastChanceRoot(Flower flower, Spider spider)
+        {
+            SpiderUI spiderUI = spider.GetComponent<SpiderUI>();
+
+            _uiFactory.CreateLastChanceRoot(flower, spiderUI.LastChanceBarUI);
+        }
 
         private void InitGenerators() =>
             _gameFactory.CreateAllGenerators();

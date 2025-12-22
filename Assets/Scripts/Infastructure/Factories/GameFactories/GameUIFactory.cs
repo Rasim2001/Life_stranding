@@ -1,6 +1,7 @@
 using Infastructure.Common;
 using Infastructure.Services.QTE;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
+using SpiderController.UI.LastChanceQTE;
 using UI.MVVM.Base;
 using UI.MVVM.View.Root;
 using Unity.VisualScripting;
@@ -48,14 +49,14 @@ namespace Infastructure.Factories.GameFactories
             return binder;
         }
 
-        public void CreateLastChanceRoot(Flower flower)
+        public void CreateLastChanceRoot(Flower flower, LastChanceBarUI lastChanceBarUI)
         {
-            LastChanceUI lastChance =
-                _diContainer.InstantiatePrefabResourceForComponent<LastChanceUI>(AssetsPath.LastChanceRoot);
+            LastChanceRootUI lastChanceRoot =
+                _diContainer.InstantiatePrefabResourceForComponent<LastChanceRootUI>(AssetsPath.LastChanceRoot);
 
-            lastChance.SetFlowerTransform(flower);
+            lastChanceRoot.SetFlowerTransform(flower);
 
-            _lastChanceQteService.Initialize(lastChance);
+            _lastChanceQteService.Initialize(lastChanceRoot, lastChanceBarUI);
         }
 
 

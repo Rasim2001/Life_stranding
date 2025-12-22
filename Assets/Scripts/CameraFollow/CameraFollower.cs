@@ -212,7 +212,7 @@ namespace CameraFollow
             _stableWorldUp.Rotate(_target.rotation);
 
 
-        private void HandleScrollWheel()
+        /*private void HandleScrollWheel()
         {
             float scrollInput = _inputService.ScrollWheelAxis;
 
@@ -235,7 +235,7 @@ namespace CameraFollow
                 _cameraSystem.ThirdPersonFollow.ShoulderOffset.x,
                 smoothSensitivityY,
                 _cameraSystem.ThirdPersonFollow.ShoulderOffset.z);
-        }
+        }*/
 
         private void ReleaseInput()
         {

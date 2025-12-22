@@ -10,5 +10,7 @@ namespace Infastructure.StaticData.LastChance
 
         public float ShrinkingDuration = 0.5f;
         public float PressWaitTime = 0.1f;
+        public int AllSaveAttempts = 10;
+        public int SafeAttempts = 3;
     }
 }

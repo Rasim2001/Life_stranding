@@ -5,6 +5,7 @@ using Infastructure.Services.Defeat;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
+using SpiderController.UI.LastChanceQTE;
 using SpiderController.UI.Stickers;
 using UnityEngine;
 using Zenject;
@@ -17,12 +18,14 @@ namespace SpiderController.UI.Health
 
         [SerializeField] private HealthBarUI _healthBarUI;
         [SerializeField] private EnergyBarUI _energyBarUI;
+        [SerializeField] private LastChanceBarUI _lastChanceBarUI;
         [SerializeField] private ReloadUI _reloadUI;
         [SerializeField] private PressedMouseButtonIndicatorUI _planeIndicatorUI;
         [SerializeField] private PressedMouseButtonIndicatorUI _magnetIndicatorUI;
         public SpiderHealth SpiderHealth => _spiderHealth;
         public HealthBarUI HealthBar => _healthBarUI;
         public EnergyBarUI EnergyBar => _energyBarUI;
+        public LastChanceBarUI LastChanceBarUI => _lastChanceBarUI;
         public ReloadUI ReloadUI => _reloadUI;
         public PressedMouseButtonIndicatorUI PlaneIndicatorUI => _planeIndicatorUI;
         public PressedMouseButtonIndicatorUI MagnetIndicatorUI => _magnetIndicatorUI;

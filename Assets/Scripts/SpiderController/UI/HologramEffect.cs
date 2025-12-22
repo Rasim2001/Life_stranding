@@ -13,6 +13,8 @@ namespace SpiderController.UI
         private readonly Image[] _containers;
         private readonly Image[] _otherObjects;
 
+        public event Action OnHologramEffectStartHappened;
+
         private CancellationTokenSource _cts;
 
         public HologramEffect(Image[] segments, Image[] containers, Image[] otherObjects)
@@ -55,6 +57,8 @@ namespace SpiderController.UI
             try
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(2f), cancellationToken: token);
+
+                OnHologramEffectStartHappened?.Invoke();
 
                 int count = _segments.Count(x => x != null && x.gameObject.activeSelf);
 

@@ -1,5 +1,6 @@
 ﻿using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.SaveLoadService;
+using UnityEngine;
 using Zenject;
 
 namespace Infastructure.States
@@ -31,9 +32,8 @@ namespace Infastructure.States
         {
         }
 
-        private void LoadProgressOrInitNew()
-        {
-        }
+        private void LoadProgressOrInitNew() =>
+            _progressService.PlayerProgress = _saveLoadService.LoadPlayerProgress();
 
 
         public class Factory : PlaceholderFactory<IStateMachine, LoadProgressState>

@@ -23,7 +23,7 @@ namespace Infastructure.States
         {
             InitServices();
 
-            _stateMachine.Enter<LoadLevelState>();
+            _stateMachine.Enter<LoadProgressState>();
         }
 
         private void InitServices()

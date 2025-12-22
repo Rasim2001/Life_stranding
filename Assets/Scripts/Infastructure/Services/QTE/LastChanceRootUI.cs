@@ -10,7 +10,7 @@ using Zenject;
 
 namespace Infastructure.Services.QTE
 {
-    public class LastChanceUI : MonoBehaviour
+    public class LastChanceRootUI : MonoBehaviour
     {
         [SerializeField] private Transform _container;
         [SerializeField] private Transform _ringBG;
