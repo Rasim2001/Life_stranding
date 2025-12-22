@@ -69,7 +69,7 @@ namespace UI.MVVM.View.ProductDescriptionPopup
         {
             base.Start();
 
-            _pauseService.StartPause();
+            _pauseService.StartPause(gameObject.name);
 
             StartFlickAsync().Forget();
             Rotate();
@@ -83,7 +83,7 @@ namespace UI.MVVM.View.ProductDescriptionPopup
 
             base.OnDestroy();
 
-            _pauseService.StopPause();
+            _pauseService.StopPause(gameObject.name);
         }
 
         protected override void OnBind(ProductDescriptionPopupViewModel viewModel)

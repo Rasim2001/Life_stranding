@@ -41,7 +41,7 @@ namespace UI.MVVM.View.DefeatPopup
         {
             base.Start();
 
-            _pauseService.StartPause();
+            _pauseService.StartPause(gameObject.name);
 
             StartFlowerAnimation().Forget();
             _framePiecesUI.MoveFramePiecesAsync().Forget();
@@ -55,7 +55,7 @@ namespace UI.MVVM.View.DefeatPopup
             base.OnDestroy();
 
             _containerRotateTween?.Kill();
-            _pauseService.StopPause();
+            _pauseService.StopPause(gameObject.name);
         }
 
         protected override void OnCloseButtonClick()

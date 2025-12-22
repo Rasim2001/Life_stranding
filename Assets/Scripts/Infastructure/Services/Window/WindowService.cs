@@ -139,6 +139,9 @@ namespace Infastructure.Services.Window
         public bool CanOpenWindow() =>
             _gamePlayViewModel.CanOpenWindow();
 
+        public bool IsOpenedAnyWindow() =>
+            _gamePlayViewModel.IsOpenedAnyWindow();
+
         private async UniTask OpenMainTaskPopupAsync()
         {
             await UniTask.Delay(TimeSpan.FromSeconds(2.2f));

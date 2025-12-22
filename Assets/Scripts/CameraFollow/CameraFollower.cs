@@ -1,5 +1,6 @@
 using System;
 using Infastructure.Common.StableWorlUpManagement;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CursorVisible;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
@@ -47,6 +48,7 @@ namespace CameraFollow
         private Quaternion _orbitStartRotation;
 
         private float _maxRotationY = 3.0f;
+        private ICameraProviderService _cameraProviderService;
 
         [Inject]
         public void Construct(
@@ -56,8 +58,10 @@ namespace CameraFollow
             ICutSceneService cutSceneService,
             IDefeatWindowService defeatWindowService,
             IWindowService windowService,
-            ICursorVisibleService cursorVisibleService)
+            ICursorVisibleService cursorVisibleService,
+            ICameraProviderService cameraProviderService)
         {
+            _cameraProviderService = cameraProviderService;
             _cursorVisibleService = cursorVisibleService;
             _windowService = windowService;
             _defeatWindowService = defeatWindowService;
@@ -106,7 +110,12 @@ namespace CameraFollow
             if (_target == null || _cutSceneService.IsActive || _defeatWindowService.IsDefeated)
                 return;
 
-            float upAngle = Vector3.Angle(transform.up, _stableWorldUp.StableWorldUpTransform.up);
+            if (_isMouseRotating)
+                DefaultMoveCamera();
+            else
+                ClimbMoveCamera();
+
+            float upAngle = Vector3.Angle(transform.up, _cameraProviderService.CameraTransform.up);
 
             if (upAngle > MaxUpDriftAngle)
                 RealignOrbitToWorldUp();
@@ -121,14 +130,6 @@ namespace CameraFollow
                 return;
 
             MoveToTarget();
-        }
-
-        private void LateUpdate()
-        {
-            if (_isMouseRotating)
-                DefaultMoveCamera();
-            else
-                ClimbMoveCamera();
         }
 
         private void JoystickDisabled() =>
@@ -178,7 +179,7 @@ namespace CameraFollow
             _xRotation += mouseX * SpiderStaticData.MouseRotationSpeedX;
             _yRotation -= mouseY * SpiderStaticData.MouseRotationSpeedY * Time.deltaTime;
 
-            Vector3 up = _stableWorldUp.StableWorldUpTransform.up;
+            Vector3 up = _cameraProviderService.CameraTransform.up;
             Quaternion yaw = Quaternion.AngleAxis(_xRotation, up);
 
             Quaternion targetRot = yaw * _orbitStartRotation;
@@ -211,31 +212,6 @@ namespace CameraFollow
         private void WorldUpRotate() =>
             _stableWorldUp.Rotate(_target.rotation);
 
-
-        /*private void HandleScrollWheel()
-        {
-            float scrollInput = _inputService.ScrollWheelAxis;
-
-            float maxLenght;
-            if (_joystickInputSource == null)
-                maxLenght = 7;
-            else
-                maxLenght = _joystickInputSource.IsGamepadActiveNow() ? 4 : 7;
-
-            if (scrollInput != 0f)
-            {
-                _mouseSensitivity -= scrollInput * SpiderStaticData.ScrollSensitivity;
-                _mouseSensitivity = Mathf.Clamp(_mouseSensitivity, 2, maxLenght);
-            }
-
-            float smoothSensitivityY = Mathf.Lerp(_cameraSystem.ThirdPersonFollow.ShoulderOffset.y, _mouseSensitivity,
-                Time.deltaTime * 5);
-
-            _cameraSystem.ThirdPersonFollow.ShoulderOffset = new Vector3(
-                _cameraSystem.ThirdPersonFollow.ShoulderOffset.x,
-                smoothSensitivityY,
-                _cameraSystem.ThirdPersonFollow.ShoulderOffset.z);
-        }*/
 
         private void ReleaseInput()
         {

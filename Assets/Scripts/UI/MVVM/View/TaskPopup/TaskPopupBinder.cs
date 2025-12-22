@@ -55,7 +55,7 @@ namespace UI.MVVM.View.TaskPopup
             base.Start();
 
 
-            _pauseService.StartPause();
+            _pauseService.StartPause(gameObject.name);
 
             StartFlickAsync().Forget();
             MoveFramePiecesAsync().Forget();
@@ -77,7 +77,7 @@ namespace UI.MVVM.View.TaskPopup
 
             Clear();
 
-            _pauseService.StopPause();
+            _pauseService.StopPause(gameObject.name);
         }
 
         private async UniTask StartFlickAsync() =>

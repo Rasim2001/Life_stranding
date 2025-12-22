@@ -42,7 +42,7 @@ namespace UI.MVVM.View.PausePopup
             _gotoMenu.onClick.AddListener(GoToMenu);
             _exit.onClick.AddListener(Exit);
 
-            _pauseService.StartPause();
+            _pauseService.StartPause(gameObject.name);
         }
 
         protected override void OnDestroy()
@@ -53,7 +53,7 @@ namespace UI.MVVM.View.PausePopup
             _gotoMenu.onClick.RemoveListener(GoToMenu);
             _exit.onClick.RemoveListener(Exit);
 
-            _pauseService.StopPause();
+            _pauseService.StopPause(gameObject.name);
         }
 
 

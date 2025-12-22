@@ -7,6 +7,7 @@ using Infastructure.Services.Pause;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.SlowTime;
 using Infastructure.Services.VolumeManagement;
+using Infastructure.Services.Window;
 using Infastructure.StaticData.LastChance;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.UI.LastChanceQTE;
@@ -23,6 +24,7 @@ namespace Infastructure.Services.QTE
         private readonly IHintReceiverService _hintReceiverService;
         private readonly ISlowTimeRunner _slowTimeRunner;
         private readonly IPauseService _pauseService;
+        private readonly IWindowService _windowService;
 
         public event Action OnSaveHappened;
 
@@ -43,9 +45,10 @@ namespace Infastructure.Services.QTE
 
         public LastChanceQTEService(IInputService inputService, IStaticDataService staticDataService,
             IVolumeService volumeService, IHintReceiverService hintReceiverService, ISlowTimeRunner slowTimeRunner,
-            IPauseService pauseService)
+            IPauseService pauseService, IWindowService windowService)
         {
             _pauseService = pauseService;
+            _windowService = windowService;
             _slowTimeRunner = slowTimeRunner;
             _volumeService = volumeService;
             _hintReceiverService = hintReceiverService;
@@ -68,7 +71,7 @@ namespace Infastructure.Services.QTE
             if (!_isRunning)
                 return;
 
-            if (_canPress && _inputService.RightMousePressed)
+            if (_canPress && _inputService.RightMousePressed && !_windowService.IsOpenedAnyWindow())
                 Save();
             else if (_inputService.AnyActionPressed && !IsSafeChance())
                 Lose().Forget();
@@ -83,7 +86,6 @@ namespace Infastructure.Services.QTE
                 _lastChanceBarUI.PlayFadeHologramEffect();
                 return;
             }
-
 
             _allAttempts--;
             _currentAttempts++;
@@ -124,7 +126,7 @@ namespace Infastructure.Services.QTE
             if (IsSafeChance())
             {
                 _slowTimeRunner.StopSlowDown();
-                _pauseService.StartPause();
+                _pauseService.StartPause(_lastChanceRootUI.name);
             }
 
             while (IsSafeChance())
@@ -160,7 +162,7 @@ namespace Infastructure.Services.QTE
 
             if (IsSafeChance())
             {
-                _pauseService.StopPause();
+                _pauseService.StopPause(_lastChanceRootUI.name);
                 _hintReceiverService.OnLastChanceHintHideHappened?.Invoke();
             }
 

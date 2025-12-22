@@ -17,5 +17,6 @@ namespace Infastructure.Services.Window
         void OpenWinPopup();
         bool CanOpenWindow();
         event Action OnWindowOpened;
+        bool IsOpenedAnyWindow();
     }
 }
