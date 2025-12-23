@@ -1,4 +1,8 @@
+using System;
+using Infastructure.Data;
 using Infastructure.Services.Defeat;
+using Infastructure.Services.ProgressWatchers;
+using Infastructure.Services.SaveLoadService;
 using Infastructure.Services.SpiderTrack;
 using Infastructure.Services.TaskPopupChecker;
 using Infastructure.StaticData.GlobalWater;
@@ -8,12 +12,13 @@ using Zenject;
 
 namespace WaterSystem
 {
-    public class Water : MonoBehaviour
+    public class Water : MonoBehaviour, ISavedProgress
     {
         private ISpiderTrackService _trackService;
         private ITaskPopupCheckerService _taskPopupCheckerService;
         private IStaticDataService _staticDataService;
         private IDefeatWindowService _defeatWindowService;
+        private IProgressWatchersService _progressWatchersService;
 
         private WaterStaticData WaterStaticData => _staticDataService.WaterStaticData;
 
@@ -31,13 +36,18 @@ namespace WaterSystem
             ISpiderTrackService trackService,
             ITaskPopupCheckerService taskPopupCheckerService,
             IStaticDataService staticDataService,
-            IDefeatWindowService defeatWindowService)
+            IDefeatWindowService defeatWindowService,
+            IProgressWatchersService progressWatchersService)
         {
+            _progressWatchersService = progressWatchersService;
             _defeatWindowService = defeatWindowService;
             _staticDataService = staticDataService;
             _taskPopupCheckerService = taskPopupCheckerService;
             _trackService = trackService;
         }
+
+        private void Awake() =>
+            _progressWatchersService.RegisterWatchers(gameObject);
 
         private void Start()
         {
@@ -49,6 +59,15 @@ namespace WaterSystem
             _spiderTransform = _trackService.Spider.transform;
             _flowerTransform = _trackService.Flower.transform;
         }
+
+        public void LoadProgress(PlayerProgress progress)
+        {
+            if (progress.WorldProgressData.WaterData.WaterPosition != null)
+                transform.position = progress.WorldProgressData.WaterData.WaterPosition.AsUnityVector();
+        }
+
+        public void UpdateProgress(PlayerProgress progress) =>
+            progress.WorldProgressData.WaterData.WaterPosition = transform.position.AsVectorData();
 
         private void OnDestroy() =>
             _taskPopupCheckerService.AllTasksCompleted -= AllTaskCompleted;

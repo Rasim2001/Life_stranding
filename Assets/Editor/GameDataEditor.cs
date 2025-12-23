@@ -36,7 +36,7 @@ namespace Editor
                     .ToList();
 
                 gameData.GameDatas[nameScene].BatteriesPoints = FindObjectsOfType<BatteryPointMarker>()
-                    .Select(x => new WorldData(x.transform.position, x.transform.rotation))
+                    .Select(x => new WorldData(x.transform.position, x.transform.rotation, GetUniqueId()))
                     .ToList();
 
                 gameData.GameDatas[nameScene].EnergyPoints = FindObjectsOfType<EnergyPointMarker>()
@@ -67,5 +67,8 @@ namespace Editor
 
             EditorUtility.SetDirty(gameData);
         }
+
+        private string GetUniqueId() =>
+            Guid.NewGuid().ToString();
     }
 }

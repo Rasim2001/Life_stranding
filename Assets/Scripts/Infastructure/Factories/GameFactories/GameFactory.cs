@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using CameraFollow;
+using Common;
 using GameDevBuddies;
 using HUD;
 using Infastructure.Common;
@@ -7,6 +8,7 @@ using Infastructure.CutScene;
 using Infastructure.CutScene.Custom.Receivers;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CheckPoint;
+using Infastructure.Services.ProgressWatchers;
 using Infastructure.Services.SpiderTrack;
 using Infastructure.Services.XRay;
 using Infastructure.StaticData;
@@ -34,15 +36,18 @@ namespace Infastructure.Factories.GameFactories
         private readonly IXRayService _xRayService;
         private readonly ISpiderTrackService _spiderTrackService;
         private readonly ICameraProviderService _cameraProviderService;
+        private readonly IProgressWatchersService _progressWatchersService;
 
         private string ActiveSceneName => SceneManager.GetActiveScene().name;
 
         public GameFactory(DiContainer diContainer, IStaticDataService staticDataService,
             IBiospherePointService biospherePointService, IXRayService xRayService,
-            ISpiderTrackService spiderTrackService, ICameraProviderService cameraProviderService)
+            ISpiderTrackService spiderTrackService, ICameraProviderService cameraProviderService,
+            IProgressWatchersService progressWatchersService)
         {
             _spiderTrackService = spiderTrackService;
             _cameraProviderService = cameraProviderService;
+            _progressWatchersService = progressWatchersService;
             _diContainer = diContainer;
             _staticDataService = staticDataService;
             _biospherePointService = biospherePointService;
@@ -150,6 +155,9 @@ namespace Infastructure.Factories.GameFactories
                     _diContainer.InstantiatePrefabForComponent<BatteryProduct>(prefab, worldData.WorldPosition,
                         worldData.WorldRotation, null);
 
+                MarkerUniqueId markerUniqueId = batteryProduct.GetComponent<MarkerUniqueId>();
+                markerUniqueId.UniqueId = worldData.UniqueId;
+
                 IProduct product = batteryProduct.GetComponent<IProduct>();
                 product.ProductType = productType;
 
@@ -160,6 +168,8 @@ namespace Infastructure.Factories.GameFactories
 
                 batteryProduct.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
                 batteryProduct.Initialize(spider.StateMachineData);
+
+                _progressWatchersService.RegisterWatchers(batteryProduct.gameObject);
             }
         }
 

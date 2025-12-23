@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Common.SceneMarkers
 {
-    public class EnergyPointMarker : MonoBehaviour
+    public class EnergyPointMarker : MarkerBase
     {
     }
 }

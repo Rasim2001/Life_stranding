@@ -1,4 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using Common;
+using Infastructure.Data;
+using Infastructure.Services.SaveLoadService;
 using Infastructure.Services.XRay;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
@@ -10,7 +14,7 @@ using Zenject;
 
 namespace PickupObjects.PickUpOnPlatform
 {
-    public class BatteryProduct : PickupObjectBase, IProduct
+    public class BatteryProduct : PickupObjectBase, IProduct, ISavedProgress
     {
         public ProductType ProductType { get; set; }
 
@@ -21,12 +25,22 @@ namespace PickupObjects.PickUpOnPlatform
         private ProductData _productData;
         private StateMachineData _stateMachineData;
 
+        private MarkerUniqueId _markerUniqueId;
+
         [Inject]
         public void Construct(IXRayService xRayService, IStaticDataService staticDataService)
         {
             _staticDataService = staticDataService;
             _xRayService = xRayService;
         }
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            _markerUniqueId = GetComponent<MarkerUniqueId>();
+        }
+
 
         public override void Initialize(Transform platformTransform, PlatformSelector platformSelector)
         {
@@ -41,9 +55,42 @@ namespace PickupObjects.PickUpOnPlatform
         public void Initialize(StateMachineData stateMachineData) =>
             _stateMachineData = stateMachineData;
 
-
         private void Start() =>
             _xRayMarker = GetComponent<XRayMarker>();
+
+        public void LoadProgress(PlayerProgress progress)
+        {
+            BatteryProductData batteryProductData =
+                progress.WorldProgressData.BatteryProductDatas.FirstOrDefault(x =>
+                    x.UniqueId == _markerUniqueId.UniqueId);
+
+            if (batteryProductData == null)
+                return;
+
+            transform.position = batteryProductData.Position.AsUnityVector();
+            transform.localEulerAngles = batteryProductData.Rotation.AsUnityVector();
+        }
+
+        public void UpdateProgress(PlayerProgress progress)
+        {
+            List<BatteryProductData> list = progress.WorldProgressData.BatteryProductDatas;
+
+            BatteryProductData existing = list.FirstOrDefault(x => x.UniqueId == _markerUniqueId.UniqueId);
+
+            if (existing == null)
+            {
+                list.Add(new BatteryProductData(
+                    transform.position.AsVectorData(),
+                    transform.localEulerAngles.AsVectorData(),
+                    _markerUniqueId.UniqueId));
+            }
+            else
+            {
+                existing.Position = transform.position.AsVectorData();
+                existing.Rotation = transform.localEulerAngles.AsVectorData();
+            }
+        }
+
 
         public override void StopSimulatePhysics()
         {

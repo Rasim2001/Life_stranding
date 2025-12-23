@@ -7,7 +7,9 @@ using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerProgressService;
+using Infastructure.Services.ProgressWatchers;
 using Infastructure.Services.Restart;
+using Infastructure.Services.SaveLoadService;
 using Infastructure.Services.Timer;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.StaticDataService;
@@ -36,6 +38,7 @@ namespace Infastructure.States
         private readonly ITimerService _timerService;
         private readonly IWindowService _windowService;
         private ICameraProviderService _cameraProviderService;
+        private readonly IProgressWatchersService _progressWatchersService;
 
         public BuildLevelState(
             IGameFactory gameFactory,
@@ -50,10 +53,12 @@ namespace Infastructure.States
             IAbilityService abilityService,
             ICutSceneService cutSceneService,
             ITimerService timerService,
-            ICameraProviderService cameraProviderService
+            ICameraProviderService cameraProviderService,
+            IProgressWatchersService progressWatchersService
         )
         {
             _cameraProviderService = cameraProviderService;
+            _progressWatchersService = progressWatchersService;
             _windowService = windowService;
             _restartService = restartService;
             _abilityService = abilityService;
@@ -127,6 +132,7 @@ namespace Infastructure.States
             InitSkillProducts();
 
             InitLastChanceRoot(flower, spider);
+            InitLoadingProgress();
         }
 
         private void InitLastChanceRoot(Flower flower, Spider spider)
@@ -171,5 +177,11 @@ namespace Infastructure.States
 
         private void InitSkillProducts() =>
             _gameFactory.CreateSkillProducts();
+
+        private void InitLoadingProgress()
+        {
+            foreach (ISavedProgressReader reader in _progressWatchersService.ProgressReaders)
+                reader.LoadProgress(_progressService.PlayerProgress);
+        }
     }
 }

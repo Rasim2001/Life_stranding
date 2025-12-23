@@ -6,6 +6,7 @@ using Infastructure.Services.CursorVisible;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Pause;
 using Infastructure.Services.PlayerProgressService;
+using Infastructure.Services.ProgressWatchers;
 using Infastructure.Services.QuitApplication;
 using Infastructure.Services.Restart;
 using Infastructure.Services.SaveLoadService;
@@ -53,7 +54,12 @@ namespace Infastructure.CompositionRoot
             BindQuitGameService();
 
             BindEventSystemSelector();
+
+            BindProgressWatchersService();
         }
+
+        private void BindProgressWatchersService() =>
+            Container.BindInterfacesAndSelfTo<ProgressWatchersService>().AsSingle();
 
         private void BindQuitGameService() =>
             Container.BindInterfacesAndSelfTo<QuitGameService>().AsSingle();

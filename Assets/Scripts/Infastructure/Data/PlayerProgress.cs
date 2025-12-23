@@ -5,6 +5,11 @@ namespace Infastructure.Data
     [Serializable]
     public class PlayerProgress
     {
-        public string PlayerName;
+        public WorldProgressData WorldProgressData;
+
+        public PlayerProgress()
+        {
+            WorldProgressData = new WorldProgressData();
+        }
     }
 }

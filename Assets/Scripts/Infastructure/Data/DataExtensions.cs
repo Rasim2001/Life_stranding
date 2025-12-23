@@ -11,15 +11,10 @@ namespace Infastructure.Data
         public static T ToDeserialized<T>(this string json) =>
             JsonUtility.FromJson<T>(json);
 
-        public static string LevelUp(this string levelKey)
-        {
-            if (string.IsNullOrEmpty(levelKey))
-                return "Level_0";
+        public static Vector3Data AsVectorData(this Vector3 vector) =>
+            new(vector.x, vector.y, vector.z);
 
-            string[] levelSplit = levelKey.Split('_');
-            int levelNumber = Convert.ToInt32(levelSplit[^1]);
-
-            return $"Level_{++levelNumber}";
-        }
+        public static Vector3 AsUnityVector(this Vector3Data vector3Data) =>
+            new(vector3Data.X, vector3Data.Y, vector3Data.Z);
     }
 }

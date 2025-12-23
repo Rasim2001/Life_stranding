@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using PickupObjects;
 using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 using UnityEngine;
 
 namespace Infastructure.StaticData
@@ -36,13 +35,16 @@ namespace Infastructure.StaticData
     [Serializable]
     public class WorldData
     {
+        public string UniqueId;
         public Vector3 WorldPosition;
         public Quaternion WorldRotation;
 
-        public WorldData(Vector3 worldPosition, Quaternion worldRotation)
+        public WorldData(Vector3 worldPosition, Quaternion worldRotation, string unique = null)
         {
             WorldPosition = worldPosition;
             WorldRotation = worldRotation;
+
+            UniqueId = unique;
         }
     }
 

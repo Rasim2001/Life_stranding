@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Infastructure.Data;
 using Infastructure.Services.PlayerProgressService;
+using Infastructure.Services.ProgressWatchers;
 using UnityEngine;
 
 namespace Infastructure.Services.SaveLoadService
@@ -8,16 +9,25 @@ namespace Infastructure.Services.SaveLoadService
     public class SaveLoadService : ISaveLoadService
     {
         private const string FileName = "progress.json";
+
         private readonly IPersistentProgressService _progressService;
+        private readonly IProgressWatchersService _progressWatchersService;
 
         private string SavePath => Path.Combine(Application.persistentDataPath, FileName);
 
-        public SaveLoadService(IPersistentProgressService progressService) =>
+        public SaveLoadService(IPersistentProgressService progressService,
+            IProgressWatchersService progressWatchersService)
+        {
             _progressService = progressService;
+            _progressWatchersService = progressWatchersService;
+        }
 
         public void SaveProgress()
         {
-            string json = JsonUtility.ToJson(_progressService.PlayerProgress, prettyPrint: false);
+            foreach (ISavedProgress writer in _progressWatchersService.ProgressWriters)
+                writer.UpdateProgress(_progressService.PlayerProgress);
+
+            string json = JsonUtility.ToJson(_progressService.PlayerProgress, prettyPrint: true);
             File.WriteAllText(SavePath, json);
         }
 
