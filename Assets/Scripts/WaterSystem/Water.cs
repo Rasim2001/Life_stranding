@@ -1,8 +1,6 @@
-using System;
 using Infastructure.Services.Defeat;
 using Infastructure.Services.SpiderTrack;
 using Infastructure.Services.TaskPopupChecker;
-using Infastructure.Services.Window;
 using Infastructure.StaticData.GlobalWater;
 using Infastructure.StaticData.StaticDataService;
 using UnityEngine;
@@ -20,6 +18,7 @@ namespace WaterSystem
         private WaterStaticData WaterStaticData => _staticDataService.WaterStaticData;
 
         private Transform _spiderTransform;
+        private Transform _flowerTransform;
 
         private float _farSpeed;
         private float _nearSpeed;
@@ -48,6 +47,7 @@ namespace WaterSystem
             _nearSpeed = WaterStaticData.NearSpeed;
 
             _spiderTransform = _trackService.Spider.transform;
+            _flowerTransform = _trackService.Flower.transform;
         }
 
         private void OnDestroy() =>
@@ -58,10 +58,11 @@ namespace WaterSystem
 
         private void Update()
         {
-            if (_isStartingMove == false || _spiderTransform == null)
+            if (_isStartingMove == false || _spiderTransform == null || _flowerTransform == null)
                 return;
 
-            if (transform.position.y - _spiderTransform.position.y > WaterStaticData.DistanceBetweenSpiderToDefeat)
+            if (transform.position.y - _spiderTransform.position.y > WaterStaticData.DistanceBetweenSpiderToDefeat ||
+                transform.position.y - _flowerTransform.position.y > WaterStaticData.DistanceBetweenSpiderToDefeat)
             {
                 _isStartingMove = false;
 

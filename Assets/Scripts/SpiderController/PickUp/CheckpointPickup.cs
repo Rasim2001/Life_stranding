@@ -56,14 +56,13 @@ namespace SpiderController.PickUp
         {
             if (_inputService.PickupPressed)
             {
-                if (!_flower.IsOnPlatform && _flower.IsPuttingDown == false)
+                if (!_flower.IsOnPlatform && (_flower.IsPuttingDown == false || !_platformObjectsService.IsEmpty()))
                 {
                     Collider checkPointCollider = _checkpointChecker.Results.FirstOrDefault();
 
                     if (checkPointCollider != null)
                         _hintReceiverService.OnCheckpointHint?.Invoke();
                 }
-
 
                 if (_flower.IsPuttingDown && _platformObjectsService.IsEmpty())
                     PickUp();

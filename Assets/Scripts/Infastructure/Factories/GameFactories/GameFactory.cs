@@ -58,6 +58,7 @@ namespace Infastructure.Factories.GameFactories
             spider.Initialize(flower);
 
             _spiderTrackService.Spider = spider;
+            _spiderTrackService.Flower = flower;
 
             return spider;
         }

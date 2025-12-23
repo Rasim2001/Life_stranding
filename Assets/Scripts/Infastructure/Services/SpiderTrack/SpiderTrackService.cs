@@ -1,4 +1,5 @@
 using Infastructure.Services.CheckPoint;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ namespace Infastructure.Services.SpiderTrack
     public class SpiderTrackService : ISpiderTrackService
     {
         public Spider Spider { get; set; }
+        public Flower Flower { get; set; }
 
         private readonly IBiospherePointService _biospherePointService;
 

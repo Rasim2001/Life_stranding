@@ -70,6 +70,13 @@ namespace PickupObjects.PickUpOnPlatform
             if (!IsOnPlatform || IsFreezingOnPlatform || IsPuttingDown)
                 return;
 
+            // ✅ NEW: если платформа вверх ногами — отпускаем объект
+            if (IsPlatformUpsideDown())
+            {
+                StartSimulatePhysics();
+                return;
+            }
+
             IsOnPlatform = PlatformSelector.IsOnPlatform(Collider);
 
             if (IsOnPlatform)
@@ -144,6 +151,13 @@ namespace PickupObjects.PickUpOnPlatform
             PlatformSelector.ResetExcludeLayerMask();
 
             transform.SetParent(null);
+        }
+
+        private bool IsPlatformUpsideDown()
+        {
+            Vector3 worldUp = -Physics.gravity.normalized;
+            float dot = Vector3.Dot(_platformArmature.up, worldUp);
+            return dot < Mathf.Epsilon;
         }
 
 
