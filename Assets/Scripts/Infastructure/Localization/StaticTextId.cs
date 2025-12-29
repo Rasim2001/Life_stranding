@@ -6,6 +6,7 @@ namespace Infastructure.Localization
         Option_StartSplashScreen = 1,
         Exit = 2,
         Hint_StartSplashScreen = 3,
+        Continue_StartSplashScreen = 4,
 
         Platform_SpiderUI = 10,
         Magnet_SpiderUI = 11,

@@ -20,15 +20,16 @@ namespace Common
         public void Construct(IGeneratorLaunchTrackerService generatorLaunchTrackerService) =>
             _generatorLaunchTrackerService = generatorLaunchTrackerService;
 
-        private void Start()
+        private void Awake()
         {
             _generatorLaunchTrackerService.OnLaunchHappened
                 .Take(1)
                 .Subscribe(_ => _isAvailable = true)
                 .AddTo(_disposable);
-
-            _observerTrigger.OnTriggerEnterHappened += TriggerEnter;
         }
+
+        private void Start() =>
+            _observerTrigger.OnTriggerEnterHappened += TriggerEnter;
 
 
         private void OnDestroy()

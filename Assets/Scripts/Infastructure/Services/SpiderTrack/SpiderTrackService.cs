@@ -1,3 +1,4 @@
+using System;
 using Infastructure.Services.CheckPoint;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController;
@@ -7,10 +8,34 @@ namespace Infastructure.Services.SpiderTrack
 {
     public class SpiderTrackService : ISpiderTrackService
     {
-        public Spider Spider { get; set; }
-        public Flower Flower { get; set; }
+        public event Action OnSpiderInitialized;
+        public event Action OnFlowerInitialized;
+
+        public Spider Spider
+        {
+            get => _spider;
+            set
+            {
+                _spider = value;
+                if (_spider != null)
+                    OnSpiderInitialized?.Invoke();
+            }
+        }
+        public Flower Flower
+        {
+            get => _flower;
+            set
+            {
+                _flower = value;
+                if (_flower != null)
+                    OnFlowerInitialized?.Invoke();
+            }
+        }
 
         private readonly IBiospherePointService _biospherePointService;
+
+        private Flower _flower;
+        private Spider _spider;
 
         public SpiderTrackService(IBiospherePointService biospherePointService) =>
             _biospherePointService = biospherePointService;

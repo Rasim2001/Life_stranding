@@ -3,6 +3,7 @@ using Infastructure.Services.Pause;
 using Infastructure.Services.PauseWindow;
 using Infastructure.Services.Restart;
 using Infastructure.States;
+using UI.Curtain;
 using UI.MVVM.Base;
 using UI.MVVM.View.SettingsPopup;
 using UnityEngine;
@@ -22,11 +23,14 @@ namespace UI.MVVM.View.PausePopup
         private IRestartService _restartService;
         private IAbilityService _abilityService;
         private IStateMachine _stateMachine;
+        private ICurtainRoot _curtainRoot;
 
         [Inject]
         public void Construct(IPauseService pauseService, IPauseWindowService pauseWindowService,
-            IRestartService restartService, IAbilityService abilityService, IStateMachine stateMachine)
+            IRestartService restartService, IAbilityService abilityService, IStateMachine stateMachine,
+            ICurtainRoot curtainRoot)
         {
+            _curtainRoot = curtainRoot;
             _stateMachine = stateMachine;
             _abilityService = abilityService;
             _restartService = restartService;
@@ -67,9 +71,10 @@ namespace UI.MVVM.View.PausePopup
 
         private void Restart()
         {
+            _curtainRoot.Show();
             _restartService.Restart(_abilityService.GetAllExploredAbilities());
 
-            _stateMachine.Enter<ExitGameLoopState>();
+            _stateMachine.Enter<LoadProgressState>();
         }
 
         private void GoToMenu() =>

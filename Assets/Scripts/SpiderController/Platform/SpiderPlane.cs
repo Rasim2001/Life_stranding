@@ -144,6 +144,8 @@ namespace SpiderController.Platform
             if (!isTrue)
                 return;
 
+            _returnTimer = 0;
+
             int randomSign = Random.value < 0.5f ? -1 : 1;
 
             float randomAngleX = Random.Range(30, 40f) * randomSign;
@@ -156,7 +158,7 @@ namespace SpiderController.Platform
         public void FixedUpdate()
         {
             if (_stateMachineData.IsFallingDownWithoutEnergyState)
-                RotateTo(_targetLocalRotationInFallingDownState);
+                RotateWithoutEnergyTo(_targetLocalRotationInFallingDownState);
             else
                 ApplyRotation();
         }
@@ -229,6 +231,14 @@ namespace SpiderController.Platform
                     targetLocalRotation,
                     Time.fixedDeltaTime * SpiderStaticData.PlaneRotationSpeed);
             }
+        }
+
+        private void RotateWithoutEnergyTo(Quaternion targetLocalRotation)
+        {
+            _rotationPlaneTransform.localRotation = Quaternion.Slerp(
+                _rotationPlaneTransform.localRotation,
+                targetLocalRotation,
+                Time.fixedDeltaTime * SpiderStaticData.PlaneRotationSpeed);
         }
 
         private Vector2 ConvertInputFromCameraToSpiderSpace(Vector2 input)

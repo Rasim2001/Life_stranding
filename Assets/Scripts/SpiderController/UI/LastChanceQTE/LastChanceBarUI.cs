@@ -16,8 +16,10 @@ namespace SpiderController.UI.LastChanceQTE
         private Sequence _sequence;
         private Tweener _shakeTween;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             _colorDefault = _amountText.color;
 
             _hologramEffect = new HologramEffect(GetSegments(), GetContainers(), GetOtherObjects());

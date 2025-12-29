@@ -8,11 +8,10 @@ using Infastructure.Services.SpiderTrack;
 using Infastructure.StaticData.StaticDataService;
 using Infastructure.StaticData.XRay;
 using UnityEngine;
-using Zenject;
 
 namespace Infastructure.Services.XRay
 {
-    public class XRayService : IXRayService, IInitializable, IDisposable
+    public class XRayService : IXRayService, IDisposable
     {
         private readonly Dictionary<string, XRayOccluderUI> _xRayDictionary =
             new Dictionary<string, XRayOccluderUI>();

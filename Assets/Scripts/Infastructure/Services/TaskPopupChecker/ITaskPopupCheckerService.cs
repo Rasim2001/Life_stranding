@@ -8,5 +8,7 @@ namespace Infastructure.Services.TaskPopupChecker
         void AddTask(TaskId taskId);
         bool IsWasOpened(TaskId taskId);
         event Action AllTasksCompleted;
+        void Initialize();
+        void Dispose();
     }
 }

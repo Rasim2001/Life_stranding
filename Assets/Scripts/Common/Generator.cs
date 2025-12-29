@@ -1,11 +1,17 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
+using Infastructure.Data;
 using Infastructure.Services.GeneratorLaunchTracker;
+using Infastructure.Services.SaveLoadService;
 using UnityEngine;
 using Zenject;
 
 namespace Common
 {
-    public class Generator : MonoBehaviour
+    [RequireComponent(typeof(MarkerUniqueId))]
+    public class Generator : MonoBehaviour, ISavedProgress
     {
         private const string Emission = "_EMISSION";
 
@@ -24,12 +30,44 @@ namespace Common
 
         private IGeneratorLaunchTrackerService _generatorLaunchTrackerService;
         private Sequence _sequenceMove;
-        private Tween _rotateTween;
+        private MarkerUniqueId _markerUniqueId;
 
         [Inject]
         public void Construct(IGeneratorLaunchTrackerService generatorLaunchTrackerService) =>
             _generatorLaunchTrackerService = generatorLaunchTrackerService;
 
+        private void Awake() =>
+            _markerUniqueId = GetComponent<MarkerUniqueId>();
+
+        private void Start()
+        {
+            if (IsLaunched)
+                _material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
+        }
+
+        public void LoadProgress(PlayerProgress progress)
+        {
+            GeneratorData existing = progress.WorldProgressData.GeneratorDatas.FirstOrDefault(x =>
+                x.UniqueId == _markerUniqueId.UniqueId);
+
+            if (existing == null)
+                return;
+
+            if (existing.IsLaunched)
+                StartGenerator();
+        }
+
+        public void UpdateProgress(PlayerProgress progress)
+        {
+            List<GeneratorData> list = progress.WorldProgressData.GeneratorDatas;
+
+            GeneratorData existing = list.FirstOrDefault(x => x.UniqueId == _markerUniqueId.UniqueId);
+
+            if (existing == null)
+                progress.WorldProgressData.GeneratorDatas.Add(new GeneratorData(_markerUniqueId.UniqueId, IsLaunched));
+            else
+                existing.IsLaunched = IsLaunched;
+        }
 
         public void StartGenerator()
         {
@@ -55,10 +93,7 @@ namespace Common
         }
 
 
-        private void OnDestroy()
-        {
+        private void OnDestroy() =>
             _sequenceMove?.Kill();
-            _rotateTween?.Kill();
-        }
     }
 }

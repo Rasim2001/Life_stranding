@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using Infastructure.Services.Ability;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Restart;
+using Infastructure.Services.StartGame;
 using Infastructure.Services.TaskPopupChecker;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
@@ -32,11 +33,13 @@ namespace Infastructure.Services.Window
         private readonly ITaskPopupCheckerService _taskPopupCheckerService;
         private readonly ICutSceneService _cutSceneService;
         private readonly IRestartService _restartService;
+        private IStartGameReceiver _startGameReceiver;
 
         public WindowService(UIGameplayRootViewModel gamePlayViewModel, IStaticDataService staticDataService,
             IAbilityService abilityService, ITaskPopupCheckerService taskPopupCheckerService,
-            ICutSceneService cutSceneService, IRestartService restartService)
+            ICutSceneService cutSceneService, IRestartService restartService, IStartGameReceiver startGameReceiver)
         {
+            _startGameReceiver = startGameReceiver;
             _abilityService = abilityService;
             _taskPopupCheckerService = taskPopupCheckerService;
             _cutSceneService = cutSceneService;
@@ -47,14 +50,18 @@ namespace Infastructure.Services.Window
 
         public void Initialize()
         {
-            if (_restartService.IsRestarting)
-                TryOpenMainTaskPopup(false);
+            /*if (_restartService.IsRestarting)
+                TryOpenMainTaskPopup(false);*/
 
-            _cutSceneService.OnCutsceneActiveChanged += TryOpenMainTaskPopup;
+            _startGameReceiver.OnStartGameHappened += OpenMainTaskPopup;
+            //_cutSceneService.OnCutsceneActiveChanged += TryOpenMainTaskPopup;
         }
 
-        public void Dispose() =>
-            _cutSceneService.OnCutsceneActiveChanged -= TryOpenMainTaskPopup;
+        public void Dispose()
+        {
+            _startGameReceiver.OnStartGameHappened -= OpenMainTaskPopup;
+            //_cutSceneService.OnCutsceneActiveChanged -= TryOpenMainTaskPopup;
+        }
 
         public void OpenStartSplashScreen()
         {
@@ -133,6 +140,7 @@ namespace Infastructure.Services.Window
                 OpenMainTaskPopupAsync().Forget();
         }
 
+
         public void ClosePopup(string id) =>
             _gamePlayViewModel.ClosePopup(id);
 
@@ -142,9 +150,13 @@ namespace Infastructure.Services.Window
         public bool IsOpenedAnyWindow() =>
             _gamePlayViewModel.IsOpenedAnyWindow();
 
+        public void OpenMainTaskPopup() =>
+            OpenMainTaskPopupAsync().Forget();
+
+
         private async UniTask OpenMainTaskPopupAsync()
         {
-            await UniTask.Delay(TimeSpan.FromSeconds(2.2f));
+            await UniTask.Delay(TimeSpan.FromSeconds(2f));
 
             OpenTaskPopup(TaskId.MainTask);
         }

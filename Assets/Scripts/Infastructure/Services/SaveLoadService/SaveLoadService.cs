@@ -31,6 +31,18 @@ namespace Infastructure.Services.SaveLoadService
             File.WriteAllText(SavePath, json);
         }
 
+        public void SetNewProgress() =>
+            _progressService.PlayerProgress = new PlayerProgress();
+
+        public void SetContinueProgress() =>
+            _progressService.PlayerProgress = LoadPlayerProgress();
+
+        public void InitLoadingProgress()
+        {
+            foreach (ISavedProgressReader reader in _progressWatchersService.ProgressReaders)
+                reader.LoadProgress(_progressService.PlayerProgress);
+        }
+
         public PlayerProgress LoadPlayerProgress()
         {
             if (!File.Exists(SavePath))

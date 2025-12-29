@@ -9,7 +9,7 @@ namespace Infastructure.Common.StableWorlUpManagement
 {
     public class StableWorldUp : MonoBehaviour, IStableWorldUp
     {
-        public Transform StableWorldUpTransform => transform;
+        public Transform StableWorldUpTransform => this ? transform : null;
 
         private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
 

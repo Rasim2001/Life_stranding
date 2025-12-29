@@ -1,4 +1,5 @@
 using R3;
+using UnityEngine;
 
 namespace Infastructure.Services.GeneratorLaunchTracker
 {
@@ -8,7 +9,9 @@ namespace Infastructure.Services.GeneratorLaunchTracker
 
         private readonly Subject<Unit> _onLaunchHappened = new();
 
-        public void Launch() =>
+        public void Launch()
+        {
             _onLaunchHappened.OnNext(Unit.Default);
+        }
     }
 }

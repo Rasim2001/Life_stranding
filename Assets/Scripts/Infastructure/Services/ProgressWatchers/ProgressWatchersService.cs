@@ -25,6 +25,18 @@ namespace Infastructure.Services.ProgressWatchers
             }
         }
 
+        public void RegisterWatcher(ISavedProgressReader progressReader)
+        {
+            if (progressReader is ISavedProgress progressWriter)
+            {
+                if (!ProgressWriters.Contains(progressWriter))
+                    ProgressWriters.Add(progressWriter);
+            }
+
+            if (!ProgressReaders.Contains(progressReader))
+                ProgressReaders.Add(progressReader);
+        }
+
         public void Release(ISavedProgressReader progressReader)
         {
             if (progressReader is ISavedProgress progressWriter && ProgressWriters.Contains(progressReader))

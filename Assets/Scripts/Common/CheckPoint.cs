@@ -1,6 +1,9 @@
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Infastructure.Data;
+using Infastructure.Services.SaveLoadService;
 using Infastructure.Services.Window;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using UI;
@@ -9,7 +12,7 @@ using Zenject;
 
 namespace Common
 {
-    public class CheckPoint : MonoBehaviour, ICheckpointInfo
+    public class CheckPoint : MonoBehaviour, ICheckpointInfo, ISavedProgress
     {
         [SerializeField] private BiosphereFx _biosphereFx;
         [SerializeField] private ObserverTrigger _observerTrigger;
@@ -30,18 +33,27 @@ namespace Common
         private Tween _rotateGlassTween;
 
         private bool _isLaunched;
+        private bool _isPutdownInProgress;
 
         private float _antennaPieceOffset;
         private Color _defaultColor;
 
         private IWindowService _windowService;
+        private ISaveLoadService _saveLoadService;
+        private MarkerUniqueId _markerUniqueId;
 
         [Inject]
-        public void Construct(IWindowService windowService) =>
+        public void Construct(IWindowService windowService, ISaveLoadService saveLoadService)
+        {
+            _saveLoadService = saveLoadService;
             _windowService = windowService;
+        }
+
 
         private void Awake()
         {
+            _markerUniqueId = GetComponent<MarkerUniqueId>();
+
             _antennaPieceOffset = _antenna.FirstOrDefault().localPosition.z;
             _defaultColor = _healIndicators.FirstOrDefault().material.color;
 
@@ -57,6 +69,37 @@ namespace Common
 
         private void Start() =>
             _observerTrigger.OnTriggerEnterHappened += TriggerEnter;
+
+        public void LoadProgress(PlayerProgress progress)
+        {
+            List<CheckpointData> list = progress.WorldProgressData.CheckpointDatas;
+
+            CheckpointData existing = list.FirstOrDefault(x => x.UniqueId == _markerUniqueId.UniqueId);
+
+            if (existing != null)
+                _biosphereFx.ShowFx(1);
+
+            if (existing == null || !existing.IsReady)
+                return;
+
+            IsReady = true;
+
+            foreach (MeshRenderer indicator in _healIndicators)
+                indicator.material.color = Color.red;
+        }
+
+        public void UpdateProgress(PlayerProgress progress)
+        {
+            List<CheckpointData> list = progress.WorldProgressData.CheckpointDatas;
+
+            CheckpointData existing = list.FirstOrDefault(x => x.UniqueId == _markerUniqueId.UniqueId);
+            bool isReadyForSave = _isPutdownInProgress || IsReady;
+
+            if (existing == null)
+                list.Add(new CheckpointData(isReadyForSave, _markerUniqueId.UniqueId));
+            else
+                existing.IsReady = isReadyForSave;
+        }
 
         private void OnDestroy()
         {
@@ -83,6 +126,8 @@ namespace Common
             _biosphereFx.ShowFx(1);
             DeployAntenna();
             OpenWindow();
+
+            _saveLoadService.SaveProgress();
         }
 
         private void OpenWindow() =>
@@ -99,6 +144,8 @@ namespace Common
 
         private async UniTask StartFlowerPutdownAsync(Flower flower)
         {
+            _isPutdownInProgress = true;
+
             Tween startRotateGlassTween = RotateGlass(-180);
             Tween redHealIndicatorTween = ShowHealIndicators();
 
@@ -116,6 +163,7 @@ namespace Common
                 .AsyncWaitForCompletion()
                 .AsUniTask();
 
+            _isPutdownInProgress = false;
             IsReady = true;
         }
 

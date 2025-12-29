@@ -11,5 +11,6 @@ namespace Infastructure.Services.ProgressWatchers
         void RegisterWatchers(GameObject gameObject);
         void Release(ISavedProgressReader progressReader);
         void Clear();
+        void RegisterWatcher(ISavedProgressReader progressReader);
     }
 }

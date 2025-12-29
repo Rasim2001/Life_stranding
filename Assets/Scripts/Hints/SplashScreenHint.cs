@@ -1,12 +1,11 @@
 using System.Collections;
-using DG.Tweening;
 using UnityEngine;
 
 namespace Hints
 {
     public class SplashScreenHint : HintBase
     {
-        private const float ShowTime = 5;
+        private const float ShowTime = 15;
         private const float AnchorPositionX = -20;
 
         private readonly float _repeatTimer = 5;

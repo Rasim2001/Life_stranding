@@ -10,11 +10,11 @@ using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.ProgressWatchers;
 using Infastructure.Services.Restart;
 using Infastructure.Services.SaveLoadService;
+using Infastructure.Services.StartGame;
+using Infastructure.Services.TaskPopupChecker;
 using Infastructure.Services.Timer;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.StaticDataService;
-using PickupObjects;
-using PickupObjects.PickUpOnPlatform;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController;
 using SpiderController.UI.Health;
@@ -39,6 +39,9 @@ namespace Infastructure.States
         private readonly IWindowService _windowService;
         private ICameraProviderService _cameraProviderService;
         private readonly IProgressWatchersService _progressWatchersService;
+        private readonly ITaskPopupCheckerService _taskPopupCheckerService;
+        private readonly IStartGameReceiver _startGameReceiver;
+        private readonly ISaveLoadService _saveLoadService;
 
         public BuildLevelState(
             IGameFactory gameFactory,
@@ -54,11 +57,17 @@ namespace Infastructure.States
             ICutSceneService cutSceneService,
             ITimerService timerService,
             ICameraProviderService cameraProviderService,
-            IProgressWatchersService progressWatchersService
+            IProgressWatchersService progressWatchersService,
+            ITaskPopupCheckerService taskPopupCheckerService,
+            IStartGameReceiver startGameReceiver,
+            ISaveLoadService saveLoadService
         )
         {
             _cameraProviderService = cameraProviderService;
             _progressWatchersService = progressWatchersService;
+            _taskPopupCheckerService = taskPopupCheckerService;
+            _startGameReceiver = startGameReceiver;
+            _saveLoadService = saveLoadService;
             _windowService = windowService;
             _restartService = restartService;
             _abilityService = abilityService;
@@ -77,8 +86,8 @@ namespace Infastructure.States
         {
             _cameraProviderService.SetCamera(Camera.main);
 
+            InitServices();
             InitGameplayRootUI();
-            InitAll();
         }
 
         private void InitGameplayRootUI()
@@ -86,30 +95,39 @@ namespace Infastructure.States
             _uiFactory.CreateGamplayRoot();
 
             if (_restartService.IsRestarting)
-                RestartInitialize();
+                Restart();
             else
                 _windowService.OpenStartSplashScreen();
         }
 
-        private void InitAll()
+        private void InitServices()
         {
+            _startGameReceiver.OnStartGameHappened += InitGameWorld;
+
+            _progressWatchersService.Clear();
+            _taskPopupCheckerService.Initialize();
+            _abilityService.Initialize();
             _inputService.Initialize();
             _cutSceneService.Clear();
             _timerService.StartTimer();
-
-            InitGameWorld();
         }
 
 
         public void Dispose()
         {
+            _startGameReceiver.OnStartGameHappened -= InitGameWorld;
+
+            _abilityService.Dispose();
+            _taskPopupCheckerService.Dispose();
         }
 
 
-        private void RestartInitialize()
+        private void Restart()
         {
-            foreach (ProductType productType in _restartService.ExploredProducts)
-                _abilityService.PickUpAbility(productType);
+            _startGameReceiver.StartGame();
+
+            /*foreach (ProductType productType in _restartService.ExploredProducts)
+                _abilityService.PickUpAbility(productType);*/
         }
 
 
@@ -132,7 +150,8 @@ namespace Infastructure.States
             InitSkillProducts();
 
             InitLastChanceRoot(flower, spider);
-            InitLoadingProgress();
+
+            _saveLoadService.InitLoadingProgress();
         }
 
         private void InitLastChanceRoot(Flower flower, Spider spider)
@@ -177,11 +196,5 @@ namespace Infastructure.States
 
         private void InitSkillProducts() =>
             _gameFactory.CreateSkillProducts();
-
-        private void InitLoadingProgress()
-        {
-            foreach (ISavedProgressReader reader in _progressWatchersService.ProgressReaders)
-                reader.LoadProgress(_progressService.PlayerProgress);
-        }
     }
 }

@@ -1,5 +1,6 @@
 using DistantLands.Cozy;
 using Infastructure.Services.CutScene;
+using Infastructure.Services.StartGame;
 using UnityEngine;
 using Zenject;
 
@@ -9,25 +10,25 @@ namespace Common
     {
         private CozyWeather _cozyWeather;
 
-        private ICutSceneService _cutSceneService;
+        private IStartGameReceiver _startGameReceiver;
 
         [Inject]
-        public void Construct(ICutSceneService cutSceneService) =>
-            _cutSceneService = cutSceneService;
+        public void Construct(IStartGameReceiver startGameReceiver) =>
+            _startGameReceiver = startGameReceiver;
 
-        private void Awake() =>
+
+        private void Awake()
+        {
             _cozyWeather = GetComponent<CozyWeather>();
 
-        private void Start()
-        {
             _cozyWeather.timeModule.currentTime.hours = 5;
             _cozyWeather.timeModule.currentTime.minutes = 45;
 
-            _cutSceneService.OnWeatherChanged += ChangeWeather;
+            _startGameReceiver.OnStartGameHappened += ChangeWeather;
         }
 
         private void OnDestroy() =>
-            _cutSceneService.OnWeatherChanged -= ChangeWeather;
+            _startGameReceiver.OnStartGameHappened -= ChangeWeather;
 
         private void ChangeWeather()
         {

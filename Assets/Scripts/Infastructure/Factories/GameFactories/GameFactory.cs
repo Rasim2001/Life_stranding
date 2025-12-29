@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using CameraFollow;
 using Common;
 using GameDevBuddies;
@@ -8,6 +9,7 @@ using Infastructure.CutScene;
 using Infastructure.CutScene.Custom.Receivers;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CheckPoint;
+using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.ProgressWatchers;
 using Infastructure.Services.SpiderTrack;
 using Infastructure.Services.XRay;
@@ -37,17 +39,19 @@ namespace Infastructure.Factories.GameFactories
         private readonly ISpiderTrackService _spiderTrackService;
         private readonly ICameraProviderService _cameraProviderService;
         private readonly IProgressWatchersService _progressWatchersService;
+        private readonly IPersistentProgressService _progressService;
 
         private string ActiveSceneName => SceneManager.GetActiveScene().name;
 
         public GameFactory(DiContainer diContainer, IStaticDataService staticDataService,
             IBiospherePointService biospherePointService, IXRayService xRayService,
             ISpiderTrackService spiderTrackService, ICameraProviderService cameraProviderService,
-            IProgressWatchersService progressWatchersService)
+            IProgressWatchersService progressWatchersService, IPersistentProgressService progressService)
         {
             _spiderTrackService = spiderTrackService;
             _cameraProviderService = cameraProviderService;
             _progressWatchersService = progressWatchersService;
+            _progressService = progressService;
             _diContainer = diContainer;
             _staticDataService = staticDataService;
             _biospherePointService = biospherePointService;
@@ -64,6 +68,8 @@ namespace Infastructure.Factories.GameFactories
 
             _spiderTrackService.Spider = spider;
             _spiderTrackService.Flower = flower;
+
+            _progressWatchersService.RegisterWatchers(spider.gameObject);
 
             return spider;
         }
@@ -88,11 +94,6 @@ namespace Infastructure.Factories.GameFactories
             flower.Initialize(hud.FlowerPointIndicator, spider.StateMachineData);
             flower.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
 
-            XRayMarker xRayMarker = flower.GetComponent<XRayMarker>();
-            xRayMarker.Type = ProductType.Flower; //TODO:
-
-            _xRayService.Add(xRayMarker);
-
             _xRayService.Initialize(hud.XRayCollectionContainer, hud.transform, hud.DisabledContainer);
 
             return hud;
@@ -116,8 +117,13 @@ namespace Infastructure.Factories.GameFactories
                 }
                 else
                 {
-                    _diContainer.InstantiatePrefabResource(AssetsPath.CheckPointPath,
+                    GameObject checkpoint = _diContainer.InstantiatePrefabResource(AssetsPath.CheckPointPath,
                         checkPoints[i].WorldPosition, checkPoints[i].WorldRotation, null);
+
+                    MarkerUniqueId markerUniqueId = checkpoint.GetComponent<MarkerUniqueId>();
+                    markerUniqueId.UniqueId = checkPoints[i].UniqueId;
+
+                    _progressWatchersService.RegisterWatchers(checkpoint);
                 }
             }
         }
@@ -137,6 +143,13 @@ namespace Infastructure.Factories.GameFactories
 
             IProduct product = flower.GetComponent<IProduct>();
             product.ProductType = productType;
+
+            XRayMarker xRayMarker = flower.GetComponent<XRayMarker>();
+            xRayMarker.Type = productType;
+
+            _xRayService.Add(xRayMarker);
+
+            _progressWatchersService.RegisterWatchers(flower.gameObject);
 
             return flower;
         }
@@ -182,6 +195,12 @@ namespace Infastructure.Factories.GameFactories
 
             foreach (WorldData data in _staticDataService.GameStaticData.GameDatas[ActiveSceneName].EnergyPoints)
             {
+                bool exist =
+                    _progressService.PlayerProgress.WorldProgressData.EnergyDatas.Any(x => x.UniqueId == data.UniqueId);
+
+                if (exist)
+                    continue;
+
                 EnergyProduct energyProduct =
                     _diContainer.InstantiatePrefabForComponent<EnergyProduct>(prefab, data.WorldPosition,
                         data.WorldRotation,
@@ -192,6 +211,9 @@ namespace Infastructure.Factories.GameFactories
 
                 XRayMarker xRayMarker = energyProduct.GetComponent<XRayMarker>();
                 xRayMarker.Type = productType;
+
+                MarkerUniqueId markerUniqueId = energyProduct.GetComponent<MarkerUniqueId>();
+                markerUniqueId.UniqueId = data.UniqueId;
 
                 _xRayService.Add(xRayMarker);
             }
@@ -228,6 +250,11 @@ namespace Infastructure.Factories.GameFactories
             {
                 ProductType productType = skillData.ProductType;
 
+                bool exist = _progressService.PlayerProgress.AbilityData.PickedProducts.Contains(productType);
+
+                if (exist)
+                    continue;
+
                 ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
                 GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
 
@@ -253,22 +280,27 @@ namespace Infastructure.Factories.GameFactories
 
             foreach (WorldData worldData in generatorPoints)
             {
-                _diContainer.InstantiatePrefabResource(AssetsPath.GeneratorPath,
+                GameObject generator = _diContainer.InstantiatePrefabResource(AssetsPath.GeneratorPath,
                     worldData.WorldPosition, worldData.WorldRotation, null);
+
+                MarkerUniqueId markerUniqueId = generator.GetComponent<MarkerUniqueId>();
+                markerUniqueId.UniqueId = worldData.UniqueId;
+
+                _progressWatchersService.RegisterWatchers(generator);
             }
         }
 
 
         public void CreateStartGameCutSceneTimeline(Spider spider)
         {
-            StartGameCutSceneRunner cutScene =
+            /*StartGameCutSceneRunner cutScene =
                 _diContainer.InstantiatePrefabResourceForComponent<StartGameCutSceneRunner>(AssetsPath
                     .StartGameCutSceneTimelinePath);
 
             PlayDirectorMarkerReceiver playDirectorMarkerReceiver = cutScene.GetComponent<PlayDirectorMarkerReceiver>();
             playDirectorMarkerReceiver.Initialize(spider);
 
-            cutScene.Initialize(spider);
+            cutScene.Initialize(spider);*/
         }
 
         public void CreateTerrainScan(Spider spider)
@@ -282,6 +314,8 @@ namespace Infastructure.Factories.GameFactories
             TerrainScanIconsRenderer terrainScanIconsRenderer =
                 terrainScanObject.GetComponentInChildren<TerrainScanIconsRenderer>();
             terrainScanIconsRenderer.Initialize(_cameraProviderService.CameraTransform);
+            
+            _xRayService.Initialize();
         }
 
         private bool IsBiospherePoint(int i, List<WorldData> checkPoints) =>

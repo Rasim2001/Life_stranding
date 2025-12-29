@@ -10,7 +10,7 @@ namespace Infastructure.Services.Restart
 
         public void Restart(List<ProductType> exploredProducts)
         {
-            ExploredProducts = new List<ProductType>(exploredProducts);
+            //ExploredProducts = new List<ProductType>(exploredProducts);
 
             IsRestarting = true;
         }

@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Infastructure.Services.Ability;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.QTE;
+using Infastructure.Services.StartGame;
 using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
 using SpiderController.StateMachine;
@@ -16,6 +17,8 @@ namespace Infastructure.Services.Magnet
         private readonly IPlatformObjectsService _platformObjectsService;
         private readonly IAbilityService _abilityService;
         private readonly ILastChanceQTEService _lastChanceQteService;
+        private IStartGameReceiver _startGameReceiver;
+
         private StateMachineData _stateMachineData;
 
         public event Action<bool> OnFreezActiveChanged;
@@ -40,18 +43,25 @@ namespace Infastructure.Services.Magnet
         private bool _isSavingTime;
 
         public MagnetFreezingService(IPlatformObjectsService platformObjectsService, IAbilityService abilityService,
-            ILastChanceQTEService lastChanceQteService)
+            ILastChanceQTEService lastChanceQteService, IStartGameReceiver startGameReceiver)
         {
+            _startGameReceiver = startGameReceiver;
             _abilityService = abilityService;
             _lastChanceQteService = lastChanceQteService;
             _platformObjectsService = platformObjectsService;
         }
 
-        public void Initialize() =>
+        public void Initialize()
+        {
+            _startGameReceiver.OnStartGameHappened += WaitTimeWithMagnet;
             _lastChanceQteService.OnSaveHappened += WaitTimeWithMagnet;
+        }
 
-        public void Dispose() =>
+        public void Dispose()
+        {
+            _startGameReceiver.OnStartGameHappened -= WaitTimeWithMagnet;
             _lastChanceQteService.OnSaveHappened -= WaitTimeWithMagnet;
+        }
 
         public void Initialize(StateMachineData stateMachineData) =>
             _stateMachineData = stateMachineData;

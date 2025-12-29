@@ -5,5 +5,6 @@ namespace UI.Curtain
         void ShowAndHide();
         void Show();
         void Hide();
+        bool IsShowing { get; }
     }
 }

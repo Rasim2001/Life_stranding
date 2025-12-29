@@ -8,7 +8,6 @@ namespace Infastructure.Services.Pause
         private readonly List<string> _active = new();
         public bool IsPaused => _active.Count > 0;
 
-
         public void StartPause(string reason)
         {
             if (_active.Count == 0)

@@ -1,5 +1,6 @@
 using System;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
+using Infastructure.Services.StartGame;
 using Infastructure.Services.Window;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -24,9 +25,13 @@ namespace Infastructure.Services.PlayerInput
         private bool _jumpUpOnce;
 
         private bool _isConnected;
+        private IStartGameReceiver _startGameReceiver;
 
-        public InputService(IWindowService windowService) =>
+        public InputService(IWindowService windowService, IStartGameReceiver startGameReceiver)
+        {
+            _startGameReceiver = startGameReceiver;
             _windowService = windowService;
+        }
 
 
         public Vector3 InputVector
@@ -127,6 +132,7 @@ namespace Infastructure.Services.PlayerInput
         public void Initialize()
         {
             _windowService.OnWindowOpened += WindowOpenedUI;
+            _startGameReceiver.OnStartGameHappened += SetPlayerInputSource;
 
             _inputSource = new CutSceneInputSource();
             _inputSource.Enable();
@@ -138,6 +144,7 @@ namespace Infastructure.Services.PlayerInput
         public void Dispose()
         {
             _windowService.OnWindowOpened -= WindowOpenedUI;
+            _startGameReceiver.OnStartGameHappened -= SetPlayerInputSource;
 
             _joystickInputSource?.Disable();
             _inputSource?.Disable();
@@ -151,8 +158,11 @@ namespace Infastructure.Services.PlayerInput
         public bool AnyActionPressed =>
             _inputSource.AnyKeyPressed();
 
+        private void SetPlayerInputSource() =>
+            SetInputSource(new PlayerInputSource());
 
-        public void SetInputSource(IInputSource inputSource)
+
+        private void SetInputSource(IInputSource inputSource)
         {
             _inputSource?.Disable();
 

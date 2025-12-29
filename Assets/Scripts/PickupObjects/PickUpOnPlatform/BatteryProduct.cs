@@ -67,6 +67,13 @@ namespace PickupObjects.PickUpOnPlatform
             if (batteryProductData == null)
                 return;
 
+            if (batteryProductData.IsPuttingDown)
+            {
+                Collider.enabled = false;
+                Rigidbody.isKinematic = true;
+            }
+
+
             transform.position = batteryProductData.Position.AsUnityVector();
             transform.localEulerAngles = batteryProductData.Rotation.AsUnityVector();
         }
@@ -82,7 +89,7 @@ namespace PickupObjects.PickUpOnPlatform
                 list.Add(new BatteryProductData(
                     transform.position.AsVectorData(),
                     transform.localEulerAngles.AsVectorData(),
-                    _markerUniqueId.UniqueId));
+                    _markerUniqueId.UniqueId, IsPuttingDown));
             }
             else
             {
@@ -121,6 +128,8 @@ namespace PickupObjects.PickUpOnPlatform
 
             PlatformSelector.IsOnPlatform(Collider);
             Rigidbody.isKinematic = true;
+
+            _stateMachineData.TotalWeight -= _productData.Weight;
 
             base.StartSimulatePhysics();
         }

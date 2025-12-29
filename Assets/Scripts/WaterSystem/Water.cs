@@ -1,4 +1,3 @@
-using System;
 using Infastructure.Data;
 using Infastructure.Services.Defeat;
 using Infastructure.Services.ProgressWatchers;
@@ -52,12 +51,11 @@ namespace WaterSystem
         private void Start()
         {
             _taskPopupCheckerService.AllTasksCompleted += AllTaskCompleted;
+            _trackService.OnFlowerInitialized += FlowerInitialize;
+            _trackService.OnSpiderInitialized += SpiderInitialize;
 
             _farSpeed = WaterStaticData.FarSpeed;
             _nearSpeed = WaterStaticData.NearSpeed;
-
-            _spiderTransform = _trackService.Spider.transform;
-            _flowerTransform = _trackService.Flower.transform;
         }
 
         public void LoadProgress(PlayerProgress progress)
@@ -69,8 +67,23 @@ namespace WaterSystem
         public void UpdateProgress(PlayerProgress progress) =>
             progress.WorldProgressData.WaterData.WaterPosition = transform.position.AsVectorData();
 
-        private void OnDestroy() =>
+        private void OnDestroy()
+        {
+            _trackService.OnFlowerInitialized -= FlowerInitialize;
+            _trackService.OnSpiderInitialized -= SpiderInitialize;
+
+            _progressWatchersService.Release(this);
+
             _taskPopupCheckerService.AllTasksCompleted -= AllTaskCompleted;
+        }
+
+
+        private void SpiderInitialize() =>
+            _spiderTransform = _trackService.Spider.transform;
+
+        private void FlowerInitialize() =>
+            _flowerTransform = _trackService.Flower.transform;
+
 
         private void AllTaskCompleted() =>
             _isStartingMove = true;

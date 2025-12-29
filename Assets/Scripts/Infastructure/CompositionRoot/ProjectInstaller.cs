@@ -10,6 +10,7 @@ using Infastructure.Services.ProgressWatchers;
 using Infastructure.Services.QuitApplication;
 using Infastructure.Services.Restart;
 using Infastructure.Services.SaveLoadService;
+using Infastructure.Services.StartGame;
 using Infastructure.Services.Window;
 using Infastructure.States;
 using Infastructure.StaticData.StaticDataService;
@@ -56,7 +57,12 @@ namespace Infastructure.CompositionRoot
             BindEventSystemSelector();
 
             BindProgressWatchersService();
+
+            BindStartGameReceiver();
         }
+
+        private void BindStartGameReceiver() =>
+            Container.BindInterfacesAndSelfTo<StartGameReceiver>().AsSingle();
 
         private void BindProgressWatchersService() =>
             Container.BindInterfacesAndSelfTo<ProgressWatchersService>().AsSingle();

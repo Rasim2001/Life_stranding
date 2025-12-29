@@ -27,7 +27,6 @@ namespace Infastructure.Services.PlayerInput
         bool TabPressed { get; }
         bool PauseButtonPressed { get; }
         bool AnyActionPressed { get; }
-        void SetInputSource(IInputSource inputSource);
         T GetInputSource<T>();
         void Initialize();
         event Action<IInputSource> OnJoystickEnableHappend;

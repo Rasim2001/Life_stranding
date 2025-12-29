@@ -70,7 +70,6 @@ namespace PickupObjects.PickUpOnPlatform
             if (!IsOnPlatform || IsFreezingOnPlatform || IsPuttingDown)
                 return;
 
-            // ✅ NEW: если платформа вверх ногами — отпускаем объект
             if (IsPlatformUpsideDown())
             {
                 StartSimulatePhysics();
@@ -146,7 +145,6 @@ namespace PickupObjects.PickUpOnPlatform
             Rigidbody.angularDamping = _angularDefaultDamping;
             Rigidbody.linearDamping = _linearDefaultDamping;
             Rigidbody.constraints = RigidbodyConstraints.None;
-
 
             PlatformSelector.ResetExcludeLayerMask();
 

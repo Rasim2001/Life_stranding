@@ -37,15 +37,15 @@ namespace Infastructure.Services.CutScene
 
         public void Tick()
         {
-            if (AnyKeyPressed() && !HasPlayed && _isActive)
-                Skip();
+            /*if (AnyKeyPressed() && !HasPlayed && _isActive)
+                Skip();*/
         }
 
         public void Skip()
         {
-            HasPlayed = true;
+            /*HasPlayed = true;
             _curtain.ShowAndHide();
-            OnSkipHappened?.Invoke();
+            OnSkipHappened?.Invoke();*/
         }
 
         public void Clear()

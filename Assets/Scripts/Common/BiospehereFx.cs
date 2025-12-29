@@ -10,14 +10,14 @@ namespace Common
 
         private MeshRenderer _meshRenderer;
 
-        private void Awake() =>
+        private void Awake()
+        {
             _meshRenderer = GetComponent<MeshRenderer>();
 
-        private void Start()
-        {
             Material temp = _meshRenderer.material;
             _meshRenderer.material = new Material(temp);
         }
+
 
         public void ShowFx(float valueNormalized)
         {

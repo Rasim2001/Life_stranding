@@ -10,5 +10,6 @@ namespace Infastructure.Services.XRay
         void Initialize(Transform xRayContainer, Transform hudTransform, Transform containerDisabled);
         void Show(XRayMarker xRayMarker);
         void Hide(XRayMarker xRayMarker);
+        void Initialize();
     }
 }

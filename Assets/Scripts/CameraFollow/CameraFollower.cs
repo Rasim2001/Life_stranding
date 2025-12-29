@@ -225,6 +225,9 @@ namespace CameraFollow
             _isMouseRotating = true;
             _xRotation = 0f;
 
+            if (_stableWorldUp.StableWorldUpTransform == null)
+                return;
+
             Vector3 worldUp = _stableWorldUp.StableWorldUpTransform.up;
             Vector3 forward = Vector3.ProjectOnPlane(transform.forward, worldUp);
             if (forward.sqrMagnitude < 0.0001f)

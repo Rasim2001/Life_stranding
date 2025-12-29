@@ -13,8 +13,10 @@ namespace SpiderController.UI
 
         private TerrainScan _terrain;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             _colorDefault = _reloadText.color;
             _hologramEffect = new HologramEffect(GetSegments(), GetContainers(), GetOtherObjects());
         }

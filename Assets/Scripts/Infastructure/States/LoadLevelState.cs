@@ -34,7 +34,7 @@ namespace Infastructure.States
 
         public void Enter()
         {
-            _curtainRoot.Show();
+            //_curtainRoot.Show();
             _sceneLoader.Load(_staticDataService.GameStaticData.LoadScene, OnLoaded);
         }
 
@@ -43,15 +43,8 @@ namespace Infastructure.States
 
         private void OnAdditiveSceneLoaded()
         {
-            if (_restartService.IsRestarting)
-            {
-                _cutSceneService.Skip();
-                _restartService.Clear();
-
-                HideCurtainAsync().Forget();
-            }
-            else
-                _curtainRoot.Hide();
+            _curtainRoot.Hide();
+            _restartService.Clear();
         }
 
         public void Exit()

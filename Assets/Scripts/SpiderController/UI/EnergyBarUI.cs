@@ -16,8 +16,10 @@ namespace SpiderController.UI
         private HologramEffect _hologramEffect;
         private Image[] _segmentsOwn;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             _segmentsOwn = GetSegments();
 
             _hologramEffect = new HologramEffect(_segmentsOwn, GetContainers(), GetOtherObjects());

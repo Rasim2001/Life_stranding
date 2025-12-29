@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Infastructure.Data;
 
 namespace Infastructure.Data
 {
@@ -8,27 +7,11 @@ namespace Infastructure.Data
     public class WorldProgressData
     {
         public WaterData WaterData = new();
-        public List<BatteryProductData> BatteryProductDatas = new List<BatteryProductData>();
-    }
-}
-
-[Serializable]
-public class WaterData
-{
-    public Vector3Data WaterPosition;
-}
-
-[Serializable]
-public class BatteryProductData
-{
-    public Vector3Data Position;
-    public Vector3Data Rotation;
-    public string UniqueId;
-
-    public BatteryProductData(Vector3Data position, Vector3Data rotation, string uniqueId)
-    {
-        Position = position;
-        Rotation = rotation;
-        UniqueId = uniqueId;
+        public FlowerData FlowerData = new();
+        public SpiderData SpiderData = new();
+        public List<CheckpointData> CheckpointDatas = new();
+        public List<BatteryProductData> BatteryProductDatas = new();
+        public List<GeneratorData> GeneratorDatas = new();
+        public List<EnergyData> EnergyDatas = new();
     }
 }

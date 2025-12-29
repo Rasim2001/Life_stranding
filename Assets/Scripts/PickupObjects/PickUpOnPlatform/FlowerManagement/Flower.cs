@@ -1,7 +1,9 @@
 using System;
 using Common;
 using HUD;
+using Infastructure.Data;
 using Infastructure.Services.QTE;
+using Infastructure.Services.SaveLoadService;
 using Infastructure.Services.SlowTime;
 using Infastructure.Services.XRay;
 using Infastructure.StaticData.Product;
@@ -14,7 +16,7 @@ using Zenject;
 
 namespace PickupObjects.PickUpOnPlatform.FlowerManagement
 {
-    public class Flower : PickupObjectBase, IProduct
+    public class Flower : PickupObjectBase, IProduct, ISavedProgress
     {
         [SerializeField] private LayerMask _groundLayer;
         [SerializeField] private GameObject[] _flowerVariants;
@@ -51,12 +53,41 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
         {
             base.Awake();
 
+            _xRayMarker = GetComponent<XRayMarker>();
             _flowerSelector = new FlowerSelector(_flowerVariants);
             _flowerSelector.Initialize();
         }
 
-        private void Start() =>
-            _xRayMarker = GetComponent<XRayMarker>();
+        public void LoadProgress(PlayerProgress progress)
+        {
+            if (progress.WorldProgressData.FlowerData.Position == null)
+                return;
+
+            if (progress.WorldProgressData.FlowerData.IsOnPlatform)
+            {
+                StopSimulatePhysics();
+
+                return;
+            }
+
+            transform.position = progress.WorldProgressData.FlowerData.Position.AsUnityVector();
+            transform.localEulerAngles = progress.WorldProgressData.FlowerData.Rotation.AsUnityVector();
+            IsPuttingDown = progress.WorldProgressData.FlowerData.IsPuttingDown;
+
+            if (IsPuttingDown)
+            {
+                Collider.enabled = false;
+                Rigidbody.isKinematic = true;
+            }
+        }
+
+        public void UpdateProgress(PlayerProgress progress)
+        {
+            progress.WorldProgressData.FlowerData.Position = transform.position.AsVectorData();
+            progress.WorldProgressData.FlowerData.Rotation = transform.localEulerAngles.AsVectorData();
+            progress.WorldProgressData.FlowerData.IsPuttingDown = IsPuttingDown;
+            progress.WorldProgressData.FlowerData.IsOnPlatform = IsOnPlatform;
+        }
 
         private void OnDestroy() =>
             _flowerSelector.Clear();
@@ -127,7 +158,7 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             Collider.enabled = false;
 
             transform.position = checkPoint.FlowerPutdownPosition;
-            transform.rotation = checkPoint.FlowerPutdownRotation;
+            transform.rotation = checkPoint.FlowerPutdownRotation; 
 
             _stateMachineData.TotalWeight -= _productData.Weight;
 
