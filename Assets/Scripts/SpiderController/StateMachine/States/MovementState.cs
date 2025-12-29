@@ -30,6 +30,8 @@ namespace SpiderController.StateMachine.States
         private readonly IInputService _inputService;
         private readonly float _legMoveDeadzone = 0.04f;
 
+        private readonly Vector3[] _legPositions;
+
 
         protected MovementState(
             ISpiderStateMachine stateMachine,
@@ -52,6 +54,8 @@ namespace SpiderController.StateMachine.States
             Spider = spider;
             Data = stateMachineData;
             Legs = legs;
+
+            _legPositions = new Vector3[Legs.Length];
         }
 
 
@@ -132,8 +136,14 @@ namespace SpiderController.StateMachine.States
             }
         }
 
-        protected bool IsNotMoveableLayer() =>
-            Legs.Select(x => x.Raycast).Any(x => x.IsNotMoveableLayer);
+        protected bool IsNotMoveableLayer()
+        {
+            for (int i = 0; i < Legs.Length; i++)
+                if (Legs[i].Raycast.IsNotMoveableLayer)
+                    return true;
+
+            return false;
+        }
 
         protected void SetSpeed(float newValue) =>
             Data.Speed = newValue;
@@ -225,9 +235,8 @@ namespace SpiderController.StateMachine.States
 
         private void AdjustBodyOrientation()
         {
-            Vector3[] legPositions = new Vector3[Legs.Length];
             for (int i = 0; i < Legs.Length; i++)
-                legPositions[i] = Legs[i].Raycast.Position;
+                _legPositions[i] = Legs[i].Raycast.Position;
 
             Vector3 normalSum = Vector3.zero;
             int count = 0;
@@ -240,8 +249,8 @@ namespace SpiderController.StateMachine.States
                 int i2 = (i + 2) % Legs.Length;
                 int i3 = (i + 3) % Legs.Length;
 
-                Vector3 v1 = legPositions[i2] - legPositions[i1];
-                Vector3 v2 = legPositions[i3] - legPositions[i1];
+                Vector3 v1 = _legPositions[i2] - _legPositions[i1];
+                Vector3 v2 = _legPositions[i3] - _legPositions[i1];
                 Vector3 normal = Vector3.Cross(v1, v2).normalized;
 
                 normalSum -= normal;
