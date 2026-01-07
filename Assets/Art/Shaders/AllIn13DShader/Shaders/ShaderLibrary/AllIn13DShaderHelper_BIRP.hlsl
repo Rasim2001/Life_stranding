@@ -56,6 +56,11 @@ float3 GetPositionWS(float4 positionOS)
 	return mul(unity_ObjectToWorld, positionOS).xyz;
 }
 
+float3 GetPositionOS(float4 positionWS)
+{
+	return mul(unity_WorldToObject, positionWS);
+}
+
 float3 GetDirWS(float4 dirOS)
 {
 	return mul(unity_ObjectToWorld, float4(dirOS.xyz, 0));
@@ -341,13 +346,12 @@ float3 BoxProjection (
 
 float3 GetReflectionsSimple(float3 worldRefl, float cubeLod, float3 positionWS)
 {
-	float3 res = 0;
-
 	float3 reflUV0 = BoxProjection(worldRefl, positionWS, unity_SpecCube0_ProbePosition, unity_SpecCube0_BoxMin, unity_SpecCube0_BoxMax);
 	float4 probe0HDR = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, reflUV0, cubeLod);
 	float3 probe0 = DecodeHDR(probe0HDR, unity_SpecCube0_HDR);
 
 
+	float3 res = probe0;
 #if UNITY_SPECCUBE_BLENDING
 	float interpolator = unity_SpecCube0_BoxMin.w;
 

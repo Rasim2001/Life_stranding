@@ -70,13 +70,13 @@ namespace PickupObjects.PickUpOnPlatform
             if (!IsOnPlatform || IsFreezingOnPlatform || IsPuttingDown)
                 return;
 
+            IsOnPlatform = PlatformSelector.IsOnPlatform(Collider);
+
             if (IsPlatformUpsideDown())
             {
                 StartSimulatePhysics();
                 return;
             }
-
-            IsOnPlatform = PlatformSelector.IsOnPlatform(Collider);
 
             if (IsOnPlatform)
                 SimulateRotation();

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Infastructure.Services.Pause;
@@ -26,6 +27,7 @@ namespace UI.MVVM.View.DefeatPopup
         private ISpiderTrackService _spiderTrackService;
 
         private Tween _containerRotateTween;
+        private Coroutine _flowerCoroutine;
 
         [Inject]
         public void Construct(IPauseService pauseService, IStateMachine stateMachine,
@@ -43,7 +45,9 @@ namespace UI.MVVM.View.DefeatPopup
 
             _pauseService.StartPause(gameObject.name);
 
-            StartFlowerAnimation().Forget();
+            StopCoroutine();
+
+            _flowerCoroutine = StartCoroutine(StartFlowerAnimation());
             _framePiecesUI.MoveFramePiecesAsync().Forget();
             _containerRotateTween = _container.DORotate(Vector3.zero, 0.2f).SetUpdate(true);
 
@@ -56,6 +60,8 @@ namespace UI.MVVM.View.DefeatPopup
 
             _containerRotateTween?.Kill();
             _pauseService.StopPause(gameObject.name);
+
+            StopCoroutine();
         }
 
         protected override void OnCloseButtonClick()
@@ -65,11 +71,20 @@ namespace UI.MVVM.View.DefeatPopup
             _stateMachine.Enter<ExitGameLoopState>();
         }
 
-        private async UniTask StartFlowerAnimation()
+        private IEnumerator StartFlowerAnimation()
         {
-            await UniTask.Delay(TimeSpan.FromSeconds(0.75f), ignoreTimeScale: true);
+            yield return new WaitForSecondsRealtime(0.75f);
 
             _flowerAnimator.SetTrigger(StartTrigger);
+        }
+
+        private void StopCoroutine()
+        {
+            if (_flowerCoroutine != null)
+            {
+                StopCoroutine(_flowerCoroutine);
+                _flowerCoroutine = null;
+            }
         }
     }
 }

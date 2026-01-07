@@ -337,8 +337,8 @@ BDRFCommonData CreateCommonBDRFData(float3 albedo, EffectsData effectsData)
 	res.B = effectsData.bitangentWS;
 	res.V =  normalize(_WorldSpaceCameraPos.xyz - effectsData.vertexWS);
 
-	res.metallic = ACCESS_PROP_FLOAT(_Metallic);
-	float smoothness = ACCESS_PROP_FLOAT(_Smoothness);
+	res.metallic = effectsData.metallic;
+	float smoothness = effectsData.smoothness;
 #ifdef _METALLIC_MAP_ON
 	float4 metallicMapColor = SAMPLE_TEX2D(_MetallicMap, effectsData.mainUV);
 
@@ -434,11 +434,12 @@ float3 CalculateLighting_PBR(float3 albedo, float3 lightmap, float alpha, Effect
 
 
 #ifdef ALLIN1_USE_LIGHT_LAYERS
-	uint meshRenderingLayers = GetMeshRenderingLayer();
+	uint meshRenderingLayers = AllIn1GetMeshRenderingLayer();
+	directLighting = 0;
 	if (IsMatchingLightLayer(mainLightData.layerMask, meshRenderingLayers))
-	{ 
+	{
+		directLighting = albedo;
 #endif
-
 	BDRFPerLightData perLightData_mainLight = CreatePerLightData(commonData, mainLightData, 0.0);
 
 #ifdef SPECULAR_ON
@@ -451,12 +452,31 @@ float3 CalculateLighting_PBR(float3 albedo, float3 lightmap, float alpha, Effect
 	}
 #endif
 
-#if defined(ADDITIONAL_LIGHT_LOOP)
+#if defined(ADDITIONAL_LIGHT_LOOP) && !defined(_LIGHTMODEL_FASTLIGHTING)
+	// Additional light loop for non-main directional lights. This block is specific to Forward+.
+	#if USE_CLUSTER_LIGHT_LOOP
+	UNITY_LOOP for (uint lightIndex = 0; lightIndex < min(URP_FP_DIRECTIONAL_LIGHTS_COUNT, MAX_VISIBLE_LIGHTS); lightIndex++)
+	{
+		AllIn1LightData additionalLightData = GetPointLightData(lightIndex, effectsData.vertexWS, effectsData.normalWS, effectsData);
+		#ifdef ALLIN1_USE_LIGHT_LAYERS
+		if (IsMatchingLightLayer(additionalLightData.layerMask, meshRenderingLayers))
+		{
+		#endif
+			BDRFPerLightData perLightData_additionalLight = CreatePerLightData(commonData, additionalLightData, 1.0);
+			directLighting += DirectLighting_PBR(albedo, commonData, perLightData_additionalLight, additionalLightData, specularMap);
+		#ifdef ALLIN1_USE_LIGHT_LAYERS
+		}
+		#endif
+	}
+	#endif
+	
+	
 	uint numAdditionalLights = NUM_ADDITIONAL_LIGHTS;
 	LIGHT_LOOP_BEGIN_ALLIN13D(numAdditionalLights, effectsData)
 		AllIn1LightData additionalLightData = GetPointLightData(lightIndex, effectsData.vertexWS, effectsData.normalWS, effectsData);
 	#ifdef ALLIN1_USE_LIGHT_LAYERS
-		uint meshRenderingLayers = GetMeshRenderingLayer();
+		
+		uint meshRenderingLayers = AllIn1GetMeshRenderingLayer();
 		if (IsMatchingLightLayer(additionalLightData.layerMask, meshRenderingLayers))
 		{ 
 	#endif

@@ -1,13 +1,14 @@
 #ifndef ALLIN13DSHADER_LIGHT_INCLUDED
 #define ALLIN13DSHADER_LIGHT_INCLUDED
 
-#if USE_FORWARD_PLUS
+
+#if ALLIN1_USE_FORWARD_PLUS
     #define LIGHT_LOOP_BEGIN_ALLIN13D(lightCount, data) { \
     uint lightIndex; \
     ClusterIterator _urp_internal_clusterIterator = ClusterInit(data.normalizedScreenSpaceUV, data.vertexWS, 0); \
     [loop] while (ClusterNext(_urp_internal_clusterIterator, lightIndex)) { \
         lightIndex += URP_FP_DIRECTIONAL_LIGHTS_COUNT; \
-        FORWARD_PLUS_SUBTRACTIVE_LIGHT_CHECK
+        ALLIN1_FORWARD_PLUS_SUBTRACTIVE_LIGHT_CHECK
     #define LIGHT_LOOP_END_ALLIN13D } }
 #else
     #define LIGHT_LOOP_BEGIN_ALLIN13D(lightCount, data) \
@@ -196,9 +197,11 @@ float3 DirectLighting(float3 objectColor, float2 ssaoFactor, EffectsData effects
 	float4 specularTex = float4(1, 1, 1, 1);
 
 #ifdef ALLIN1_USE_LIGHT_LAYERS
-	uint meshRenderingLayers = GetMeshRenderingLayer();
+	uint meshRenderingLayers = AllIn1GetMeshRenderingLayer();
+	res = 0;
 	if (IsMatchingLightLayer(mainLightData.layerMask, meshRenderingLayers))
-	{ 
+	{
+		res = objectColor;
 #endif
 
 #ifdef SPECULAR_ON
@@ -211,7 +214,25 @@ float3 DirectLighting(float3 objectColor, float2 ssaoFactor, EffectsData effects
 		}
 #endif
 
+
+
 #if defined(ADDITIONAL_LIGHT_LOOP) && !defined(_LIGHTMODEL_FASTLIGHTING)
+	// Additional light loop for non-main directional lights. This block is specific to Forward+.
+	#if USE_CLUSTER_LIGHT_LOOP
+	UNITY_LOOP for (uint lightIndex = 0; lightIndex < min(URP_FP_DIRECTIONAL_LIGHTS_COUNT, MAX_VISIBLE_LIGHTS); lightIndex++)
+	{
+		AllIn1LightData additionalLightData = GetPointLightData(lightIndex, effectsData.vertexWS, effectsData.normalWS, effectsData);
+		#ifdef ALLIN1_USE_LIGHT_LAYERS
+		if (IsMatchingLightLayer(additionalLightData.layerMask, meshRenderingLayers))
+		{
+		#endif
+			res += DirectLighting(objectColor, effectsData, additionalLightData, specularTex, 1);
+		#ifdef ALLIN1_USE_LIGHT_LAYERS
+		}
+		#endif
+	}
+	#endif
+	
 	uint numAdditionalLights = NUM_ADDITIONAL_LIGHTS;
 	LIGHT_LOOP_BEGIN_ALLIN13D(numAdditionalLights, effectsData)
 		AllIn1LightData additionalLightData = GetPointLightData(lightIndex, effectsData.vertexWS, effectsData.normalWS, effectsData);
@@ -226,7 +247,7 @@ float3 DirectLighting(float3 objectColor, float2 ssaoFactor, EffectsData effects
 
 	LIGHT_LOOP_END_ALLIN13D
 #endif
-	
+
 	res *= ssaoFactor.x;
 
 	return res;

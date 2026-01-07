@@ -23,7 +23,8 @@
 	#endif
 #endif
 
-#if defined(URP_PASS) && defined(_LIGHT_LAYERS)
+//GetMeshRenderingLightLayer
+#if defined(URP_PASS) && defined(ALLIN1_LIGHT_LAYERS_SUPPORT)
 	#define ALLIN1_USE_LIGHT_LAYERS
 #endif
 

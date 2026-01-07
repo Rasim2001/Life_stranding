@@ -11,8 +11,44 @@
 #define INIT_DECAL_DATA(decalData) \
 	decalData.baseColor = float4(0, 0, 0, 1); \
 	decalData.normalTS = float4(0, 0, 0, 0); \
+	decalData.emissive = 0; \
 	decalData.mask = 0; \
-	decalData.unpackedNormal = float3(0, 0, 0);
+	decalData.unpackedNormal = float3(0, 0, 0); \
+	decalData.smoothness = 0; \
+	decalData.metallic = 0; \
+	decalData.MAOSAlpha = 1;
+	
+#define INIT_EFFECTS_DATA(data) \
+	data.mainUV = float2(0, 0); \
+	data.rawMainUV = float2(0, 0); \
+	data.normalizedScreenSpaceUV = float2(0, 0); \
+	data.vertexColor = float4(1, 1, 1, 1); \
+	data.vertexColorLuminosity = 1.0; \
+	data.vertexOS = float3(0, 0, 0); \
+	data.vertexWS = float3(0, 0, 0); \
+	data.vertexVS = float3(0, 0, 0); \
+	data.normalOS = float3(0, 1, 0); \
+	data.normalWS = float3(0, 1, 0); \
+	data.viewDirWS = float3(0, 0, -1); \
+	data.tangentWS = float3(1, 0, 0); \
+	data.bitangentWS = float3(0, 1, 0); \
+	data.projPos = float4(0, 0, 0, 0); \
+	data.pos = float4(0, 0, 0, 0); \
+	data.lightColor = float3(1, 1, 1); \
+	data.lightDir = float3(0, -1, 1); \
+	data.sceneDepthDiff = 1.0; \
+	data.normalizedDepth = 0; \
+	data.camDistance = 0; \
+	data.camDistanceViewSpace = 0; \
+	data.shaderTime = float3(0, 0, 0); \
+	data.uv_dist = float2(0, 0); \
+	data.uvMatrix = 0; \
+	data.uv_matrix_normalMap = 0; \
+	data.uv_normalMap = 0; \
+	data.uvDiff = 0; \
+	data._ShadowCoord = 0; \
+	data.metallic = 0; \
+	data.smoothness = 1;
 
 #define UV_FRONT(data) data.uvMatrix._m00_m01
 #define UV_FRONT_WEIGHT(data) data.uvMatrix._m02
@@ -157,8 +193,12 @@ struct AllIn1DecalData
 {
 	float4 baseColor;
 	float4 normalTS;
+	float3 emissive;
 	float mask;
 	float3 unpackedNormal;
+	float smoothness;
+	float metallic;
+	float MAOSAlpha;
 };
 
 struct ShadowCoordStruct
@@ -174,7 +214,7 @@ struct FogStruct
 
 struct VertexData
 {
-	float4 vertex		: POSITION;
+	float4 vertex		: POSITION; 
 	float2 uv			: TEXCOORD0;
 	float2 uvLightmap	: TEXCOORD1;
 	float3 normal		: NORMAL;
@@ -235,7 +275,11 @@ struct FragmentDataShadowCaster
 	float4 positionOS : TEXCOORD1;
 	float2 mainUV : TEXCOORD2;
 	float3 positionWS : TEXCOORD3;
-
+	float2 uv2 : TEXCOORD4;
+	float3 shaderTime : TEXCOORD5;
+	float3 normalOS : TEXCOORD6;
+	float3 normalWS : TEXCOORD7;
+	
 	UNITY_VERTEX_INPUT_INSTANCE_ID	
 	UNITY_VERTEX_OUTPUT_STEREO 
 };
@@ -247,6 +291,7 @@ struct TriplanarData
 	float2 uv_triplanar_top;
 };
 
+//<AllIn1Struct name=EffectsData>
 struct EffectsData
 {
 	float2 mainUV;
@@ -268,6 +313,7 @@ struct EffectsData
 	float3 bitangentWS;
 
 	float4 projPos;
+	float4 pos; //Patch to fix the error when UNITY_LIGHT_ATTENUATION is expanded
 	
 	float3 lightColor;
 	float3 lightDir;
@@ -278,20 +324,20 @@ struct EffectsData
 	float camDistanceViewSpace;
 	float3 shaderTime;
 
-#ifdef _UV_DISTORTION_ON
 	float2 uv_dist;
-#endif
 	
 	float4x3 uvMatrix;
-#ifdef _NORMAL_MAP_ON
 	float4x3 uv_matrix_normalMap;
 	float2 uv_normalMap;
-#endif
 
 	float2 uvDiff;
 
 	float4 _ShadowCoord;
+
+	float metallic;
+	float smoothness;
 };
+//</AllIn1Struct>
 
 #ifdef _TRIPLANAR_MAPPING_ON
 float3 GetTriplanarWeights(float3 normal)

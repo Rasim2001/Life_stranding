@@ -17,7 +17,7 @@ namespace Infastructure.Services.Magnet
         private readonly IPlatformObjectsService _platformObjectsService;
         private readonly IAbilityService _abilityService;
         private readonly ILastChanceQTEService _lastChanceQteService;
-        private IStartGameReceiver _startGameReceiver;
+        private readonly IStartGameReceiver _startGameReceiver;
 
         private StateMachineData _stateMachineData;
 
@@ -96,13 +96,19 @@ namespace Infastructure.Services.Magnet
 
         private async UniTask WaitTimeWithMagnetAsync()
         {
-            Freeze();
+            foreach (PickupObjectBase pickupObject in _platformObjectsService.PickupObjects)
+                pickupObject.IsFreezingOnPlatform = true;
+
+            IsActive = true;
             _isSavingTime = true;
 
             await UniTask.Delay(TimeSpan.FromSeconds(2));
 
+            IsActive = false;
             _isSavingTime = false;
-            Unfreeze();
+
+            foreach (PickupObjectBase pickupObject in _platformObjectsService.PickupObjects)
+                pickupObject.IsFreezingOnPlatform = false;
         }
     }
 }

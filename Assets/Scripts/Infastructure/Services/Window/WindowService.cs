@@ -48,20 +48,11 @@ namespace Infastructure.Services.Window
             _gamePlayViewModel = gamePlayViewModel;
         }
 
-        public void Initialize()
-        {
-            /*if (_restartService.IsRestarting)
-                TryOpenMainTaskPopup(false);*/
-
+        public void Initialize() =>
             _startGameReceiver.OnStartGameHappened += OpenMainTaskPopup;
-            //_cutSceneService.OnCutsceneActiveChanged += TryOpenMainTaskPopup;
-        }
 
-        public void Dispose()
-        {
+        public void Dispose() =>
             _startGameReceiver.OnStartGameHappened -= OpenMainTaskPopup;
-            //_cutSceneService.OnCutsceneActiveChanged -= TryOpenMainTaskPopup;
-        }
 
         public void OpenStartSplashScreen()
         {
@@ -150,7 +141,7 @@ namespace Infastructure.Services.Window
         public bool IsOpenedAnyWindow() =>
             _gamePlayViewModel.IsOpenedAnyWindow();
 
-        public void OpenMainTaskPopup() =>
+        private void OpenMainTaskPopup() =>
             OpenMainTaskPopupAsync().Forget();
 
 
