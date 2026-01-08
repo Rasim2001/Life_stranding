@@ -127,9 +127,10 @@ namespace SpiderController.Platform
             _isMouseHold = true;
             _returnTimer = 0;
 
-            Mouse.current.WarpCursorPosition(new Vector2((float)Screen.width / 2, (float)Screen.height / 2));
+            Vector2 center = new Vector2((float)Screen.width / 2, (float)Screen.height / 2);
+            Mouse.current.WarpCursorPosition(center);
+            _initialMousePosition = center;
 
-            _initialMousePosition = new Vector2((float)Screen.width / 2, (float)Screen.height / 2);
             _waitTimeJoystick = 0;
         }
 
@@ -168,14 +169,10 @@ namespace SpiderController.Platform
             Vector2 mousePos = Input.mousePosition;
             Vector2 screenSize = new Vector2(Screen.width, Screen.height);
 
-            _mouseInput.x = (mousePos.x - _initialMousePosition.x) / (screenSize.x / 2);
-            _mouseInput.y = (mousePos.y - _initialMousePosition.y) / (screenSize.y / 2);
+            _mouseInput.x = -(mousePos.x - _initialMousePosition.x) / (screenSize.x / 2);
+            _mouseInput.y = -(mousePos.y - _initialMousePosition.y) / (screenSize.y / 2);
 
             _mouseInput = Vector2.ClampMagnitude(_mouseInput, 1f);
-
-            _mouseInput.x = -_mouseInput.x;
-            _mouseInput.y = -_mouseInput.y;
-
             _mouseInput *= SpiderStaticData.PlaneSensitivity;
 
             _mouseInput = ConvertInputFromCameraToSpiderSpace(_mouseInput);
@@ -213,7 +210,10 @@ namespace SpiderController.Platform
 
         private void RotateTo(Quaternion targetLocalRotation)
         {
-            if (!_isMouseHold)
+            float dt = Time.fixedDeltaTime;
+            float t = 1f - Mathf.Exp(-SpiderStaticData.PlaneRotationSpeed * dt);
+
+            /*if (!_isMouseHold)
             {
                 _returnTimer = Mathf.Clamp01(_returnTimer + Time.fixedDeltaTime);
 
@@ -224,12 +224,12 @@ namespace SpiderController.Platform
                     targetLocalRotation,
                     curveT);
             }
-            else
+            else*/
             {
                 _rotationPlaneTransform.localRotation = Quaternion.Slerp(
                     _rotationPlaneTransform.localRotation,
                     targetLocalRotation,
-                    Time.fixedDeltaTime * SpiderStaticData.PlaneRotationSpeed);
+                    t);
             }
         }
 

@@ -1,3 +1,4 @@
+using System;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.PlayerInput;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace SpiderController.SpiderMove
 
         private ICameraProviderService _cameraProviderService;
         private IInputService _inputService;
+        private Quaternion _targetWorldRot;
 
         [Inject]
         public void Construct(ICameraProviderService cameraProviderService, IInputService inputService)
@@ -46,26 +48,25 @@ namespace SpiderController.SpiderMove
                 _cameraProviderService.CameraTransform.forward,
                 _cameraProviderService.CameraTransform.up).normalized;
 
-            RotateTo(camForward);
-        }
-
-        private void RotateTo(Vector3 direction)
-        {
-            Vector3 flatDir = Vector3.ProjectOnPlane(direction, _cameraProviderService.CameraTransform.up);
+            Vector3 flatDir = Vector3.ProjectOnPlane(camForward, _cameraProviderService.CameraTransform.up);
 
             if (flatDir.sqrMagnitude < 0.0001f)
                 return;
 
             flatDir.Normalize();
 
-            Quaternion targetWorldRot = Quaternion.LookRotation(flatDir, _cameraProviderService.CameraTransform.up);
+            _targetWorldRot = Quaternion.LookRotation(flatDir, _cameraProviderService.CameraTransform.up);
+        }
 
+        private void FixedUpdate()
+        {
             float speed = 2f;
 
-            RotateBoneLocalY(_legsRootBone, _legsRootDefaultLocalEuler, targetWorldRot, speed);
-            RotateBoneLocalY(_headRootBone, _headDefaultLocalEuler, targetWorldRot, speed);
-            RotateBoneLocalY(_raycastRig, _raycastDefaultLocalEuler, targetWorldRot, speed);
+            RotateBoneLocalY(_legsRootBone, _legsRootDefaultLocalEuler, _targetWorldRot, speed);
+            RotateBoneLocalY(_headRootBone, _headDefaultLocalEuler, _targetWorldRot, speed);
+            RotateBoneLocalY(_raycastRig, _raycastDefaultLocalEuler, _targetWorldRot, speed);
         }
+
 
         private void RotateBoneLocalY(Transform bone, Vector3 defaultLocalEuler, Quaternion targetWorldRot, float speed)
         {
@@ -83,7 +84,7 @@ namespace SpiderController.SpiderMove
             float targetY = targetLocalEuler.y;
 
             Vector3 currentEuler = bone.localEulerAngles;
-            float newY = Mathf.LerpAngle(currentEuler.y, targetY + defaultLocalEuler.y, Time.deltaTime * speed);
+            float newY = Mathf.LerpAngle(currentEuler.y, targetY + defaultLocalEuler.y, Time.fixedDeltaTime * speed);
 
             Vector3 finalEuler = new Vector3(
                 defaultLocalEuler.x,

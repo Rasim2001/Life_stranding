@@ -111,7 +111,7 @@ namespace CameraFollow
                 return;
 
             if (_isMouseRotating)
-                DefaultMoveCamera();
+                CalculateMoveCamera();
             else
                 ClimbMoveCamera();
 
@@ -129,11 +129,28 @@ namespace CameraFollow
             if (_target == null || _defeatWindowService.IsDefeated)
                 return;
 
+            if (_isMouseRotating)
+                RotateCamera();
+
             MoveToTarget();
         }
 
         private void JoystickDisabled() =>
             _joystickInputSource = null;
+
+        private void RotateCamera()
+        {
+            Vector3 up = _cameraProviderService.CameraTransform.up;
+            Quaternion yaw = Quaternion.AngleAxis(_xRotation, up);
+
+            Quaternion targetRot = yaw * _orbitStartRotation;
+
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRot,
+                Time.fixedDeltaTime * _cameraRotationSpeed
+            );
+        }
 
         private void JoystickEnabled(IInputSource obj) =>
             _joystickInputSource = (JoystickInputSource)obj;
@@ -171,24 +188,13 @@ namespace CameraFollow
                 _cameraSystem.ThirdPersonFollow.ShoulderOffset.z);
         }
 
-        private void DefaultMoveCamera()
+        private void CalculateMoveCamera()
         {
             float mouseX = _inputService.MouseXAxis;
             float mouseY = _inputService.MouseYAxis;
 
             _xRotation += mouseX * SpiderStaticData.MouseRotationSpeedX;
             _yRotation -= mouseY * SpiderStaticData.MouseRotationSpeedY * Time.deltaTime;
-
-            Vector3 up = _cameraProviderService.CameraTransform.up;
-            Quaternion yaw = Quaternion.AngleAxis(_xRotation, up);
-
-            Quaternion targetRot = yaw * _orbitStartRotation;
-
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                targetRot,
-                Time.deltaTime * _cameraRotationSpeed
-            );
 
             _yRotation = Mathf.Clamp(_yRotation, 0, _maxRotationY);
             float yLerp = Mathf.Lerp(_cameraSystem.ThirdPersonFollow.ShoulderOffset.y, _yRotation,
@@ -215,7 +221,7 @@ namespace CameraFollow
 
         private void ReleaseInput()
         {
-            _xRotation = 0;
+            //_xRotation = 0;
 
             _isMouseRotating = false;
         }
@@ -245,7 +251,9 @@ namespace CameraFollow
                 transform.position,
                 _target.position,
                 ref _velocity,
-                SpiderStaticData.SmoothTime
+                SpiderStaticData.SmoothTime,
+                Mathf.Infinity,
+                Time.fixedDeltaTime
             );
         }
 
