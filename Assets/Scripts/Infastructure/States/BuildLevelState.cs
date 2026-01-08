@@ -4,7 +4,6 @@ using Infastructure.Factories.GameFactories;
 using Infastructure.Services.Ability;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CheckPoint;
-using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.ProgressWatchers;
@@ -34,7 +33,6 @@ namespace Infastructure.States
         private readonly IInputService _inputService;
         private readonly IRestartService _restartService;
         private readonly IAbilityService _abilityService;
-        private readonly ICutSceneService _cutSceneService;
         private readonly ITimerService _timerService;
         private readonly IWindowService _windowService;
         private ICameraProviderService _cameraProviderService;
@@ -54,7 +52,6 @@ namespace Infastructure.States
             IWindowService windowService,
             IRestartService restartService,
             IAbilityService abilityService,
-            ICutSceneService cutSceneService,
             ITimerService timerService,
             ICameraProviderService cameraProviderService,
             IProgressWatchersService progressWatchersService,
@@ -71,7 +68,6 @@ namespace Infastructure.States
             _windowService = windowService;
             _restartService = restartService;
             _abilityService = abilityService;
-            _cutSceneService = cutSceneService;
             _timerService = timerService;
             _gameFactory = gameFactory;
             _staticData = staticData;
@@ -108,7 +104,6 @@ namespace Infastructure.States
             _taskPopupCheckerService.Initialize();
             _abilityService.Initialize();
             _inputService.Initialize();
-            _cutSceneService.Clear();
             _timerService.StartTimer();
         }
 

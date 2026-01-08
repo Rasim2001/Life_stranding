@@ -1,8 +1,8 @@
-using Infastructure.CutScene.Custom.Markers;
+using Infastructure.CutScenes.Custom.Markers;
 using UnityEditor.Timeline;
 using UnityEngine.Timeline;
 
-namespace Infastructure.CutScene.Editor
+namespace Infastructure.CutScenes.Editor
 {
     [CustomTimelineEditor(typeof(TransformMarker))]
     public class TransformMarkerEditor : MarkerEditor

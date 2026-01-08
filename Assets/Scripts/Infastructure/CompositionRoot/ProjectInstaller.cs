@@ -46,8 +46,6 @@ namespace Infastructure.CompositionRoot
 
             BindRestartService();
 
-            BindCutSceneService();
-
             BindCursorVisibleService();
 
             BindLocalizationService();
@@ -76,8 +74,7 @@ namespace Infastructure.CompositionRoot
         private void BindCursorVisibleService() =>
             Container.BindInterfacesAndSelfTo<CursorVisibleService>().AsSingle();
 
-        private void BindCutSceneService() =>
-            Container.BindInterfacesAndSelfTo<CutSceneService>().AsSingle();
+        
 
         private void BindRestartService() =>
             Container.BindInterfacesAndSelfTo<RestartService>().AsSingle();

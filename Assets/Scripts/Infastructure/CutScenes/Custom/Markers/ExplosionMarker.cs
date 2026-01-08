@@ -1,6 +1,6 @@
 using System;
 
-namespace Infastructure.CutScene.Custom.Markers
+namespace Infastructure.CutScenes.Custom.Markers
 {
     [Serializable]
     public class ExplosionMarker : TransformMarker

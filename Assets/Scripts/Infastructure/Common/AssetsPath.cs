@@ -10,6 +10,7 @@ namespace Infastructure.Common
         public const string GlobalWaterPath = "Prefabs/Water/GlobalWater";
         public const string WaterFallsPath = "Prefabs/Water/WaterFalls";
         public const string StableWorldUpPath = "Prefabs/CameraSystem/StableWorldUp";
+        public const string FlowerPickupCutscenePath = "Prefabs/Timeline/FlowerPickupCutscene";
         public const string UIRootPath = "Prefabs/UI/Windows/Root/UIRoot";
         public const string GamePlayUIPath = "Prefabs/UI/Windows/Root/GameplayUI";
         public const string LastChanceRoot = "Prefabs/UI/QTE/LastChanceRootQTE_UI";
@@ -38,5 +39,6 @@ namespace Infastructure.Common
         public const string WaterStaticDataPath = "StaticData/GlobalWater/WaterData";
         public const string WindowsLocalizationStaticDataPath = "StaticData/UI/WindowStaticLocalizationData";
         public const string LastChanceStaticDataPath = "StaticData/QTE/LastChanceData";
+        public const string CutSceneStaticDataPath = "StaticData/CutScenes/CutScenesData";
     }
 }

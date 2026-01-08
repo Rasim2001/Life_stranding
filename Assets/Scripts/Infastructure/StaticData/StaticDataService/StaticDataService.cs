@@ -1,4 +1,5 @@
 ﻿using Infastructure.Common;
+using Infastructure.StaticData.Cutscenes;
 using Infastructure.StaticData.GlobalWater;
 using Infastructure.StaticData.HUD;
 using Infastructure.StaticData.LastChance;
@@ -28,6 +29,7 @@ namespace Infastructure.StaticData.StaticDataService
         public WaterStaticData WaterStaticData { get; private set; }
         public WindowsLocalizationStaticData WindowsLocalizationStaticData { get; private set; }
         public LastChanceStaticData LastChanceStaticData { get; private set; }
+        public CutScenesStaticData CutScenesStaticData { get; private set; }
 
         public void LoadStaticData()
         {
@@ -46,6 +48,7 @@ namespace Infastructure.StaticData.StaticDataService
                 Resources.Load<WindowsLocalizationStaticData>(AssetsPath.WindowsLocalizationStaticDataPath);
 
             LastChanceStaticData = Resources.Load<LastChanceStaticData>(AssetsPath.LastChanceStaticDataPath);
+            CutScenesStaticData = Resources.Load<CutScenesStaticData>(AssetsPath.CutSceneStaticDataPath);
         }
     }
 }

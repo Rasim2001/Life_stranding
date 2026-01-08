@@ -3,11 +3,15 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
-namespace Infastructure.CutScene.Custom.Markers
+namespace Infastructure.CutScenes.Custom.Markers
 {
-    public class ResetAllTargetsMarker : Marker, INotification, INotificationOptionProvider
+    [Serializable]
+    public class TransformMarker : Marker, INotification, INotificationOptionProvider
     {
-        public PropertyName id => new(nameof(ResetAllTargetsMarker));
+        public PropertyName id => new(nameof(TransformMarker));
+
+        [Tooltip("Scene target resolved via PlayableDirector")]
+        public ExposedReference<Transform> Target;
 
         [SerializeField, HideInInspector] private string _bindingKey;
 
@@ -15,15 +19,16 @@ namespace Infastructure.CutScene.Custom.Markers
             NotificationFlags.TriggerOnce | NotificationFlags.Retroactive;
 
 #if UNITY_EDITOR
-        private void RegenerateBindingKey()
+        public void RegenerateBindingKey()
         {
             _bindingKey = $"TransformTarget_{Guid.NewGuid():N}";
+            Target.exposedName = new PropertyName(_bindingKey);
             UnityEditor.EditorUtility.SetDirty(this);
         }
 
         private void OnValidate()
         {
-            if (string.IsNullOrEmpty(_bindingKey))
+            if (string.IsNullOrEmpty(_bindingKey) || Target.exposedName == null)
                 RegenerateBindingKey();
         }
 #endif

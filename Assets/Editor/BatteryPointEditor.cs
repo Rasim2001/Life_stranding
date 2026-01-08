@@ -1,5 +1,5 @@
 using Common.SceneMarkers;
-using Infastructure.CutScene;
+using Infastructure.CutScenes;
 using SpiderController.TriggerChecker;
 using UnityEditor;
 using UnityEngine;

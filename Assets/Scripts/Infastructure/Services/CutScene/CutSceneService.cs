@@ -1,21 +1,25 @@
 using System;
 using System.Linq;
-using UI;
-using UI.Curtain;
+using Cysharp.Threading.Tasks;
+using Infastructure.CutScenes;
+using Infastructure.CutScenes.FlowerPickupCutscene;
+using Infastructure.StaticData.StaticDataService;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 using Zenject;
+using Object = UnityEngine.Object;
 
 namespace Infastructure.Services.CutScene
 {
-    public class CutSceneService : ICutSceneService, ITickable
+    public class CutSceneService : ICutSceneService
     {
+        private readonly IStaticDataService _staticDataService;
         public event Action<bool> OnCutsceneActiveChanged;
         public event Action OnSkipHappened;
-        public Action OnWeatherChanged { get; set; }
-        public float LerpForwardSpeed { get; set; }
-        public bool HasPlayed { get; set; }
+        public CutsceneId CutsceneId { get; private set; }
+
+        private ICutSceneRunner _cutSceneRunner;
+
+
         public bool IsActive
         {
             get => _isActive;
@@ -28,40 +32,42 @@ namespace Infastructure.Services.CutScene
             }
         }
 
-        private readonly ICurtainRoot _curtain;
         private bool _isActive;
+        private DiContainer _diContainer;
 
-        public CutSceneService(ICurtainRoot curtain) =>
-            _curtain = curtain;
-
-
-        public void Tick()
+        public CutSceneService(IStaticDataService staticDataService, DiContainer diContainer)
         {
-            /*if (AnyKeyPressed() && !HasPlayed && _isActive)
-                Skip();*/
+            _diContainer = diContainer;
+            _staticDataService = staticDataService;
         }
 
-        public void Skip()
+
+        public async UniTask StartCutsceneAsync(CutsceneId cutsceneId)
         {
-            /*HasPlayed = true;
-            _curtain.ShowAndHide();
-            OnSkipHappened?.Invoke();*/
+            CutsceneId = cutsceneId;
+
+            GameObject prefab = _staticDataService.CutScenesStaticData.Cutscenes
+                .First(x => x.Key == cutsceneId).Value;
+
+            GameObject cutSceneObject = _diContainer.InstantiatePrefab(prefab);
+            _cutSceneRunner = cutSceneObject.GetComponent<ICutSceneRunner>();
+
+            await Run();
+
+            Object.Destroy(cutSceneObject);
         }
 
-        public void Clear()
+        public void StartCutscene() =>
+            Run().Forget();
+
+        private async UniTask Run()
         {
-            HasPlayed = false;
+            IsActive = true;
+
+            await _cutSceneRunner.PlayAsync();
+            await UniTask.Delay(TimeSpan.FromSeconds(_cutSceneRunner.BlendingTime));
+
             IsActive = false;
-        }
-
-        private bool AnyKeyPressed()
-        {
-            Gamepad gp = Gamepad.current;
-            if (gp == null)
-                return Input.anyKeyDown;
-
-            return gp.allControls.Any(c => c is ButtonControl b && b.wasPressedThisFrame) ||
-                   Input.anyKeyDown;
         }
     }
 }

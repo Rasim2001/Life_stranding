@@ -5,17 +5,15 @@ using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
-using Infastructure.Services.Window;
 using Sirenix.Utilities;
 using SpiderController;
-using UI;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Splines;
 using Zenject;
 
-namespace Infastructure.CutScene
+namespace Infastructure.CutScenes
 {
     public class StartGameCutSceneRunner : MonoBehaviour
     {
@@ -25,7 +23,7 @@ namespace Infastructure.CutScene
         [SerializeField] private CinemachineCamera[] _cameras;
         [SerializeField] private float _startTime;
 
-        private IInputService _inputService;
+        /*private IInputService _inputService;
         private ICutSceneService _cutSceneService;
         private ICameraProviderService _cameraProviderService;
 
@@ -131,6 +129,6 @@ namespace Infastructure.CutScene
             Instantiate(Resources.Load<GameObject>(AssetsPath.WaterFallsPath));
 
             Destroy(gameObject);
-        }
+        }*/
     }
 }

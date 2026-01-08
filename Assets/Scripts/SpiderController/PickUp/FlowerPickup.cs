@@ -1,4 +1,8 @@
+using System;
+using Cysharp.Threading.Tasks;
 using Infastructure.Common.Pickup;
+using Infastructure.CutScenes;
+using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
@@ -20,15 +24,17 @@ namespace SpiderController.PickUp
         private readonly IPlatformObjectsService _platformObjectsService;
         private readonly IWindowService _windowService;
         private readonly IDefeatWindowService _defeatWindowService;
-
-        private HealthBarUI HealthBar => _spiderUI.HealthBar;
-        private SpiderHealth SpiderHealth => _spiderUI.SpiderHealth;
+        private readonly ICutSceneService _cutSceneService;
 
         private readonly FlowerChecker _flowerChecker;
         private readonly Flower _flower;
         private readonly SpiderUI _spiderUI;
-
         private readonly SpiderStaticData _spiderStaticData;
+
+        private HealthBarUI HealthBar => _spiderUI.HealthBar;
+        private SpiderHealth SpiderHealth => _spiderUI.SpiderHealth;
+
+        private bool _isFirstTime;
 
         public FlowerPickup(
             IInputService inputService,
@@ -36,6 +42,7 @@ namespace SpiderController.PickUp
             IPlatformObjectsService platformObjectsService,
             IWindowService windowService,
             IDefeatWindowService defeatWindowService,
+            ICutSceneService cutSceneService,
             FlowerChecker flowerChecker,
             Flower flower,
             SpiderUI spiderUI,
@@ -46,6 +53,7 @@ namespace SpiderController.PickUp
             _platformObjectsService = platformObjectsService;
             _windowService = windowService;
             _defeatWindowService = defeatWindowService;
+            _cutSceneService = cutSceneService;
             _flowerChecker = flowerChecker;
             _flower = flower;
             _spiderUI = spiderUI;
@@ -54,6 +62,8 @@ namespace SpiderController.PickUp
 
         public void Initialize()
         {
+            _isFirstTime = true;
+
             _flower.OnDroppedFromPlatform += DropFlowerHappened;
             _flower.OnGroundTriggered += GroundTriggered;
 
@@ -62,6 +72,8 @@ namespace SpiderController.PickUp
 
         public void Destroy()
         {
+            _isFirstTime = false;
+
             _flower.OnGroundTriggered -= GroundTriggered;
             _flower.OnDroppedFromPlatform -= DropFlowerHappened;
         }
@@ -72,13 +84,18 @@ namespace SpiderController.PickUp
 
             if (canDisplay && _inputService.PickupPressed && _platformObjectsService.IsEmpty() && !IsDeath())
             {
-                _windowService.OpenProductDescriptionPopup(ProductType.Flower);
+                if (_isFirstTime)
+                    PickupFlow().Forget();
+                else
+                {
+                    _windowService.OpenProductDescriptionPopup(ProductType.Flower);
 
-                _flower.StopSimulatePhysics();
-                HealthBar.PlayFadeHologramEffect();
+                    _flower.StopSimulatePhysics();
+                    HealthBar.PlayFadeHologramEffect();
+                }
             }
 
-            if (canDisplay && !IsDeath())
+            if (canDisplay && !IsDeath() && !_cutSceneService.IsActive)
                 _pickupDisplayer.Show(_flower.transform);
             else
                 _pickupDisplayer.Hide(_flower.transform);
@@ -91,10 +108,24 @@ namespace SpiderController.PickUp
         private bool CanDisplay() =>
             _flowerChecker.IsTouching && _flower.Rigidbody.IsSleeping() && !_flower.IsOnPlatform;
 
-        private void DropFlowerHappened() =>
+        private void DropFlowerHappened()
+        {
             HealthBar.ShowHologram();
+        }
 
-        private void GroundTriggered() =>
+        private void GroundTriggered() => 
             SpiderHealth.TakeDamage(_spiderStaticData.DamageAmount);
+
+        private async UniTask PickupFlow()
+        {
+            _isFirstTime = false;
+
+            await _cutSceneService.StartCutsceneAsync(CutsceneId.FlowerPickupCutscene);
+
+            _windowService.OpenProductDescriptionPopup(ProductType.Flower);
+
+            _flower.StopSimulatePhysics();
+            HealthBar.PlayFadeHologramEffect();
+        }
     }
 }

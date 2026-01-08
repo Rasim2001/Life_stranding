@@ -1,4 +1,5 @@
 using System;
+using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
 using Infastructure.Services.StartGame;
 using Infastructure.Services.Window;
@@ -13,6 +14,7 @@ namespace Infastructure.Services.PlayerInput
         public event Action OnJoystickDisableHappend;
 
         private readonly IWindowService _windowService;
+        private readonly ICutSceneService _cutSceneService;
 
         private IInputSource _inputSource;
         private IInputSource _joystickInputSource;
@@ -27,9 +29,11 @@ namespace Infastructure.Services.PlayerInput
         private bool _isConnected;
         private IStartGameReceiver _startGameReceiver;
 
-        public InputService(IWindowService windowService, IStartGameReceiver startGameReceiver)
+        public InputService(IWindowService windowService, IStartGameReceiver startGameReceiver,
+            ICutSceneService cutSceneService)
         {
             _startGameReceiver = startGameReceiver;
+            _cutSceneService = cutSceneService;
             _windowService = windowService;
         }
 
@@ -133,6 +137,8 @@ namespace Infastructure.Services.PlayerInput
         {
             _windowService.OnWindowOpened += WindowOpenedUI;
             _startGameReceiver.OnStartGameHappened += SetPlayerInputSource;
+            _cutSceneService.OnCutsceneActiveChanged += CutSceneActiveChanged;
+
 
             _inputSource = new CutSceneInputSource();
             _inputSource.Enable();
@@ -145,6 +151,7 @@ namespace Infastructure.Services.PlayerInput
         {
             _windowService.OnWindowOpened -= WindowOpenedUI;
             _startGameReceiver.OnStartGameHappened -= SetPlayerInputSource;
+            _cutSceneService.OnCutsceneActiveChanged -= CutSceneActiveChanged;
 
             _joystickInputSource?.Disable();
             _inputSource?.Disable();
@@ -158,8 +165,22 @@ namespace Infastructure.Services.PlayerInput
         public bool AnyActionPressed =>
             _inputSource.AnyKeyPressed();
 
+        public T GetInputSource<T>() =>
+            (T)_inputSource;
+
+        public bool IsActiveSource<T>() =>
+            _inputSource is T;
+
         private void SetPlayerInputSource() =>
             SetInputSource(new PlayerInputSource());
+
+        private void CutSceneActiveChanged(bool isActive)
+        {
+            if (isActive)
+                SetInputSource(new CutSceneInputSource());
+            else
+                SetInputSource(new PlayerInputSource());
+        }
 
 
         private void SetInputSource(IInputSource inputSource)
@@ -173,19 +194,13 @@ namespace Infastructure.Services.PlayerInput
             }
             else
             {
-                _inputSource = new PlayerInputSource();
+                _inputSource = inputSource;
                 OnJoystickDisableHappend?.Invoke();
             }
-
 
             _inputSource.Enable();
         }
 
-        public T GetInputSource<T>() =>
-            (T)_inputSource;
-
-        public bool IsActiveSource<T>() =>
-            _inputSource is T;
 
         private void DeviceChanged(InputDevice device, InputDeviceChange change)
         {

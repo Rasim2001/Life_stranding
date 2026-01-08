@@ -1,4 +1,4 @@
-using Infastructure.CutScene.Custom.Markers;
+using Infastructure.CutScenes.Custom.Markers;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Playables;
 using Zenject;
 
-namespace Infastructure.CutScene.Custom.Receivers
+namespace Infastructure.CutScenes.Custom.Receivers
 {
     public class PlayDirectorMarkerReceiver : MonoBehaviour, INotificationReceiver
     {
@@ -109,7 +109,7 @@ namespace Infastructure.CutScene.Custom.Receivers
 
         private void LookAtTarget()
         {
-            Vector3 toTarget = (_lookingTarget.position - _spider.transform.position).normalized;
+            /*Vector3 toTarget = (_lookingTarget.position - _spider.transform.position).normalized;
 
             Vector3 localDirection = _spider.transform.InverseTransformDirection(toTarget);
             _cutSceneInputSource.InputVector = new Vector3(localDirection.x, _cutSceneInputSource.InputVector.y,
@@ -122,7 +122,7 @@ namespace Infastructure.CutScene.Custom.Receivers
                 _cutSceneInputSource.InputVector = Vector3.zero;
                 _cutSceneService.LerpForwardSpeed = 0;
                 _lookingTarget = null;
-            }
+            }*/
         }
 
         private void MoveTo(Transform target) =>
@@ -130,15 +130,15 @@ namespace Infastructure.CutScene.Custom.Receivers
 
         private void LookAt(Transform target)
         {
-            _moveTarget = null;
+            /*_moveTarget = null;
             _cutSceneService.LerpForwardSpeed = 120;
 
-            _lookingTarget = target;
+            _lookingTarget = target;*/
         }
 
         private void TeleportTo(Transform target)
         {
-            _lookingTarget = null;
+            /*_lookingTarget = null;
             _moveTarget = null;
             _cutSceneInputSource.InputVector = Vector3.zero;
             _cutSceneService.LerpForwardSpeed = 0;
@@ -151,7 +151,7 @@ namespace Infastructure.CutScene.Custom.Receivers
             _spider.transform.rotation = target.transform.rotation;
 
             _spider.ForceLegsAfterTeleport();
-            _spider.enabled = true;
+            _spider.enabled = true;*/
         }
     }
 }

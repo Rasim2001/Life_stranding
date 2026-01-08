@@ -1,4 +1,5 @@
-﻿using Infastructure.StaticData.GlobalWater;
+﻿using Infastructure.StaticData.Cutscenes;
+using Infastructure.StaticData.GlobalWater;
 using Infastructure.StaticData.HUD;
 using Infastructure.StaticData.LastChance;
 using Infastructure.StaticData.Materials;
@@ -27,5 +28,6 @@ namespace Infastructure.StaticData.StaticDataService
         WaterStaticData WaterStaticData { get; }
         WindowsLocalizationStaticData WindowsLocalizationStaticData { get; }
         LastChanceStaticData LastChanceStaticData { get; }
+        CutScenesStaticData CutScenesStaticData { get; }
     }
 }

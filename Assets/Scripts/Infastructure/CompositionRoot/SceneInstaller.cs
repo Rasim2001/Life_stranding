@@ -1,6 +1,7 @@
 using Infastructure.Common;
 using Infastructure.Common.Pickup;
 using Infastructure.Common.StableWorlUpManagement;
+using Infastructure.CutScenes.FlowerPickupCutscene;
 using Infastructure.Factories.GameFactories;
 using Infastructure.PlatformRegistry;
 using Infastructure.Services.Ability;
@@ -87,6 +88,8 @@ namespace Infastructure.CompositionRoot
             BindLastChanceQTEService();
 
             BindSlowTimeService();
+
+            BindCutSceneService();
         }
 
         private void BindUI()
@@ -129,6 +132,9 @@ namespace Infastructure.CompositionRoot
 
         private void BindHitService() =>
             Container.BindInterfacesAndSelfTo<HintReceiverService>().AsSingle();
+
+        private void BindCutSceneService() =>
+            Container.BindInterfacesAndSelfTo<CutSceneService>().AsSingle();
 
 
         private void BindGeneratorLaunchTrackerService() =>
@@ -176,6 +182,7 @@ namespace Infastructure.CompositionRoot
                 .FromComponentInNewPrefabResource(AssetsPath.StableWorldUpPath)
                 .AsSingle();
         }
+
 
         private void BindInputService() =>
             Container.BindInterfacesAndSelfTo<InputService>().AsSingle();

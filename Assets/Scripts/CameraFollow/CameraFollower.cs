@@ -107,7 +107,7 @@ namespace CameraFollow
 
         private void Update()
         {
-            if (_target == null || _cutSceneService.IsActive || _defeatWindowService.IsDefeated)
+            if (_target == null || _defeatWindowService.IsDefeated)
                 return;
 
             if (_isMouseRotating)

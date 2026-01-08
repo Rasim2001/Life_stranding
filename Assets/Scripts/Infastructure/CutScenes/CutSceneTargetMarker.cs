@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Infastructure.CutScene
+namespace Infastructure.CutScenes
 {
     public class CutSceneTargetMarker : MonoBehaviour
     {

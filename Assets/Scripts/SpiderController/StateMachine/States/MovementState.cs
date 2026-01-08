@@ -72,11 +72,7 @@ namespace SpiderController.StateMachine.States
             Data.Input = _inputService.InputVector;
             Data.Velocity = Data.Input * Data.Speed;
 
-            float lerpForwardSpeed = _cutSceneService.IsActive && _cutSceneService.LerpForwardSpeed != 0
-                ? _cutSceneService.LerpForwardSpeed
-                : SpiderStaticData.LerpForwardSpeed;
-
-            Data.RotationAmount = Data.Input.x * lerpForwardSpeed;
+            Data.RotationAmount = Data.Input.x * SpiderStaticData.LerpForwardSpeed;
         }
 
         public virtual void Update()

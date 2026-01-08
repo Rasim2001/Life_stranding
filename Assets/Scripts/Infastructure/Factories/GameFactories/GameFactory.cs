@@ -5,8 +5,6 @@ using Common;
 using GameDevBuddies;
 using HUD;
 using Infastructure.Common;
-using Infastructure.CutScene;
-using Infastructure.CutScene.Custom.Receivers;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.PlayerProgressService;

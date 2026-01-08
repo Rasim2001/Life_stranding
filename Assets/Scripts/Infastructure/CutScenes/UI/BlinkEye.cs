@@ -1,10 +1,9 @@
 using DG.Tweening;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-namespace Infastructure.CutScene.UI
+namespace Infastructure.CutScenes.UI
 {
     public class BlinkEye : MonoBehaviour
     {

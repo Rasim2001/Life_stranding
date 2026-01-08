@@ -1,8 +1,10 @@
 using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
+using PickupObjects;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
+using SpiderController.StateMachine.States.Ground;
 using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Airborn
@@ -46,6 +48,10 @@ namespace SpiderController.StateMachine.States.Airborn
             base.Update();
 
             Data.YVelocity -= SpiderStaticData.BaseGravity * Data.AirbornSpeed * Time.deltaTime;
+
+            if (InputService.JerkPressed && Data.CurrentEnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling &&
+                Spider.AbilityService.IsExploredAbility(ProductType.JerkSkillProduct))
+                StateMachine.SwitchState<JerkState>();
         }
 
         protected override void TryMoveLegs()

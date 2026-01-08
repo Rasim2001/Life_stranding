@@ -115,7 +115,7 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
         {
             base.OnCollisionEnter(other);
 
-            if (_isTriggered || _groundLayer != (_groundLayer | (1 << other.gameObject.layer)))
+            if (_isTriggered || _groundLayer != (_groundLayer | (1 << other.gameObject.layer)) || !WasOnPlatform)
                 return;
 
             _flowerSelector.ShowNextVariant();
@@ -158,7 +158,7 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             Collider.enabled = false;
 
             transform.position = checkPoint.FlowerPutdownPosition;
-            transform.rotation = checkPoint.FlowerPutdownRotation; 
+            transform.rotation = checkPoint.FlowerPutdownRotation;
 
             _stateMachineData.TotalWeight -= _productData.Weight;
 

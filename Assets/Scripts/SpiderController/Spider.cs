@@ -233,8 +233,8 @@ namespace SpiderController
             _spiderPlane.Initialize();
 
             _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _platformObjectsService, _windowService,
-                _defeatWindowService,
-                _flowerChecker, flower, _spiderUI, _staticDataService.SpiderStaticData);
+                _defeatWindowService, _cutSceneService, _flowerChecker, flower, _spiderUI,
+                _staticDataService.SpiderStaticData);
             _flowerPickup.Initialize();
 
             _batteryProductPickup = new BatteryProductPickup(_hintReceiverService, _inputService, _pickupDisplayer,

@@ -2,7 +2,6 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Infastructure.Common;
-using Infastructure.Services.CutScene;
 using Infastructure.Services.Restart;
 using Infastructure.StaticData.StaticDataService;
 using UI.Curtain;
@@ -18,18 +17,15 @@ namespace Infastructure.States
         private readonly IStaticDataService _staticDataService;
         private readonly ICurtainRoot _curtainRoot;
         private readonly IRestartService _restartService;
-        private readonly ICutSceneService _cutSceneService;
 
         public LoadLevelState(IStateMachine stateMachine, ISceneLoader sceneLoader,
-            IStaticDataService staticDataService, ICurtainRoot curtainRoot, IRestartService restartService,
-            ICutSceneService cutSceneService)
+            IStaticDataService staticDataService, ICurtainRoot curtainRoot, IRestartService restartService)
         {
             _stateMachine = stateMachine;
             _sceneLoader = sceneLoader;
             _staticDataService = staticDataService;
             _curtainRoot = curtainRoot;
             _restartService = restartService;
-            _cutSceneService = cutSceneService;
         }
 
         public void Enter()
