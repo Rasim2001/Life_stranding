@@ -4,6 +4,7 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
 using UnityEngine;
 
@@ -29,8 +30,10 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Enter();
 
+            Spider.WindowService.OnWindowOpened += ReturnToNormalMovement;
+            Data.OnTotalWeightChanged += WeightChanged;
             Data.DistanceFromGround = SpiderStaticData.SlowdownDistanceFromGround;
-            Data.Speed = SpiderStaticData.SlowdownSpeed;
+            SetSpeed(SpiderStaticData.SlowdownSpeed);
 
             _localMoveTween?.Kill();
             _localMoveTween = Spider.RotationPlaneTransform.DOLocalMove(Vector3.zero, 0.5f);
@@ -41,6 +44,9 @@ namespace SpiderController.StateMachine.States.Ground
         public override void Exit()
         {
             base.Exit();
+
+            Spider.WindowService.OnWindowOpened -= ReturnToNormalMovement;
+            Data.OnTotalWeightChanged -= WeightChanged;
 
             _localMoveTween?.Kill();
             _localMoveTween = Spider.RotationPlaneTransform.DOLocalMove(_defaultPosition, 0.5f);
@@ -56,6 +62,11 @@ namespace SpiderController.StateMachine.States.Ground
             if (!SlowdownUp())
                 return;
 
+            ReturnToNormalMovement();
+        }
+
+        private void ReturnToNormalMovement()
+        {
             if (IsInputZero())
                 StateMachine.SwitchState<IdlingState>();
             else if (IsFastRunPressed() && Spider.AbilityService.IsExploredAbility(ProductType.FastRunSkillProduct))
@@ -63,5 +74,8 @@ namespace SpiderController.StateMachine.States.Ground
             else
                 StateMachine.SwitchState<RunningState>();
         }
+
+        private void WeightChanged() =>
+            SetSpeed(SpiderStaticData.SlowdownSpeed);
     }
 }

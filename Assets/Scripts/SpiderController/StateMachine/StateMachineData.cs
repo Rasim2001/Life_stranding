@@ -6,6 +6,9 @@ namespace SpiderController.StateMachine
     public class StateMachineData
     {
         public event Action<bool> OnFallingDownStateChanged;
+        public event Action OnTotalWeightChanged;
+
+
         public Action<float> OnShakeHappened;
 
         public bool IsFallingDownWithoutEnergyState
@@ -32,13 +35,35 @@ namespace SpiderController.StateMachine
         public float RotationAmount;
 
         public float DistanceFromGround = 0.5f;
-        public float Speed;
+        public float Speed
+        {
+            get => _speed;
+
+            set
+            {
+                float newValue = value;
+
+                float actualSpeed = newValue / (1 + _slowdownFactor * TotalWeight);
+
+                _speed = actualSpeed;
+            }
+        }
+
         public float YVelocity;
         public float XVelocity;
         public float GlobalY;
         public float AirbornSpeed;
         public float CurrentEnergyFillAmount = 1;
         public float EnergyFillAmount;
+        public float TotalWeight
+        {
+            get => _totalWeight;
+            set
+            {
+                _totalWeight = value;
+                OnTotalWeightChanged?.Invoke();
+            }
+        }
 
         public bool IsMouseHolding;
         public bool IsStandingUpAfterFalling;
@@ -46,6 +71,19 @@ namespace SpiderController.StateMachine
         public float TerrainTimer;
         public float TerrainTimerDefault;
 
+
+        private readonly float _slowdownFactor = 0.25f;
+        private float _speed;
         private bool _IsFallingDownWithoutEnergyState;
+        private float _totalWeight;
+
+        public void Clear()
+        {
+            Input = Vector3.zero;
+            Velocity = Vector3.zero;
+            ExplosionAngularVector = Vector3.zero;
+
+            TotalWeight = 0;
+        }
     }
 }

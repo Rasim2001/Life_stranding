@@ -54,6 +54,7 @@ float3 RemapFloat3(float3 inValue, float3 inMin, float3 inMax, float3 outMin, fl
 float GetLuminanceRaw(float4 col)
 {
 	float res = 0.3 * col.r + 0.59 * col.g + 0.11 * col.b;
+	res *= col.a;
 	return res;
 }
 

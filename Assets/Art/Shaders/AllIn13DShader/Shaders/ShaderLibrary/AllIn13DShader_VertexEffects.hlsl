@@ -126,10 +126,11 @@ float3 Wind(float3 vertexPos, float3 shaderTime)
 
 	windDisplacement.y = 0;
 	
+	float3 positionWS = GetPositionWS(float4(res, 1.0));
+	positionWS += windDisplacement;
 	
+	res = GetPositionOS(float4(positionWS, 1.0));
 	
-	res += windDisplacement;
-
 	return res;
 }
 #endif

@@ -1,6 +1,10 @@
 using Infastructure.Common;
+using Infastructure.Services.QTE;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
+using SpiderController.UI.LastChanceQTE;
 using UI.MVVM.Base;
 using UI.MVVM.View.Root;
+using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
 
@@ -13,9 +17,12 @@ namespace Infastructure.Factories.GameFactories
         private readonly UIGameplayRootViewModel _gameplayRootViewModel;
 
         private IGameUIFactory _iuiFactory;
+        private ILastChanceQTEService _lastChanceQteService;
 
-        public GameUIFactory(DiContainer diContainer, UIGameplayRootViewModel gameplayRootViewModel, IUIRoot uiRoot)
+        public GameUIFactory(DiContainer diContainer, UIGameplayRootViewModel gameplayRootViewModel, IUIRoot uiRoot,
+            ILastChanceQTEService lastChanceQTEService)
         {
+            _lastChanceQteService = lastChanceQTEService;
             _diContainer = diContainer;
             _gameplayRootViewModel = gameplayRootViewModel;
             _uiRoot = uiRoot;
@@ -40,6 +47,16 @@ namespace Infastructure.Factories.GameFactories
             binder.Bind(viewModel);
 
             return binder;
+        }
+
+        public void CreateLastChanceRoot(Flower flower, LastChanceBarUI lastChanceBarUI)
+        {
+            LastChanceRootUI lastChanceRoot =
+                _diContainer.InstantiatePrefabResourceForComponent<LastChanceRootUI>(AssetsPath.LastChanceRoot);
+
+            lastChanceRoot.SetFlowerTransform(flower);
+
+            _lastChanceQteService.Initialize(lastChanceRoot, lastChanceBarUI);
         }
 
 

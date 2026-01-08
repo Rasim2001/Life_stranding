@@ -6,6 +6,7 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Airborn;
 using SpiderController.TriggerChecker;
@@ -33,6 +34,8 @@ namespace SpiderController.StateMachine.States.Ground
 
             if (IsNotMoveableLayer())
                 StateMachine.SwitchState<RecoveryState>();
+
+            Data.YVelocity = 0;
         }
 
 
@@ -52,8 +55,7 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Update();
 
-            if (InputService.TabPressed && !Spider.EventSystemSelector.HasFocusUI() &&
-                Spider.AbilityService.IsExploredAbility(ProductType.TerrainScanSkillProduct))
+            if (CanUse())
                 StartTerrainScan().Forget();
 
             if (IsNotMoveableLayer())
@@ -69,6 +71,14 @@ namespace SpiderController.StateMachine.States.Ground
             if (InputService.JerkPressed && Data.CurrentEnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling &&
                 Spider.AbilityService.IsExploredAbility(ProductType.JerkSkillProduct))
                 StateMachine.SwitchState<JerkState>();
+        }
+
+        private bool CanUse()
+        {
+            return InputService.TabPressed && !Spider.EventSystemSelector.HasFocusUI() &&
+                   Spider.AbilityService.IsExploredAbility(ProductType.TerrainScanSkillProduct) &&
+                   !Spider.PauseService.IsPaused &&
+                   !Spider.CutSceneService.IsActive;
         }
 
         private async UniTask StartTerrainScan()

@@ -5,17 +5,17 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
 using SpiderController.TriggerChecker;
 using SpiderController.UI.Stickers;
+using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Airborn
 {
     public class FallingWithoutEnergyState : AirbornState
     {
-        //private Sticker Sticker => Spider.SpiderUI.Sticker;
-
         private readonly GroundChecker _spiderGroundChecker;
 
         public FallingWithoutEnergyState(ISpiderStateMachine stateMachine, IInputService inputService,
@@ -32,6 +32,8 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Enter();
 
+            Spider.WaterObserverTrigger.OnTriggerEnterHappened += OnTriggerEnterWithWater;
+
             Data.GlobalY = Spider.transform.position.y;
             Data.AirbornSpeed = SpiderStaticData.FallWithoutEnergySpeed;
             Data.IsFallingDownWithoutEnergyState = true;
@@ -45,6 +47,8 @@ namespace SpiderController.StateMachine.States.Airborn
         public override void Exit()
         {
             base.Exit();
+
+            Spider.WaterObserverTrigger.OnTriggerEnterHappened -= OnTriggerEnterWithWater;
 
             Spider.Stickers.PlaySticker(StickerEnum.FallingDown);
             Data.IsFallingDownWithoutEnergyState = false;
@@ -62,6 +66,9 @@ namespace SpiderController.StateMachine.States.Airborn
             if (_spiderGroundChecker.IsTouchesWithLegs)
                 StandUpAsync().Forget();
         }
+
+        protected override Vector3 GetMovementY() =>
+            Vector3.up * Data.YVelocity;
 
 
         private async UniTask StandUpAsync()

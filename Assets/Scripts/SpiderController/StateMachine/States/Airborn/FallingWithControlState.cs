@@ -3,6 +3,7 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
 using SpiderController.TriggerChecker;
@@ -29,6 +30,8 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Enter();
 
+            Spider.WaterObserverTrigger.OnTriggerEnterHappened += OnTriggerEnterWithWater;
+
             Data.GlobalY = Spider.transform.position.y;
             Data.AirbornSpeed = SpiderStaticData.FallWithoutEnergySpeed;
 
@@ -38,6 +41,8 @@ namespace SpiderController.StateMachine.States.Airborn
         public override void Exit()
         {
             base.Exit();
+
+            Spider.WaterObserverTrigger.OnTriggerEnterHappened -= OnTriggerEnterWithWater;
 
             SetUncrossLegs();
         }
@@ -63,5 +68,7 @@ namespace SpiderController.StateMachine.States.Airborn
                     StateMachine.SwitchState<RunningState>();
             }
         }
+
+       
     }
 }

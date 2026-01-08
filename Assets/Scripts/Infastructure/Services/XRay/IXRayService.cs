@@ -7,8 +7,9 @@ namespace Infastructure.Services.XRay
     {
         void Add(XRayMarker xRayMarker);
         void Remove(XRayMarker xRayMarker);
-        void Initialize(Transform xRayContainer, Transform hudTransform);
+        void Initialize(Transform xRayContainer, Transform hudTransform, Transform containerDisabled);
         void Show(XRayMarker xRayMarker);
         void Hide(XRayMarker xRayMarker);
+        void Initialize();
     }
 }

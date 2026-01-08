@@ -1,7 +1,12 @@
+using System;
 using Infastructure.Common.StableWorlUpManagement;
+using Infastructure.Services.CameraProvider;
+using Infastructure.Services.CursorVisible;
 using Infastructure.Services.CutScene;
+using Infastructure.Services.Defeat;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
+using Infastructure.Services.Window;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using Unity.Cinemachine;
@@ -12,12 +17,16 @@ namespace CameraFollow
 {
     public class CameraFollower : MonoBehaviour
     {
+        private const float MaxUpDriftAngle = 30;
         private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
 
         private IInputService _inputService;
         private IStaticDataService _staticDataService;
         private IStableWorldUp _stableWorldUp;
         private ICutSceneService _cutSceneService;
+        private IDefeatWindowService _defeatWindowService;
+        private IWindowService _windowService;
+        private ICursorVisibleService _cursorVisibleService;
 
         private Transform _target;
         private Vector3 _velocity;
@@ -36,23 +45,36 @@ namespace CameraFollow
         private JoystickInputSource _joystickInputSource;
 
         private float _defaultY;
+        private Quaternion _orbitStartRotation;
 
+        private float _maxRotationY = 3.0f;
+        private ICameraProviderService _cameraProviderService;
 
         [Inject]
         public void Construct(
             IInputService inputService,
             IStaticDataService staticDataService,
             IStableWorldUp stableWorldUp,
-            ICutSceneService cutSceneService)
+            ICutSceneService cutSceneService,
+            IDefeatWindowService defeatWindowService,
+            IWindowService windowService,
+            ICursorVisibleService cursorVisibleService,
+            ICameraProviderService cameraProviderService)
         {
+            _cameraProviderService = cameraProviderService;
+            _cursorVisibleService = cursorVisibleService;
+            _windowService = windowService;
+            _defeatWindowService = defeatWindowService;
             _cutSceneService = cutSceneService;
             _stableWorldUp = stableWorldUp;
             _staticDataService = staticDataService;
             _inputService = inputService;
         }
 
-        private void Awake() =>
+        private void Awake()
+        {
             _mouseSensitivity = 2;
+        }
 
         public void Initialize(CameraSystem cameraSystem) =>
             _cameraSystem = cameraSystem;
@@ -62,102 +84,164 @@ namespace CameraFollow
 
         private void Start()
         {
-            _defaultY = _cameraSystem.RotationComposer.Composition.ScreenPosition.y;
+            _defaultY = _cameraSystem.ThirdPersonFollow.ShoulderOffset.y;
+            _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed;
 
-            _joystickInputSource = _inputService.GetInputSource<JoystickInputSource>();
+            _windowService.OnWindowOpened += ReleaseInput;
 
-            CinemachineCore.CameraUpdatedEvent.AddListener(UpdateAfterCinemachine);
+            _inputService.OnJoystickEnableHappend += JoystickEnabled;
+            _inputService.OnJoystickDisableHappend += JoystickDisabled;
+
+            _cursorVisibleService.OnHideCursorHappened += StartInput;
         }
 
-        private void OnDestroy() =>
-            CinemachineCore.CameraUpdatedEvent.RemoveListener(UpdateAfterCinemachine);
+        private void OnDestroy()
+        {
+            _windowService.OnWindowOpened -= ReleaseInput;
 
+            _inputService.OnJoystickDisableHappend -= JoystickDisabled;
+            _inputService.OnJoystickEnableHappend -= JoystickEnabled;
+
+            _cursorVisibleService.OnHideCursorHappened -= StartInput;
+        }
+
+        private void Update()
+        {
+            if (_target == null || _defeatWindowService.IsDefeated)
+                return;
+
+            if (_isMouseRotating)
+                CalculateMoveCamera();
+            else
+                ClimbMoveCamera();
+
+            float upAngle = Vector3.Angle(transform.up, _cameraProviderService.CameraTransform.up);
+
+            if (upAngle > MaxUpDriftAngle)
+                RealignOrbitToWorldUp();
+
+            WorldUpRotate();
+            HandleMouse();
+        }
 
         private void FixedUpdate()
         {
-            if (_target == null)
+            if (_target == null || _defeatWindowService.IsDefeated)
                 return;
+
+            if (_isMouseRotating)
+                RotateCamera();
 
             MoveToTarget();
-
-            if (!_isMouseRotating)
-                RotateToTarget();
         }
 
-        private void UpdateAfterCinemachine(CinemachineBrain _)
-        {
-            if (_target == null || _cutSceneService.IsActive)
-                return;
+        private void JoystickDisabled() =>
+            _joystickInputSource = null;
 
-            HandleScrollWheel();
-            HandleMouse();
-            WorldUpRotate();
+        private void RotateCamera()
+        {
+            Vector3 up = _cameraProviderService.CameraTransform.up;
+            Quaternion yaw = Quaternion.AngleAxis(_xRotation, up);
+
+            Quaternion targetRot = yaw * _orbitStartRotation;
+
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRot,
+                Time.fixedDeltaTime * _cameraRotationSpeed
+            );
+        }
+
+        private void JoystickEnabled(IInputSource obj) =>
+            _joystickInputSource = (JoystickInputSource)obj;
+
+
+        private void ClimbMoveCamera()
+        {
+            float spiderPitch = Mathf.Abs(Mathf.DeltaAngle(0f, _target.transform.eulerAngles.z));
+            float targetY;
+
+            if (spiderPitch > 0f)
+            {
+                float t = Mathf.InverseLerp(0f, 45, spiderPitch);
+                t = Mathf.Clamp01(t);
+
+                targetY = Mathf.Lerp(_defaultY, 5, t);
+            }
+            else
+                targetY = _defaultY;
+
+            _yRotation = Mathf.Lerp(
+                _yRotation,
+                targetY,
+                _cameraRotationSpeed * Time.deltaTime);
+
+
+            float yLerp = Mathf.Lerp(
+                _cameraSystem.ThirdPersonFollow.ShoulderOffset.y,
+                _yRotation,
+                _cameraRotationSpeed * Time.deltaTime);
+
+            _cameraSystem.ThirdPersonFollow.ShoulderOffset = new Vector3(
+                _cameraSystem.ThirdPersonFollow.ShoulderOffset.x,
+                yLerp,
+                _cameraSystem.ThirdPersonFollow.ShoulderOffset.z);
+        }
+
+        private void CalculateMoveCamera()
+        {
+            float mouseX = _inputService.MouseXAxis;
+            float mouseY = _inputService.MouseYAxis;
+
+            _xRotation += mouseX * SpiderStaticData.MouseRotationSpeedX;
+            _yRotation -= mouseY * SpiderStaticData.MouseRotationSpeedY * Time.deltaTime;
+
+            _yRotation = Mathf.Clamp(_yRotation, 0, _maxRotationY);
+            float yLerp = Mathf.Lerp(_cameraSystem.ThirdPersonFollow.ShoulderOffset.y, _yRotation,
+                _cameraRotationSpeed * Time.deltaTime);
+
+            _cameraSystem.ThirdPersonFollow.ShoulderOffset = new Vector3(
+                _cameraSystem.ThirdPersonFollow.ShoulderOffset.x, yLerp,
+                _cameraSystem.ThirdPersonFollow.ShoulderOffset.z);
+        }
+
+
+        private void HandleMouse()
+        {
+            if (_inputService.LeftMousePressed)
+                ReleaseInput();
+
+            if (_inputService.LeftMouseUp)
+                StartInput();
         }
 
         private void WorldUpRotate() =>
             _stableWorldUp.Rotate(_target.rotation);
 
 
-        private void HandleScrollWheel()
+        private void ReleaseInput()
         {
-            float scrollInput = _inputService.ScrollWheelAxis;
+            //_xRotation = 0;
 
-            float maxLenght;
-            if (_joystickInputSource == null)
-                maxLenght = 7;
-            else
-                maxLenght = _joystickInputSource.IsGamepadActiveNow() ? 4 : 7;
-
-
-            if (scrollInput != 0f)
-            {
-                _mouseSensitivity -= scrollInput * SpiderStaticData.ScrollSensitivity;
-                _mouseSensitivity = Mathf.Clamp(_mouseSensitivity, 2, maxLenght);
-            }
-
-            float smoothSensitivityY = Mathf.Lerp(_cameraSystem.ThirdPersonFollow.ShoulderOffset.y, _mouseSensitivity,
-                Time.deltaTime * 5);
-
-            _cameraSystem.ThirdPersonFollow.ShoulderOffset = new Vector3(
-                _cameraSystem.ThirdPersonFollow.ShoulderOffset.x,
-                smoothSensitivityY,
-                _cameraSystem.ThirdPersonFollow.ShoulderOffset.z);
+            _isMouseRotating = false;
         }
 
-        private void HandleMouse()
+        private void StartInput()
         {
-            if (_inputService.CenterMousePressed)
-            {
-                _isMouseRotating = true;
+            _isMouseRotating = true;
+            _xRotation = 0f;
 
-                _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed;
-            }
+            if (_stableWorldUp.StableWorldUpTransform == null)
+                return;
 
-            if (_inputService.CenterMouseUp)
-            {
-                _cameraRotationSpeed = SpiderStaticData.CameraRotationSpeed / 3;
+            Vector3 worldUp = _stableWorldUp.StableWorldUpTransform.up;
+            Vector3 forward = Vector3.ProjectOnPlane(transform.forward, worldUp);
+            if (forward.sqrMagnitude < 0.0001f)
+                forward = Vector3.Cross(worldUp, transform.right);
 
-                _yRotation = _defaultY;
-                _xRotation = 0;
-
-                _isMouseRotating = false;
-            }
-
-
-            if (_isMouseRotating)
-            {
-                float mouseXAxis = _inputService.MouseXAxis;
-                float mouseYAxis = _inputService.MouseYAxis;
-
-                _yRotation += mouseYAxis * SpiderStaticData.MouseRotationSpeedY * Time.deltaTime;
-                _xRotation += mouseXAxis * SpiderStaticData.MouseRotationSpeedX * Time.deltaTime;
-            }
-
-            Vector2 rotationVector = new Vector2(-_xRotation, _yRotation);
-
-            _cameraSystem.RotationComposer.Composition.ScreenPosition =
-                Vector2.Lerp(_cameraSystem.RotationComposer.Composition.ScreenPosition, rotationVector,
-                    _cameraRotationSpeed * Time.deltaTime);
+            forward.Normalize();
+            _orbitStartRotation = Quaternion.LookRotation(forward, worldUp);
+            transform.rotation = _orbitStartRotation;
         }
 
 
@@ -167,17 +251,33 @@ namespace CameraFollow
                 transform.position,
                 _target.position,
                 ref _velocity,
-                SpiderStaticData.SmoothTime
+                SpiderStaticData.SmoothTime,
+                Mathf.Infinity,
+                Time.fixedDeltaTime
             );
         }
 
-        private void RotateToTarget()
+        private void RealignOrbitToWorldUp()
         {
-            transform.rotation = Quaternion.Lerp(
+            Vector3 worldUp = _stableWorldUp.StableWorldUpTransform.up;
+
+            Vector3 forward = Vector3.ProjectOnPlane(transform.forward, worldUp);
+            if (forward.sqrMagnitude < Mathf.Epsilon)
+                forward = Vector3.Cross(worldUp, transform.right);
+
+            forward.Normalize();
+
+            Quaternion aligned = Quaternion.LookRotation(forward, worldUp);
+
+            transform.rotation = Quaternion.Slerp(
                 transform.rotation,
-                _target.rotation,
-                Time.fixedDeltaTime * SpiderStaticData.CameraRotationSpeed
+                aligned,
+                Time.deltaTime * 5
             );
+
+            _xRotation = 0f;
+            _yRotation = _cameraSystem.ThirdPersonFollow.ShoulderOffset.y;
+            _orbitStartRotation = aligned;
         }
     }
 }

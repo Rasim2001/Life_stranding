@@ -1,0 +1,134 @@
+using System.Collections.Generic;
+using System.Linq;
+using Infastructure.Common;
+using Infastructure.Services.CameraProvider;
+using Infastructure.Services.CutScene;
+using Infastructure.Services.PlayerInput;
+using Infastructure.Services.PlayerInput.InputSourceRealization;
+using Sirenix.Utilities;
+using SpiderController;
+using Unity.Cinemachine;
+using UnityEngine;
+using UnityEngine.Playables;
+using UnityEngine.Splines;
+using Zenject;
+
+namespace Infastructure.CutScenes
+{
+    public class StartGameCutSceneRunner : MonoBehaviour
+    {
+        private const string CinemachineTrack = "Cinemachine Track";
+
+        [SerializeField] private CinemachineCamera _firstCamera;
+        [SerializeField] private CinemachineCamera[] _cameras;
+        [SerializeField] private float _startTime;
+
+        /*private IInputService _inputService;
+        private ICutSceneService _cutSceneService;
+        private ICameraProviderService _cameraProviderService;
+
+        private Spline _spline;
+        private Vector3 _lastPoint;
+
+        private Spider _spider;
+        private CutSceneInputSource _cutSceneInputSource;
+        private PlayableDirector _playableDirector;
+        private CinemachineBrain _mainBrainCamera;
+
+
+        [Inject]
+        public void Construct(IInputService inputService, ICutSceneService cutSceneService,
+            ICameraProviderService cameraProviderService)
+        {
+            _cameraProviderService = cameraProviderService;
+            _inputService = inputService;
+            _cutSceneService = cutSceneService;
+        }
+
+        public void Initialize(Spider spider)
+        {
+            _cameras.ForEach(x => x.Follow = spider.transform);
+            _spider = spider;
+        }
+
+
+        private void Awake()
+        {
+            _playableDirector = GetComponent<PlayableDirector>();
+            _cutSceneInputSource = _inputService.GetInputSource<CutSceneInputSource>();
+            _mainBrainCamera = _cameraProviderService.CameraTransform.GetComponent<CinemachineBrain>();
+
+            List<PlayableBinding> playableBindings = _playableDirector.playableAsset.outputs
+                .Where(x => x.streamName == CinemachineTrack).ToList();
+
+            playableBindings.ForEach(x => _playableDirector.SetGenericBinding(x.sourceObject, _mainBrainCamera));
+
+            _playableDirector.stopped += StopCutScene;
+            _cutSceneService.OnSkipHappened += SkipCutscene;
+            _cutSceneService.OnCutsceneActiveChanged += ActiveCutsceneChanged;
+        }
+
+
+        private void Start() =>
+            _firstCamera.Priority = 100;
+
+
+        private void OnDestroy()
+        {
+            _playableDirector.stopped -= StopCutScene;
+            _cutSceneService.OnSkipHappened -= SkipCutscene;
+            _cutSceneService.OnCutsceneActiveChanged -= ActiveCutsceneChanged;
+        }
+
+        public void FastRunMovingSignal() =>
+            _cutSceneInputSource.IsLeftShiftPressed = true;
+
+        public void StopFastRunMovingSignal() =>
+            _cutSceneInputSource.IsLeftShiftUp = true;
+
+        public void ShakeCamera() =>
+            _spider.OnShakeCameraHappened?.Invoke(20);
+
+        private void StopCutScene(PlayableDirector obj) =>
+            SkipCustom();
+
+        private void ActiveCutsceneChanged(bool isActive)
+        {
+            if (isActive)
+                Play();
+        }
+
+        private void Play()
+        {
+            _playableDirector.RebuildGraph();
+            _playableDirector.time = Mathf.Max(0, _startTime);
+            _playableDirector.Evaluate();
+            _playableDirector.Play();
+        }
+
+        private void SkipCutscene()
+        {
+            ChangeWeather();
+            SkipCustom();
+
+            _playableDirector.time = _playableDirector.duration;
+            _playableDirector.Stop();
+        }
+
+        public void ChangeWeather() =>
+            _cutSceneService.OnWeatherChanged?.Invoke();
+
+        private void SkipCustom()
+        {
+            _cutSceneService.IsActive = false;
+            _cutSceneService.HasPlayed = true;
+
+            _mainBrainCamera.UpdateMethod = CinemachineBrain.UpdateMethods.FixedUpdate;
+            //_inputService.SetInputSource(new PlayerInputSource());
+
+            Instantiate(Resources.Load<GameObject>(AssetsPath.WaterFallsPath));
+
+            Destroy(gameObject);
+        }*/
+    }
+}

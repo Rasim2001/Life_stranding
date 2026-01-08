@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using PickupObjects;
 
 namespace Infastructure.Services.Ability
@@ -6,5 +8,9 @@ namespace Infastructure.Services.Ability
     {
         void PickUpAbility(ProductType product);
         bool IsExploredAbility(ProductType pickedProduct);
+        List<ProductType> GetAllExploredAbilities();
+        event Action<ProductType> OnAbilityAddHappened;
+        void Initialize();
+        void Dispose();
     }
 }

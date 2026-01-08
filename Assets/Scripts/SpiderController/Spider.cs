@@ -1,22 +1,32 @@
 using System;
 using System.Collections.Generic;
+using Common;
 using HighlightPlus;
-using HUD;
 using Infastructure.Common.Pickup;
+using Infastructure.Common.StableWorlUpManagement;
+using Infastructure.Data;
 using Infastructure.PlatformRegistry;
 using Infastructure.Services.Ability;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
+using Infastructure.Services.Defeat;
+using Infastructure.Services.Hint;
 using Infastructure.Services.Magnet;
 using Infastructure.Services.Pause;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.PlayerProgressService;
+using Infastructure.Services.ProgressWatchers;
+using Infastructure.Services.SaveLoadService;
 using Infastructure.Services.Window;
 using Infastructure.Services.XRay;
 using Infastructure.States;
+using Infastructure.StaticData.GlobalWater;
 using Infastructure.StaticData.StaticDataService;
-using PickupObjects.PickUpOnPlatform;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using Sirenix.OdinInspector;
+using SpiderController.Magnet;
 using SpiderController.PickUp;
 using SpiderController.Platform;
 using SpiderController.Scanner;
@@ -32,7 +42,7 @@ using Zenject;
 namespace SpiderController
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class Spider : SerializedMonoBehaviour
+    public class Spider : SerializedMonoBehaviour, ISavedProgress
     {
         [SerializeField] private SpiderUI _spiderUI;
         [SerializeField] private ThrusterSystem _thrusterSystem;
@@ -43,6 +53,11 @@ namespace SpiderController
         [SerializeField] private ElephantChecker _elephantChecker;
         [SerializeField] private SkillProductChecker _skillChecker;
         [SerializeField] private CheckpointChecker _checkpointChecker;
+        [SerializeField] private GeneratorChecker _generatorChecker;
+        [SerializeField] private BiosphereChecker _biosphereChecker;
+        [SerializeField] private ObserverTrigger _waterObserverTrigger;
+        [SerializeField] private BodyOrientation _bodyOrientation;
+
         [SerializeField] private Stickers _stickers;
 
         [SerializeField] private Transform _rotationPlaneTransform;
@@ -55,6 +70,10 @@ namespace SpiderController
         public IMagnetFreezingService MagnetFreezingService => _magnetFreezingService;
         public IEventSystemSelector EventSystemSelector => _eventSystemSelector;
         public IAbilityService AbilityService => _abilityService;
+        public IPauseService PauseService => _pauseService;
+        public ICutSceneService CutSceneService => _cutSceneService;
+        public IWindowService WindowService => _windowService;
+        public ICameraProviderService CameraProviderService => _cameraProviderService;
         public Rigidbody Rigidbody => _rigidbody;
         public GroundChecker GroundChecker => _groundChecker;
         public SpiderUI SpiderUI => _spiderUI;
@@ -63,7 +82,13 @@ namespace SpiderController
         public ThrusterSystem ThrusterSystem => _thrusterSystem;
         public ScannerAnimator ScannerAnimator => _scannerAnimator;
         public PlatformSelector PlatformSelector => _platformSelector;
+        public ObserverTrigger WaterObserverTrigger => _waterObserverTrigger;
+        public WaterStaticData WaterStaticData => _staticDataService.WaterStaticData;
+        public StateMachineData StateMachineData => _stateMachineData;
+        public BodyOrientation BodyOrientation => _bodyOrientation;
+
         public Stickers Stickers => _stickers;
+
 
         [HideInEditorMode] public Action<float> OnShakeCameraHappened;
 
@@ -79,8 +104,8 @@ namespace SpiderController
         private ElephantProductPickup _elephantProductPickup;
         private SkillProductPickup _skillProductPickup;
         private CheckpointPickup _checkpointPickup;
-
-        private HudUI _hudUI;
+        private GeneratorPickup _generatorPickup;
+        private BiosphereProductPickup _biosphereProductPickup;
 
         private IInputService _inputService;
         private IStaticDataService _staticDataService;
@@ -94,6 +119,15 @@ namespace SpiderController
         private IEventSystemSelector _eventSystemSelector;
         private IPauseService _pauseService;
         private IAbilityService _abilityService;
+        private IDefeatWindowService _defeatWindowService;
+
+        private StateMachineData _stateMachineData;
+        private IHintReceiverService _hintReceiverService;
+        private MagnetSkill _magnetSkill;
+        private ICameraProviderService _cameraProviderService;
+        private IStableWorldUp _stableWorldUp;
+        private IProgressWatchersService _progressWatchersService;
+        private IPersistentProgressService _persistentProgressService;
 
 
         [Inject]
@@ -111,8 +145,20 @@ namespace SpiderController
             IWindowService windowService,
             IEventSystemSelector eventSystemSelector,
             IPauseService pauseService,
-            IAbilityService abilityService)
+            IAbilityService abilityService,
+            IDefeatWindowService defeatWindowService,
+            IHintReceiverService hintReceiverService,
+            ICameraProviderService cameraProviderService,
+            IStableWorldUp stableWorldUp,
+            IProgressWatchersService progressWatchersService,
+            IPersistentProgressService persistentProgressService)
         {
+            _persistentProgressService = persistentProgressService;
+            _progressWatchersService = progressWatchersService;
+            _stableWorldUp = stableWorldUp;
+            _cameraProviderService = cameraProviderService;
+            _hintReceiverService = hintReceiverService;
+            _defeatWindowService = defeatWindowService;
             _abilityService = abilityService;
             _pauseService = pauseService;
             _eventSystemSelector = eventSystemSelector;
@@ -127,8 +173,26 @@ namespace SpiderController
             _inputService = inputService;
         }
 
+        public void LoadProgress(PlayerProgress progress)
+        {
+            if (progress.WorldProgressData.SpiderData.Position == null)
+                return;
+
+            transform.position = progress.WorldProgressData.SpiderData.Position.AsUnityVector();
+            transform.localEulerAngles = progress.WorldProgressData.SpiderData.Rotation.AsUnityVector();
+        }
+
+        public void UpdateProgress(PlayerProgress progress)
+        {
+            progress.WorldProgressData.SpiderData.Position = transform.position.AsVectorData();
+            progress.WorldProgressData.SpiderData.Rotation = transform.localEulerAngles.AsVectorData();
+        }
+
         private void Awake() =>
             _rigidbody = GetComponent<Rigidbody>();
+
+        private void Start() =>
+            _defeatWindowService.OnDefeatHappened += Defeat;
 
         private void OnDestroy()
         {
@@ -139,57 +203,79 @@ namespace SpiderController
             _elephantProductPickup.Destroy();
             _skillProductPickup.Destroy();
             _checkpointPickup.Destroy();
+            _generatorPickup.Destroy();
+            _platformSelector.Destroy();
+            _biosphereProductPickup.Destroy();
+            _magnetSkill.Destroy();
+
+            _defeatWindowService.OnDefeatHappened -= Defeat;
         }
 
         public void Initialize(Flower flower)
         {
             _platformRegistryService.Register(_platformDatas);
 
-            StateMachineData stateMachineData = new StateMachineData();
-            stateMachineData.EnergyFillAmount = _staticDataService.SpiderStaticData.EnergyFillAmount;
-            stateMachineData.OnShakeHappened += distanceFalling => OnShakeCameraHappened?.Invoke(distanceFalling);
+            _stateMachineData = new StateMachineData();
+            _stateMachineData.EnergyFillAmount = _staticDataService.SpiderStaticData.EnergyFillAmount;
+            _stateMachineData.OnShakeHappened += distanceFalling => OnShakeCameraHappened?.Invoke(distanceFalling);
+
+            _magnetFreezingService.Initialize(_stateMachineData);
 
             EnergyLegs energyLegs = new EnergyLegs(_energyHighlightEffects);
 
-            EnergySystem energySystem = new EnergySystem(stateMachineData, _spiderUI.EnergyBar, _cutSceneService);
+            EnergySystem energySystem = new EnergySystem(_stateMachineData, _spiderUI.EnergyBar, _cutSceneService);
 
-            _spiderImpactReceiver = new SpiderImpactReceiver(stateMachineData, transform);
+            _spiderImpactReceiver = new SpiderImpactReceiver(_stateMachineData, transform);
 
             _spiderPlane = new SpiderPlane(_spiderUI.PlaneIndicatorUI, _rotationPlaneTransform, _inputService,
-                _abilityService, _staticDataService, stateMachineData);
+                _abilityService, _staticDataService, _windowService, _cameraProviderService, _stableWorldUp,
+                _stateMachineData);
             _spiderPlane.Initialize();
 
             _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _platformObjectsService, _windowService,
-                _flowerChecker, flower, _spiderUI.HealthBar);
+                _defeatWindowService, _cutSceneService, _flowerChecker, flower, _spiderUI,
+                _staticDataService.SpiderStaticData);
             _flowerPickup.Initialize();
 
-            _batteryProductPickup = new BatteryProductPickup(_inputService, _pickupDisplayer, _platformObjectsService,
-                _batteryChecker, _flowerChecker);
+            _batteryProductPickup = new BatteryProductPickup(_hintReceiverService, _inputService, _pickupDisplayer,
+                _platformObjectsService, _batteryChecker, _flowerChecker);
             _batteryProductPickup.Initialize();
 
-            _energyPickup = new EnergyPickup(_inputService, _pickupDisplayer, _xRayService, _windowService,
-                _energyChecker, SpiderUI.EnergyBar, stateMachineData, energyLegs);
+            _energyPickup = new EnergyPickup(_persistentProgressService, _inputService, _pickupDisplayer, _xRayService,
+                _windowService, _energyChecker, SpiderUI.EnergyBar, _stateMachineData, energyLegs);
             _energyPickup.Initialize();
 
             _elephantProductPickup = new ElephantProductPickup(_inputService, _pickupDisplayer, _platformObjectsService,
-                _platformRegistryService,
-                _elephantChecker);
+                _platformRegistryService, _elephantChecker);
             _elephantProductPickup.Initialize();
 
             _skillProductPickup = new SkillProductPickup(_inputService, _pickupDisplayer, _xRayService, _windowService,
                 _skillChecker);
             _skillProductPickup.Initialize();
-            
-            _platformSelector = new PlatformSelector(_staticDataService, _platformRegistryService);
+
+            _platformSelector = new PlatformSelector(_stateMachineData, _staticDataService, _platformRegistryService,
+                _inputService, _magnetFreezingService);
             _platformSelector.Initialize();
 
-            _checkpointPickup = new CheckpointPickup(_inputService, _pickupDisplayer, _windowService,
-                _checkpointChecker, flower, _platformSelector);
+            _checkpointPickup = new CheckpointPickup(_hintReceiverService, _inputService, _pickupDisplayer,
+                _windowService, _platformObjectsService, _checkpointChecker, flower, _spiderUI);
             _checkpointPickup.Initialize();
+
+            _generatorPickup = new GeneratorPickup(_hintReceiverService, _inputService, _pickupDisplayer,
+                _platformObjectsService, _windowService, _generatorChecker);
+            _generatorPickup.Initialize();
+
+            _biosphereProductPickup =
+                new BiosphereProductPickup(_inputService, _pickupDisplayer, _biosphereChecker, flower);
+            _biosphereProductPickup.Initialize();
+
+            _magnetSkill = new MagnetSkill(_windowService, _inputService, _staticDataService, _abilityService,
+                _magnetFreezingService, _stateMachineData, energySystem, _spiderUI);
+            _magnetSkill.Initialize();
 
             _spiderStateMachine =
                 new SpiderStateMachine(this,
-                    stateMachineData,
+                    _stateMachineData,
                     _inputService,
                     _staticDataService,
                     _cutSceneService,
@@ -197,7 +283,7 @@ namespace SpiderController
                     flower,
                     energySystem);
 
-         
+            _progressWatchersService.RegisterWatcher(_energyPickup);
         }
 
 
@@ -210,7 +296,7 @@ namespace SpiderController
 
         private void Update()
         {
-            if (_spiderStateMachine == null || _pauseService.IsPaused)
+            if (_spiderStateMachine == null || _pauseService.IsPaused || _defeatWindowService.IsDefeated)
                 return;
 
             _spiderStateMachine.HandleInput();
@@ -224,11 +310,22 @@ namespace SpiderController
             _elephantProductPickup.Update();
             _skillProductPickup.Update();
             _checkpointPickup.Update();
+            _generatorPickup.Update();
+            _biosphereProductPickup.Update();
+            _magnetSkill.Update();
+        }
+
+        private void Defeat()
+        {
+            Rigidbody.linearVelocity = Vector3.zero;
+            Rigidbody.angularVelocity = Vector3.zero;
+
+            _stateMachineData.Clear();
         }
 
         private void FixedUpdate()
         {
-            if (_spiderStateMachine == null || _pauseService.IsPaused)
+            if (_spiderStateMachine == null || _pauseService.IsPaused || _defeatWindowService.IsDefeated)
                 return;
 
             _spiderStateMachine.FixedUpdate();
@@ -237,7 +334,7 @@ namespace SpiderController
 
         private void LateUpdate()
         {
-            if (_spiderStateMachine == null || _pauseService.IsPaused)
+            if (_spiderStateMachine == null || _pauseService.IsPaused || _defeatWindowService.IsDefeated)
                 return;
 
             _spiderStateMachine.LateUpdate();

@@ -25,13 +25,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1574279410829714202}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.94818515, z: 0, w: 0.31771845}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 641478023462919788}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 142.95, z: 0}
 --- !u!114 &811717112217518504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,8 +124,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6879631944178656443}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.18297486, y: 0, z: 0, w: 0.9831176}
-  m_LocalPosition: {x: 0, y: 2, z: -2.67}
+  m_LocalRotation: {x: 0.08583386, y: 0.70187795, z: -0.08583388, w: 0.7018779}
+  m_LocalPosition: {x: -2.6699996, y: 2, z: 0.0000003182888}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -158,7 +158,7 @@ MonoBehaviour:
     FieldOfView: 70
     OrthographicSize: 5
     NearClipPlane: 0.1
-    FarClipPlane: 1000
+    FarClipPlane: 2000
     Dutch: 0
     ModeOverride: 0
     PhysicalProperties:
@@ -213,7 +213,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Composition:
-    ScreenPosition: {x: 0, y: 0.2}
+    ScreenPosition: {x: 0, y: 0.3}
     DeadZone:
       Enabled: 1
       Size: {x: 0, y: 0}

@@ -1,5 +1,6 @@
 using Common.SceneMarkers;
-using Infastructure.CutScene;
+using Infastructure.CutScenes;
+using SpiderController.TriggerChecker;
 using UnityEditor;
 using UnityEngine;
 
@@ -78,6 +79,18 @@ namespace Editor
     {
         [DrawGizmo(GizmoType.Active | GizmoType.Pickable | GizmoType.NonSelected)]
         public static void RenderCustomGizmo(CheckPointMarker spawner, GizmoType gizmo)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(spawner.transform.position, 0.3f);
+        }
+    }
+
+
+    [CustomEditor(typeof(GeneratorPointMarker))]
+    public class GeneratorPointMarkerEditor : UnityEditor.Editor
+    {
+        [DrawGizmo(GizmoType.Active | GizmoType.Pickable | GizmoType.NonSelected)]
+        public static void RenderCustomGizmo(GeneratorPointMarker spawner, GizmoType gizmo)
         {
             Gizmos.color = Color.yellow;
             Gizmos.DrawSphere(spawner.transform.position, 0.3f);

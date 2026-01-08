@@ -1,7 +1,9 @@
-using System.Threading;
 using DG.Tweening;
-using Infastructure.Services.CutScene;
+using Infastructure.Common;
+using Infastructure.Services.SaveLoadService;
+using Infastructure.Services.StartGame;
 using Infastructure.Services.Window;
+using UI.Curtain;
 using UI.MVVM.Base;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,7 +16,9 @@ namespace UI.MVVM.View.StartSplashScreen
         private static readonly int GrowTrigger = Animator.StringToHash("GrowTrigger");
 
         [SerializeField] private Button _startGameBtn;
+        [SerializeField] private Button _continueGameBtn;
         [SerializeField] private Button _settingsPopupBtn;
+        [SerializeField] private Button _exitBtn;
         [SerializeField] private Animator _flowerAnimator;
         [SerializeField] private CanvasGroup _canvasGroup;
 
@@ -22,14 +26,19 @@ namespace UI.MVVM.View.StartSplashScreen
 
         private Tween _canvasTween;
 
-        private ICutSceneService _cutSceneService;
         private IEventSystemSelector _eventSystemSelector;
+        private IStartGameReceiver _startGameReceiver;
+        private ICurtainRoot _curtain;
+        private ISaveLoadService _saveLoadService;
 
         [Inject]
-        public void Construct(ICutSceneService cutSceneService, IEventSystemSelector eventSystemSelector)
+        public void Construct(IEventSystemSelector eventSystemSelector, IStartGameReceiver startGameReceiver,
+            ICurtainRoot curtain, ISaveLoadService saveLoadService)
         {
+            _saveLoadService = saveLoadService;
+            _curtain = curtain;
+            _startGameReceiver = startGameReceiver;
             _eventSystemSelector = eventSystemSelector;
-            _cutSceneService = cutSceneService;
         }
 
 
@@ -37,41 +46,59 @@ namespace UI.MVVM.View.StartSplashScreen
         {
             _eventSystemSelector.SelectButton(_startGameBtn.gameObject);
 
-            _startGameBtn.onClick.AddListener(StartGame);
+            _startGameBtn.onClick.AddListener(NewGame);
+            _continueGameBtn.onClick.AddListener(ContinueGame);
             _settingsPopupBtn.onClick.AddListener(OpenSettingsPopup);
-
-            _cutSceneService.OnSkipHappened += Skip;
+            _exitBtn.onClick.AddListener(Exit);
         }
 
         private void OnDestroy()
         {
-            _startGameBtn.onClick.RemoveListener(StartGame);
+            _startGameBtn.onClick.RemoveListener(NewGame);
+            _continueGameBtn.onClick.RemoveListener(ContinueGame);
             _settingsPopupBtn.onClick.RemoveListener(OpenSettingsPopup);
+            _exitBtn.onClick.RemoveListener(Exit);
 
-            _cutSceneService.OnSkipHappened -= Skip;
+            _canvasTween?.Kill();
         }
 
         private void OpenSettingsPopup() =>
             ViewModel.RequestOpenSettingScreen();
 
-        private void StartGame()
+        private void NewGame()
         {
-            _cutSceneService.IsActive = true;
+            _saveLoadService.SetNewProgress();
+
+            InitGame();
+        }
+
+        private void ContinueGame()
+        {
+            _saveLoadService.SetContinueProgress();
+
+            InitGame();
+        }
+
+        private void InitGame()
+        {
+            _curtain.ShowAndHide();
 
             _menuContainer.SetActive(false);
             _flowerAnimator.SetTrigger(GrowTrigger);
 
             _canvasTween = DOTween.To(() => _canvasGroup.alpha, x => _canvasGroup.alpha = x, 0, 1)
                 .SetDelay(2)
-                .OnComplete(() => ViewModel.RequestClose());
+                .OnComplete(() =>
+                {
+                    Instantiate(Resources.Load<GameObject>(AssetsPath.WaterFallsPath));
+
+                    _startGameReceiver.StartGame();
+                    ViewModel.RequestClose();
+                });
         }
 
 
-        private void Skip()
-        {
-            _canvasTween.Kill();
-
-            ViewModel.RequestClose();
-        }
+        private void Exit() =>
+            Application.Quit();
     }
 }

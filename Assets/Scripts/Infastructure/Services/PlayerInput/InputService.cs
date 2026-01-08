@@ -1,41 +1,40 @@
 using System;
+using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
+using Infastructure.Services.StartGame;
+using Infastructure.Services.Window;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Infastructure.Services.PlayerInput
 {
     public class InputService : IInputService, IDisposable
     {
+        public event Action<IInputSource> OnJoystickEnableHappend;
+        public event Action OnJoystickDisableHappend;
+
+        private readonly IWindowService _windowService;
+        private readonly ICutSceneService _cutSceneService;
+
         private IInputSource _inputSource;
         private IInputSource _joystickInputSource;
 
-        public void Initialize()
+        private bool _leftMouseUpOnce;
+        private bool _rightMouseUpOnce;
+        private bool _centerMouseUpOnce;
+        private bool _isLeftShiftUpOnce;
+        private bool _ctrlUpOnce;
+        private bool _jumpUpOnce;
+
+        private bool _isConnected;
+        private IStartGameReceiver _startGameReceiver;
+
+        public InputService(IWindowService windowService, IStartGameReceiver startGameReceiver,
+            ICutSceneService cutSceneService)
         {
-            _inputSource = new CutSceneInputSource();
-            _inputSource.Enable();
-        }
-
-        public void Dispose()
-        {
-            _joystickInputSource.Disable();
-            _inputSource.Disable();
-        }
-
-        public void SetInputSource(IInputSource inputSource)
-        {
-            _joystickInputSource = new JoystickInputSource();
-            _joystickInputSource.Enable();
-
-            _inputSource = inputSource;
-            _inputSource.Enable();
-        }
-
-        public T GetInputSource<T>()
-        {
-            if (_inputSource is T)
-                return (T)_inputSource;
-
-            return (T)_joystickInputSource;
+            _startGameReceiver = startGameReceiver;
+            _cutSceneService = cutSceneService;
+            _windowService = windowService;
         }
 
 
@@ -51,14 +50,28 @@ namespace Infastructure.Services.PlayerInput
             }
         }
 
+        public bool PauseButtonPressed =>
+            _inputSource.PauseButtonPressed || (_joystickInputSource?.PauseButtonPressed ?? false);
+
         public bool TabPressed => _inputSource.TabPressed || (_joystickInputSource?.TabPressed ?? false);
 
         public bool LeftMousePressed => _inputSource.LeftMousePressed;
 
         public bool LeftMouseUp => _inputSource.LeftMouseUp;
 
-        public bool RightMousePressed =>
-            _inputSource.RightMousePressed || (_joystickInputSource?.RightMousePressed ?? false);
+        public bool RightMousePressed
+        {
+            get
+            {
+                if (_leftMouseUpOnce)
+                {
+                    _leftMouseUpOnce = false;
+                    return _leftMouseUpOnce;
+                }
+
+                return _inputSource.RightMousePressed || (_joystickInputSource?.RightMousePressed ?? false);
+            }
+        }
 
         public bool RightMouseUp => _inputSource.RightMouseUp || (_joystickInputSource?.RightMouseUp ?? false);
 
@@ -119,5 +132,116 @@ namespace Infastructure.Services.PlayerInput
         public bool JerkPressed => _inputSource.JerkPressed || (_joystickInputSource?.JerkPressed ?? false);
 
         public bool PickupPressed => _inputSource.PickupPressed || (_joystickInputSource?.PickupPressed ?? false);
+
+        public void Initialize()
+        {
+            _windowService.OnWindowOpened += WindowOpenedUI;
+            _startGameReceiver.OnStartGameHappened += SetPlayerInputSource;
+            _cutSceneService.OnCutsceneActiveChanged += CutSceneActiveChanged;
+
+
+            _inputSource = new CutSceneInputSource();
+            _inputSource.Enable();
+
+            InputSystem.onDeviceChange += DeviceChanged;
+        }
+
+
+        public void Dispose()
+        {
+            _windowService.OnWindowOpened -= WindowOpenedUI;
+            _startGameReceiver.OnStartGameHappened -= SetPlayerInputSource;
+            _cutSceneService.OnCutsceneActiveChanged -= CutSceneActiveChanged;
+
+            _joystickInputSource?.Disable();
+            _inputSource?.Disable();
+
+            _joystickInputSource = null;
+            _inputSource = null;
+
+            InputSystem.onDeviceChange -= DeviceChanged;
+        }
+
+        public bool AnyActionPressed =>
+            _inputSource.AnyKeyPressed();
+
+        public T GetInputSource<T>() =>
+            (T)_inputSource;
+
+        public bool IsActiveSource<T>() =>
+            _inputSource is T;
+
+        private void SetPlayerInputSource() =>
+            SetInputSource(new PlayerInputSource());
+
+        private void CutSceneActiveChanged(bool isActive)
+        {
+            if (isActive)
+                SetInputSource(new CutSceneInputSource());
+            else
+                SetInputSource(new PlayerInputSource());
+        }
+
+
+        private void SetInputSource(IInputSource inputSource)
+        {
+            _inputSource?.Disable();
+
+            if (Gamepad.current != null)
+            {
+                _inputSource = new JoystickInputSource();
+                OnJoystickEnableHappend?.Invoke(_inputSource);
+            }
+            else
+            {
+                _inputSource = inputSource;
+                OnJoystickDisableHappend?.Invoke();
+            }
+
+            _inputSource.Enable();
+        }
+
+
+        private void DeviceChanged(InputDevice device, InputDeviceChange change)
+        {
+            switch (change)
+            {
+                case InputDeviceChange.Added:
+                case InputDeviceChange.Reconnected:
+                    SetGamepadState(true);
+                    break;
+
+                case InputDeviceChange.Removed:
+                case InputDeviceChange.Disconnected:
+                    SetGamepadState(false);
+                    break;
+            }
+        }
+
+        private void SetGamepadState(bool isConnected)
+        {
+            Debug.Log($"{isConnected}");
+
+            if (_isConnected == isConnected)
+                return;
+
+            if (isConnected)
+                SetInputSource(new JoystickInputSource());
+            else
+                SetInputSource(new PlayerInputSource());
+
+            _isConnected = isConnected;
+        }
+
+        private void WindowOpenedUI()
+        {
+            _leftMouseUpOnce = true;
+            _rightMouseUpOnce = true;
+            _centerMouseUpOnce = true;
+            _isLeftShiftUpOnce = true;
+            _isLeftShiftUpOnce = true;
+            _ctrlUpOnce = true;
+            _jumpUpOnce = true;
+        }
     }
 }

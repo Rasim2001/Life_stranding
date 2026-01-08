@@ -1,12 +1,10 @@
 using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
-using PickupObjects;
-using PickupObjects.PickUpOnPlatform;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
 using SpiderController.TriggerChecker;
-using SpiderController.UI;
 using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Airborn
@@ -30,6 +28,8 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Enter();
 
+            Spider.WindowService.OnWindowOpened += GoToFallingWithControlState;
+
             Data.AirbornSpeed = SpiderStaticData.FallSpeed;
             Data.YVelocity = SpiderStaticData.StartYVelocity;
 
@@ -46,6 +46,8 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Exit();
 
+            Spider.WindowService.OnWindowOpened -= GoToFallingWithControlState;
+
             Spider.ThrusterSystem.Open(false);
             Spider.MagnetFreezingService.Unfreeze();
         }
@@ -57,7 +59,7 @@ namespace SpiderController.StateMachine.States.Airborn
             EnergySystem.SpendEnergy(SpiderStaticData.EnergySpendAirbornSpeed);
 
             if (InputService.JumpUp)
-                StateMachine.SwitchState<FallingWithControlState>();
+                GoToFallingWithControlState();
 
             if (Data.CurrentEnergyFillAmount <= 0)
                 StateMachine.SwitchState<FallingWithoutEnergyState>();
@@ -79,5 +81,9 @@ namespace SpiderController.StateMachine.States.Airborn
                     StateMachine.SwitchState<RunningState>();
             }
         }
+        
+       
+        private void GoToFallingWithControlState() =>
+            StateMachine.SwitchState<FallingWithControlState>();
     }
 }

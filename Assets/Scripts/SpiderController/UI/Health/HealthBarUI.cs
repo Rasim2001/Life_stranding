@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,18 +13,29 @@ namespace SpiderController.UI.Health
 
         private Image[] _segmentsOwn;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             _segmentsOwn = GetSegments();
 
             _hologramEffect = new HologramEffect(_segmentsOwn, GetContainers(), GetOtherObjects());
         }
 
-        public void PlayFadeHologramEffect() =>
-            _hologramEffect.Play();
+        private void OnDestroy()
+        {
+            _hologramEffect.Clear();
+        }
 
-        public void ShowHologram() =>
+        public void PlayFadeHologramEffect()
+        {
+            _hologramEffect.Play();
+        }
+
+        public void ShowHologram()
+        {
             _hologramEffect.Stop();
+        }
 
         protected override void UpdateFirstSegmentColorReduced()
         {

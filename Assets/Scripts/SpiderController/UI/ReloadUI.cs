@@ -13,14 +13,18 @@ namespace SpiderController.UI
 
         private TerrainScan _terrain;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             _colorDefault = _reloadText.color;
             _hologramEffect = new HologramEffect(GetSegments(), GetContainers(), GetOtherObjects());
         }
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
+
             ShowHologram();
 
             _terrain = TerrainScan.Instance;
@@ -32,6 +36,8 @@ namespace SpiderController.UI
         {
             if (_terrain != null)
                 TerrainScan.Instance.OnTerrainScanStart -= TerrainStart;
+
+            _hologramEffect.Clear();
         }
 
 

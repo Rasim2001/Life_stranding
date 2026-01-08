@@ -1,3 +1,4 @@
+using System;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
 using UnityEngine;
 
@@ -24,8 +25,12 @@ namespace Infastructure.Services.PlayerInput
         bool CtrlUp { get; }
         bool JumpUp { get; }
         bool TabPressed { get; }
-        void SetInputSource(IInputSource inputSource);
+        bool PauseButtonPressed { get; }
+        bool AnyActionPressed { get; }
         T GetInputSource<T>();
         void Initialize();
+        event Action<IInputSource> OnJoystickEnableHappend;
+        bool IsActiveSource<T>();
+        event Action OnJoystickDisableHappend;
     }
 }

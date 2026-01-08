@@ -1,12 +1,16 @@
+using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Services.Ability;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
+using Infastructure.Services.Window;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
 using SpiderController.StateMachine;
 using SpiderController.UI;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
 
 namespace SpiderController.Platform
@@ -16,6 +20,9 @@ namespace SpiderController.Platform
         private readonly IInputService _inputService;
         private readonly IAbilityService _abilityService;
         private readonly IStaticDataService _staticDataService;
+        private readonly IWindowService _windowService;
+        private readonly ICameraProviderService _cameraProviderService;
+        private readonly IStableWorldUp _stableWorldUp;
         private readonly StateMachineData _stateMachineData;
         private readonly PressedMouseButtonIndicatorUI _pressedMouseButtonIndicatorUI;
         private readonly Transform _rotationPlaneTransform;
@@ -31,6 +38,9 @@ namespace SpiderController.Platform
 
         private bool _joystickInputActive;
         private float _waitTimeJoystick;
+        private Transform _cameraTransform;
+
+        private float _returnTimer = 0;
 
 
         public SpiderPlane(
@@ -39,8 +49,14 @@ namespace SpiderController.Platform
             IInputService inputService,
             IAbilityService abilityService,
             IStaticDataService staticDataService,
+            IWindowService windowService,
+            ICameraProviderService cameraProviderService,
+            IStableWorldUp stableWorldUp,
             StateMachineData stateMachineData)
         {
+            _windowService = windowService;
+            _cameraProviderService = cameraProviderService;
+            _stableWorldUp = stableWorldUp;
             _inputService = inputService;
             _abilityService = abilityService;
             _staticDataService = staticDataService;
@@ -51,12 +67,25 @@ namespace SpiderController.Platform
 
         public void Initialize()
         {
-            _joystickInputSource = _inputService.GetInputSource<JoystickInputSource>();
+            _cameraTransform = _cameraProviderService.CameraTransform;
+
+            _windowService.OnWindowOpened += ReleaseInput;
+
+            _inputService.OnJoystickEnableHappend += EnableJoystick;
+            _inputService.OnJoystickDisableHappend += DisableJoystick;
+
             _stateMachineData.OnFallingDownStateChanged += OnFallingDownStateEnter;
         }
 
-        public void Destroy() =>
+        public void Destroy()
+        {
+            _windowService.OnWindowOpened -= ReleaseInput;
+
+            _inputService.OnJoystickEnableHappend -= EnableJoystick;
+            _inputService.OnJoystickDisableHappend -= DisableJoystick;
+
             _stateMachineData.OnFallingDownStateChanged -= OnFallingDownStateEnter;
+        }
 
         public void Update()
         {
@@ -65,18 +94,9 @@ namespace SpiderController.Platform
                 return;
 
             if (_inputService.LeftMousePressed)
-            {
-                _pressedMouseButtonIndicatorUI.Show();
-                _isMouseHold = true;
-                _initialMousePosition = Input.mousePosition;
-                _waitTimeJoystick = 0;
-            }
+                StartInput();
             else if (_inputService.LeftMouseUp)
-            {
-                _pressedMouseButtonIndicatorUI.Hide();
-                _isMouseHold = false;
-                _mouseInput = Vector2.zero;
-            }
+                ReleaseInput();
 
             if (_isMouseHold)
                 HandleMousePosition();
@@ -89,15 +109,43 @@ namespace SpiderController.Platform
 
                 _waitTimeJoystick -= Time.deltaTime;
 
-                if (_joystickInputSource.IsLeftButtonPressed == false && _waitTimeJoystick > 0)
+                if (_joystickInputSource.IsRotationButtonPressed == false && _waitTimeJoystick > 0)
                     HandleJoystickPosition();
             }
         }
+
+        private void ReleaseInput()
+        {
+            _pressedMouseButtonIndicatorUI.Hide();
+            _isMouseHold = false;
+            _mouseInput = Vector2.zero;
+        }
+
+        private void StartInput()
+        {
+            _pressedMouseButtonIndicatorUI.Show();
+            _isMouseHold = true;
+            _returnTimer = 0;
+
+            Vector2 center = new Vector2((float)Screen.width / 2, (float)Screen.height / 2);
+            Mouse.current.WarpCursorPosition(center);
+            _initialMousePosition = center;
+
+            _waitTimeJoystick = 0;
+        }
+
+        private void DisableJoystick() =>
+            _joystickInputSource = null;
+
+        private void EnableJoystick(IInputSource obj) =>
+            _joystickInputSource = (JoystickInputSource)obj;
 
         private void OnFallingDownStateEnter(bool isTrue)
         {
             if (!isTrue)
                 return;
+
+            _returnTimer = 0;
 
             int randomSign = Random.value < 0.5f ? -1 : 1;
 
@@ -111,7 +159,7 @@ namespace SpiderController.Platform
         public void FixedUpdate()
         {
             if (_stateMachineData.IsFallingDownWithoutEnergyState)
-                RotateTo(_targetLocalRotationInFallingDownState);
+                RotateWithoutEnergyTo(_targetLocalRotationInFallingDownState);
             else
                 ApplyRotation();
         }
@@ -121,15 +169,13 @@ namespace SpiderController.Platform
             Vector2 mousePos = Input.mousePosition;
             Vector2 screenSize = new Vector2(Screen.width, Screen.height);
 
-            _mouseInput.x = (mousePos.x - _initialMousePosition.x) / (screenSize.x / 2);
-            _mouseInput.y = (mousePos.y - _initialMousePosition.y) / (screenSize.y / 2);
+            _mouseInput.x = -(mousePos.x - _initialMousePosition.x) / (screenSize.x / 2);
+            _mouseInput.y = -(mousePos.y - _initialMousePosition.y) / (screenSize.y / 2);
 
             _mouseInput = Vector2.ClampMagnitude(_mouseInput, 1f);
-
-            _mouseInput.x = -_mouseInput.x;
-            _mouseInput.y = -_mouseInput.y;
-
             _mouseInput *= SpiderStaticData.PlaneSensitivity;
+
+            _mouseInput = ConvertInputFromCameraToSpiderSpace(_mouseInput);
         }
 
         private void HandleJoystickPosition()
@@ -164,10 +210,60 @@ namespace SpiderController.Platform
 
         private void RotateTo(Quaternion targetLocalRotation)
         {
+            float dt = Time.fixedDeltaTime;
+            float t = 1f - Mathf.Exp(-SpiderStaticData.PlaneRotationSpeed * dt);
+
+            /*if (!_isMouseHold)
+            {
+                _returnTimer = Mathf.Clamp01(_returnTimer + Time.fixedDeltaTime);
+
+                float curveT = SpiderStaticData.PlaneReturnCurve.Evaluate(_returnTimer);
+
+                _rotationPlaneTransform.localRotation = Quaternion.Slerp(
+                    _rotationPlaneTransform.localRotation,
+                    targetLocalRotation,
+                    curveT);
+            }
+            else*/
+            {
+                _rotationPlaneTransform.localRotation = Quaternion.Slerp(
+                    _rotationPlaneTransform.localRotation,
+                    targetLocalRotation,
+                    t);
+            }
+        }
+
+        private void RotateWithoutEnergyTo(Quaternion targetLocalRotation)
+        {
             _rotationPlaneTransform.localRotation = Quaternion.Slerp(
                 _rotationPlaneTransform.localRotation,
                 targetLocalRotation,
                 Time.fixedDeltaTime * SpiderStaticData.PlaneRotationSpeed);
+        }
+
+        private Vector2 ConvertInputFromCameraToSpiderSpace(Vector2 input)
+        {
+            Vector3 up = _stableWorldUp.StableWorldUpTransform.up;
+
+            Vector3 spiderForward = Vector3.ProjectOnPlane(_rotationPlaneTransform.parent.forward, up);
+            Vector3 cameraForward = Vector3.ProjectOnPlane(_cameraTransform.forward, up);
+
+            if (spiderForward.sqrMagnitude < Mathf.Epsilon || cameraForward.sqrMagnitude < Mathf.Epsilon)
+                return input;
+
+            spiderForward.Normalize();
+            cameraForward.Normalize();
+
+            float signedAngle = Vector3.SignedAngle(cameraForward, spiderForward, up);
+            float rad = signedAngle * Mathf.Deg2Rad;
+
+            float cos = Mathf.Cos(rad);
+            float sin = Mathf.Sin(rad);
+
+            return new Vector2(
+                input.x * cos - input.y * sin,
+                input.x * sin + input.y * cos
+            );
         }
     }
 }

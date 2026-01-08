@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,8 +16,15 @@ namespace SpiderController.UI
         private int _segmentContainerCount;
         private bool _isReduced;
 
-        private void Start() =>
+        protected virtual void Awake()
+        {
             _segmentContainerCount = _containers.Count(x => x.gameObject.activeSelf);
+        }
+
+        protected virtual void Start()
+        {
+            //_segmentContainerCount = _containers.Count(x => x.gameObject.activeSelf);
+        }
 
         public virtual void AddNewSegment()
         {

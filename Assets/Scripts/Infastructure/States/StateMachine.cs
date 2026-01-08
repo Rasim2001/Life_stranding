@@ -5,13 +5,14 @@ namespace Infastructure.States
 {
     public class StateMachine : IStateMachine
     {
-        private Dictionary<Type, IExitableState> registeredStates;
+        private readonly Dictionary<Type, IExitableState> registeredStates;
         private IExitableState currentState;
 
         public StateMachine(
             BootstrapState.Factory bootstrapStateFactory,
             LoadProgressState.Factory loadGameSaveStateFactory,
             LoadLevelState.Factory loadLevelStateFactory,
+            ExitGameLoopState.Factory exitGameLoopStateFactory,
             MainMenuState.Factory mainMenuStateFactory)
         {
             registeredStates = new Dictionary<Type, IExitableState>();
@@ -19,6 +20,7 @@ namespace Infastructure.States
             RegisterState(bootstrapStateFactory.Create(this));
             RegisterState(loadGameSaveStateFactory.Create(this));
             RegisterState(loadLevelStateFactory.Create(this));
+            RegisterState(exitGameLoopStateFactory.Create(this));
             RegisterState(mainMenuStateFactory.Create());
         }
 

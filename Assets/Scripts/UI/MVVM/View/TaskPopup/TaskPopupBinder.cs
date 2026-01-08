@@ -2,7 +2,10 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Infastructure.Localization;
 using Infastructure.Services.Pause;
+using Localization;
+using TMPro;
 using UI.MVVM.Base;
 using UI.MVVM.View.ProductDescriptionPopup;
 using UnityEngine;
@@ -19,16 +22,25 @@ namespace UI.MVVM.View.TaskPopup
         [SerializeField] private FramePiece[] _framePieces;
         [SerializeField] private Transform _container;
 
+        [Header("Description")]
+        [SerializeField] private Image _screenImage;
+        [SerializeField] private TextMeshProUGUI _taskNameText;
+        [SerializeField] private TextMeshProUGUI _taskDescriptionText;
+
 
         private UIFlicker _uiFlicker;
         private CancellationTokenSource _cancellationTokenSource;
 
         private IPauseService _pauseService;
+        private ILocalizationService _localizationService;
         private Tween _containerRotateTween;
 
         [Inject]
-        public void Construct(IPauseService pauseService) =>
+        public void Construct(IPauseService pauseService, ILocalizationService localizationService)
+        {
+            _localizationService = localizationService;
             _pauseService = pauseService;
+        }
 
         protected override void Awake()
         {
@@ -42,11 +54,21 @@ namespace UI.MVVM.View.TaskPopup
         {
             base.Start();
 
-            _pauseService.StartPause();
+
+            _pauseService.StartPause(gameObject.name);
 
             StartFlickAsync().Forget();
             MoveFramePiecesAsync().Forget();
             Rotate();
+        }
+
+        protected override void OnBind(TaskPopupViewModel viewModel)
+        {
+            base.OnBind(viewModel);
+
+            _taskNameText.text = ViewModel.TaskData.TaskName.Get(_localizationService.CurrentLanguage);
+            _taskDescriptionText.text = ViewModel.TaskData.TaskDescription.Get(_localizationService.CurrentLanguage);
+            _screenImage.sprite = ViewModel.TaskData.ScreenIcon;
         }
 
         protected override void OnDestroy()
@@ -55,7 +77,7 @@ namespace UI.MVVM.View.TaskPopup
 
             Clear();
 
-            _pauseService.StopPause();
+            _pauseService.StopPause(gameObject.name);
         }
 
         private async UniTask StartFlickAsync() =>

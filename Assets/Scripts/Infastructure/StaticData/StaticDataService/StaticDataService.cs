@@ -1,11 +1,15 @@
 ﻿using Infastructure.Common;
+using Infastructure.StaticData.Cutscenes;
+using Infastructure.StaticData.GlobalWater;
 using Infastructure.StaticData.HUD;
+using Infastructure.StaticData.LastChance;
 using Infastructure.StaticData.Materials;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.Stikers;
 using Infastructure.StaticData.Task;
 using Infastructure.StaticData.VolumeProfiles;
+using Infastructure.StaticData.Windows;
 using Infastructure.StaticData.XRay;
 using UnityEngine;
 
@@ -22,6 +26,10 @@ namespace Infastructure.StaticData.StaticDataService
         public ProductsStaticData ProductsStaticData { get; private set; }
         public StickersStaticData StickersStaticData { get; private set; }
         public TasksStaticData TasksStaticData { get; private set; }
+        public WaterStaticData WaterStaticData { get; private set; }
+        public WindowsLocalizationStaticData WindowsLocalizationStaticData { get; private set; }
+        public LastChanceStaticData LastChanceStaticData { get; private set; }
+        public CutScenesStaticData CutScenesStaticData { get; private set; }
 
         public void LoadStaticData()
         {
@@ -35,6 +43,12 @@ namespace Infastructure.StaticData.StaticDataService
             ProductsStaticData = Resources.Load<ProductsStaticData>(AssetsPath.ProductStaticDataPath);
             StickersStaticData = Resources.Load<StickersStaticData>(AssetsPath.StickersStaticDataPath);
             TasksStaticData = Resources.Load<TasksStaticData>(AssetsPath.TasksStaticDataPath);
+            WaterStaticData = Resources.Load<WaterStaticData>(AssetsPath.WaterStaticDataPath);
+            WindowsLocalizationStaticData =
+                Resources.Load<WindowsLocalizationStaticData>(AssetsPath.WindowsLocalizationStaticDataPath);
+
+            LastChanceStaticData = Resources.Load<LastChanceStaticData>(AssetsPath.LastChanceStaticDataPath);
+            CutScenesStaticData = Resources.Load<CutScenesStaticData>(AssetsPath.CutSceneStaticDataPath);
         }
     }
 }

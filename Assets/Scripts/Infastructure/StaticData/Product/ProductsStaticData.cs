@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Localization;
 using PickupObjects;
 using Sirenix.OdinInspector;
 using SpiderController.Platform;
 using UnityEngine;
+using UnityEngine.Video;
 
 namespace Infastructure.StaticData.Product
 {
@@ -21,7 +23,7 @@ namespace Infastructure.StaticData.Product
         [FoldoutGroup("OnPlatformSettings")] public float Speed;
         [FoldoutGroup("OnPlatformSettings")] public Vector3 StartRotationEuler;
         [FoldoutGroup("OnPlatformSettings")] public Vector3 StartPositionVector;
-        [FoldoutGroup("OnPlatformSettings")] public PlatformId PlatformId;
+        [FoldoutGroup("OnPlatformSettings")] public float Weight;
 
         [FoldoutGroup("Description")] public ProductDescription ProductDescription;
     }
@@ -29,8 +31,11 @@ namespace Infastructure.StaticData.Product
     [Serializable]
     public class ProductDescription
     {
-        public string TitleText;
-        public string HowToUseText;
-        public string DescriptionText;
+        public LocalizationText TitleText = new();
+        public LocalizationText HowToUseTextGamepad = new();
+        public LocalizationText HowToUseTextKeyboard = new();
+        public LocalizationText DescriptionText = new();
+
+        public VideoClip VideoClip;
     }
 }

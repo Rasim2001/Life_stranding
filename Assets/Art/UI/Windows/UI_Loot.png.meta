@@ -139,8 +139,8 @@ TextureImporter:
       name: UI_Loot_Button_A
       rect:
         serializedVersion: 2
-        x: 413
-        y: 77
+        x: 65
+        y: 10
         width: 50
         height: 50
       alignment: 0
@@ -161,8 +161,8 @@ TextureImporter:
       name: UI_Loot_Diamond__A
       rect:
         serializedVersion: 2
-        x: 360
-        y: 46
+        x: 5
+        y: 60
         width: 51
         height: 81
       alignment: 0
@@ -183,8 +183,8 @@ TextureImporter:
       name: UI_Loot_Energy__A
       rect:
         serializedVersion: 2
-        x: 450
-        y: 5
+        x: 175
+        y: 71
         width: 38
         height: 70
       alignment: 0
@@ -205,8 +205,8 @@ TextureImporter:
       name: UI_Loot_Frame_A
       rect:
         serializedVersion: 2
-        x: 1
-        y: 26
+        x: 5
+        y: 150
         width: 357
         height: 101
       alignment: 0
@@ -227,8 +227,8 @@ TextureImporter:
       name: UI_Loot_Jumper__A
       rect:
         serializedVersion: 2
-        x: 413
-        y: 4
+        x: 131
+        y: 70
         width: 35
         height: 71
       alignment: 0
@@ -241,6 +241,28 @@ TextureImporter:
       bones: []
       spriteID: a74c8b7b67b2adb4884d93c2b31a036d
       internalID: 119834871
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Checkpoint_icon_A
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 69
+        width: 57
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef3fc507999e4c24e8fb400585503cd9
+      internalID: -1747154303
       vertices: []
       indices: 
       edges: []
@@ -259,6 +281,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      UI_Checkpoint_icon_A: -1747154303
       UI_Loot_Button_A: 1029371703
       UI_Loot_Diamond__A: -1664595569
       UI_Loot_Energy__A: 1765336676

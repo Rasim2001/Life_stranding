@@ -3,6 +3,7 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
 using SpiderController.UI;
 
@@ -23,9 +24,12 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Enter();
 
-            Data.Speed = SpiderStaticData.FastSpeed;
+            Spider.WindowService.OnWindowOpened += ReturnToNormalMovement;
+
+            Data.OnTotalWeightChanged += WeightChanged;
             Data.DistanceFromGround = SpiderStaticData.DistanceFromGround;
 
+            SetSpeed(SpiderStaticData.FastSpeed);
             ApplyFastRunning();
 
             EnergyBarUI.ShowHologram();
@@ -35,8 +39,15 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Exit();
 
+            Spider.WindowService.OnWindowOpened -= ReturnToNormalMovement;
+
+            Data.OnTotalWeightChanged -= WeightChanged;
+
             ApplyDefaultSpeed();
         }
+
+        private void WeightChanged() =>
+            SetSpeed(SpiderStaticData.FastSpeed);
 
         public override void Update()
         {
@@ -47,6 +58,11 @@ namespace SpiderController.StateMachine.States.Ground
             if (!IsFastRunUp() && Data.CurrentEnergyFillAmount > 0)
                 return;
 
+            ReturnToNormalMovement();
+        }
+
+        private void ReturnToNormalMovement()
+        {
             if (IsInputZero())
                 StateMachine.SwitchState<IdlingState>();
             else

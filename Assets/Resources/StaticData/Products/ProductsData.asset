@@ -16,15 +16,22 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 8359691768321013558, guid: 300d9774771e9164897b0d3e5bd60983, type: 3}
+    - {fileID: 4730571632175798590, guid: 1c6702eea475ba848bda51ad254f72d8, type: 3}
     - {fileID: 6205786791626691670, guid: 8975597ac4ad0464994ce93dcdf3cb1c, type: 3}
+    - {fileID: 32900000, guid: afb4f230d99b8694dab3cf8a73f21953, type: 3}
     - {fileID: 990764835671390553, guid: cdcc51ded5493fe468d46f28acc11f61, type: 3}
-    - {fileID: 3573016400873741117, guid: 6e68b6bb5b9d2204aa6fc804e0d18d6c, type: 3}
+    - {fileID: 5512863299563491145, guid: 9570467022e2f344a94c9acfedc3e5f9, type: 3}
+    - {fileID: 32900000, guid: 5ff55c862b79d6847ad808e1d4166175, type: 3}
     - {fileID: 9007888883461479340, guid: f9105a48a8d6f0a43bbfcf9969736e0a, type: 3}
+    - {fileID: 32900000, guid: cf69f44a8a696c04aa61d444c7ca60ff, type: 3}
     - {fileID: 9007888883461479340, guid: 3e50d6b6ee4d2804ebed6e895f2eefe4, type: 3}
+    - {fileID: 32900000, guid: ed03d17244313ab4ea6641ca09557c30, type: 3}
     - {fileID: 9007888883461479340, guid: b822db70adc044d4a86802fa8a37fe45, type: 3}
+    - {fileID: 32900000, guid: 4da56fe3e429fb746bc97c78ef4c4e13, type: 3}
     - {fileID: 9007888883461479340, guid: f5763892cdaeb9e4badfaaa4c578ba30, type: 3}
+    - {fileID: 32900000, guid: 1227c1b0b51071344bc0ac6f61d9887e, type: 3}
     - {fileID: 9007888883461479340, guid: 54882273dcb3020488b87d989844eed8, type: 3}
+    - {fileID: 32900000, guid: a2d71f1bbd894834bb61260ac2a64ca2, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -89,18 +96,132 @@ MonoBehaviour:
       Data: 0
     - Name: 
       Entry: 4
-      Data: 0.00694
+      Data: 0.00595
     - Name: 
       Entry: 4
       Data: 0
     - Name: 
       Entry: 8
       Data: 
-    - Name: PlatformId
-      Entry: 3
-      Data: 0
+    - Name: Weight
+      Entry: 4
+      Data: 2
     - Name: ProductDescription
+      Entry: 7
+      Data: 3|Infastructure.StaticData.Product.ProductDescription, Assembly-CSharp
+    - Name: TitleText
+      Entry: 7
+      Data: 4|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 5|System.Collections.Generic.Dictionary`2[[Localization.LanguageId, Assembly-CSharp],[System.String,
+        mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 6|System.Collections.Generic.EnumEqualityComparer`1[[Localization.LanguageId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: HowToUseTextGamepad
+      Entry: 7
+      Data: 7|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 8|System.Collections.Generic.Dictionary`2[[Localization.LanguageId, Assembly-CSharp],[System.String,
+        mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 9|System.Collections.Generic.EnumEqualityComparer`1[[Localization.LanguageId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: HowToUseTextKeyboard
+      Entry: 7
+      Data: 10|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 11|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 9
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: DescriptionText
+      Entry: 7
+      Data: 12|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 13|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 6
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: VideoClip
       Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: 
       Entry: 8
@@ -116,7 +237,7 @@ MonoBehaviour:
       Data: 0
     - Name: $v
       Entry: 7
-      Data: 3|Infastructure.StaticData.Product.ProductData, Assembly-CSharp
+      Data: 14|Infastructure.StaticData.Product.ProductData, Assembly-CSharp
     - Name: Prefab
       Entry: 10
       Data: 1
@@ -153,26 +274,217 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: PlatformId
-      Entry: 3
+    - Name: Weight
+      Entry: 4
       Data: 0
     - Name: ProductDescription
       Entry: 7
-      Data: 4|Infastructure.StaticData.Product.ProductDescription, Assembly-CSharp
+      Data: 15|Infastructure.StaticData.Product.ProductDescription, Assembly-CSharp
     - Name: TitleText
+      Entry: 7
+      Data: 16|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 17|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 6
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
       Entry: 1
-      Data: "\u0422\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u043B \u0437\u0430\u043F\u0430\u0441
-        \u044D\u043D\u0435\u0440\u0433\u0438\u0438"
-    - Name: HowToUseText
+      Data: "<sprite=15><font-weight=\"500\">\u042D\u043D\u0435\u0440\u0433\u043E\u043D\u043E\u0441\u0438\u0442\u0435\u043B\u044C</font-weight>"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
       Entry: 1
-      Data: "\u0422\u0435\u043F\u0435\u0440\u044C \u0442\u044B \u043C\u043E\u0436\u0435\u0448\u044C
-        \u0438\u043C\u0435\u0435\u0448\u044C \u0431\u043E\u043B\u044C\u0448\u0435
-        \u0437\u0430\u043F\u0430\u0441\u0430 \u044D\u043D\u0435\u0440\u0433\u0438\u0438"
+      Data: <sprite=15><font-weight="500">Energy Cell</font-weight>
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: HowToUseTextGamepad
+      Entry: 7
+      Data: 18|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 19|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 9
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u041F\u043E\u0432\u044B\u0448\u0430\u0435\u0442 \u044D\u043D\u0435\u0440\u0433\u0435\u0442\u0438\u0447\u0435\u0441\u043A\u0438\u0439
+        \u0437\u0430\u043F\u0430\u0441 \u0440\u043E\u0431\u043E\u0442\u0430"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: "Increases the robot\u2019s maximum energy."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: HowToUseTextKeyboard
+      Entry: 7
+      Data: 20|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 21|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 9
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u041F\u043E\u0432\u044B\u0448\u0430\u0435\u0442 \u044D\u043D\u0435\u0440\u0433\u0435\u0442\u0438\u0447\u0435\u0441\u043A\u0438\u0439
+        \u0437\u0430\u043F\u0430\u0441 \u0440\u043E\u0431\u043E\u0442\u0430"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: "Increases the robot\u2019s maximum energy."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: DescriptionText
+      Entry: 7
+      Data: 22|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 23|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 6
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
       Entry: 1
-      Data: "\u042D\u043D\u0435\u0440\u0433\u0438\u044F \u043F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442
-        \u0434\u043E\u043B\u044C\u0448\u0435 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C
-        \u0441\u0432\u043E\u0438 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438"
+      Data: "\u0423\u0440\u0430 \u043D\u0430\u043A\u043E\u043D\u0435\u0446 \u0442\u043E
+        <color=#B9DDEA>\u044D\u043D\u0435\u0440\u0433\u0438\u044F \u043F\u0440\u0438\u0431\u0430\u0432\u043B\u044F\u0435\u0442\u0441\u044F</color> 
+        <sprite=21>.\u0422\u0435\u043F\u0435\u0440\u044C \u0442\u044B \u043C\u043E\u0436\u0435\u0448\u044C
+        \u043F\u0440\u044B\u0433\u0430\u0442\u044C \u0432\u044B\u0448\u0435 \u0431\u0435\u0436\u0430\u0442\u044C
+        \u0434\u0430\u043B\u044C\u0448\u0435, \u043F\u0435\u0440\u0435\u0441\u0435\u043A\u0430\u0442\u044C
+        \u043C\u043E\u0440\u044F \u0438 \u043E\u043A\u0435\u0430\u043D\u044B, \u043A\u0430\u043A
+        \u0442\u043E\u043B\u044C\u043A\u043E \u043D\u0430\u0443\u0447\u0438\u0448\u044C\u0441\u044F
+        \u0445\u043E\u0434\u0438\u0442\u044C \u043F\u043E \u0432\u043E\u0434\u0435.
+        \u0413\u043E\u0432\u043E\u0440\u044F\u0442 \u043E\u0434\u043D\u0430\u0436\u0434\u044B
+        \u0443 \u0447\u0435\u043B\u043E\u0432\u0435\u043A\u0430 \u044D\u0442\u043E
+        \u043F\u043E\u043B\u0443\u0447\u0438\u043B\u043E\u0441\u044C, \u043E\u0441\u0442\u0430\u043B\u043E\u0441\u044C
+        \u043D\u0430\u0439\u0442\u0438 \u043D\u0443\u0436\u043D\u044B\u0439 \u043C\u043E\u0434\u0443\u043B\u044C.
+        \u0410 \u043F\u043E\u043A\u0430 \u201C\u0411\u0435\u0440\u0438 \u0431\u043E\u043B\u044C\u0448\u0435
+        - \u043D\u0435\u0441\u0438 \u0434\u0430\u043B\u044C\u0448\u0435\u201D. "
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: "Nice! \u2014 your energy is finally going up  <sprite=21> . Now you
+        can jump higher and run farther, even cross seas and oceans once you learn
+        to walk on water. They say one human managed that once; we just need the
+        right module. "
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: VideoClip
+      Entry: 10
+      Data: 2
     - Name: 
       Entry: 8
       Data: 
@@ -190,10 +502,10 @@ MonoBehaviour:
       Data: 2
     - Name: $v
       Entry: 7
-      Data: 5|Infastructure.StaticData.Product.ProductData, Assembly-CSharp
+      Data: 24|Infastructure.StaticData.Product.ProductData, Assembly-CSharp
     - Name: Prefab
       Entry: 10
-      Data: 2
+      Data: 3
     - Name: Speed
       Entry: 4
       Data: 1
@@ -227,11 +539,29 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: PlatformId
-      Entry: 3
-      Data: 2
+    - Name: Weight
+      Entry: 4
+      Data: 4
     - Name: ProductDescription
+      Entry: 7
+      Data: 25|Infastructure.StaticData.Product.ProductDescription, Assembly-CSharp
+    - Name: TitleText
       Entry: 6
+      Data: 
+    - Name: HowToUseTextGamepad
+      Entry: 6
+      Data: 
+    - Name: HowToUseTextKeyboard
+      Entry: 6
+      Data: 
+    - Name: DescriptionText
+      Entry: 6
+      Data: 
+    - Name: VideoClip
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: 
       Entry: 8
@@ -247,10 +577,10 @@ MonoBehaviour:
       Data: 3
     - Name: $v
       Entry: 7
-      Data: 6|Infastructure.StaticData.Product.ProductData, Assembly-CSharp
+      Data: 26|Infastructure.StaticData.Product.ProductData, Assembly-CSharp
     - Name: Prefab
       Entry: 10
-      Data: 3
+      Data: 4
     - Name: Speed
       Entry: 4
       Data: 1
@@ -284,21 +614,216 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: PlatformId
-      Entry: 3
-      Data: 0
+    - Name: Weight
+      Entry: 4
+      Data: 1
     - Name: ProductDescription
       Entry: 7
-      Data: 7|Infastructure.StaticData.Product.ProductDescription, Assembly-CSharp
+      Data: 27|Infastructure.StaticData.Product.ProductDescription, Assembly-CSharp
     - Name: TitleText
-      Entry: 6
+      Entry: 7
+      Data: 28|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 29|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 6
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
       Data: 
-    - Name: HowToUseText
-      Entry: 6
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "<font-weight=\"500\">\u041F\u043B\u0430\u0442\u0444\u043E\u0440\u043C\u0430</font-weight>"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: <font-weight="500">Platform</font-weight>
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: HowToUseTextGamepad
+      Entry: 7
+      Data: 30|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 31|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 9
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u0414\u0432\u0438\u0433\u0430\u044F \u043F\u0440\u0430\u0432\u044B\u0439
+        \u0441\u0442\u0438\u043A<sprite=3> \u0432\u044B \u0431\u0430\u043B\u0430\u043D\u0441\u0438\u0440\u0443\u0435\u0442\u0435
+        \u043F\u043B\u0430\u0442\u0444\u043E\u0440\u043C\u043E\u0439"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: Use the right stick<sprite=3> to balance the platform
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: HowToUseTextKeyboard
+      Entry: 7
+      Data: 32|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 33|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 9
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u0417\u0430\u0436\u0430\u0432 \u041B\u041A\u041C <sprite=30> \u0432\u044B
+        \u0431\u0430\u043B\u0430\u043D\u0441\u0438\u0440\u0443\u0435\u0442\u0435
+        \u043F\u043B\u0430\u0442\u0444\u043E\u0440\u043C\u043E\u0439"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: Hold LMB <sprite=30> to balance the platform.
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: DescriptionText
-      Entry: 6
+      Entry: 7
+      Data: 34|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 35|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 6
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
       Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u0423\u043F\u0440\u0430\u0432\u043B\u044F\u044F \u043F\u043B\u0430\u0442\u0444\u043E\u0440\u043C\u043E\u0439,
+        \u0432\u044B \u0443\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u0435\u0442\u0435
+        \u0433\u0440\u0443\u0437 \u0432 \u0440\u0430\u0432\u043D\u043E\u0432\u0435\u0441\u0438\u0438
+        \u0438 \u043D\u0435 \u0434\u0430\u0451\u0442\u0435 \u0435\u043C\u0443 \u0441\u043E\u0441\u043A\u043E\u043B\u044C\u0437\u043D\u0443\u0442\u044C.
+        \u041A\u0430\u0436\u0434\u043E\u0435 \u043F\u0430\u0434\u0435\u043D\u0438\u0435
+        \u043F\u043E\u0432\u0440\u0435\u0436\u0434\u0430\u0435\u0442 \u0433\u0440\u0443\u0437
+        \u0438 \u043E\u0442\u043D\u0438\u043C\u0430\u0435\u0442 \u043E\u0447\u043A\u0438
+        \u0425\u041F<sprite=20> . \u041A\u043E\u0433\u0434\u0430 \u0425\u041F \u043E\u043F\u0443\u0441\u0442\u0438\u0442\u0441\u044F
+        \u0434\u043E \u043D\u0443\u043B\u044F, \u0433\u0440\u0443\u0437 \u0431\u0443\u0434\u0435\u0442
+        \u043E\u043A\u043E\u043D\u0447\u0430\u0442\u0435\u043B\u044C\u043D\u043E
+        \u0443\u043D\u0438\u0447\u0442\u043E\u0436\u0435\u043D. \u0411\u0435\u0440\u0435\u0433\u0438\u0442\u0435
+        \u0446\u0435\u043D\u043D\u044B\u0439 \u0433\u0440\u0443\u0437."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: "Tilting the platform keeps the cargo steady and stops it from sliding
+        off. Each fall damages it and drains its HP<sprite=20> . When its HP reaches
+        zero, the cargo is destroyed for good \u2014 protect your payload."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: VideoClip
+      Entry: 10
+      Data: 5
     - Name: 
       Entry: 8
       Data: 
@@ -316,145 +841,7 @@ MonoBehaviour:
       Data: 4
     - Name: $v
       Entry: 7
-      Data: 8|Infastructure.StaticData.Product.ProductData, Assembly-CSharp
-    - Name: Prefab
-      Entry: 10
-      Data: 4
-    - Name: Speed
-      Entry: 4
-      Data: 0
-    - Name: StartRotationEuler
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: StartPositionVector
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: PlatformId
-      Entry: 3
-      Data: 0
-    - Name: ProductDescription
-      Entry: 7
-      Data: 9|Infastructure.StaticData.Product.ProductDescription, Assembly-CSharp
-    - Name: TitleText
-      Entry: 1
-      Data: "\u0422\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u043B \u043F\u0440\u044B\u0436\u043E\u043A!"
-    - Name: HowToUseText
-      Entry: 6
-      Data: 
-    - Name: DescriptionText
-      Entry: 6
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 5
-    - Name: $v
-      Entry: 7
-      Data: 10|Infastructure.StaticData.Product.ProductData, Assembly-CSharp
-    - Name: Prefab
-      Entry: 10
-      Data: 5
-    - Name: Speed
-      Entry: 4
-      Data: 0
-    - Name: StartRotationEuler
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: StartPositionVector
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: PlatformId
-      Entry: 3
-      Data: 0
-    - Name: ProductDescription
-      Entry: 7
-      Data: 11|Infastructure.StaticData.Product.ProductDescription, Assembly-CSharp
-    - Name: TitleText
-      Entry: 1
-      Data: "\u0422\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u043B \u0443\u0441\u043A\u043E\u0440\u0435\u043D\u0438\u0435!"
-    - Name: HowToUseText
-      Entry: 6
-      Data: 
-    - Name: DescriptionText
-      Entry: 6
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 6
-    - Name: $v
-      Entry: 7
-      Data: 12|Infastructure.StaticData.Product.ProductData, Assembly-CSharp
+      Data: 36|Infastructure.StaticData.Product.ProductData, Assembly-CSharp
     - Name: Prefab
       Entry: 10
       Data: 6
@@ -491,21 +878,223 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: PlatformId
-      Entry: 3
+    - Name: Weight
+      Entry: 4
       Data: 0
     - Name: ProductDescription
       Entry: 7
-      Data: 13|Infastructure.StaticData.Product.ProductDescription, Assembly-CSharp
+      Data: 37|Infastructure.StaticData.Product.ProductDescription, Assembly-CSharp
     - Name: TitleText
+      Entry: 7
+      Data: 38|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 39|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 6
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
       Entry: 1
-      Data: "\u0422\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u043B \u0440\u044B\u0432\u043E\u043A!"
-    - Name: HowToUseText
-      Entry: 6
+      Data: "<sprite=15><font-weight=\"500\">\u041F\u0440\u044B\u0436\u043E\u043A</font-weight>"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: <sprite=15><font-weight="500">Jump</font-weight>
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: HowToUseTextGamepad
+      Entry: 7
+      Data: 40|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 41|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 9
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439  <sprite=9>\u0434\u043B\u044F
+        \u043A\u043E\u043D\u0442\u0440\u043E\u043B\u0438\u0440\u0443\u0435\u043C\u043E\u0433\u043E
+        \u043F\u0440\u044B\u0436\u043A\u0430."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: Hold  <sprite=9> for a controlled jump.
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: HowToUseTextKeyboard
+      Entry: 7
+      Data: 42|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 43|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 9
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439 <sprite=35> \u0434\u043B\u044F
+        \u043A\u043E\u043D\u0442\u0440\u043E\u043B\u0438\u0440\u0443\u0435\u043C\u043E\u0433\u043E
+        \u043F\u0440\u044B\u0436\u043A\u0430."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: Hold <sprite=35> for a controlled jump.
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: DescriptionText
-      Entry: 6
+      Entry: 7
+      Data: 44|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 45|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 6
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
       Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u0423\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u044F \u043F\u0440\u044B\u0436\u043E\u043A
+        \u0442\u044B \u043C\u043E\u0436\u0435\u0448\u044C \u043F\u043B\u0430\u0432\u043D\u043E
+        \u043F\u0435\u0440\u0435\u0441\u0435\u043A\u0430\u0442\u044C \u043F\u0440\u043E\u043F\u0430\u0441\u0442\u0438.
+        \u041D\u0435 \u0431\u0435\u0441\u043F\u043E\u043A\u043E\u0439\u0441\u044F
+        \u043E \u0441\u043E\u0445\u0440\u0430\u043D\u043D\u043E\u0441\u0442\u0438
+        \u043A\u043E\u043B\u0431\u044B, \u043E\u043D\u0430 \u043D\u0430\u043C\u0435\u0440\u0442\u0432\u043E
+        \u0437\u0430\u043A\u0440\u0435\u043F\u043B\u044F\u0435\u0442\u0441\u044F
+        \u043D\u0430 \u043F\u043B\u0430\u0442\u0444\u043E\u0440\u043C\u0435.  \u041E\u0434\u043D\u0430\u043A\u043E
+        \u043F\u0440\u044B\u0436\u043E\u043A <color=#B9DDEA>\u0440\u0430\u0441\u0445\u043E\u0434\u0443\u0435\u0442
+        \u044D\u043D\u0435\u0440\u0433\u0438\u044E</color> <sprite=21>,    \u0447\u0435\u043C
+        \u0434\u043E\u043B\u044C\u0448\u0435 \u0434\u0435\u0440\u0436\u0438\u0448\u044C,
+        \u0442\u0435\u043C \u0431\u043E\u043B\u044C\u0448\u0435 \u0440\u0430\u0441\u0445\u043E\u0434\u0443\u0435\u0442\u0441\u044F.
+        \u0422\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u044E \u0440\u0430\u0437\u0440\u0430\u0431\u043E\u0442\u0430\u043B
+        \u041D\u0418\u0418 \u0430\u044D\u0440\u043E\u0434\u0438\u043D\u0430\u043C\u0438\u043A\u0438;
+        \u0431\u0430\u0437\u0438\u0440\u0443\u044F\u0441\u044C \u043D\u0430 \u043F\u0440\u043E\u0442\u043E\u0442\u0438\u043F\u0435
+        \u0440\u0430\u043D\u0446\u0435\u0432\u043E\u0433\u043E \u0434\u0432\u0438\u0433\u0430\u0442\u0435\u043B\u044F.
+        \u0425\u043E\u0442\u0435\u043B\u0438 \u043F\u0440\u044B\u0433\u043D\u0443\u0442\u044C
+        \u0432\u044B\u0448\u0435 \u0433\u043E\u043B\u043E\u0432\u044B."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: "Holding jump lets you glide smoothly across gaps while the capsule stays
+        firmly locked to the platform. Jumping consumes energy  <sprite=21> \u2014
+        the longer you hold, the more you spend. Developed by the Aerodynamics Research
+        Institute on an experimental jetpack prototype."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: VideoClip
+      Entry: 10
+      Data: 7
     - Name: 
       Entry: 8
       Data: 
@@ -520,13 +1109,13 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 3
-      Data: 7
+      Data: 5
     - Name: $v
       Entry: 7
-      Data: 14|Infastructure.StaticData.Product.ProductData, Assembly-CSharp
+      Data: 46|Infastructure.StaticData.Product.ProductData, Assembly-CSharp
     - Name: Prefab
       Entry: 10
-      Data: 7
+      Data: 8
     - Name: Speed
       Entry: 4
       Data: 0
@@ -560,21 +1149,217 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: PlatformId
-      Entry: 3
+    - Name: Weight
+      Entry: 4
       Data: 0
     - Name: ProductDescription
       Entry: 7
-      Data: 15|Infastructure.StaticData.Product.ProductDescription, Assembly-CSharp
+      Data: 47|Infastructure.StaticData.Product.ProductDescription, Assembly-CSharp
     - Name: TitleText
+      Entry: 7
+      Data: 48|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 49|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 6
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
       Entry: 1
-      Data: "\u0422\u044B \u043F\u043E\u0434\u043E\u0431\u0440\u0430\u043B \u0441\u043A\u0430\u043D\u043D\u0435\u0440!"
-    - Name: HowToUseText
-      Entry: 6
+      Data: "<sprite=15><font-weight=\"500\">\u0411\u0435\u0433</font-weight>"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: <sprite=15><font-weight="500">Sprint</font-weight>
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: HowToUseTextGamepad
+      Entry: 7
+      Data: 50|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 51|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 9
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439  <sprite=2> \u0434\u043B\u044F
+        \u0443\u0441\u043A\u043E\u0440\u0435\u043D\u043D\u043E\u0433\u043E \u0431\u0435\u0433\u0430"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: Press  <sprite=2> to sprint.
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: HowToUseTextKeyboard
+      Entry: 7
+      Data: 52|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 53|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 9
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439 <sprite=34> \u0434\u043B\u044F
+        \u0443\u0441\u043A\u043E\u0440\u0435\u043D\u043D\u043E\u0433\u043E \u0431\u0435\u0433\u0430"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: Hold <sprite=34> sto sprint.
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: DescriptionText
-      Entry: 6
+      Entry: 7
+      Data: 54|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 55|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 6
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
       Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u0411\u0435\u0433 \u043A\u0430\u043A \u0438 \u0434\u0440\u0443\u0433\u0438\u0435
+        \u0430\u0433\u0440\u0435\u0433\u0430\u0442\u044B \u0442\u043E\u0436\u0435
+        <color=#B9DDEA>\u0440\u0430\u0441\u0445\u043E\u0434\u0443\u0435\u0442 \u044D\u043D\u0435\u0440\u0433\u0438\u044E</color> 
+        <sprite=21> \u043D\u0435 \u0443\u0434\u0438\u0432\u0438\u0442\u0435\u043B\u044C\u043D\u043E
+        ;) \u0421\u0443\u0434\u044F \u043F\u043E \u0432\u0441\u0435\u043C\u0443 \u044D\u0442\u043E\u0442
+        \u0443\u0441\u043A\u043E\u0440\u0438\u0442\u0435\u043B\u044C \u043F\u0440\u0438\u043D\u0430\u0434\u043B\u0435\u0436\u0430\u043B
+        \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u0438 \u0441 \u0441\u0430\u043C\u044B\u043C\u0438
+        \u0431\u044B\u0441\u0442\u0440\u044B\u043C\u0438 \u0438 \u043D\u0430\u0434\u0435\u0436\u043D\u044B\u043C\u0438
+        \u043F\u0435\u0440\u0435\u0432\u043E\u0434\u0430\u043C\u0438. \u041F\u043E\u0441\u043B\u0435
+        \u0433\u0438\u0431\u0435\u043B\u0438 \u043C\u0438\u0440\u0430 \u043F\u0435\u0440\u0435\u0432\u043E\u0434\u044B
+        \u043E\u0441\u0443\u0449\u0435\u0441\u0442\u0432\u043B\u044F\u043B\u0438\u0441\u044C
+        \u0447\u0435\u0440\u0435\u0437 \u0434\u043E\u0441\u0442\u0430\u0432\u0449\u0438\u043A\u043E\u0432
+        \u0442\u0430\u043A \u0436\u0435 \u0431\u044B\u0441\u0442\u0440\u043E \u0438
+        \u043D\u0430\u0434\u0451\u0436\u043D\u043E."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: "Sprinting, like every other module, consumes energy   <sprite=21> \u2014
+        no surprise there. Rumour has it this booster once belonged to a company
+        famous for the fastest, most reliable deliveries. After the world collapsed,
+        couriers kept that tradition, carrying cargo just as fast and just as safely."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: VideoClip
+      Entry: 10
+      Data: 9
     - Name: 
       Entry: 8
       Data: 
@@ -589,13 +1374,13 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 3
-      Data: 8
+      Data: 6
     - Name: $v
       Entry: 7
-      Data: 16|Infastructure.StaticData.Product.ProductData, Assembly-CSharp
+      Data: 56|Infastructure.StaticData.Product.ProductData, Assembly-CSharp
     - Name: Prefab
       Entry: 10
-      Data: 8
+      Data: 10
     - Name: Speed
       Entry: 4
       Data: 0
@@ -629,21 +1414,747 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: PlatformId
-      Entry: 3
+    - Name: Weight
+      Entry: 4
       Data: 0
     - Name: ProductDescription
       Entry: 7
-      Data: 17|Infastructure.StaticData.Product.ProductDescription, Assembly-CSharp
+      Data: 57|Infastructure.StaticData.Product.ProductDescription, Assembly-CSharp
     - Name: TitleText
+      Entry: 7
+      Data: 58|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 59|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 6
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
       Entry: 1
-      Data: "\u0422\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u043B \u043C\u0430\u0433\u043D\u0438\u0442!"
-    - Name: HowToUseText
-      Entry: 6
+      Data: "<sprite=15><font-weight=\"500\">\u0420\u044B\u0432\u043E\u043A</font-weight>"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: <sprite=15><font-weight="500">Dash</font-weight>
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: HowToUseTextGamepad
+      Entry: 7
+      Data: 60|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 61|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 9
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439  <sprite=5> \u0434\u043B\u044F
+        \u0440\u0435\u0437\u043A\u043E\u0433\u043E \u0440\u044B\u0432\u043A\u0430
+        \u0432\u043F\u0435\u0440\u0435\u0434."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: Press  <sprite=5> to perform a quick forward dash.
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: HowToUseTextKeyboard
+      Entry: 7
+      Data: 62|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 63|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 9
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439 <sprite=25> \u0434\u043B\u044F
+        \u0440\u0435\u0437\u043A\u043E\u0433\u043E \u0440\u044B\u0432\u043A\u0430
+        \u0432\u043F\u0435\u0440\u0435\u0434."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: Press <sprite=25> to dash forward.
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: DescriptionText
-      Entry: 6
+      Entry: 7
+      Data: 64|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 65|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 6
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
       Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u0420\u044B\u0432\u043E\u043A \u0442\u043E\u0436\u0435 <color=#B9DDEA>\u0440\u0430\u0441\u0445\u043E\u0434\u0443\u0435\u0442
+        \u0437\u0430\u043F\u0430\u0441 \u044D\u043D\u0435\u0440\u0433\u0438\u0438</color> 
+        <sprite=21> \u043F\u0440\u0438\u0432\u044B\u043A\u0430\u0439. \u0414\u043E\u043F\u043E\u0434\u043B\u0438\u043D\u043D\u043E
+        \u043D\u0435\u0438\u0437\u0432\u0435\u0441\u0442\u043D\u043E \u043A\u0442\u043E
+        \u0441\u0442\u043E\u044F\u043B \u0443 \u0438\u0441\u0442\u043E\u043A\u043E\u0432
+        \u0440\u0430\u0437\u0440\u0430\u0431\u043E\u0442\u043A\u0438 \u0440\u044B\u0432\u043A\u043E\u0432\u043E\u0433\u043E
+        \u0434\u0432\u0438\u0433\u0430\u0442\u0435\u043B\u044F, \u043A\u0430\u043A
+        \u0438 \u043D\u0435 \u043F\u043E\u043D\u044F\u0442\u043D\u043E \u0432 \u043A\u0430\u043A\u0438\u0445
+        \u0446\u0435\u043B\u044F\u0445 \u043E\u043D \u0431\u044B\u043B \u0440\u0430\u0437\u0440\u0430\u0431\u043E\u0442\u0430\u043D.
+        \u041D\u043E \u0442\u043E\u0447\u043D\u043E \u0437\u043D\u0430\u0435\u043C
+        \u0447\u0442\u043E \u0432 \u043C\u043E\u043C\u0435\u043D\u0442 \u0440\u044B\u0432\u043A\u0430
+        \u043A\u043E\u043B\u0431\u0430 \u0441 \u0440\u043E\u0441\u0442\u043A\u043E\u043C
+        \u043D\u0430\u0434\u0435\u0436\u043D\u043E \u043F\u0440\u0438\u043A\u043E\u0432\u0430\u043D\u0430
+        \u043A \u043F\u043B\u0430\u0442\u0444\u043E\u0440\u043C\u0435."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: "Dashing also burns through your energy reserves   <sprite=21> \u2014
+        better get used to it. No one really knows who designed the dash engine or
+        what it was meant for. What we do know is that during a dash, the sprout
+        capsule is firmly locked to the platform."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: VideoClip
+      Entry: 10
+      Data: 11
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 7
+    - Name: $v
+      Entry: 7
+      Data: 66|Infastructure.StaticData.Product.ProductData, Assembly-CSharp
+    - Name: Prefab
+      Entry: 10
+      Data: 12
+    - Name: Speed
+      Entry: 4
+      Data: 0
+    - Name: StartRotationEuler
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: StartPositionVector
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Weight
+      Entry: 4
+      Data: 0
+    - Name: ProductDescription
+      Entry: 7
+      Data: 67|Infastructure.StaticData.Product.ProductDescription, Assembly-CSharp
+    - Name: TitleText
+      Entry: 7
+      Data: 68|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 69|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 6
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "<sprite=15><font-weight=\"500\">\u0418\u043C\u043F\u0443\u043B\u044C\u0441\u043D\u044B\u0439
+        \u0441\u043A\u0430\u043D\u0435\u0440</font-weight>"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: <sprite=15><font-weight="500">Pulse Scanner</font-weight>
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: HowToUseTextGamepad
+      Entry: 7
+      Data: 70|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 71|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 9
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439 <sprite=17> \u0434\u043B\u044F
+        \u0441\u043A\u0430\u043D\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F
+        \u0440\u0435\u043B\u044C\u0435\u0444\u0430"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: Press <sprite=17> to scan the terrain.
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: HowToUseTextKeyboard
+      Entry: 7
+      Data: 72|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 73|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 9
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439 <sprite=36> \u0434\u043B\u044F
+        \u0441\u043A\u0430\u043D\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F
+        \u0440\u0435\u043B\u044C\u0435\u0444\u0430 "
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: Press <sprite=36> to scan the terrain.
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: DescriptionText
+      Entry: 7
+      Data: 74|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 75|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 6
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u0421\u043A\u0430\u043D\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435
+        \u0440\u0435\u043B\u044C\u0435\u0444\u0430 \u043F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442
+        \u0443\u0437\u043D\u0430\u0442\u044C \u043A\u0430\u043A \u0438 \u0433\u0434\u0435
+        \u0431\u0435\u0437\u043E\u043F\u0430\u0441\u043D\u0435\u0435 \u043F\u0435\u0440\u0435\u0441\u0435\u043A\u0430\u0442\u044C.
+        \u0421\u0438\u043C\u0432\u043E\u043B\u044B \u0443\u043A\u0430\u0437\u044B\u0432\u0430\u044E\u0442
+        \u0431\u0435\u0437\u043E\u043F\u0430\u0441\u043D\u044B\u0435 \u043F\u0443\u0442\u0438
+        \u0438 \u0437\u043E\u043D\u044B \u0440\u0438\u0441\u043A\u0430. \u041C\u0430\u043B\u043E
+        \u043A\u043E\u043C\u0443 \u0438\u0437\u0432\u0435\u0441\u0442\u043D\u043E,
+        \u0447\u0442\u043E \u043F\u0440\u043E\u0442\u043E\u0442\u0438\u043F \u0441\u043E\u0431\u0440\u0430\u043D
+        \u043D\u0430 \u0431\u0430\u0437\u0435 LiDAR i17 Pro Max, \u043A\u043E\u0434\u043E\u0432\u043E\u0435
+        \u0438\u043C\u044F XZ-3000."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: "Terrain scans show where and how it\u2019s safest to cross. Icons mark
+        safe routes and danger zones. Few people know the prototype is built on a
+        LiDAR i17 Pro Max, codename XZ-3000."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: VideoClip
+      Entry: 10
+      Data: 13
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 8
+    - Name: $v
+      Entry: 7
+      Data: 76|Infastructure.StaticData.Product.ProductData, Assembly-CSharp
+    - Name: Prefab
+      Entry: 10
+      Data: 14
+    - Name: Speed
+      Entry: 4
+      Data: 0
+    - Name: StartRotationEuler
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: StartPositionVector
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Weight
+      Entry: 4
+      Data: 0
+    - Name: ProductDescription
+      Entry: 7
+      Data: 77|Infastructure.StaticData.Product.ProductDescription, Assembly-CSharp
+    - Name: TitleText
+      Entry: 7
+      Data: 78|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 79|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 6
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "<sprite=15><font-weight=\"500\">\u041C\u0430\u0433\u043D\u0438\u0442</font-weight>"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: <sprite=15><font-weight="500">Magnet</font-weight>
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: HowToUseTextGamepad
+      Entry: 7
+      Data: 80|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 81|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 9
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439  <sprite=16>
+        \u0434\u043B\u044F \u0430\u043A\u0442\u0438\u0432\u0430\u0446\u0438\u0438
+        \u043C\u0430\u0433\u043D\u0438\u0442\u043D\u043E\u0439 \u043F\u043B\u0430\u0442\u0444\u043E\u0440\u043C\u044B"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: Press   <sprite=16> to activate the magnetic platform.
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: HowToUseTextKeyboard
+      Entry: 7
+      Data: 82|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 83|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 9
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u0417\u0430\u0436\u043C\u0438 \u041F\u041A\u041C <sprite=32> \u0434\u043B\u044F
+        \u0430\u043A\u0442\u0438\u0432\u0430\u0446\u0438\u0438 \u043C\u0430\u0433\u043D\u0438\u0442\u043D\u043E\u0439
+        \u043F\u043B\u0430\u0442\u0444\u043E\u0440\u043C\u044B"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: Hold RMB <sprite=32> to activate the magnetic platform.
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: DescriptionText
+      Entry: 7
+      Data: 84|Localization.LocalizationText, Assembly-CSharp
+    - Name: Values
+      Entry: 7
+      Data: 85|System.Collections.Generic.Dictionary`2[[Localization.LanguageId,
+        Assembly-CSharp],[System.String, mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 6
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 1
+      Data: "\u041C\u0430\u0433\u043D\u0438\u0442\u043D\u0430\u044F \u043F\u043B\u0430\u0442\u0444\u043E\u0440\u043C\u0430
+        \u0441\u0442\u0430\u0431\u0438\u043B\u044C\u043D\u043E \u0443\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u0435\u0442
+        \u043E\u0431\u044A\u0435\u043A\u0442\u044B \u043D\u0430 \u043C\u0435\u0441\u0442\u0435,
+        \u043D\u0435 \u043F\u043E\u0437\u0432\u043E\u043B\u044F\u044F \u0438\u043C
+        \u0434\u0432\u0438\u0433\u0430\u0442\u044C\u0441\u044F. <color=#B9DDEA>\u0420\u0430\u0441\u0445\u043E\u0434\u0443\u0435\u0442
+        \u044D\u043D\u0435\u0440\u0433\u0438\u044E </color><sprite=21> \u0412 \u043F\u0440\u0435\u0436\u043D\u0435\u0435
+        \u0432\u0440\u0435\u043C\u044F \u0442\u0430\u043A\u0438\u043C\u0438 \u043C\u0430\u0433\u043D\u0438\u0442\u0430\u043C\u0438
+        \u0430\u043A\u0442\u0438\u0432\u043D\u043E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u043B\u0438\u0441\u044C
+        \u043D\u0430 \u0441\u0432\u0430\u043B\u043A\u0430\u0445 \u043C\u0435\u0442\u0430\u043B\u043B\u043E\u043B\u043E\u043C\u0430,
+        \u0441\u0435\u0439\u0447\u0430\u0441 \u0434\u043B\u044F \u0441\u043F\u0430\u0441\u0435\u043D\u0438\u044F
+        \u043C\u0438\u0440\u0430. \u041C\u0438\u0440 \u043D\u0435\u043F\u0440\u0435\u0434\u0441\u043A\u0430\u0437\u0443\u0435\u043C"
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 1
+      Data: "The magnetic platform locks objects in place and keeps them from moving.
+        Using it consumes energy <sprite=21> . Back in the day these magnets were
+        used on junkyards to sort scrap metal; now they\u2019re used to save the
+        world. The world is unpredictable."
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: VideoClip
+      Entry: 10
+      Data: 15
     - Name: 
       Entry: 8
       Data: 

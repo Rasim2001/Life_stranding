@@ -82,7 +82,9 @@ float4 BasicFragmentAdd(FragmentData i) : SV_Target
 
 	col = CalculateLightingAdd(POSITION_WS(i), normalWS, VIEWDIR_WS(i), objectColor, 1.0, i.mainUV, i, data);
 	
-	col = ApplyAlphaEffects(col, i.mainUV, 0, data.camDistance, data.projPos);
+	col = ApplyAlphaEffects(col,
+		i.mainUV, UV_LIGHTMAP(i), data.vertexWS,
+		0, data.camDistance, data.projPos);
 
 #ifdef _ALPHA_CUTOFF_ON
 	clip((col.a - ACCESS_PROP_FLOAT(_AlphaCutoffValue)) - 0.001);

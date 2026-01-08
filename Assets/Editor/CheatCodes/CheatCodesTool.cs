@@ -1,0 +1,66 @@
+using Infastructure.Services.SaveLoadService;
+using SpiderController;
+using UnityEditor;
+using UnityEngine;
+using Zenject;
+
+namespace Editor.CheatCodes
+{
+    public class CheatCodesTool
+    {
+        [MenuItem("Cheats/Go To Biosphere")]
+        public static void GoToBiosphere()
+        {
+            Spider spider = Object.FindObjectOfType<Spider>();
+
+            spider.transform.position = new Vector3(4.32000017f, 111.580002f, -172.179993f);
+            spider.transform.rotation = Quaternion.Euler(new Vector3(0f, 180, 0f));
+        }
+
+        [MenuItem("Cheats/Go To CheckPoint")]
+        public static void GoToCheckpoint()
+        {
+            Spider spider = Object.FindObjectOfType<Spider>();
+
+            spider.transform.position = new Vector3(5.56727314f, 49.7130394f, 9.58074188f);
+            spider.transform.rotation = Quaternion.Euler(new Vector3(0f, 180, 0f));
+        }
+
+        [MenuItem("Cheats/GetAll Abilities")]
+        public static void GetAllAbilities()
+        {
+            Spider spider = Object.FindObjectOfType<Spider>();
+
+            spider.transform.position = new Vector3(5.56727314f, 49.7130394f, 9.58074188f);
+            spider.transform.rotation = Quaternion.Euler(new Vector3(0f, 180, 0f));
+        }
+
+        [MenuItem("Cheats/Progress/Save Progress")]
+        public static void SaveProgress()
+        {
+            SceneContext sceneContext = Object.FindObjectOfType<SceneContext>();
+
+            if (sceneContext == null)
+                return;
+
+            DiContainer container = sceneContext.Container;
+
+            ISaveLoadService saveLoadService = container.Resolve<ISaveLoadService>();
+            saveLoadService.SaveProgress();
+        }
+
+        [MenuItem("Cheats/Progress/Clear Progress")]
+        public static void ClearProgress()
+        {
+            SceneContext sceneContext = Object.FindObjectOfType<SceneContext>();
+
+            if (sceneContext == null)
+                return;
+
+            DiContainer container = sceneContext.Container;
+
+            ISaveLoadService saveLoadService = container.Resolve<ISaveLoadService>();
+            saveLoadService.ClearProgress();
+        }
+    }
+}

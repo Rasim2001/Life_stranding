@@ -189,6 +189,33 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ChangePlatformLeft"",
+                    ""type"": ""Button"",
+                    ""id"": ""b9cc5700-44af-4f58-8f77-0f8df7ade372"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ChangePlatformRight"",
+                    ""type"": ""Button"",
+                    ""id"": ""31cc3501-0a72-44dc-8f53-482540cd74f5"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""b2b5a8a2-349c-4148-bb79-43d611aff5d4"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -349,10 +376,10 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""d5631065-b69a-49ae-ab20-74814f6c21e9"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": "";Gamepad;Joystick"",
+                    ""groups"": "";Joystick"",
                     ""action"": ""Scan"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -360,7 +387,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""a02dfaaf-7c50-49c1-af49-a6ec9e855d51"",
-                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad;Joystick"",
@@ -422,6 +449,39 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""action"": ""ScrollCamera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f47038e2-bef4-4f87-b49b-ce85a4f87dd9"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad;Joystick"",
+                    ""action"": ""ChangePlatformLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3e8dce77-6c8a-4144-a889-e5882a4ebf32"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad;Joystick"",
+                    ""action"": ""ChangePlatformRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""111dd089-004f-401a-af34-cb46a158e81e"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad;Joystick"",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -916,7 +976,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""name"": ""Submit"",
                     ""type"": ""Button"",
                     ""id"": ""7607c7b6-cd76-4816-beef-bd0341cfe950"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -925,7 +985,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""name"": ""Cancel"",
                     ""type"": ""Button"",
                     ""id"": ""15cef263-9014-4fd5-94d9-4e4a6234a6ef"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -1265,7 +1325,29 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""path"": ""*/{Submit}"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse;Gamepad;Touch;Joystick;XR"",
+                    ""groups"": ""Joystick;XR;Keyboard&Mouse;Gamepad;Touch"",
+                    ""action"": ""Submit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1278b65a-c4cb-4846-9f98-4dd48c8e4936"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Submit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""36540de3-773f-4af9-9f8a-dfaba57ab6a3"",
+                    ""path"": ""<Keyboard>/numpadEnter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""Submit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -1492,6 +1574,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Joystick_LookButton = m_Joystick.FindAction("LookButton", throwIfNotFound: true);
         m_Joystick_ShiftMove = m_Joystick.FindAction("ShiftMove", throwIfNotFound: true);
         m_Joystick_ScrollCamera = m_Joystick.FindAction("ScrollCamera", throwIfNotFound: true);
+        m_Joystick_ChangePlatformLeft = m_Joystick.FindAction("ChangePlatformLeft", throwIfNotFound: true);
+        m_Joystick_ChangePlatformRight = m_Joystick.FindAction("ChangePlatformRight", throwIfNotFound: true);
+        m_Joystick_Pause = m_Joystick.FindAction("Pause", throwIfNotFound: true);
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
@@ -1608,6 +1693,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Joystick_LookButton;
     private readonly InputAction m_Joystick_ShiftMove;
     private readonly InputAction m_Joystick_ScrollCamera;
+    private readonly InputAction m_Joystick_ChangePlatformLeft;
+    private readonly InputAction m_Joystick_ChangePlatformRight;
+    private readonly InputAction m_Joystick_Pause;
     /// <summary>
     /// Provides access to input actions defined in input action map "Joystick".
     /// </summary>
@@ -1663,6 +1751,18 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Joystick/ScrollCamera".
         /// </summary>
         public InputAction @ScrollCamera => m_Wrapper.m_Joystick_ScrollCamera;
+        /// <summary>
+        /// Provides access to the underlying input action "Joystick/ChangePlatformLeft".
+        /// </summary>
+        public InputAction @ChangePlatformLeft => m_Wrapper.m_Joystick_ChangePlatformLeft;
+        /// <summary>
+        /// Provides access to the underlying input action "Joystick/ChangePlatformRight".
+        /// </summary>
+        public InputAction @ChangePlatformRight => m_Wrapper.m_Joystick_ChangePlatformRight;
+        /// <summary>
+        /// Provides access to the underlying input action "Joystick/Pause".
+        /// </summary>
+        public InputAction @Pause => m_Wrapper.m_Joystick_Pause;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1722,6 +1822,15 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @ScrollCamera.started += instance.OnScrollCamera;
             @ScrollCamera.performed += instance.OnScrollCamera;
             @ScrollCamera.canceled += instance.OnScrollCamera;
+            @ChangePlatformLeft.started += instance.OnChangePlatformLeft;
+            @ChangePlatformLeft.performed += instance.OnChangePlatformLeft;
+            @ChangePlatformLeft.canceled += instance.OnChangePlatformLeft;
+            @ChangePlatformRight.started += instance.OnChangePlatformRight;
+            @ChangePlatformRight.performed += instance.OnChangePlatformRight;
+            @ChangePlatformRight.canceled += instance.OnChangePlatformRight;
+            @Pause.started += instance.OnPause;
+            @Pause.performed += instance.OnPause;
+            @Pause.canceled += instance.OnPause;
         }
 
         /// <summary>
@@ -1766,6 +1875,15 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @ScrollCamera.started -= instance.OnScrollCamera;
             @ScrollCamera.performed -= instance.OnScrollCamera;
             @ScrollCamera.canceled -= instance.OnScrollCamera;
+            @ChangePlatformLeft.started -= instance.OnChangePlatformLeft;
+            @ChangePlatformLeft.performed -= instance.OnChangePlatformLeft;
+            @ChangePlatformLeft.canceled -= instance.OnChangePlatformLeft;
+            @ChangePlatformRight.started -= instance.OnChangePlatformRight;
+            @ChangePlatformRight.performed -= instance.OnChangePlatformRight;
+            @ChangePlatformRight.canceled -= instance.OnChangePlatformRight;
+            @Pause.started -= instance.OnPause;
+            @Pause.performed -= instance.OnPause;
+            @Pause.canceled -= instance.OnPause;
         }
 
         /// <summary>
@@ -2327,6 +2445,27 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnScrollCamera(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ChangePlatformLeft" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnChangePlatformLeft(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ChangePlatformRight" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnChangePlatformRight(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Pause" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPause(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Player" which allows adding and removing callbacks.

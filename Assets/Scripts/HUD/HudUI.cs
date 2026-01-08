@@ -1,9 +1,12 @@
 using System;
 using DG.Tweening;
 using GameDevBuddies;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CutScene;
+using Infastructure.Services.SpiderTrack;
 using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using Unity.Cinemachine;
 using UnityEngine;
 using Zenject;
@@ -17,23 +20,33 @@ namespace HUD
         [SerializeField] private RectTransform _canvasRectTransform;
         [SerializeField] private Transform _arrowContainer;
         [SerializeField] private Transform _xRayCollectionContainer;
+        [SerializeField] private Transform _disabledContainer;
         [SerializeField] private CanvasGroup _canvasGroup;
         public FlowerPointIndicator FlowerPointIndicator => _flowerPointIndicator;
         public Transform XRayCollectionContainer => _xRayCollectionContainer;
+        public Transform DisabledContainer => _disabledContainer;
 
         private FinishPointIndicator _finishPointIndicator;
         private FlowerPointIndicator _flowerPointIndicator;
 
         private ArrowUI _arrowUIPrefab;
-        private ICutSceneService _cutSceneService;
-
-        private bool _cutSceneIsActive;
-
         private TerrainScan _terrain;
 
+        private ICutSceneService _cutSceneService;
+        private ICameraProviderService _cameraProviderService;
+
+        private bool _cutSceneIsActive;
+        private ISpiderTrackService _spiderTrackService;
+
+
         [Inject]
-        public void Construct(ICutSceneService cutSceneService) =>
+        public void Construct(ICutSceneService cutSceneService, ICameraProviderService cameraProviderService,
+            ISpiderTrackService spiderTrackService)
+        {
+            _spiderTrackService = spiderTrackService;
+            _cameraProviderService = cameraProviderService;
             _cutSceneService = cutSceneService;
+        }
 
         private void Awake() =>
             _canvasGroup.alpha = 0;
@@ -45,17 +58,21 @@ namespace HUD
         public void RegisterFinishTarget(Transform finishTargetTransform)
         {
             ArrowUI arrowUI = Instantiate(_arrowUIPrefab, _arrowContainer);
+            arrowUI.Initialize(_spiderTrackService.Spider.transform, finishTargetTransform);
 
             _finishPointIndicator = new
-                FinishPointIndicator(arrowUI, _canvasRectTransform, _finishPointLayer, finishTargetTransform);
+                FinishPointIndicator(arrowUI, _canvasRectTransform, _finishPointLayer, finishTargetTransform,
+                    _cameraProviderService);
         }
 
         public void RegisterFlowerPoint(Flower flower)
         {
             ArrowUI arrowUI = Instantiate(_arrowUIPrefab, _arrowContainer);
+            arrowUI.Initialize(_spiderTrackService.Spider.transform, flower.transform);
 
             _flowerPointIndicator =
-                new FlowerPointIndicator(arrowUI, _canvasRectTransform, _flowerPointLayer, flower);
+                new FlowerPointIndicator(arrowUI, _canvasRectTransform, _flowerPointLayer, flower,
+                    _cameraProviderService);
         }
 
 

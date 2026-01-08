@@ -12,6 +12,9 @@ namespace Infastructure.Services.PlatformObjects
         public bool HasAny<T>() where T : PickupObjectBase =>
             PickupObjects.Any(x => x is T);
 
+        public T Get<T>() where T : PickupObjectBase =>
+            PickupObjects.FirstOrDefault(x => x is T) as T;
+
         public bool IsEmpty() => PickupObjects.Count == 0;
     }
 }

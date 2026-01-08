@@ -1,5 +1,5 @@
-using PickupObjects;
-using PickupObjects.PickUpOnPlatform;
+using Infastructure.Services.CameraProvider;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using UnityEngine;
 
 namespace HUD
@@ -9,8 +9,8 @@ namespace HUD
         private readonly Flower _flower;
 
         public FlowerPointIndicator(ArrowUI arrowUI, RectTransform canvasRect, LayerMask layerMask, Flower
-            flower) :
-            base(arrowUI, canvasRect, layerMask)
+            flower, ICameraProviderService cameraProviderService) :
+            base(arrowUI, canvasRect, layerMask, cameraProviderService)
         {
             _flower = flower;
         }

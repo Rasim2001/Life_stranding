@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Localization;
 using Sirenix.OdinInspector;
 using UI;
 using UnityEngine;
@@ -15,6 +16,8 @@ namespace Infastructure.StaticData.Task
     [Serializable]
     public class TaskData
     {
-        public string TaskDescription;
+        public LocalizationText TaskName = new();
+        public LocalizationText TaskDescription = new();
+        public Sprite ScreenIcon;
     }
 }

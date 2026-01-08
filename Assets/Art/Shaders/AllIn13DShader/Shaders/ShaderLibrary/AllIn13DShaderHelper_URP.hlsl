@@ -7,6 +7,12 @@
 
 #if defined(ALLIN1_DECALS_SUPPORT) && defined(_DBUFFER)
 	#define ALLIN1_DECALS_READY_TO_USE
+	
+	#if defined(_DBUFFER_MRT1) || defined(_DBUFFER_MRT2) || defined(_DBUFFER_MRT3)
+		#define ALLIN1_DECAL_MODE_DBUFFER
+	#else
+		#define ALLIN1_DECAL_MODE_SCREEN_SPACE
+	#endif
 #endif
 
 #ifdef REQUIRE_SCENE_DEPTH
@@ -58,6 +64,12 @@ float3 GetPositionVS(float3 positionOS)
 float3 GetPositionWS(float4 positionOS)
 {
 	return TransformObjectToWorld(positionOS.xyz);
+}
+
+float3 GetPositionOS(float4 positionWS)
+{
+	return TransformWorldToObject(positionWS.xyz);
+
 }
 
 float3 GetDirWS(float4 dirOS)
@@ -116,7 +128,7 @@ AllIn1LightData GetPointLightData(int index, float3 vertexWS, float3 normalWS, E
 {
 	AllIn1LightData lightData;
 
-	Light additionalLight = GetAdditionalLight(index, vertexWS);
+	Light additionalLight = GetAdditionalLight(index, vertexWS, half4(1, 1, 1, 1));
 	lightData.lightColor = additionalLight.color;
 	lightData.lightDir = additionalLight.direction;
 
@@ -169,11 +181,7 @@ AllIn1LightData GetMainLightData(float3 vertexWS, EffectsData effectsData)
 	lightData.lightColor = mainLight.color;
 	lightData.lightDir = mainLight.direction;
 
-	#if defined(_AFFECTED_BY_LIGHTMAPS_ON)
-		lightData.distanceAttenuation = mainLight.distanceAttenuation;
-	#else
-		lightData.distanceAttenuation = 1.0;
-	#endif
+	lightData.distanceAttenuation = mainLight.distanceAttenuation;
 	
 	float4 shadowCoords = TransformWorldToShadowCoord(vertexWS);
 	#ifdef _RECEIVE_SHADOWS_ON
@@ -306,6 +314,18 @@ float3 GetLightmap(float2 uvLightmap, EffectsData data)
 	return res;
 }
 
+uint AllIn1GetMeshRenderingLayer()
+{
+	uint res;
+	#if UNITY_VERSION >= 202230
+		res = GetMeshRenderingLayer();
+	#else
+		res = GetMeshRenderingLightLayer();
+	#endif
+	
+	return res;
+}
+
 float3 GetAmbientColor(EffectsData data)
 {
 	float3 res = float3(0, 0, 0);
@@ -317,7 +337,7 @@ float3 GetAmbientColor(EffectsData data)
 			half3 bakedGI;
 			float4 probeOcclusion;
 			EvaluateAdaptiveProbeVolume(data.vertexWS.xyz, data.normalWS.xyz, data.viewDirWS.xyz,
-									  data.projPos.xy, GetMeshRenderingLayer(), 
+									  data.projPos.xy, AllIn1GetMeshRenderingLayer(), 
 									  bakedGI, probeOcclusion);
 			res = bakedGI;
 		#else
@@ -357,8 +377,12 @@ void ConfigureDecalData(inout AllIn1DecalData allIn1Decal, float4 positionCS)
     DECODE_FROM_DBUFFER(DBuffer, decalSurfaceData);
 
 	allIn1Decal.baseColor = decalSurfaceData.baseColor;
+	allIn1Decal.emissive = decalSurfaceData.emissive;
 	allIn1Decal.mask = step(0.1, allIn1Decal.baseColor.a);
 	allIn1Decal.mask = saturate(allIn1Decal.mask + decalSurfaceData.normalWS.w);
+	allIn1Decal.MAOSAlpha = decalSurfaceData.MAOSAlpha;
+	allIn1Decal.smoothness = decalSurfaceData.smoothness;
+	allIn1Decal.metallic = decalSurfaceData.metallic;
 
 	float4 normalTS = decalSurfaceData.normalWS; //Even if it's called normalWS, the content is a sampled normal map in tangent space
 

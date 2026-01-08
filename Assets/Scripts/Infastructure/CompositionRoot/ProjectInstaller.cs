@@ -1,9 +1,17 @@
 using Infastructure.Common;
 using Infastructure.Common.Pickup;
 using Infastructure.Factories.ProjectFactories;
+using Infastructure.Localization;
+using Infastructure.Services.CursorVisible;
+using Infastructure.Services.CutScene;
 using Infastructure.Services.Pause;
 using Infastructure.Services.PlayerProgressService;
+using Infastructure.Services.ProgressWatchers;
+using Infastructure.Services.QuitApplication;
+using Infastructure.Services.Restart;
 using Infastructure.Services.SaveLoadService;
+using Infastructure.Services.StartGame;
+using Infastructure.Services.Window;
 using Infastructure.States;
 using Infastructure.StaticData.StaticDataService;
 using UI;
@@ -35,7 +43,41 @@ namespace Infastructure.CompositionRoot
             BindCurtainRoot();
 
             BindPauseService();
+
+            BindRestartService();
+
+            BindCursorVisibleService();
+
+            BindLocalizationService();
+
+            BindQuitGameService();
+
+            BindEventSystemSelector();
+
+            BindProgressWatchersService();
+
+            BindStartGameReceiver();
         }
+
+        private void BindStartGameReceiver() =>
+            Container.BindInterfacesAndSelfTo<StartGameReceiver>().AsSingle();
+
+        private void BindProgressWatchersService() =>
+            Container.BindInterfacesAndSelfTo<ProgressWatchersService>().AsSingle();
+
+        private void BindQuitGameService() =>
+            Container.BindInterfacesAndSelfTo<QuitGameService>().AsSingle();
+
+        private void BindLocalizationService() =>
+            Container.BindInterfacesAndSelfTo<LocalizationService>().AsSingle();
+
+        private void BindCursorVisibleService() =>
+            Container.BindInterfacesAndSelfTo<CursorVisibleService>().AsSingle();
+
+        
+
+        private void BindRestartService() =>
+            Container.BindInterfacesAndSelfTo<RestartService>().AsSingle();
 
         private void BindPauseService() =>
             Container.BindInterfacesAndSelfTo<PauseService>().AsSingle();
@@ -89,6 +131,15 @@ namespace Infastructure.CompositionRoot
                 .Bind<IStateMachine>()
                 .FromSubContainerResolve()
                 .ByInstaller<GameStateMachineInstaller>()
+                .AsSingle();
+        }
+
+        private void BindEventSystemSelector()
+        {
+            Container
+                .Bind<IEventSystemSelector>()
+                .To<EventSystemSelector>()
+                .FromComponentInNewPrefabResource(AssetsPath.EventSystemPath)
                 .AsSingle();
         }
     }

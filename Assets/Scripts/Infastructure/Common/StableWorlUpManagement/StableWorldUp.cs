@@ -1,3 +1,4 @@
+using Infastructure.Services.CameraProvider;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using Unity.Cinemachine;
@@ -8,31 +9,37 @@ namespace Infastructure.Common.StableWorlUpManagement
 {
     public class StableWorldUp : MonoBehaviour, IStableWorldUp
     {
-        [SerializeField] private bool _isActive = true;
+        public Transform StableWorldUpTransform => this ? transform : null;
 
         private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
 
         private IStaticDataService _staticDataService;
         private CinemachineBrain _cinemachineBrain;
+        private ICameraProviderService _cameraProviderService;
 
         [Inject]
-        public void Construct(IStaticDataService staticDataService) =>
+        public void Construct(IStaticDataService staticDataService, ICameraProviderService cameraProviderService)
+        {
+            _cameraProviderService = cameraProviderService;
             _staticDataService = staticDataService;
+        }
 
         private void Awake() =>
-            _cinemachineBrain = Camera.main.GetComponent<CinemachineBrain>();
+            _cinemachineBrain = _cameraProviderService.CameraTransform.GetComponent<CinemachineBrain>();
 
         private void Start() =>
             _cinemachineBrain.WorldUpOverride = transform;
 
         public void Rotate(Quaternion targetRotation)
         {
-            if (!_isActive)
-                return;
+            Vector3 targetUp = targetRotation * Vector3.up;
 
-            transform.rotation = Quaternion.Lerp(
+            Quaternion fromTo = Quaternion.FromToRotation(transform.up, targetUp);
+            Quaternion finalRotation = fromTo * transform.rotation;
+
+            transform.rotation = Quaternion.Slerp(
                 transform.rotation,
-                targetRotation,
+                finalRotation,
                 Time.deltaTime * SpiderStaticData.WorldUpSmoothRotation
             );
         }

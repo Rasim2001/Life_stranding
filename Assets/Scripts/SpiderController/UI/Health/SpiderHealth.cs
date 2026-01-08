@@ -1,4 +1,5 @@
 using System;
+using Infastructure.Services.Defeat;
 using UnityEngine;
 
 namespace SpiderController.UI.Health
@@ -21,22 +22,29 @@ namespace SpiderController.UI.Health
             }
         }
 
+        private readonly IDefeatWindowService _defeatWindowService;
         private float _currentHp;
 
 
-        public SpiderHealth(float maxHp)
+        public SpiderHealth(IDefeatWindowService defeatWindowService, float maxHp)
         {
+            _defeatWindowService = defeatWindowService;
+
             CurrentHP = maxHp;
             MaxHp = maxHp;
         }
 
+        public void Reset() =>
+            CurrentHP = MaxHp;
+
 
         public void TakeDamage(float damage)
         {
-            if (CurrentHP <= 0)
-                return;
+            if (CurrentHP > 0)
+                CurrentHP -= damage;
 
-            CurrentHP -= damage;
+            if (CurrentHP <= 0)
+                _defeatWindowService.OpenDefeatWindow();
         }
     }
 }

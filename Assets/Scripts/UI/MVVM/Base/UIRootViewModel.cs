@@ -24,7 +24,7 @@ namespace UI.MVVM.Base
             _openedScreen.Value?.Dispose();
         }
 
-        public bool HasOpenedWindow() =>
+        public bool CanOpenWindow() =>
             _openedPopups.Count == 0 && _openedScreen.Value == null;
 
         public void OpenScreen(WindowViewModel screenViewModel)
@@ -54,9 +54,12 @@ namespace UI.MVVM.Base
                 ClosePopup(openedPopupViewModel);
         }
 
+        public bool IsOpenedAnyWindow() =>
+            _openedPopups.Count != 0 || _openedScreen.Value != null;
+
         private void CloseAllPopups()
         {
-            foreach (WindowViewModel openedPopup in _openedPopups)
+            foreach (WindowViewModel openedPopup in _openedPopups.ToList())
             {
                 if (_openedPopups.Contains(openedPopup))
                     ClosePopup(openedPopup);

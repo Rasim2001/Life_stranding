@@ -1,6 +1,7 @@
 using HUD;
 using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController;
 using UnityEngine;
 
@@ -19,5 +20,6 @@ namespace Infastructure.Factories.GameFactories
         void CreateEnergyProducts();
         void CreateElephantProduct(Spider spider);
         void CreateSkillProducts();
+        void CreateAllGenerators();
     }
 }

@@ -6,5 +6,9 @@ namespace Infastructure.Services.SaveLoadService
     {
         void SaveProgress();
         PlayerProgress LoadPlayerProgress();
+        void ClearProgress();
+        void SetNewProgress();
+        void InitLoadingProgress();
+        void SetContinueProgress();
     }
 }

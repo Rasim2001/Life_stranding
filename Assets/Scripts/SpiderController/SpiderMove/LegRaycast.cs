@@ -2,7 +2,6 @@ using DG.Tweening;
 using Infastructure.StaticData.StaticDataService;
 using UnityEngine;
 using Zenject;
-using Random = UnityEngine.Random;
 
 namespace SpiderController.SpiderMove
 {
@@ -11,13 +10,13 @@ namespace SpiderController.SpiderMove
         private const string NotMoveableLayer = "NotMoveable";
 
         [SerializeField] private LayerMask _layerMask;
-        [SerializeField] private float _offsetDistance = 15f;
-        [SerializeField] private int _offsetRayCount = 5;
+        [SerializeField] private float _offsetAngle = 5f;
+        [SerializeField] private int _offsetRayCount = 15;
 
         public Vector3 Position => _smoothedPoint;
+        public Vector3 GroundNormal => IsGrounded ? _hit.normal : transform.up;
         public bool IsGrounded => _hit.collider != null;
         public Vector3 AirbornPosition => _airbornHit.point;
-
         public bool IsNotMoveableLayer => IsGrounded && _hit.collider.gameObject.layer == _notMoveableLayer;
 
         private readonly float _positionSmoothSpeed = 20f;
@@ -44,6 +43,7 @@ namespace SpiderController.SpiderMove
         {
             _rayDistance = _staticDataService.SpiderStaticData.GroundStateRayDistance;
             _defaultPosition = transform.localPosition;
+            _smoothedPoint = transform.position;
 
             _notMoveableLayer = LayerMask.NameToLayer(NotMoveableLayer);
         }
@@ -51,14 +51,12 @@ namespace SpiderController.SpiderMove
         public void SetGroundState()
         {
             _rayDistance = _staticDataService.SpiderStaticData.GroundStateRayDistance;
-
             ReturnBodyToDefault();
         }
 
         public void SetAirbornState()
         {
             _rayDistance = _staticDataService.SpiderStaticData.AirbornStateRayDistance;
-
             GroupBody();
         }
 
@@ -66,36 +64,20 @@ namespace SpiderController.SpiderMove
         {
             Vector3 origin = transform.position;
             Vector3 baseDirection = -transform.up;
-
             Ray mainRay = new Ray(origin, baseDirection);
+
             bool hitFound = Physics.Raycast(mainRay, out _hit, _rayDistance, _layerMask);
-
             Physics.Raycast(mainRay, out _airbornHit, _airbornRayDistance, _layerMask);
-            Debug.DrawRay(mainRay.origin, mainRay.direction * _airbornRayDistance, Color.magenta);
-
-            Debug.DrawRay(mainRay.origin, mainRay.direction * _rayDistance, Color.blue);
 
             if (!hitFound)
-            {
-                hitFound = FindLegPlaceX(baseDirection, origin);
+                hitFound = FindLegPlaceX(baseDirection, origin) || FindPlaceZ(baseDirection, origin);
 
-                if (!hitFound)
-                    hitFound = FindPlaceZ(baseDirection, origin);
-            }
-
-
-            Vector3 targetPoint = IsGrounded
-                ? _hit.point
-                : origin + baseDirection * _rayDistance;
+            Vector3 targetPoint = hitFound ? _hit.point : origin + baseDirection * _rayDistance;
 
             _smoothedPoint = Vector3.Lerp(_smoothedPoint, targetPoint,
                 1f - Mathf.Exp(-_positionSmoothSpeed * Time.deltaTime));
-
-            if (hitFound && _hit.collider != null)
-                Debug.DrawRay(mainRay.origin, mainRay.direction * _rayDistance, Color.green);
-            else
-                Debug.DrawRay(mainRay.origin, mainRay.direction * _rayDistance, Color.red);
         }
+
 
         public void ForceImmediateUpdate()
         {
@@ -119,74 +101,67 @@ namespace SpiderController.SpiderMove
 
         private bool FindPlaceZ(Vector3 baseDirection, Vector3 origin)
         {
-            bool hitFound = false;
-
-            for (int z = 0; z <= _offsetRayCount - 1; z++)
+            for (int z = 1; z <= _offsetRayCount; z++)
             {
-                float angleOffset = 10 * z;
+                float angle = _offsetAngle * z;
 
-                Vector3 rightDirection = Quaternion.AngleAxis(angleOffset, transform.forward) * baseDirection;
-                Ray rightRay = new Ray(origin, rightDirection);
-
-                if (Physics.Raycast(rightRay, out _hit, _rayDistance, _layerMask))
-                {
-                    hitFound = true;
-                    Debug.DrawRay(rightRay.origin, rightRay.direction * _rayDistance, Color.green);
-                    break;
-                }
-
-                Debug.DrawRay(rightRay.origin, rightRay.direction * _rayDistance, Color.yellow);
-
-                Vector3 leftDirection = Quaternion.AngleAxis(-angleOffset, transform.forward) * baseDirection;
-                Ray leftRay = new Ray(origin, leftDirection);
-
-                if (Physics.Raycast(leftRay, out _hit, _rayDistance, _layerMask))
-                {
-                    hitFound = true;
-                    Debug.DrawRay(leftRay.origin, leftRay.direction * _rayDistance, Color.green);
-                    break;
-                }
-
-                Debug.DrawRay(leftRay.origin, leftRay.direction * _rayDistance, Color.yellow);
+                if (TryOffsetRay(baseDirection, origin, transform.forward, angle))
+                    return true;
+                if (TryOffsetRay(baseDirection, origin, transform.forward, -angle))
+                    return true;
             }
 
-            return hitFound;
+            return false;
         }
 
         private bool FindLegPlaceX(Vector3 baseDirection, Vector3 origin)
         {
-            bool hitFound = false;
-
-            for (int x = 0; x <= _offsetRayCount - 1; x++)
+            for (int x = 1; x <= _offsetRayCount; x++)
             {
-                float angleOffset = _offsetDistance * x;
+                float angle = _offsetAngle * x;
 
-                Vector3 rightDirection = Quaternion.AngleAxis(angleOffset, transform.right) * baseDirection;
-                Ray rightRay = new Ray(origin, rightDirection);
+                if (TryOffsetRay(baseDirection, origin, transform.right, angle))
+                    return true;
 
-                if (Physics.Raycast(rightRay, out _hit, _rayDistance, _layerMask))
-                {
-                    hitFound = true;
-                    Debug.DrawRay(rightRay.origin, rightRay.direction * _rayDistance, Color.green);
-                    break;
-                }
-
-                Debug.DrawRay(rightRay.origin, rightRay.direction * _rayDistance, Color.yellow);
-
-                Vector3 leftDirection = Quaternion.AngleAxis(-angleOffset, transform.right) * baseDirection;
-                Ray leftRay = new Ray(origin, leftDirection);
-
-                if (Physics.Raycast(leftRay, out _hit, _rayDistance, _layerMask))
-                {
-                    hitFound = true;
-                    Debug.DrawRay(leftRay.origin, leftRay.direction * _rayDistance, Color.green);
-                    break;
-                }
-
-                Debug.DrawRay(leftRay.origin, leftRay.direction * _rayDistance, Color.yellow);
+                if (TryOffsetRay(baseDirection, origin, transform.right, -angle))
+                    return true;
             }
 
-            return hitFound;
+            return false;
+        }
+
+        private bool TryOffsetRay(Vector3 baseDir, Vector3 origin, Vector3 axis, float angle)
+        {
+            Vector3 dir = Quaternion.AngleAxis(angle, axis) * baseDir;
+            if (Physics.Raycast(origin, dir, out _hit, _rayDistance, _layerMask))
+            {
+                Debug.DrawRay(origin, dir * _rayDistance, Color.green);
+                return true;
+            }
+
+            Debug.DrawRay(origin, dir * _rayDistance, Color.yellow);
+            return false;
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (!Application.isPlaying)
+                return;
+
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(_smoothedPoint, 0.05f);
+
+            if (IsGrounded)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawWireSphere(_hit.point, 0.08f);
+                Gizmos.DrawLine(transform.position, _hit.point);
+            }
+            else
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawLine(transform.position, transform.position - transform.up * _rayDistance);
+            }
         }
     }
 }

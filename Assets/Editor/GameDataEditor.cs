@@ -27,15 +27,20 @@ namespace Editor
 
                 gameData.GameDatas[nameScene].CheckPoints = FindObjectsOfType<CheckPointMarker>()
                     .OrderBy(x => x.transform.GetSiblingIndex())
-                    .Select(x => new WorldData(x.transform.position, x.transform.rotation))
+                    .Select(x => new WorldData(x.transform.position, x.transform.rotation, GetUniqueId()))
+                    .ToList();
+
+                gameData.GameDatas[nameScene].GeneratorPoints = FindObjectsOfType<GeneratorPointMarker>()
+                    .OrderBy(x => x.transform.GetSiblingIndex())
+                    .Select(x => new WorldData(x.transform.position, x.transform.rotation, GetUniqueId()))
                     .ToList();
 
                 gameData.GameDatas[nameScene].BatteriesPoints = FindObjectsOfType<BatteryPointMarker>()
-                    .Select(x => new WorldData(x.transform.position, x.transform.rotation))
+                    .Select(x => new WorldData(x.transform.position, x.transform.rotation, GetUniqueId()))
                     .ToList();
 
                 gameData.GameDatas[nameScene].EnergyPoints = FindObjectsOfType<EnergyPointMarker>()
-                    .Select(x => new WorldData(x.transform.position, x.transform.rotation))
+                    .Select(x => new WorldData(x.transform.position, x.transform.rotation, GetUniqueId()))
                     .ToList();
 
                 gameData.GameDatas[nameScene].ElephantPoints = FindObjectsOfType<ElephantPointMarker>()
@@ -62,5 +67,8 @@ namespace Editor
 
             EditorUtility.SetDirty(gameData);
         }
+
+        private string GetUniqueId() =>
+            Guid.NewGuid().ToString();
     }
 }

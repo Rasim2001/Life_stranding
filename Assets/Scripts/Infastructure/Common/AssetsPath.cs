@@ -2,25 +2,30 @@ namespace Infastructure.Common
 {
     public class AssetsPath
     {
-        public const string GameScene = "GameScene";
-        public const string MainMenuScene = "MainMenuScene";
-
         public const string GameBootstrapperPath = "Prefabs/GameBootstrapper";
         public const string CoroutineRunnerPath = "Prefabs/CoroutineRunner";
         public const string CurtainRootPath = "Prefabs/UI/CurtainRoot";
         public const string PickupDisplayerPath = "Prefabs/UI/PickupDisplayerRoot";
+        public const string SlowTimeRunnerPath = "Prefabs/SlowTimeRunner";
+        public const string GlobalWaterPath = "Prefabs/Water/GlobalWater";
+        public const string WaterFallsPath = "Prefabs/Water/WaterFalls";
         public const string StableWorldUpPath = "Prefabs/CameraSystem/StableWorldUp";
+        public const string FlowerPickupCutscenePath = "Prefabs/Timeline/FlowerPickupCutscene";
         public const string UIRootPath = "Prefabs/UI/Windows/Root/UIRoot";
         public const string GamePlayUIPath = "Prefabs/UI/Windows/Root/GameplayUI";
+        public const string LastChanceRoot = "Prefabs/UI/QTE/LastChanceRootQTE_UI";
         public const string EventSystemPath = "Prefabs/UI/EventSystem";
 
         public const string SpiderPath = "Prefabs/Spider/Spider";
         public const string CameraSystemPath = "Prefabs/CameraSystem/CameraSystem";
         public const string HUDPath = "Prefabs/HUD/HUD";
         public const string BiospherePointIndicatorPath = "Prefabs/Scene/BiospherePointIndicator";
-        public const string CheckPointPath = "Prefabs/Scene/ChechPoint";
+        public const string CheckPointPath = "Prefabs/Scene/CheckPoint";
+        public const string GeneratorPath = "Prefabs/Generator/Generator";
         public const string StartGameCutSceneTimelinePath = "Prefabs/Timeline/StartGameTimeline";
         public const string TerrainScanPath = "Prefabs/TerrainScan/[Terrain_Scan]";
+        public const string BridgePath = "Prefabs/Common/Bridge";
+        public const string CozyWeather = "Prefabs/Common/Cozy Weather Sphere";
 
         public const string SpiderDataPath = "StaticData/Spider/SpiderData";
         public const string HudDataPath = "StaticData/HUD/HudData";
@@ -31,5 +36,9 @@ namespace Infastructure.Common
         public const string ProductStaticDataPath = "StaticData/Products/ProductsData";
         public const string StickersStaticDataPath = "StaticData/Stickers/StickersData";
         public const string TasksStaticDataPath = "StaticData/UI/TasksPopupData";
+        public const string WaterStaticDataPath = "StaticData/GlobalWater/WaterData";
+        public const string WindowsLocalizationStaticDataPath = "StaticData/UI/WindowStaticLocalizationData";
+        public const string LastChanceStaticDataPath = "StaticData/QTE/LastChanceData";
+        public const string CutSceneStaticDataPath = "StaticData/CutScenes/CutScenesData";
     }
 }

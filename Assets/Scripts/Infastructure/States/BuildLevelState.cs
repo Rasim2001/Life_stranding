@@ -1,13 +1,23 @@
 using System;
 using Infastructure.Common;
 using Infastructure.Factories.GameFactories;
+using Infastructure.Services.Ability;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerProgressService;
+using Infastructure.Services.ProgressWatchers;
+using Infastructure.Services.Restart;
+using Infastructure.Services.SaveLoadService;
+using Infastructure.Services.StartGame;
+using Infastructure.Services.TaskPopupChecker;
+using Infastructure.Services.Timer;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.StaticDataService;
-using PickupObjects.PickUpOnPlatform;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController;
+using SpiderController.UI.Health;
+using UnityEngine;
 using Zenject;
 
 namespace Infastructure.States
@@ -21,7 +31,15 @@ namespace Infastructure.States
         private readonly ISceneLoader _sceneLoader;
         private readonly IBiospherePointService _biospherePointService;
         private readonly IInputService _inputService;
-        private IWindowService _windowService;
+        private readonly IRestartService _restartService;
+        private readonly IAbilityService _abilityService;
+        private readonly ITimerService _timerService;
+        private readonly IWindowService _windowService;
+        private ICameraProviderService _cameraProviderService;
+        private readonly IProgressWatchersService _progressWatchersService;
+        private readonly ITaskPopupCheckerService _taskPopupCheckerService;
+        private readonly IStartGameReceiver _startGameReceiver;
+        private readonly ISaveLoadService _saveLoadService;
 
         public BuildLevelState(
             IGameFactory gameFactory,
@@ -31,10 +49,26 @@ namespace Infastructure.States
             ISceneLoader sceneLoader,
             IBiospherePointService biospherePointService,
             IInputService inputService,
-            IWindowService windowService
+            IWindowService windowService,
+            IRestartService restartService,
+            IAbilityService abilityService,
+            ITimerService timerService,
+            ICameraProviderService cameraProviderService,
+            IProgressWatchersService progressWatchersService,
+            ITaskPopupCheckerService taskPopupCheckerService,
+            IStartGameReceiver startGameReceiver,
+            ISaveLoadService saveLoadService
         )
         {
+            _cameraProviderService = cameraProviderService;
+            _progressWatchersService = progressWatchersService;
+            _taskPopupCheckerService = taskPopupCheckerService;
+            _startGameReceiver = startGameReceiver;
+            _saveLoadService = saveLoadService;
             _windowService = windowService;
+            _restartService = restartService;
+            _abilityService = abilityService;
+            _timerService = timerService;
             _gameFactory = gameFactory;
             _staticData = staticData;
             _uiFactory = uiFactory;
@@ -46,33 +80,56 @@ namespace Infastructure.States
 
         public void Initialize()
         {
-            InitUI();
-            InitAll();
+            _cameraProviderService.SetCamera(Camera.main);
+
+            InitServices();
+            InitGameplayRootUI();
         }
 
-        private void InitUI()
+        private void InitGameplayRootUI()
         {
             _uiFactory.CreateGamplayRoot();
 
-            _windowService.OpenStartSplashScreen();
+            if (_restartService.IsRestarting)
+                Restart();
+            else
+                _windowService.OpenStartSplashScreen();
         }
 
-        private void InitAll()
+        private void InitServices()
         {
-            _inputService.Initialize();
+            _startGameReceiver.OnStartGameHappened += InitGameWorld;
 
-            InitGameWorld();
+            _progressWatchersService.Clear();
+            _taskPopupCheckerService.Initialize();
+            _abilityService.Initialize();
+            _inputService.Initialize();
+            _timerService.StartTimer();
         }
 
 
         public void Dispose()
         {
+            _startGameReceiver.OnStartGameHappened -= InitGameWorld;
+
+            _abilityService.Dispose();
+            _taskPopupCheckerService.Dispose();
+        }
+
+
+        private void Restart()
+        {
+            _startGameReceiver.StartGame();
+
+            /*foreach (ProductType productType in _restartService.ExploredProducts)
+                _abilityService.PickUpAbility(productType);*/
         }
 
 
         private void InitGameWorld()
         {
             InitCheckPoints();
+            InitGenerators();
 
             Flower flower = InitFlower();
             Spider spider = InitSpider(flower);
@@ -86,7 +143,21 @@ namespace Infastructure.States
             InitElephantProducts(spider);
             InitEnergyProducts();
             InitSkillProducts();
+
+            InitLastChanceRoot(flower, spider);
+
+            _saveLoadService.InitLoadingProgress();
         }
+
+        private void InitLastChanceRoot(Flower flower, Spider spider)
+        {
+            SpiderUI spiderUI = spider.GetComponent<SpiderUI>();
+
+            _uiFactory.CreateLastChanceRoot(flower, spiderUI.LastChanceBarUI);
+        }
+
+        private void InitGenerators() =>
+            _gameFactory.CreateAllGenerators();
 
         private void InitTerrainScan(Spider spider) =>
             _gameFactory.CreateTerrainScan(spider);
@@ -96,7 +167,6 @@ namespace Infastructure.States
 
         private void InitCheckPoints() =>
             _gameFactory.CreateCheckPoints();
-
 
         private Spider InitSpider(Flower flower) =>
             _gameFactory.CreateSpider(flower);

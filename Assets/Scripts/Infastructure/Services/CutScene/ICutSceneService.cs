@@ -1,13 +1,15 @@
 using System;
+using Cysharp.Threading.Tasks;
+using Infastructure.CutScenes;
 
 namespace Infastructure.Services.CutScene
 {
     public interface ICutSceneService
     {
         bool IsActive { get; set; }
-        float LerpForwardSpeed { get; set; }
-        bool HasPlayed { get; set; }
+        CutsceneId CutsceneId { get; }
         event Action<bool> OnCutsceneActiveChanged;
         event Action OnSkipHappened;
+        UniTask StartCutsceneAsync(CutsceneId cutsceneId);
     }
 }
