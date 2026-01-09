@@ -1,11 +1,8 @@
-using System;
 using DG.Tweening;
 using GameDevBuddies;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.SpiderTrack;
-using PickupObjects;
-using PickupObjects.PickUpOnPlatform;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -15,8 +12,6 @@ namespace HUD
 {
     public class HudUI : MonoBehaviour
     {
-        [SerializeField] private LayerMask _finishPointLayer;
-        [SerializeField] private LayerMask _flowerPointLayer;
         [SerializeField] private RectTransform _canvasRectTransform;
         [SerializeField] private Transform _arrowContainer;
         [SerializeField] private Transform _xRayCollectionContainer;
@@ -61,7 +56,7 @@ namespace HUD
             arrowUI.Initialize(_spiderTrackService.Spider.transform, finishTargetTransform);
 
             _finishPointIndicator = new
-                FinishPointIndicator(arrowUI, _canvasRectTransform, _finishPointLayer, finishTargetTransform,
+                FinishPointIndicator(arrowUI, _canvasRectTransform, finishTargetTransform,
                     _cameraProviderService);
         }
 
@@ -71,7 +66,7 @@ namespace HUD
             arrowUI.Initialize(_spiderTrackService.Spider.transform, flower.transform);
 
             _flowerPointIndicator =
-                new FlowerPointIndicator(arrowUI, _canvasRectTransform, _flowerPointLayer, flower,
+                new FlowerPointIndicator(arrowUI, _canvasRectTransform, flower,
                     _cameraProviderService);
         }
 

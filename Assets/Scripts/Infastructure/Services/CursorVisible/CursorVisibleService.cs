@@ -7,8 +7,10 @@ namespace Infastructure.Services.CursorVisible
     {
         public event Action OnHideCursorHappened;
 
-        public void ShowCursor() =>
+        public void ShowCursor()
+        {
             Cursor.visible = true;
+        }
 
         public void HideCursor()
         {

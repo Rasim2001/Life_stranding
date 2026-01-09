@@ -1,8 +1,5 @@
-using System;
-using System.Collections;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using DistantLands.Cozy;
 using Infastructure.Services.CameraProvider;
 using Unity.Cinemachine;
 using UnityEngine;
