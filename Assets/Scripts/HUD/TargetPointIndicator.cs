@@ -10,10 +10,6 @@ namespace HUD
         private readonly ArrowUI _arrowUI;
 
         private readonly RectTransform _canvasRect;
-        private readonly LayerMask _layerMask;
-
-        private readonly float _borderOffsetX = 75;
-        private readonly float _borderOffsetY = 75;
 
         private readonly Camera _mainCamera;
         private bool _arrowShowing;
@@ -21,12 +17,17 @@ namespace HUD
         private readonly RectTransform _arrowRectTransform;
         private readonly RectTransform _arrowCenterRectTransform;
 
-        protected TargetPointIndicator(ArrowUI arrowUI, RectTransform canvasRect, LayerMask layerMask,
+        private float OutOfSightOffest => outOfSightOffset * _canvasRect.localScale.x;
+        private float outOfSightOffset = 50f;
+        private bool _arrowShowingArrow;
+
+        protected TargetPointIndicator(
+            ArrowUI arrowUI,
+            RectTransform canvasRect,
             ICameraProviderService cameraProviderService)
         {
             _arrowUI = arrowUI;
             _canvasRect = canvasRect;
-            _layerMask = layerMask;
 
             _arrowRectTransform = _arrowUI.GetComponent<RectTransform>();
             _arrowCenterRectTransform = _arrowUI.ArrowCenter;
@@ -40,98 +41,113 @@ namespace HUD
         public void ShowTargetPoint() =>
             Show(true);
 
-
         public virtual void Update()
         {
             if (_mainCamera == null)
                 return;
 
-            Transform camTr = _mainCamera.transform;
+            SetIndicatorPosition();
+        }
 
-            Vector3 viewportPos = _mainCamera.WorldToViewportPoint(FinishTargetPosition);
-            bool inFront = viewportPos.z > 0f;
+        private void SetIndicatorPosition()
+        {
+            Vector3 indicatorPosition = _mainCamera.WorldToScreenPoint(FinishTargetPosition);
 
-            bool insideViewport =
-                viewportPos.x > 0f && viewportPos.x < 1f &&
-                viewportPos.y > 0f && viewportPos.y < 1f &&
-                inFront;
+            float width = _canvasRect.rect.width * _canvasRect.localScale.x;
+            float height = _canvasRect.rect.height * _canvasRect.localScale.y;
 
-            bool isOnScreen = insideViewport && IsTargetVisible();
+            float padX = OutOfSightOffest + GetIconSafePaddingX();
+            float padY = OutOfSightOffest + GetIconSafePaddingY();
 
-            Show(!isOnScreen);
-            if (isOnScreen)
-                return;
+            bool isInSafeArea =
+                indicatorPosition.z >= 0f &&
+                indicatorPosition.x >= padX &&
+                indicatorPosition.x < width - padX &&
+                indicatorPosition.y >= padY &&
+                indicatorPosition.y < height - padY;
 
-            Vector3 vpForDir = viewportPos;
-            if (vpForDir.z < 0f)
+            ShowArrow(!isInSafeArea);
+
+            if (isInSafeArea)
             {
-                vpForDir.x = 1f - vpForDir.x;
-                vpForDir.y = 1f - vpForDir.y;
+                indicatorPosition.z = 0f;
+            }
+            else if (indicatorPosition.z >= 0f)
+            {
+                indicatorPosition = OutOfRangeIndicatorPosition(indicatorPosition);
+            }
+            else
+            {
+                indicatorPosition *= -1f;
+
+                indicatorPosition = OutOfRangeIndicatorPosition(indicatorPosition);
             }
 
-            Vector2 dirViewport = new Vector2(
-                vpForDir.x - 0.5f,
-                vpForDir.y - 0.5f
-            );
+            _arrowCenterRectTransform.rotation = RotationOutOfSightTargetIndicator(indicatorPosition);
 
-            Vector3 toTarget = (FinishTargetPosition - camTr.position).normalized;
-            float camX = Vector3.Dot(toTarget, camTr.right);
-            float camY = Vector3.Dot(toTarget, camTr.forward);
-            Vector2 dirCamera = new Vector2(camX, camY);
+            _arrowRectTransform.position = indicatorPosition;
+        }
 
-            if (dirViewport.sqrMagnitude < 0.0001f)
-                dirViewport = Vector2.up;
-            if (dirCamera.sqrMagnitude < 0.0001f)
-                dirCamera = Vector2.up;
+        private float GetIconSafePaddingX()
+        {
+            float w = _arrowRectTransform.rect.width;
+            float left = w * _arrowRectTransform.pivot.x;
+            float right = w * (1f - _arrowRectTransform.pivot.x);
+            return Mathf.Max(left, right);
+        }
 
-            dirViewport.Normalize();
-            dirCamera.Normalize();
+        private float GetIconSafePaddingY()
+        {
+            float h = _arrowRectTransform.rect.height;
+            float bottom = h * _arrowRectTransform.pivot.y;
+            float top = h * (1f - _arrowRectTransform.pivot.y);
+            return Mathf.Max(bottom, top);
+        }
 
-            float frontDot = Vector3.Dot(camTr.forward, toTarget); // -1..1
+        private Vector3 OutOfRangeIndicatorPosition(Vector3 indicatorPosition)
+        {
+            indicatorPosition.z = 0f;
 
-            float t = Mathf.InverseLerp(0.2f, -0.4f, frontDot);
-            t = Mathf.Clamp01(t);
+            Vector3 canvasCenter = new Vector3(_canvasRect.rect.width / 2f, _canvasRect.rect.height / 2f, 0f) *
+                                   _canvasRect.localScale.x;
+            indicatorPosition -= canvasCenter;
 
-            Vector2 dir = Vector2.Lerp(dirViewport, dirCamera, t);
-            dir.Normalize();
+            float divX = (_canvasRect.rect.width / 2f - OutOfSightOffest) / Mathf.Abs(indicatorPosition.x);
+            float divY = (_canvasRect.rect.height / 2f - OutOfSightOffest) / Mathf.Abs(indicatorPosition.y);
 
-            Vector2 canvasSize = _canvasRect.sizeDelta;
-            float halfWidth = canvasSize.x * 0.5f - _borderOffsetX;
-            float halfHeight = canvasSize.y * 0.5f - _borderOffsetY;
+            if (divX < divY)
+            {
+                float angle = Vector3.SignedAngle(Vector3.right, indicatorPosition, Vector3.forward);
+                indicatorPosition.x = Mathf.Sign(indicatorPosition.x) *
+                                      (_canvasRect.rect.width * 0.5f - OutOfSightOffest) * _canvasRect.localScale.x;
+                indicatorPosition.y = Mathf.Tan(Mathf.Deg2Rad * angle) * indicatorPosition.x;
+            }
 
-            Vector2 clampedPos = GetClampedPosition(dir, halfWidth, halfHeight);
-            _arrowRectTransform.anchoredPosition = clampedPos;
+            else
+            {
+                float angle = Vector3.SignedAngle(Vector3.up, indicatorPosition, Vector3.forward);
 
-            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-            _arrowCenterRectTransform.localRotation = Quaternion.Euler(0f, 0f, angle);
+                indicatorPosition.y = Mathf.Sign(indicatorPosition.y) *
+                                      (_canvasRect.rect.height / 2f - OutOfSightOffest) * _canvasRect.localScale.y;
+                indicatorPosition.x = -Mathf.Tan(Mathf.Deg2Rad * angle) * indicatorPosition.y;
+            }
+
+            indicatorPosition += canvasCenter;
+
+            return indicatorPosition;
         }
 
 
-        private bool IsTargetVisible()
+        private Quaternion RotationOutOfSightTargetIndicator(Vector3 indicatorPosition)
         {
-            Vector3 cameraPos = _mainCamera.transform.position;
-            Vector3 dir = FinishTargetPosition - cameraPos;
-            float dist = dir.magnitude;
+            Vector3 canvasCenter = new Vector3(_canvasRect.rect.width / 2f, _canvasRect.rect.height / 2f, 0f) *
+                                   _canvasRect.localScale.x;
 
-            if (!Physics.Raycast(cameraPos, dir.normalized, out RaycastHit hit, dist, _layerMask))
-                return false;
+            float angle = Vector3.SignedAngle(Vector3.up, indicatorPosition - canvasCenter, Vector3.forward);
 
-            return hit.collider.GetComponent<TargetPointIndicatorMarker>() != null;
-        }
+            Vector3 targetAngle = new Vector3(0f, 0f, angle + 90);
 
-        private Vector2 GetClampedPosition(Vector2 dir, float halfWidth, float halfHeight)
-        {
-            if (Mathf.Approximately(dir.x, 0f))
-                dir.x = 0.0001f;
-            if (Mathf.Approximately(dir.y, 0f))
-                dir.y = 0.0001f;
-
-            float tX = halfWidth / Mathf.Abs(dir.x);
-            float tY = halfHeight / Mathf.Abs(dir.y);
-
-            float t = Mathf.Min(tX, tY);
-
-            return dir * t;
+            return Quaternion.Euler(targetAngle);
         }
 
 
@@ -142,6 +158,15 @@ namespace HUD
 
             _arrowShowing = value;
             _arrowUI.gameObject.SetActive(value);
+        }
+
+        private void ShowArrow(bool value)
+        {
+            if (_arrowShowingArrow == value)
+                return;
+
+            _arrowShowingArrow = value;
+            _arrowUI.ArrowCenter.gameObject.SetActive(value);
         }
     }
 }

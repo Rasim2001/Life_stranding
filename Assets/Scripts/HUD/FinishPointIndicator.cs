@@ -7,9 +7,9 @@ namespace HUD
     {
         private readonly Transform _finishPoint;
 
-        public FinishPointIndicator(ArrowUI arrowUI, RectTransform canvasRect, LayerMask layerMask,
+        public FinishPointIndicator(ArrowUI arrowUI, RectTransform canvasRect,
             Transform finishPoint, ICameraProviderService cameraProviderService) : base(
-            arrowUI, canvasRect, layerMask, cameraProviderService)
+            arrowUI, canvasRect, cameraProviderService)
         {
             _finishPoint = finishPoint;
         }

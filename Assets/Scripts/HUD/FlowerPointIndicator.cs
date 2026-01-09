@@ -8,9 +8,9 @@ namespace HUD
     {
         private readonly Flower _flower;
 
-        public FlowerPointIndicator(ArrowUI arrowUI, RectTransform canvasRect, LayerMask layerMask, Flower
+        public FlowerPointIndicator(ArrowUI arrowUI, RectTransform canvasRect, Flower
             flower, ICameraProviderService cameraProviderService) :
-            base(arrowUI, canvasRect, layerMask, cameraProviderService)
+            base(arrowUI, canvasRect, cameraProviderService)
         {
             _flower = flower;
         }

@@ -13,12 +13,12 @@ namespace Infastructure.Services.CutScene
     public class CutSceneService : ICutSceneService
     {
         private readonly IStaticDataService _staticDataService;
+        private readonly DiContainer _diContainer;
         public event Action<bool> OnCutsceneActiveChanged;
         public event Action OnSkipHappened;
         public CutsceneId CutsceneId { get; private set; }
 
         private ICutSceneRunner _cutSceneRunner;
-
 
         public bool IsActive
         {
@@ -33,7 +33,6 @@ namespace Infastructure.Services.CutScene
         }
 
         private bool _isActive;
-        private DiContainer _diContainer;
 
         public CutSceneService(IStaticDataService staticDataService, DiContainer diContainer)
         {
@@ -57,8 +56,10 @@ namespace Infastructure.Services.CutScene
             Object.Destroy(cutSceneObject);
         }
 
-        public void StartCutscene() =>
+        public void StartCutscene()
+        {
             Run().Forget();
+        }
 
         private async UniTask Run()
         {
