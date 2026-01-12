@@ -12,12 +12,12 @@ namespace Infastructure.CutScenes.FlowerPickupCutscene
     {
         [SerializeField] private PlayableDirector _playableDirector;
         [SerializeField] private CinemachineCamera _cutSceneCamera;
+        public float BlendingTime => _brain.DefaultBlend.Time;
 
         private BorderCutsceneUI[] _borders;
         private UniTaskCompletionSource _tcs;
         private ICameraProviderService _cameraProviderService;
 
-        private Coroutine _coroutine;
         private CinemachineBrain _brain;
 
 
@@ -30,14 +30,6 @@ namespace Infastructure.CutScenes.FlowerPickupCutscene
 
         private void Start() =>
             _brain = _cameraProviderService.CameraTransform.GetComponent<CinemachineBrain>();
-
-        private void OnDestroy()
-        {
-            if (_coroutine != null)
-                StopCoroutine(_coroutine);
-        }
-
-        public float BlendingTime => _brain.DefaultBlend.Time;
 
         public UniTask PlayAsync(CancellationToken ct = default)
         {
