@@ -14,8 +14,8 @@ namespace Infastructure.CutScenes.FlowerPickupCutscene
         [SerializeField] private CinemachineCamera _cutSceneCamera;
         public float BlendingTime => _brain.DefaultBlend.Time;
 
-        private BorderCutsceneUI[] _borders;
         private UniTaskCompletionSource _tcs;
+        private BorderCutsceneAnimator _borderCutsceneAnimator;
         private ICameraProviderService _cameraProviderService;
 
         private CinemachineBrain _brain;
@@ -26,15 +26,14 @@ namespace Infastructure.CutScenes.FlowerPickupCutscene
             _cameraProviderService = cameraProviderService;
 
         private void Awake() =>
-            _borders = GetComponentsInChildren<BorderCutsceneUI>();
+            _borderCutsceneAnimator = GetComponentInChildren<BorderCutsceneAnimator>();
 
         private void Start() =>
             _brain = _cameraProviderService.CameraTransform.GetComponent<CinemachineBrain>();
 
         public UniTask PlayAsync(CancellationToken ct = default)
         {
-            foreach (BorderCutsceneUI border in _borders)
-                border.Play();
+            _borderCutsceneAnimator.PlayAnimation();
 
             _tcs = new UniTaskCompletionSource();
 

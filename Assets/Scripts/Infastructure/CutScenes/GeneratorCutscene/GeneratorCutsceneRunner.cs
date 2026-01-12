@@ -17,6 +17,7 @@ namespace Infastructure.CutScenes.GeneratorCutscene
 
         private ICameraProviderService _cameraProviderService;
         private CinemachineBrain _brain;
+        private BorderCutsceneAnimator _borderCutsceneAnimator;
 
         public float BlendingTime => _brain.DefaultBlend.Time;
 
@@ -24,11 +25,16 @@ namespace Infastructure.CutScenes.GeneratorCutscene
         public void Construct(ICameraProviderService cameraProviderService) =>
             _cameraProviderService = cameraProviderService;
 
+        private void Awake() =>
+            _borderCutsceneAnimator = GetComponentInChildren<BorderCutsceneAnimator>();
+
         private void Start() =>
             _brain = _cameraProviderService.CameraTransform.GetComponent<CinemachineBrain>();
 
         public UniTask PlayAsync(CancellationToken ct = default)
         {
+            _borderCutsceneAnimator.PlayAnimation();
+
             _tcs = new UniTaskCompletionSource();
 
             return _tcs.Task;
