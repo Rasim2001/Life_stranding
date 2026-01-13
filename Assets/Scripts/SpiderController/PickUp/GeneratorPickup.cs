@@ -1,6 +1,11 @@
+using System;
 using System.Linq;
+using System.Threading;
 using Common;
+using Cysharp.Threading.Tasks;
 using Infastructure.Common.Pickup;
+using Infastructure.CutScenes;
+using Infastructure.Services.CutScene;
 using Infastructure.Services.Hint;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
@@ -18,8 +23,12 @@ namespace SpiderController.PickUp
         private readonly IPickupDisplayer _pickupDisplayer;
         private readonly IPlatformObjectsService _platformObjectsService;
         private readonly IWindowService _windowService;
+        private readonly ICutSceneService _cutSceneService;
         private IHintReceiverService _hintReceiverService;
         private readonly GeneratorChecker _generatorChecker;
+
+        private bool _isFirstTime = true;
+        private CancellationTokenSource _lifetimeCts;
 
         public GeneratorPickup(
             IHintReceiverService hintReceiverService,
@@ -27,6 +36,7 @@ namespace SpiderController.PickUp
             IPickupDisplayer pickupDisplayer,
             IPlatformObjectsService platformObjectsService,
             IWindowService windowService,
+            ICutSceneService cutSceneService,
             GeneratorChecker generatorChecker)
         {
             _hintReceiverService = hintReceiverService;
@@ -34,14 +44,27 @@ namespace SpiderController.PickUp
             _pickupDisplayer = pickupDisplayer;
             _platformObjectsService = platformObjectsService;
             _windowService = windowService;
+            _cutSceneService = cutSceneService;
             _generatorChecker = generatorChecker;
         }
 
-        public void Initialize() =>
+        public void Initialize()
+        {
             _generatorChecker.OnRemoveHappened += Hide;
 
-        public void Destroy() =>
+            _lifetimeCts?.Cancel();
+            _lifetimeCts?.Dispose();
+            _lifetimeCts = new CancellationTokenSource();
+        }
+
+        public void Destroy()
+        {
             _generatorChecker.OnRemoveHappened -= Hide;
+
+            _lifetimeCts?.Cancel();
+            _lifetimeCts?.Dispose();
+            _lifetimeCts = null;
+        }
 
         public void Update()
         {
@@ -51,7 +74,13 @@ namespace SpiderController.PickUp
 
                 if (generatorCollider != null)
                 {
-                    if (_platformObjectsService.HasAny<BatteryProduct>())
+                    if (_isFirstTime && _platformObjectsService.HasAny<BatteryProduct>())
+                    {
+                        _isFirstTime = false;
+
+                        StartGeneratorAsync(generatorCollider).Forget();
+                    }
+                    else if (_platformObjectsService.HasAny<BatteryProduct>())
                         StartGenerator(generatorCollider);
                     else
                         _hintReceiverService.OnGeneratorHint?.Invoke();
@@ -60,6 +89,33 @@ namespace SpiderController.PickUp
 
             TryShow();
         }
+
+        private async UniTask StartGeneratorAsync(Collider generatorCollider)
+        {
+            CancellationToken token = _lifetimeCts.Token;
+
+            BatteryProduct battery = _platformObjectsService.Get<BatteryProduct>();
+
+            if (battery == null)
+                return;
+
+            Generator generator = generatorCollider.GetComponent<Generator>();
+            if (generator.IsLaunched)
+                return;
+
+            _pickupDisplayer.Hide(generator.PickupDisplayPoint);
+            _pickupDisplayer.Hide(battery.transform);
+
+            generator.StartGeneratorAsync().Forget();
+            battery.PutdownOnGenerator(generator);
+
+            await _cutSceneService.StartCutsceneAsync(CutsceneId.GeneratorCutScene, token);
+
+            token.ThrowIfCancellationRequested();
+
+            _windowService.OpenTaskPopup(TaskId.LastTask);
+        }
+
 
         private void TryShow()
         {
