@@ -67,7 +67,7 @@ float3 GetNormalWS(EffectsData data, FragmentData i, AllIn1DecalData decalData)
 #endif
 
 #ifdef _NORMAL_MAP_ON
-	#ifdef _TRIPLANAR_MAPPING_ON	
+	#ifdef _TRIPLANAR_MAPPING_ON
 		#ifdef _TRIPLANARNORMALSPACE_LOCAL
 			float3 normalReference = data.normalOS;
 		#else 
@@ -77,7 +77,8 @@ float3 GetNormalWS(EffectsData data, FragmentData i, AllIn1DecalData decalData)
 		float4 sampledNormal_side = 0;
 		float4 sampledNormal_top = 0;
 		float4 sampledNormal_front = 0;
-		
+		float4 sampledNormal_down = 0;
+
 		#ifdef _STOCHASTIC_SAMPLING_ON
 			float stochasticScale	= ACCESS_PROP_FLOAT(_StochasticScale);
 			float stochasticSkew	= ACCESS_PROP_FLOAT(_StochasticSkew);	
@@ -93,13 +94,18 @@ float3 GetNormalWS(EffectsData data, FragmentData i, AllIn1DecalData decalData)
 			sampledNormal_side	= SAMPLE_TEX2D(_NormalMap, NORMAL_UV_SIDE(data));
 			sampledNormal_top	= SAMPLE_TEX2D(_TriplanarTopNormalMap, NORMAL_UV_TOP(data));
 			sampledNormal_front = SAMPLE_TEX2D(_NormalMap, NORMAL_UV_FRONT(data));
+			sampledNormal_down	= SAMPLE_TEX2D(_NormalMap, UV_DOWN(data));
 		#endif
 		
+		float faceDown = smoothstep(ACCESS_PROP_FLOAT(_FaceDownCutoff), 1.0, UV_DOWN_WEIGHT(data));
+		sampledNormal_top = lerp(sampledNormal_top, sampledNormal_down, faceDown);
+		float tNormalYWeight = lerp(ACCESS_PROP_FLOAT(_TopNormalStrength), ACCESS_PROP_FLOAT(_NormalStrength), faceDown);
+
 		float3 tnormalX = UnpackNormal(sampledNormal_side);
 		tnormalX.xy *= ACCESS_PROP_FLOAT(_NormalStrength);
 
 		float3 tnormalY = UnpackNormal(sampledNormal_top);
-		tnormalY.xy *= ACCESS_PROP_FLOAT(_TopNormalStrength);
+		tnormalY.xy *= tNormalYWeight;
 
 		float3 tnormalZ = UnpackNormal(sampledNormal_front);
 		tnormalZ.xy *= ACCESS_PROP_FLOAT(_NormalStrength);
@@ -202,8 +208,28 @@ float3 GetNormalWS(EffectsData data, FragmentData i, AllIn1DecalData decalData)
 	#endif
 #endif
 
+
+
+
 	return res;
 }
+
+#if defined(_FLAT_NORMALS_ON)
+float3 GetFlatNormalWS(float3 originalNormal, float3 positionWS)
+{
+	float3 res = originalNormal;
+	float3 worldPosDDX = ddx(positionWS);
+	float3 worldPosDDY = ddy(positionWS);
+
+	float3 flatNormal = normalize(cross(worldPosDDY, worldPosDDX));
+
+	float3 blendedNormal = lerp(originalNormal, flatNormal, ACCESS_PROP_FLOAT(_FlatNormalsBlend));
+	blendedNormal = normalize(blendedNormal);
+	res = blendedNormal;
+
+	return res;
+}
+#endif
 
 
 EffectsData CalculateEffectsData_ShadowCaster(FragmentDataShadowCaster i)

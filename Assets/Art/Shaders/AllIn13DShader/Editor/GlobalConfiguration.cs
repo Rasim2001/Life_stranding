@@ -53,6 +53,7 @@ namespace AllIn13DShader
 		public const string GRADIENT_SAVE_FOLDER_NAME		= "Gradients";
 		public const string ATLASES_SAVE_FOLDER_NAME		= "Atlases";
 		public const string NOISES_SAVE_FOLDER_NAME			= "Noises";
+		public const string BAKED_SHADER_FOLDER_NAME		= "Baked Shaders";
 
 		//Default Root Plugin Path
 		public const string GLOBAL_CONFIG_FOLDER_DEFAULT_PATH = "AllIn3DShaderConfig";
@@ -68,6 +69,7 @@ namespace AllIn13DShader
 		[SerializeField] private string gradientSavePath;
 		[SerializeField] private string atlasesSavePath;
 		[SerializeField] private string noiseSavePath;
+		[SerializeField] private string bakedShaderSavePath;
 
 		//Render Image Scale
 		[SerializeField] private float renderImageScale;
@@ -93,6 +95,9 @@ namespace AllIn13DShader
 
 		//Shader Pass Collection
 		public ShaderPassCollection shaderPassCollection;
+
+		//URP Settings User Preferences
+		public URPSettingsUserPref urpSettingsUserPref;
 
 		public string RootPluginPath
 		{
@@ -211,6 +216,32 @@ namespace AllIn13DShader
 			}
 		}
 
+		public string BakedShaderSavePath
+		{
+			get
+			{
+				return bakedShaderSavePath;
+			}
+			set
+			{
+				bakedShaderSavePath = value;
+				EditorUtility.SetDirty(this);
+			}
+		}
+
+		public string GradientsSavePath
+		{
+			get
+			{
+				return gradientSavePath;
+			}
+			set
+			{
+				gradientSavePath = value;
+				EditorUtility.SetDirty(this);
+			}
+		}
+
 		public float RenderImageScale
 		{
 			get
@@ -267,7 +298,8 @@ namespace AllIn13DShader
 			normalMapSavePath	= InitPath(normalMapSavePath, exportFolderPath, NORMAL_MAP_SAVE_FOLDER_NAME);
 			gradientSavePath	= InitPath(gradientSavePath, exportFolderPath, GRADIENT_SAVE_FOLDER_NAME);
 			atlasesSavePath		= InitPath(atlasesSavePath, exportFolderPath, ATLASES_SAVE_FOLDER_NAME);
-			noiseSavePath		= InitPath(noiseSavePath, exportFolderPath, NOISES_SAVE_FOLDER_NAME); 
+			noiseSavePath		= InitPath(noiseSavePath, exportFolderPath, NOISES_SAVE_FOLDER_NAME);
+			bakedShaderSavePath = InitPath(bakedShaderSavePath, exportFolderPath, BAKED_SHADER_FOLDER_NAME);
 
 			bool foldersCreated = false;
 			CreateDefaultExportFoldersIfNotExist(ref foldersCreated);
@@ -313,6 +345,7 @@ namespace AllIn13DShader
 			CreateFolderIfNotExist(gradientSavePath, ref foldersCreated);
 			CreateFolderIfNotExist(atlasesSavePath, ref foldersCreated);
 			CreateFolderIfNotExist(noiseSavePath, ref foldersCreated);
+			CreateFolderIfNotExist(bakedShaderSavePath, ref foldersCreated);
 		}
 
 		private void CreateFolderIfNotExist(string absoluteFolderPath, ref bool foldersCreated)
@@ -358,6 +391,7 @@ namespace AllIn13DShader
 			GradientSavePath	= UpdateRootFolders(oldExportFolder, GradientSavePath, ExportFolderPath, GRADIENT_SAVE_FOLDER_NAME);
 			AtlasesSavePath		= UpdateRootFolders(oldExportFolder, AtlasesSavePath, ExportFolderPath, ATLASES_SAVE_FOLDER_NAME);
 			NoiseSavePath		= UpdateRootFolders(oldExportFolder, NoiseSavePath, ExportFolderPath, NOISES_SAVE_FOLDER_NAME);
+			BakedShaderSavePath = UpdateRootFolders(oldExportFolder, BakedShaderSavePath, ExportFolderPath, BAKED_SHADER_FOLDER_NAME);
 		}
 
 		private string UpdateRootFolders(string oldRootFolder, string pathToCheck, string parentFolder, string relativePath)
@@ -396,8 +430,6 @@ namespace AllIn13DShader
 				instance.RootPluginPath = newRootPluginFolderPath;
 
 				res = true;
-
-				//instance.RootFolderChanged(oldRootPath);
 			}
 
 			res = res && !string.IsNullOrEmpty(oldRootFolder);
@@ -449,14 +481,6 @@ namespace AllIn13DShader
 				_instance.RefreshDefaultMaterial();
 			}
 		}
-
-		//private static string GetGlobalConfigFolderPath()
-		//{
-		//	string assetPath = AssetDatabase.GetAssetPath(instance);
-
-		//	string res = Path.GetDirectoryName(assetPath);
-		//	return res;
-		//}
 
 		public void SetDefaultValues()
 		{
@@ -518,7 +542,6 @@ namespace AllIn13DShader
 				AssetDatabase.CreateFolder(Path.GetDirectoryName(defaultConfigFolderPath), Path.GetFileName(defaultConfigFolderPath));
 			}
 
-			//GlobalConfiguration res = ScriptableObject.CreateInstance<GlobalConfiguration>();
 			_instance.Init(parentFolder);
 			AssetDatabase.CreateAsset(_instance, defaultGlobalConfigurationPath);
 			
@@ -539,18 +562,6 @@ namespace AllIn13DShader
 			return res;
 		}
 
-		//public static GlobalConfiguration InitializeInstance()
-		//{
-		//	GlobalConfiguration res = EditorUtils.FindAsset<GlobalConfiguration>("GlobalConfiguration");
-
-		//	if (res == null)
-		//	{
-		//		res = CreateInstanceInDefaultPath();
-		//	}
-
-		//	return res;
-		//}
-
 		public static void InitIfNeeded()
 		{
 			bool globalConfigInstanceCreated = false;
@@ -558,7 +569,6 @@ namespace AllIn13DShader
 
 			if (needToCreateInstance)
 			{
-				//_instance = InitializeInstance();
 				_instance = CreateInstanceIfNeeded(out globalConfigInstanceCreated);
 			}
 
@@ -574,30 +584,10 @@ namespace AllIn13DShader
 				instance.RootFolderChanged(oldRootPath);
 			}
 
-			//CheckGlobalConfigFolder(rootFolderChanged);
-
 			CheckMaterialReferences();
 
 			SessionState.SetString(ConstantsRuntime.SESSION_KEY_ROOT_PLUGIN_PATH, _instance.rootPluginPath);
 		}
-
-		//public static void SetPropertiesConfigCollection(PropertiesConfigCollection propertiesConfigCollection)
-		//{
-		//	if(propertiesConfigCollection != null)
-		//	{
-		//		if (_instance.propertiesConfigCollection != propertiesConfigCollection)
-		//		{
-		//			_instance.propertiesConfigCollection = propertiesConfigCollection;
-		//			EditorUtility.SetDirty(_instance);
-		//		}
-		//	}
-
-		//	if(_instance.propertiesConfigCollection == null)
-		//	{
-		//		_instance.propertiesConfigCollection = PropertiesConfigCreator.FindPropertiesCollection();
-		//		EditorUtility.SetDirty(_instance);
-		//	}
-		//}
 
 		public static void SetupShadersReferences()
 		{

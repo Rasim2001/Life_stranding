@@ -28,8 +28,6 @@ namespace AllIn13DShader
 			AssetDatabase.SaveAssets();
 			AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
 
-			EditorPrefs.SetFloat(Constants.LAST_TIME_SHADER_PROPERTIES_REBUILT_KEY, (float)EditorApplication.timeSinceStartup);
-
 			Debug.LogWarning("Creating data...");
 
 			return propertiesCollection;

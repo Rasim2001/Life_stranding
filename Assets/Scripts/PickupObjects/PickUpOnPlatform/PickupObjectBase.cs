@@ -62,7 +62,7 @@ namespace PickupObjects.PickUpOnPlatform
             Collider = GetComponent<Collider>();
         }
 
-        private void Update()
+        protected virtual void Update()
         {
             if (IsOnPlatform)
                 transform.localRotation = Quaternion.Euler(StartRotation.eulerAngles.x, 0, 0);

@@ -65,6 +65,7 @@ namespace AllIn13DShader
 			{
 				savePathsTabDrawer,
 				textureEditorTabDrawer,
+				textureCreatorTabDrawer,
 				overrideMaterialsTabDrawer,
 				effectsProfileTabDrawer,
 				otherTabDrawer,
@@ -76,6 +77,7 @@ namespace AllIn13DShader
 			{
 				savePathsTabDrawer,
 				textureEditorTabDrawer,
+				textureCreatorTabDrawer,
 				overrideMaterialsTabDrawer,
 				effectsProfileTabDrawer,
 				otherTabDrawer

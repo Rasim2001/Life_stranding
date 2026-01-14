@@ -7,6 +7,7 @@ namespace AllIn13DShader
 {
 	public static class ShaderFeaturesFileCreator
 	{
+		private const string KEYWORD_FOG = "_FOG_ON";
 		private const string SHADER_FEATURE_FILE_ENTRY = @"#pragma shader_feature_local {0}";
 		private static string TEMPLATE_PATH = GlobalConfiguration.GetRootPluginFolderPath() + "/Editor/Effects Profiles/Templates/ShaderFeaturesTemplate.allin1template";
 		private static string DST_PATH = GlobalConfiguration.GetRootPluginFolderPath() + "/Shaders/ShaderLibrary/AllIn13DShader_ShaderFeatures.hlsl";
@@ -27,9 +28,12 @@ namespace AllIn13DShader
 				}
 			}
 
+			txtContent = AddFogEntry(txtContent);
+
 			txtGeneratedFile = txtGeneratedFile.Replace("<Content>", txtContent);
 			txtGeneratedFile = txtGeneratedFile.Replace("<EffectsProfileID>", effectsProfile.id);
 
+			txtGeneratedFile = EditorUtils.UnifyEOL(txtGeneratedFile);
 			File.WriteAllText(DST_PATH, txtGeneratedFile);
 
 			AssetDatabase.Refresh();
@@ -46,7 +50,7 @@ namespace AllIn13DShader
 			{
 				string fileEntry = string.Format(SHADER_FEATURE_FILE_ENTRY, parentKeywords[i].keyword);
 				res += fileEntry;
-				res += Environment.NewLine;
+				res += "\n";
 			}
 
 			for (int i = 0; i < effectProperties.Count; i++)
@@ -63,10 +67,20 @@ namespace AllIn13DShader
 					{
 						res += string.Format(SHADER_FEATURE_FILE_ENTRY, effectProperty.propertyKeywords[j]);
 					}
-						
-					res += Environment.NewLine;
+
+					res += "\n";
 				}
 			}
+
+			return res;
+		}
+
+		private static string AddFogEntry(string fileContent)
+		{
+			string res = fileContent;
+
+			res += string.Format(SHADER_FEATURE_FILE_ENTRY, KEYWORD_FOG);
+			res += "\n";
 
 			return res;
 		}

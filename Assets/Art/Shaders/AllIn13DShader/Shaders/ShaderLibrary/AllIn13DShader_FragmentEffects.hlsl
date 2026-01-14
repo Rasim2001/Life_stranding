@@ -261,7 +261,7 @@ float3 Greyscale(float3 inputColorRGB)
 	float3 res = inputColorRGB;
 	float luminance = GetLuminance(res);
 	luminance = saturate(luminance + ACCESS_PROP_FLOAT(_GreyscaleLuminosity));
-	res = lerp(res, luminance * ACCESS_PROP_FLOAT4(_GreyscaleTintColor).rgb, ACCESS_PROP_FLOAT(_GreyscaleBlend));
+	res = lerp(res, luminance * ACCESS_PROP_FLOAT4(_GreyscaleTintColor).rgb, ACCESS_PROP_FLOAT(_GreyscaleBlending));
 	
 	return res;
 }

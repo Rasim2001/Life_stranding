@@ -359,7 +359,7 @@ namespace AllIn13DShader
 					string entry = CreateIncludeShaderEntry(path);
 
 					res += entry;
-					res += Environment.NewLine;
+					res += "\n";
 				}
 			}
 
