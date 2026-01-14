@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using DG.Tweening;
 using UnityEngine;
@@ -18,6 +17,9 @@ namespace Common.Antenna
         private void Start() =>
             Hide();
 
+        private void OnDestroy() =>
+            _antennaSequence?.Kill();
+
         private void Hide()
         {
             foreach (Transform piece in _antenna)
@@ -27,7 +29,7 @@ namespace Common.Antenna
             }
         }
 
-        private void Show()
+        public void Show()
         {
             _antennaSequence?.Kill();
             _antennaSequence = DOTween.Sequence();

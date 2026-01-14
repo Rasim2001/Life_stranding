@@ -1,4 +1,5 @@
 using Common;
+using Common.Biosphere;
 using UnityEngine;
 
 namespace SpiderController.TriggerChecker
@@ -6,6 +7,6 @@ namespace SpiderController.TriggerChecker
     public class BiosphereChecker : ProductCheckerBase
     {
         protected override bool Accept(Collider col) =>
-            TryGetProduct(col, typeof(BiosphereWin));
+            TryGetProduct(col, typeof(BiosphereCheckpointIndicator));
     }
 }
