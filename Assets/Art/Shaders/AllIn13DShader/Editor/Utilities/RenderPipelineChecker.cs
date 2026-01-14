@@ -146,7 +146,7 @@ namespace AllIn13DShader
 		{
 			RefreshData();
 
-			RenderPipelineEnum lastRenderPipeline = (RenderPipelineEnum)EditorPrefs.GetInt(Constants.LAST_RENDER_PIPELINE_CHECKED_KEY, 0);
+			RenderPipelineEnum lastRenderPipeline = (RenderPipelineEnum)SessionState.GetInt(Constants.LAST_RENDER_PIPELINE_CHECKED_KEY, 0);
 
 			if (lastRenderPipeline != CurrentRenderPipeline || !IsRenderPipelineDefined())
 			{
@@ -165,7 +165,7 @@ namespace AllIn13DShader
 				}
 
 				ApplyDefineSymbols(defineSymbols);
-				EditorPrefs.SetInt(Constants.LAST_RENDER_PIPELINE_CHECKED_KEY, (int)CurrentRenderPipeline);
+				SessionState.SetInt(Constants.LAST_RENDER_PIPELINE_CHECKED_KEY, (int)CurrentRenderPipeline);
 			}
 		}
 

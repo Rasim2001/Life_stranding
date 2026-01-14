@@ -23,7 +23,6 @@ namespace AllIn13DShader
 		private MaterialProperty matPropertyZWrite;
 		
 		private int lastRenderQueue;
-		private float lasTimeRebuilt;
 
 		private static CommonStyles commonStyles;
 
@@ -59,8 +58,6 @@ namespace AllIn13DShader
 				}
 
 				RefreshPropertiesConfig();
-
-				lasTimeRebuilt = (float)EditorApplication.timeSinceStartup;
 			}
 
 			if (blendingModeCollection == null)
@@ -178,12 +175,6 @@ namespace AllIn13DShader
 
 		public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] properties)
 		{
-			if (lasTimeRebuilt <= EditorPrefs.GetFloat(Constants.LAST_TIME_SHADER_PROPERTIES_REBUILT_KEY, float.MaxValue))
-			{
-				ResetReferences();
-				lasTimeRebuilt = (float)EditorApplication.timeSinceStartup;
-			}
-
 			if (inspectorReferences != null && drawers != null)
 			{
 				inspectorReferences.Setup(materialEditor, properties);
@@ -215,6 +206,7 @@ namespace AllIn13DShader
 			EditorGUI.EndDisabledGroup();
 #endif
 
+			CheckLightmapFlags();
 			bool shaderChanged = false;
 			for (int i = 0; i < inspectorReferences.targetMatInfos.Length; i++)
 			{
@@ -349,6 +341,24 @@ namespace AllIn13DShader
 
 					AbstractEffectDrawer drawer = FindEffectDrawerByID(effectConfig.effectDrawerID);
 					drawer.Draw(currentPropertiesConfig, effectConfig, globalEffectIndex);
+				}
+			}
+		}
+
+		private void CheckLightmapFlags()
+		{
+			for (int i = 0; i < inspectorReferences.targetMatInfos.Length; i++)
+			{
+				AbstractMaterialInfo matInfo = inspectorReferences.targetMatInfos[i];
+				AllIn13DEffectConfig emissionEffectConfig = propertiesConfigCollection.propertiesConfig.FindEffectConfigByID(Constants.EFFECT_ID_EMISSION);
+				bool emissionEnabled = AllIn13DEffectConfig.IsEffectEnabled(emissionEffectConfig, matInfo);
+				if (emissionEnabled)
+				{
+					matInfo.mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.BakedEmissive;
+				}
+				else
+				{
+					matInfo.mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.EmissiveIsBlack;
 				}
 			}
 		}

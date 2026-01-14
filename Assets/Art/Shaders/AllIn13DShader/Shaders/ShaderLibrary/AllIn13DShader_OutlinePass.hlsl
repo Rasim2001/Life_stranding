@@ -100,6 +100,7 @@ FragmentDataOutline OutlinePass_Vertex(VertexData v)
 	o.mainUV = SIMPLE_CUSTOM_TRANSFORM_TEX(v.uv, _MainTex);
 	o.pos = OBJECT_TO_CLIP_SPACE(v);
 	o.positionWS = GetPositionWS(v.vertex);
+	UV_LIGHTMAP(o) = v.uvLightmap;
 
 	FOGCOORD(o) = GetFogFactor(o.pos);
 	
@@ -119,17 +120,19 @@ float4 OutlinePass_Fragment(FragmentDataOutline i) : SV_Target
 
 	float camDistance = distance(i.positionWS, _WorldSpaceCameraPos); 
 	float4 screenPos = ComputeScreenPos(i.pos);
-	col = ApplyAlphaEffects(col, SCALED_MAIN_UV(i), 1.0, camDistance, screenPos);
+	col = ApplyAlphaEffects(col,
+		SCALED_MAIN_UV(i), UV_LIGHTMAP(i), i.positionWS,
+		1.0, camDistance, screenPos);
 
 #ifdef _ALPHA_CUTOFF_ON
 	clip((col.a - ACCESS_PROP_FLOAT(_AlphaCutoffValue)) - 0.001);
 #endif	
 
+#if defined(FOG_ENABLED)
 	col = CustomMixFog(FOGCOORD(i), col);
+#endif
 
 	col.a *= ACCESS_PROP_FLOAT(_GeneralAlpha);
-
-
 
 	return col;
 }

@@ -81,7 +81,7 @@ FragmentData BasicVertex(VertexData v)
 	UV_NORMAL_MAP(o) = CUSTOM_TRANSFORM_TEX(v.uv, UV_DIFF(o), _NormalMap);
 #endif
 
-	ShadowCoordStruct shadowCoordStruct = GetShadowCoords(v, o.pos, POSITION_WS(o));
+	ShadowCoordStruct shadowCoordStruct = GetShadowCoords(v, o.pos, POSITION_WS(o), v.uvLightmap);
 	o._ShadowCoord = shadowCoordStruct._ShadowCoord;
 
 #ifdef LIGHTMAP_ON
@@ -127,6 +127,16 @@ float4 BasicFragment(
 	ConfigureDecalData(decalData, i.pos);
 #endif
 
+
+#if defined(_FLAT_NORMALS_ON)
+	i.normalWS = GetFlatNormalWS(i.normalWS, POSITION_WS(i));
+	#if defined(REQUIRE_TANGENT_WS)
+		i.tspace0 = float3(i.tspace0.x, i.tspace0.y, i.normalWS.x);
+		i.tspace1 = float3(i.tspace1.x, i.tspace1.y, i.normalWS.y);
+		i.tspace2 = float3(i.tspace2.x, i.tspace2.y, i.normalWS.z);
+	#endif
+#endif
+
 	EffectsData data = CalculateEffectsData(i, decalData);
 	
 	data = ApplyUVEffects_FragmentStage(data);
@@ -167,6 +177,9 @@ float4 BasicFragment(
 
 	float4 col = objectColor;
 	
+
+
+	AllIn1GI gi = CalculateGI(UV_LIGHTMAP(i), data);
 	float3 lightmap = GetLightmap(UV_LIGHTMAP(i), data);
 #if defined(_AFFECTED_BY_LIGHTMAPS_ON) && defined(_LIGHTMAP_COLOR_CORRECTION_ON)
 	lightmap = LightmapColorCorrection(lightmap);
@@ -183,11 +196,12 @@ float4 BasicFragment(
 		POSITION_WS(i),
 		normalWS, data.tangentWS, data.bitangentWS,
 		objectColor.rgb, objectColor.a,
-		1.0, lightmap, ambientColor, viewDirWS, 
-		SCALED_MAIN_UV(i), mainLightColor, mainLightDir, i, 1.0, data);
+		1.0, ambientColor, viewDirWS, 
+		SCALED_MAIN_UV(i), mainLightColor, mainLightDir, i, 1.0, data, 
+		gi); 
 #else
 	float2 ssaoFactor = GetSSAO(data.normalizedScreenSpaceUV.xy, objectColor.a);
-	col.rgb = IndirectLighting_Basic(objectColor.rgb, lightmap, ssaoFactor, data);
+	col.rgb = IndirectLighting_Basic(objectColor.rgb, ssaoFactor, data, gi);
 #endif
 	
 #ifdef _EMISSION_ON
@@ -211,7 +225,7 @@ float4 BasicFragment(
 	col = ApplyColorEffectsAfterLighting(col, data);
 	col.a *= ACCESS_PROP_FLOAT(_GeneralAlpha);
 	
-#ifdef _FOG_ON
+#if defined(FOG_ENABLED)
 	col = CustomMixFog(FOGCOORD(i), col);
 #endif
 

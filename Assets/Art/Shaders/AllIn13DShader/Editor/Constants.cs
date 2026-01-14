@@ -4,11 +4,11 @@ namespace AllIn13DShader
 {
 	public static class Constants
 	{
-		public static string VERSION = "2.21";
+		public static string VERSION = "2.61";
 		
 		public const string EFFECT_ATTRIBUTE_PREFIX = "Effect(";
 		public const string EFFECT_PROPERTY_ATTRIBUTE_PREFIX = "EffectProperty(";
-		public const string HEADER_PREFIX = "Header(";
+		//public const string HEADER_PREFIX = "Header(";
 		public const string SINGLE_PROPERTY_ATTRIBUTE = "SingleProperty";
 		public const string ADVANCED_PROPERTY_ATTRIBUTE = "AdvancedProperty";
 
@@ -111,5 +111,19 @@ namespace AllIn13DShader
 
 		//Default Names
 		public const string DEFAULT_NAME_EFFECTS_PROFILE = "EffectsProfile";
+
+		//
+		public const string INCLUDE_LINE_FORMAT = @"#include ""{0}""";
+		public const string DEFINE_LINE_FORMAT = @"#define {0}";
+
+		//Effect IDs
+		public const string EFFECT_ID_TRIPLANAR_MAPPING = "TRIPLANAR_MAPPING";
+		public const string EFFECT_ID_EMISSION = "EMISSION";
+
+		//Effect Group IDs
+		public const string EFFECT_GROUP_ID_UV_EFFECTS = "UVEffects";
+
+		//Main Assembly Name
+		public const string MAIN_ASSEMBLY_NAME = "AllIn13DShaderAssembly.asmdef";
 	}
 }

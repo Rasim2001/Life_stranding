@@ -60,6 +60,7 @@ namespace AllIn13DShader
 
 				string newShaderFileName = TEMPLATES_NAMES[i].Replace("_Template", "");
 				string newShaderPath = Path.Combine(Constants.SHADERS_GENERIC_FOLDER_PATH, newShaderFileName + ".shader");
+				newShaderFileText = EditorUtils.UnifyEOL(newShaderFileText);
 				File.WriteAllText(newShaderPath, newShaderFileText);
 			}
 

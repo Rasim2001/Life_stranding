@@ -114,6 +114,16 @@
 	#define ADDITIONAL_LIGHT_LOOP
 #endif
 
+#if defined(URP_PASS)
+	#if defined(ALLIN1_FOG_SUPPORT) && defined(_FOG_ON)
+		#define FOG_ENABLED
+	#endif
+#elif defined(BIRP_PASS)
+	#if defined(_FOG_ON)
+		#define FOG_ENABLED
+	#endif
+#endif
+
 //#pragma shader_feature_local _REFLECTIONS_NONE _REFLECTIONS_CLASSIC _REFLECTIONS_TOON
 
 #if defined(_REFLECTIONS_CLASSIC) || defined(_REFLECTIONS_TOON)

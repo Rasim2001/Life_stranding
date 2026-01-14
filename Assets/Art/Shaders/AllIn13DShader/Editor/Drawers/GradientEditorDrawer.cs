@@ -68,7 +68,7 @@ namespace AllIn13DShader
 				}
 				else
 				{
-					if (isModifyingExistingTexture)
+					if (texValue != null)
 					{
 						gradient = CreateGradientFromTexture(texValue);
 					}

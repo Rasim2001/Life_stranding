@@ -101,18 +101,22 @@ EffectsData TriplanarMapping(EffectsData input)
 		uvDiff *= 10.0;
 	#endif
 
-	float3 triplanarWeights = GetTriplanarWeights(normal);
+	float3 triplanarWeights = GetTriplanarWeights(normal, input.mainUV);
 
-	res.uvMatrix._m00_m01 = CUSTOM_TRANSFORM_TEX(position.xy, uvDiff, _MainTex); //Front
+	float2 positionXY = position.xy;
+	float2 positionZY = position.zy;
+	float2 positionXZ = position.xz;
+
+	res.uvMatrix._m00_m01 = CUSTOM_TRANSFORM_TEX(positionXY, uvDiff, _MainTex); //Front
 	res.uvMatrix._m02 = triplanarWeights.z;
 
-	res.uvMatrix._m10_m11 = CUSTOM_TRANSFORM_TEX(position.zy, uvDiff, _MainTex); //Side
+	res.uvMatrix._m10_m11 = CUSTOM_TRANSFORM_TEX(positionZY, uvDiff, _MainTex); //Side
 	res.uvMatrix._m12 = triplanarWeights.x;
 
-	res.uvMatrix._m20_m21 = CUSTOM_TRANSFORM_TEX(position.xz, uvDiff, _TriplanarTopTex); //Top
+	res.uvMatrix._m20_m21 = CUSTOM_TRANSFORM_TEX(positionXZ, uvDiff, _TriplanarTopTex); //Top
 	res.uvMatrix._m22 = triplanarWeights.y;
 
-	res.uvMatrix._m30_m31 = CUSTOM_TRANSFORM_TEX(position.xz, uvDiff, _MainTex); //Down
+	res.uvMatrix._m30_m31 = CUSTOM_TRANSFORM_TEX(positionXZ, uvDiff, _MainTex); //Down
 	res.uvMatrix._m32 = 1 - normal.y;
 
 #ifdef _NORMAL_MAP_ON

@@ -110,6 +110,10 @@ float4 allIn13DShader_globalTime;
 #if defined(_TRIPLANAR_MAPPING_ON)
 	DECLARE_TEX2D(_TriplanarTopTex)
 	DECLARE_TEX2D(_TriplanarTopNormalMap)
+
+	#if defined(_TRIPLANAR_NOISE_TRANSITION_ON)
+		DECLARE_TEX2D(_TriplanarNoiseTex);
+	#endif
 #endif
 
 #endif //ALLIN13DSHADER_GLOBALPROPERTIESANDTEXTURESDECLARATION

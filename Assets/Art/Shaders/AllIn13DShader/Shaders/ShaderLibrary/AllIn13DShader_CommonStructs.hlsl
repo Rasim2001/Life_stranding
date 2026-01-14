@@ -50,6 +50,12 @@
 	data.metallic = 0; \
 	data.smoothness = 1;
 
+#define INIT_GI(gi) \
+	gi.diffuse = float3(0, 0, 0); \
+	gi.shadowMask = float4(0, 0, 0, 0); \
+	gi.uvLightmap = float2(0, 0);
+
+
 #define UV_FRONT(data) data.uvMatrix._m00_m01
 #define UV_FRONT_WEIGHT(data) data.uvMatrix._m02
 
@@ -291,6 +297,13 @@ struct TriplanarData
 	float2 uv_triplanar_top;
 };
 
+struct AllIn1GI
+{
+	float3 diffuse;
+	float4 shadowMask;
+	float2 uvLightmap;
+};
+
 //<AllIn1Struct name=EffectsData>
 struct EffectsData
 {
@@ -340,9 +353,22 @@ struct EffectsData
 //</AllIn1Struct>
 
 #ifdef _TRIPLANAR_MAPPING_ON
-float3 GetTriplanarWeights(float3 normal)
+float3 GetTriplanarWeights(float3 normal, float2 uv)
 {
 	float3 weights = abs(normal);
+
+	float3 transition = 0.0;
+#ifdef _TRIPLANAR_NOISE_TRANSITION_ON
+	float2 scaleUV = ACCESS_PROP_FLOAT4(_TriplanarNoiseTex_ST).xy;
+	transition = SAMPLE_TEX2D(_TriplanarNoiseTex, uv * scaleUV).rgb;
+	transition = (transition - 0.5) * 2.0;
+	transition *= ACCESS_PROP_FLOAT(_TriplanarTransitionPower);
+
+	normal += transition;
+	normal = normalize(normal);
+	weights = abs(normal);
+#endif
+
 	weights = pow(weights, ACCESS_PROP_FLOAT(_TriplanarSharpness));
 	weights = weights / (weights.x + weights.y + weights.z);
 

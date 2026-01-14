@@ -124,11 +124,11 @@ float2 GetSSAO(float2 normalizedScreenSpaceUV, float alpha)
 
 //normalWS needed for the equivalent method in BIRP
 //effectsData needed for the equivalent method in BIRP
-AllIn1LightData GetPointLightData(int index, float3 vertexWS, float3 normalWS, EffectsData effectsData)
+AllIn1LightData GetPointLightData(int index, float3 vertexWS, float3 normalWS, EffectsData effectsData, AllIn1GI gi)
 {
 	AllIn1LightData lightData;
 
-	Light additionalLight = GetAdditionalLight(index, vertexWS, half4(1, 1, 1, 1));
+	Light additionalLight = GetAdditionalLight(index, vertexWS, gi.shadowMask);
 	lightData.lightColor = additionalLight.color;
 	lightData.lightDir = additionalLight.direction;
 
@@ -143,10 +143,8 @@ AllIn1LightData GetPointLightData(int index, float3 vertexWS, float3 normalWS, E
     lightData.lightColor *= cookieColor;
 #endif
 
-
 #ifdef _RECEIVE_SHADOWS_ON
-	//lightData.realtimeShadow = AdditionalLightRealtimeShadow(perObjectIndex, vertexWS, additionalLight.direction);
-	lightData.realtimeShadow = AdditionalLightShadow(lightIndex, vertexWS, additionalLight.direction, 1.0, 0);
+	lightData.realtimeShadow = additionalLight.shadowAttenuation;
 #else
 	lightData.realtimeShadow = 1.0;
 #endif
@@ -158,7 +156,7 @@ AllIn1LightData GetPointLightData(int index, float3 vertexWS, float3 normalWS, E
 	return lightData;
 }
 
-AllIn1LightData GetMainLightData(float3 vertexWS, EffectsData effectsData)
+AllIn1LightData GetMainLightData(float3 vertexWS, EffectsData effectsData, AllIn1GI gi)
 {
 	AllIn1LightData lightData;
 	
@@ -189,6 +187,13 @@ AllIn1LightData GetMainLightData(float3 vertexWS, EffectsData effectsData)
 		#if defined(_RECEIVEDSHADOWSTYPE_STYLIZED)
 			lightData.realtimeShadow = AntiAliasing(lightData.realtimeShadow, ACCESS_PROP_FLOAT(_ShadowCutoff));
 		#endif
+
+		float shadowFade = GetMainLightShadowFade(effectsData.vertexWS);
+		float shadowMask = 1.0;
+		#if defined(SHADOWS_SHADOWMASK)
+			shadowMask = gi.shadowMask.r;
+		#endif
+		lightData.realtimeShadow = lerp(lightData.realtimeShadow, shadowMask, shadowFade);
 	#else
 		lightData.realtimeShadow = 1.0;
 	#endif
@@ -237,7 +242,7 @@ FragmentDataShadowCaster GetClipPosShadowCaster(VertexData v, FragmentDataShadow
     return input;
 }
 
-ShadowCoordStruct GetShadowCoords(VertexData v, float4 clipPos, float3 vertexWS)
+ShadowCoordStruct GetShadowCoords(VertexData v, float4 clipPos, float3 vertexWS, float2 uvLightmap)
 {
 	ShadowCoordStruct res;
 
@@ -350,6 +355,24 @@ float3 GetAmbientColor(EffectsData data)
 	return res;
 }
 
+AllIn1GI CalculateGI(float2 uvLightmap, EffectsData data)
+{
+	AllIn1GI res;
+	INIT_GI(res);
+
+#if defined(LIGHTMAP_ON)
+	res.diffuse = GetLightmap(uvLightmap, data);
+#else
+	res.diffuse = GetAmbientColor(data);
+#endif
+
+#if defined(SHADOWS_SHADOWMASK)
+	res.shadowMask = SAMPLE_TEXTURE2D(unity_ShadowMask, samplerunity_ShadowMask, uvLightmap);
+#endif
+
+	return res;
+}
+
 float GetFogFactor(float4 clipPos)
 {
 	float res = 0;
@@ -361,12 +384,14 @@ float GetFogFactor(float4 clipPos)
 	return res;
 }
 
+#if defined(FOG_ENABLED)
 float4 CustomMixFog(float fogFactor, float4 col)
 {
 	float4 res = col;
 	res.rgb = MixFog(res.rgb, fogFactor);
 	return res;
 }
+#endif
 
 void ConfigureDecalData(inout AllIn1DecalData allIn1Decal, float4 positionCS)
 {
