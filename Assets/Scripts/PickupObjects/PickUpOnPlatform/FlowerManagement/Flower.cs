@@ -1,5 +1,6 @@
 using System;
 using Common;
+using HighlightPlus;
 using HUD;
 using Infastructure.Data;
 using Infastructure.Services.QTE;
@@ -39,6 +40,8 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
         private IXRayService _xRayService;
         private ISlowTimeRunner _slowTimeRunner;
 
+        private bool _isInside;
+
         [Inject]
         public void Construct(IStaticDataService staticDataService, ILastChanceQTEService lastChanceQteService,
             IXRayService xRayService, ISlowTimeRunner slowTimeRunner)
@@ -53,6 +56,7 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
         {
             base.Awake();
 
+            GetComponent<HighlightEffect>();
             _xRayMarker = GetComponent<XRayMarker>();
             _flowerSelector = new FlowerSelector(_flowerVariants);
             _flowerSelector.Initialize();
@@ -87,6 +91,13 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             progress.WorldProgressData.FlowerData.Rotation = transform.localEulerAngles.AsVectorData();
             progress.WorldProgressData.FlowerData.IsPuttingDown = IsPuttingDown;
             progress.WorldProgressData.FlowerData.IsOnPlatform = IsOnPlatform;
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+
+            //_highlightEffect.SetHighlighted(IsOnPlatform && !PlatformSelector.IsInsideOfBlinkPlace(Collider));
         }
 
         private void OnDestroy() =>

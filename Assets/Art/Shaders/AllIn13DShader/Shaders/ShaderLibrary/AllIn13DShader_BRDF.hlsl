@@ -206,13 +206,13 @@ float3 DiffuseTerm02(float NdotV, float NdotL, float LdotH, float perceptualRoug
 	return res;
 }
 
-float3 IndirectLighting(float3 albedo, float3 specularColor, float3 lightmap, EffectsData effectsData, BDRFCommonData commonData)
+float3 IndirectLighting(float3 albedo, float3 specularColor, EffectsData effectsData, BDRFCommonData commonData, AllIn1GI gi)
 {
 	float3 N = commonData.N;
 	float3 V = commonData.V;
 
-	float3 ambientColor = GetAmbientColor(effectsData);
-	float3 diffuse = (ambientColor + lightmap) * albedo;
+	//float3 ambientColor = GetAmbientColor(effectsData);
+	float3 diffuse = gi.diffuse * albedo;
 
 	float3 F = fresnelSchlickRoughness(commonData.NdotV, commonData.F0, commonData.roughness);
 	float3 kS = F;
@@ -420,13 +420,13 @@ BDRFPerLightData CreatePerLightData(BDRFCommonData commonData, AllIn1LightData l
 	return res;
 }
 
-float3 CalculateLighting_PBR(float3 albedo, float3 lightmap, float alpha, EffectsData effectsData)
+float3 CalculateLighting_PBR(float3 albedo, float alpha, EffectsData effectsData, AllIn1GI gi)
 {
 	BDRFCommonData commonData = CreateCommonBDRFData(albedo, effectsData);
 
 	float3 specularColor = lerp(1.0, albedo, commonData.metallic);
 
-	AllIn1LightData mainLightData = GetMainLightData(effectsData.vertexWS, effectsData);
+	AllIn1LightData mainLightData = GetMainLightData(effectsData.vertexWS, effectsData, gi);
 
 
 	float3 directLighting = albedo;
@@ -457,7 +457,7 @@ float3 CalculateLighting_PBR(float3 albedo, float3 lightmap, float alpha, Effect
 	#if USE_CLUSTER_LIGHT_LOOP
 	UNITY_LOOP for (uint lightIndex = 0; lightIndex < min(URP_FP_DIRECTIONAL_LIGHTS_COUNT, MAX_VISIBLE_LIGHTS); lightIndex++)
 	{
-		AllIn1LightData additionalLightData = GetPointLightData(lightIndex, effectsData.vertexWS, effectsData.normalWS, effectsData);
+		AllIn1LightData additionalLightData = GetPointLightData(lightIndex, effectsData.vertexWS, effectsData.normalWS, effectsData, gi);
 		#ifdef ALLIN1_USE_LIGHT_LAYERS
 		if (IsMatchingLightLayer(additionalLightData.layerMask, meshRenderingLayers))
 		{
@@ -473,7 +473,7 @@ float3 CalculateLighting_PBR(float3 albedo, float3 lightmap, float alpha, Effect
 	
 	uint numAdditionalLights = NUM_ADDITIONAL_LIGHTS;
 	LIGHT_LOOP_BEGIN_ALLIN13D(numAdditionalLights, effectsData)
-		AllIn1LightData additionalLightData = GetPointLightData(lightIndex, effectsData.vertexWS, effectsData.normalWS, effectsData);
+		AllIn1LightData additionalLightData = GetPointLightData(lightIndex, effectsData.vertexWS, effectsData.normalWS, effectsData, gi);
 	#ifdef ALLIN1_USE_LIGHT_LAYERS
 		
 		uint meshRenderingLayers = AllIn1GetMeshRenderingLayer();
@@ -508,7 +508,7 @@ float3 CalculateLighting_PBR(float3 albedo, float3 lightmap, float alpha, Effect
 		ao = GetAOMapTerm(effectsData.mainUV);
 	#endif
 
-	float3 indirectLighting = IndirectLighting(albedo, specularColor, lightmap, effectsData, commonData);
+	float3 indirectLighting = IndirectLighting(albedo, specularColor, effectsData, commonData, gi);
 	res += (indirectLighting) * ao * ssaoFactor.y;
 #endif
 

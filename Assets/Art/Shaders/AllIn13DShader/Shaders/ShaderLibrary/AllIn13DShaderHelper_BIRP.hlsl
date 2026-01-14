@@ -5,6 +5,12 @@
 
 #define OBJECT_TO_WORLD_MATRIX unity_ObjectToWorld
 
+//#if !defined(LIGHTMAP_ON) && defined(SHADOWS_SCREEN)
+//	#if defined(SHADOWS_SHADOWMASK) && !defined(UNITY_NO_SCREENSPACE_SHADOWS)
+//		#define ADDITIONAL_MASKED_DIRECTIONAL_SHADOWS 1
+//	#endif
+//#endif
+
 #ifdef REQUIRE_SCENE_DEPTH
 
 	UNITY_DECLARE_DEPTH_TEXTURE(_CameraDepthTexture);
@@ -104,30 +110,37 @@ float2 GetSSAO(float2 normalizedScreenSpaceUV, float alpha)
 	return res;
 }
 
-//float FadeShadows (float3 worldPos, float shadowAtten) {
-//	float viewZ =
-//		dot(_WorldSpaceCameraPos.xyz - worldPos, UNITY_MATRIX_V[2].xyz);
-//	float shadowFadeDistance =
-//		UnityComputeShadowFadeDistance(worldPos, viewZ);
-//	float shadowFade = UnityComputeShadowFade(shadowFadeDistance);
-//	shadowAtten = saturate(shadowAtten + shadowFade);
+float FadeShadows (float3 worldPos, float shadowAtten, AllIn1GI gi) 
+{
+	float res = shadowAtten;
+#if defined(SHADOWS_SHADOWMASK)
+	float bakedAttenuation = UnitySampleBakedOcclusion(gi.uvLightmap, worldPos);
+	float zDist = dot(_WorldSpaceCameraPos.xyz - worldPos, UNITY_MATRIX_V[2].xyz);
+	float shadowFadeDistance = UnityComputeShadowFadeDistance(worldPos, zDist);
+	float shadowFade = UnityComputeShadowFade(shadowFadeDistance);
+	
+	res = UnityMixRealtimeAndBakedShadows(shadowAtten, bakedAttenuation, shadowFade);
+#endif
 
-//	return shadowAtten;
-//}
+	return res;
+}
 
-float GetShadowAttenuation(EffectsData effectsData)
+float GetShadowAttenuation(EffectsData effectsData, AllIn1GI gi)
 { 
 	float res = 1;
 
 #if !defined(_LIGHTMODEL_FASTLIGHTING)
 	UNITY_LIGHT_ATTENUATION(attenuation, effectsData, effectsData.vertexWS);
-	res = attenuation;
+	#if !defined(FORWARD_ADD_PASS)
+		attenuation = FadeShadows(effectsData.vertexWS, attenuation, gi);
+	#endif
 #endif
-	//attenuation = FadeShadows(effectsData.vertexWS, attenuation);
+
+	res = attenuation;
 	return res;
 }
 
-AllIn1LightData GetPointLightData(float3 vertexWS, float3 normalWS, float3 lightPositionWS, float3 lightColor, float pointLightAtten, EffectsData effectsData)
+AllIn1LightData GetPointLightData(float3 vertexWS, float3 normalWS, float3 lightPositionWS, float3 lightColor, float pointLightAtten, EffectsData effectsData, AllIn1GI gi)
 {
 	AllIn1LightData lightData;
 
@@ -140,7 +153,7 @@ AllIn1LightData GetPointLightData(float3 vertexWS, float3 normalWS, float3 light
 	lightData.lightDir = lightDir;
 	
 #ifdef _RECEIVE_SHADOWS_ON
-	lightData.realtimeShadow = GetShadowAttenuation(effectsData);
+	lightData.realtimeShadow = GetShadowAttenuation(effectsData, gi);
 #else
 	lightData.realtimeShadow = 1.0;
 #endif
@@ -152,7 +165,7 @@ AllIn1LightData GetPointLightData(float3 vertexWS, float3 normalWS, float3 light
 	return lightData;
 }
 
-AllIn1LightData GetMainLightData(float3 vertexWS, EffectsData effectsData)
+AllIn1LightData GetMainLightData(float3 vertexWS, EffectsData effectsData, AllIn1GI gi)
 {
 	AllIn1LightData lightData;
 	
@@ -170,7 +183,7 @@ AllIn1LightData GetMainLightData(float3 vertexWS, EffectsData effectsData)
 			lightData.realtimeShadow = 1.0;
 		#else
 			#ifdef _RECEIVE_SHADOWS_ON
-			lightData.realtimeShadow = GetShadowAttenuation(effectsData);
+			lightData.realtimeShadow = GetShadowAttenuation(effectsData, gi);
 				#if defined(_RECEIVEDSHADOWSTYPE_STYLIZED) && !defined(FORWARD_ADD_PASS)
 					lightData.realtimeShadow = AntiAliasing(lightData.realtimeShadow, ACCESS_PROP_FLOAT(_ShadowCutoff));
 				#endif
@@ -203,9 +216,9 @@ float3 GetPointLightPosition(int index)
 	return pointLightPosition;
 }
 
-AllIn1LightData GetPointLightData(int index, float3 vertexWS, float3 normalWS, EffectsData effectsData)
+AllIn1LightData GetPointLightData(int index, float3 vertexWS, float3 normalWS, EffectsData effectsData, AllIn1GI gi)
 {
-	return GetPointLightData(vertexWS, normalWS, GetPointLightPosition(index), unity_LightColor[index], unity_4LightAtten0[index], effectsData);
+	return GetPointLightData(vertexWS, normalWS, GetPointLightPosition(index), unity_LightColor[index], unity_4LightAtten0[index], effectsData, gi);
 }
 
 FragmentDataShadowCaster GetClipPosShadowCaster( /*VertexData v*/VertexData v, FragmentDataShadowCaster o)
@@ -249,14 +262,14 @@ FragmentDataShadowCaster GetClipPosShadowCaster( /*VertexData v*/VertexData v, F
 //	return attenuation;
 //}
 
-ShadowCoordStruct GetShadowCoords(VertexData v, float4 clipPos, float3 vertexWS)
+ShadowCoordStruct GetShadowCoords(VertexData v, float4 clipPos, float3 vertexWS, float2 uvLightmap)
 {
 	ShadowCoordStruct res;
 
 	res.pos = clipPos;
 	res._ShadowCoord = 0;
 	
-	UNITY_TRANSFER_SHADOW(res, float2(0, 0));
+	UNITY_TRANSFER_SHADOW(res, uvLightmap);
 	
 	return res;
 }
@@ -295,6 +308,26 @@ float3 GetAmbientColor(EffectsData data)
 	return res;
 }
 
+AllIn1GI CalculateGI(float2 uvLightmap, EffectsData data)
+{
+	AllIn1GI res;
+	INIT_GI(res);
+
+#if defined(LIGHTMAP_ON)
+	res.diffuse = GetLightmap(uvLightmap, data);
+#else
+	res.diffuse = GetAmbientColor(data);
+#endif
+
+#if defined(SHADOWS_SHADOWMASK)
+	res.shadowMask = UnitySampleBakedOcclusion(uvLightmap, data.vertexWS);
+#endif
+
+	res.uvLightmap = uvLightmap;
+
+	return res;
+}
+
 //float GetFogFactor(FragmentData fragmentData)
 //{
 //	float res = 0;
@@ -319,12 +352,15 @@ float GetFogFactor(float4 clipPos)
 	return res;
 }
 
+
+#if defined(FOG_ENABLED)
 float4 CustomMixFog(float fogFactor, float4 col)
 {
 	float4 res = col;
 	UNITY_APPLY_FOG(fogFactor, res);
 	return res;
 }
+#endif
 
 #ifdef REFLECTIONS_ON
 

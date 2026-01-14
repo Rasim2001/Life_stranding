@@ -7,6 +7,12 @@ namespace AllIn13DShader
 	{
 		static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths, bool didDomainReload)
 		{
+			bool assetImportedForTheFirstTime = IsAssetImportedForTheFirstTime(importedAssets);
+			if (assetImportedForTheFirstTime)
+			{
+				Debug.Log("Setting up AllIn13DShader for the first time...");
+			}
+
 #if ALLIN13DSHADER_URP
 			URPConfigurator.CheckURPRemoved(deletedAssets, didDomainReload);
 #endif
@@ -21,6 +27,7 @@ namespace AllIn13DShader
 			{
 				effectsProfileCollection = EffectsProfileCollection.CreateAsset(propertiesConfigCollection);
 			}
+
 			effectsProfileCollection.BindEffectConfigs(propertiesConfigCollection.propertiesConfig);
 
 			effectsProfileCollection.CleanInvalidProfiles();
@@ -34,13 +41,36 @@ namespace AllIn13DShader
 				}
 			}
 
+			if (assetImportedForTheFirstTime)
+			{
+				ShaderFeaturesFileCreator.CreateFile(effectsProfileCollection.generalProfile);
+			}
+
 			GlobalConfiguration.instance.SetEffectsProfileCollection(effectsProfileCollection);
 			GlobalConfiguration.instance.shaderPassCollection = EditorUtils.FindAsset<ShaderPassCollection>("ShaderPassCollection");
+
+			URPSettingsUserPref urpSettingsUserPrefs = URPSettingsUserPref.InitIfNeeded();
+			GlobalConfiguration.instance.urpSettingsUserPref = urpSettingsUserPrefs;
 
 #if ALLIN13DSHADER_URP
 			URPConfigurator.AllAssetProcessed();
 			AllIn13DShaderWindow.AllAssetProcessed();
 #endif
+		}
+
+		private static bool IsAssetImportedForTheFirstTime(string[] importedAssets)
+		{
+			bool res = false;
+			for(int i = 0; i < importedAssets.Length; i++)
+			{
+				if (importedAssets[i].EndsWith(Constants.MAIN_ASSEMBLY_NAME))
+				{
+					res = true;
+					break;
+				}
+			}
+
+			return res;
 		}
 	}
 } 

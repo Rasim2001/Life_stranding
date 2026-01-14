@@ -75,6 +75,22 @@ namespace AllIn13DShader
 			return res;
 		}
 
+		public EffectsProfileGroup GetEffectProfileGroupByID(string groupID)
+		{
+			EffectsProfileGroup res = null;
+
+			for(int i = 0; i < groups.Count; i++)
+			{
+				if (groups[i].effectGroupConfig.groupID == groupID)
+				{
+					res = groups[i];
+					break;
+				}
+			}
+
+			return res;
+		}
+
 		public void CreateDefault(PropertiesConfigCollection propertiesConfigCollection)
 		{
 			groups = new List<EffectsProfileGroup>();
@@ -305,6 +321,13 @@ namespace AllIn13DShader
 				{
 					res.Add(groups[i]);
 				}
+			}
+
+			EffectsProfileGroup uvGroup = GetEffectProfileGroupByID(Constants.EFFECT_GROUP_ID_UV_EFFECTS);
+			EffectsProfileEntry triplanarEntry = GetEntryByEffectID(Constants.EFFECT_ID_TRIPLANAR_MAPPING);
+			if (triplanarEntry.isEnabled && !uvGroup.HasEffectsEnabled())
+			{
+				res.Add(uvGroup);
 			}
 
 			return res;

@@ -1,8 +1,7 @@
-using System;
 using DG.Tweening;
 using UnityEngine;
 
-namespace Common
+namespace Common.Biosphere
 {
     public class BiosphereFx : MonoBehaviour
     {

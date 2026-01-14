@@ -125,6 +125,13 @@ namespace SpiderController.Platform
         public void ResetExcludeLayerMask() =>
             _platformRegistryService.CurrentPlatformData.Collider.excludeLayers = 0;
 
+        public bool IsInsideOfBlinkPlace(Collider productCollider)
+        {
+            Collider blinkCollider = _platformRegistryService.CurrentPlatformData.BlinkDetectionCollider;
+
+            return IsInside(productCollider, blinkCollider);
+        }
+
 
         private void KeyboardInput()
         {

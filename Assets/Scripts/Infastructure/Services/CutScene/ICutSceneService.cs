@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Infastructure.CutScenes;
 
@@ -10,6 +11,6 @@ namespace Infastructure.Services.CutScene
         CutsceneId CutsceneId { get; }
         event Action<bool> OnCutsceneActiveChanged;
         event Action OnSkipHappened;
-        UniTask StartCutsceneAsync(CutsceneId cutsceneId);
+        UniTask StartCutsceneAsync(CutsceneId cutsceneId, CancellationToken ct = default);
     }
 }

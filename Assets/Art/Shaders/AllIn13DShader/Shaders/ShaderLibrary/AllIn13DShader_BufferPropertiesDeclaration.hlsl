@@ -10,8 +10,12 @@ DECLARE_PROPERTY_FLOAT(_TimingSeed)
 	DECLARE_PROPERTY_FLOAT4(_NormalMap_ST)
 	DECLARE_PROPERTY_FLOAT(_NormalStrength)
 	#if defined(_TRIPLANAR_MAPPING_ON) || defined(ALWAYS_DECLARE_PROPERTY)
-		DECLARE_PROPERTY_FLOAT(_TopNormalStrength) 
+		DECLARE_PROPERTY_FLOAT(_TopNormalStrength)
 	#endif
+#endif
+
+#if defined(_FLAT_NORMALS_ON) || defined(ALWAYS_DECLARE_PROPERTY)
+	DECLARE_PROPERTY_FLOAT(_FlatNormalsBlend)
 #endif
 
 #if defined(_SHADINGMODEL_PBR) || defined(_SPECULARMODEL_ANISOTROPIC) || defined(_SPECULARMODEL_ANISOTROPICTOON) || defined(ALWAYS_DECLARE_PROPERTY)
@@ -171,7 +175,8 @@ DECLARE_PROPERTY_FLOAT(_TimingSeed)
 #if defined(_VERTEX_DISTORTION_ON) || defined(ALWAYS_DECLARE_PROPERTY)
 	DECLARE_PROPERTY_FLOAT4(_VertexDistortionNoiseTex_ST)
 	DECLARE_PROPERTY_FLOAT(_VertexDistortionAmount)
-	DECLARE_PROPERTY_FLOAT2(_VertexDistortionNoiseSpeed)
+	DECLARE_PROPERTY_FLOAT(_VertexDistortionNoiseSpeedX)
+	DECLARE_PROPERTY_FLOAT(_VertexDistortionNoiseSpeedY)
 #endif
 
 #if defined(_VOXELIZE_ON) || defined(ALWAYS_DECLARE_PROPERTY)
@@ -252,7 +257,7 @@ DECLARE_PROPERTY_FLOAT(_TimingSeed)
 #if defined(_GREYSCALE_ON) || defined(ALWAYS_DECLARE_PROPERTY)
 	DECLARE_PROPERTY_FLOAT(_GreyscaleLuminosity)
 	DECLARE_PROPERTY_FLOAT4(_GreyscaleTintColor)
-	DECLARE_PROPERTY_FLOAT(_GreyscaleBlend)
+	DECLARE_PROPERTY_FLOAT(_GreyscaleBlending)
 #endif
 
 #if defined(_POSTERIZE_ON) || defined(ALWAYS_DECLARE_PROPERTY)
@@ -331,6 +336,9 @@ DECLARE_PROPERTY_FLOAT(_TimingSeed)
 
 	DECLARE_PROPERTY_FLOAT(_FaceDownCutoff)
 	DECLARE_PROPERTY_FLOAT(_TriplanarSharpness)
+
+	DECLARE_PROPERTY_FLOAT4(_TriplanarNoiseTex_ST)
+	DECLARE_PROPERTY_FLOAT(_TriplanarTransitionPower)
 #endif
 
 #if defined(_SUBSURFACE_SCATTERING_ON) || defined(ALWAYS_DECLARE_PROPERTY)

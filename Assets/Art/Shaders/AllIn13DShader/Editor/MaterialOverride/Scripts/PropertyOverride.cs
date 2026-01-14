@@ -183,7 +183,7 @@ namespace AllIn13DShader
 			{
 				for(int i = 0; i < keywords.Length; i++)
 				{
-					string kw = (propertyName + "_" + keywords[i]).ToUpper();
+					string kw = (propertyName + "_" + keywords[i]).ToUpperInvariant();
 					mat.DisableKeyword(kw);
 
 					if(i == floatValue)

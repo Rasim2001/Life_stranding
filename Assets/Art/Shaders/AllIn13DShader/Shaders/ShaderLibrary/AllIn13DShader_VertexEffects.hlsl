@@ -38,8 +38,8 @@ float3 VertexDistortion(float3 vertexPos, float3 normalOS, float3 shaderTime)
 	float2 noiseUV = SIMPLE_CUSTOM_TRANSFORM_TEX(vertexPos.xy, _VertexDistortionNoiseTex);
 	float4 correctedNoiseUV = float4(noiseUV.x, noiseUV.y, 0, 0);
 	
-	correctedNoiseUV.x += frac(shaderTime.x * ACCESS_PROP_FLOAT2(_VertexDistortionNoiseSpeed).x);
-	correctedNoiseUV.y += frac(shaderTime.x * ACCESS_PROP_FLOAT2(_VertexDistortionNoiseSpeed).y);
+	correctedNoiseUV.x += frac(shaderTime.x * ACCESS_PROP_FLOAT(_VertexDistortionNoiseSpeedX));
+	correctedNoiseUV.y += frac(shaderTime.x * ACCESS_PROP_FLOAT(_VertexDistortionNoiseSpeedY));
 
 	noisePower = SAMPLE_TEX2D_LOD(_VertexDistortionNoiseTex, correctedNoiseUV).r;
 

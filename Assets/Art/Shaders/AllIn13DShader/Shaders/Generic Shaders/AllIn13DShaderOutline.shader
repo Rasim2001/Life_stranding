@@ -62,6 +62,10 @@ Shader "AllIn13DShader/AllIn13DShaderOutline"
 		[NoScaleOffset][EffectProperty(NORMAL_MAP)]_NormalMap("Normal Map", 2D) = "bump" {}
 		[EffectProperty(NORMAL_MAP)]_NormalStrength("Normal Strength", Range(0.0, 10.0)) = 1.0
 
+		//Flat Normals
+		[Effect(EffectID# FLAT_NORMALS, GroupID# Lighting, DependentOn# LIGHTMODEL)][Toggle(_FLAT_NORMALS_ON)]_FlatNormalsEnabled("Flat Normals", Float) = 0
+		[EffectProperty(FLAT_NORMALS)]_FlatNormalsBlend("Blending", Range(0, 1)) = 1.0
+
 		//Custom Shadow Color
 		[Effect(EffectID# CUSTOM_SHADOW_COLOR, GroupID# Lighting)][Toggle(_CUSTOM_SHADOW_COLOR_ON)]_CustomShadowColorOn("Custom Shadow Color", Float) = 0
 
@@ -141,7 +145,7 @@ Shader "AllIn13DShader/AllIn13DShaderOutline"
 		[EffectProperty(GREYSCALE)][KeywordEnum(BeforeLighting, AfterLighting)] _GreyScaleStage("Stage", Float) = 0
 		[EffectProperty(GREYSCALE)] _GreyscaleLuminosity("Luminosity", Range(-1, 1)) = 0 
 		[EffectProperty(GREYSCALE)] _GreyscaleTintColor("Greyscale Tint", Color) = (1.0, 1.0, 1.0, 1.0)
-		[EffectProperty(GREYSCALE)] _GreyscaleBlend("Blend", Range(0, 1)) = 1
+		[EffectProperty(GREYSCALE)] _GreyscaleBlending("Blending", Range(0, 1)) = 1
     	
     	//Posterize
     	[Effect(EffectID# POSTERIZE, GroupID# ColorEffects)][Toggle(_POSTERIZE_ON)]_Posterize("Posterize", Float) = 0
@@ -177,7 +181,9 @@ Shader "AllIn13DShader/AllIn13DShaderOutline"
 		[Effect(EffectID# VERTEX_DISTORTION, GroupID# MeshEffects)][Toggle(_VERTEX_DISTORTION_ON)]_VertexDistortionOn("Vertex Distortion", Float) = 0
 		[EffectProperty(VERTEX_DISTORTION)]_VertexDistortionNoiseTex("Noise Tex", 2D) = "white" {}
 		[EffectProperty(VERTEX_DISTORTION)]_VertexDistortionAmount("Distortion Amount", Range(0, 2)) = 0
-		[EffectProperty(VERTEX_DISTORTION)][Vector2]_VertexDistortionNoiseSpeed("Scroll Speed", Vector) = (4.0, 4.0, 0, 0)
+		[EffectProperty(VERTEX_DISTORTION)]_VertexDistortionNoiseSpeedX("Scroll Speed X", Range(-10, 10)) = 4.0
+		[EffectProperty(VERTEX_DISTORTION)]_VertexDistortionNoiseSpeedY("Scroll Speed Y", Range(-10, 10)) = 4.0
+
     	
     	//Voxelize
     	[Effect(EffectID# VOXELIZE, GroupID# MeshEffects)][Toggle(_VOXELIZE_ON)] _Voxelize("Voxelize", Float) = 0
@@ -278,8 +284,11 @@ Shader "AllIn13DShader/AllIn13DShaderOutline"
 		[NoScaleOffset][EffectProperty(TRIPLANAR_MAPPING)]_TriplanarTopNormalMap("Top Normal Map", 2D) = "bump" {}
 		[EffectProperty(TRIPLANAR_MAPPING)]_TopNormalStrength("Top Normal Map Strength", Range(0.0, 10.0)) = 1.0
 		[EffectProperty(TRIPLANAR_MAPPING)]_FaceDownCutoff("Face Down Cutoff", Range(-1, 1)) = 0.25
-		[EffectProperty(TRIPLANAR_MAPPING)]_TriplanarSharpness("Sharpness", Range(1, 64)) = 15.0
-		
+		[EffectProperty(TRIPLANAR_MAPPING)]_TriplanarSharpness("Sharpness", Range(1, 200)) = 15.0
+		[EffectProperty(TRIPLANAR_MAPPING)][Toggle(_TRIPLANAR_NOISE_TRANSITION_ON)]_TriplanarNoiseTransitionOn("Noise Transition", Float) = 0
+		[EffectProperty(ParentEffect# TRIPLANAR_MAPPING, Keywords(_TRIPLANAR_NOISE_TRANSITION_ON), AllowReset# True)] _TriplanarNoiseTex("Noise Tex (RGB)", 2D) = "white" {}
+		[EffectProperty(ParentEffect# TRIPLANAR_MAPPING, Keywords(_TRIPLANAR_NOISE_TRANSITION_ON), AllowReset# True)] _TriplanarTransitionPower("Transition Power", Range(0, 1.0)) = 0.75
+
 		//Texture Blending
 		[Effect(EffectID# TEXTURE_BLENDING, GroupID# ColorEffects, CustomDrawer# TEXTURE_BLENDING_EFFECT_DRAWER)][Toggle(_TEXTURE_BLENDING_ON)]_TextureBlending ("Texture Blending", Float) = 0
 		[EffectProperty(TEXTURE_BLENDING)][KeywordEnum(VertexColor, Texture)]_TextureBlendingSource("Source", Float) = 0
@@ -318,6 +327,7 @@ Shader "AllIn13DShader/AllIn13DShaderOutline"
 		//Fade
 		[Effect(EffectID# FADE, GroupID# AlphaEffects)][Toggle(_FADE_ON)]_FadeOn("Fade", Float) = 0
 		[EffectProperty(FADE)]_FadeTex("Fade Tex", 2D) = "white" {}
+		[EffectProperty(FADE)][KeywordEnum(UV1, UV2, WORLD_SPACE)]_FadeUVSet("UV Set", Float) = 0
 		[EffectProperty(FADE)]_FadeAmount("Fade Amount", Range(0, 1)) = 0.0
 		[EffectProperty(FADE)]_FadePower("Fade Power", Range(0.25, 4.0)) = 1.0
 		[EffectProperty(FADE)]_FadeTransition("Fade Transition", Range(0, 0.4)) = 0.2
@@ -735,7 +745,7 @@ Shader "AllIn13DShader/AllIn13DShaderOutline"
 			#pragma multi_compile_fog
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ DOTS_INSTANCING_ON
-			
+
             #pragma vertex BasicVertex
             #pragma fragment BasicFragmentAdd
 

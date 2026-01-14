@@ -1,18 +1,15 @@
 using System;
-using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Infastructure.Services.GeneratorLaunchTracker;
 using Infastructure.Services.Window;
-using R3;
 using UnityEngine;
 using Zenject;
 
-namespace Common
+namespace Common.Biosphere
 {
-    public class BiosphereWin : MonoBehaviour, ICheckpointInfo
+    public class BiosphereCheckpointIndicator : MonoBehaviour, ICheckpointInfo
     {
-        [SerializeField] private BiosphereFx _biosphereFx;
         [SerializeField] private ObserverTrigger _observerTrigger;
         [SerializeField] private Transform _glassTransform;
         [SerializeField] private Transform _pickUpDisplayPoint;
@@ -20,9 +17,6 @@ namespace Common
         public Transform PickupDisplayPoint => _pickUpDisplayPoint;
         public Vector3 FlowerPutdownPosition => _flowerPutdownPoint.position;
         public Quaternion FlowerPutdownRotation => _flowerPutdownPoint.rotation;
-
-        private readonly float _launchOffset = 0.25f;
-        private readonly CompositeDisposable _disposable = new CompositeDisposable();
 
         private IGeneratorLaunchTrackerService _generatorLaunchTrackerService;
 
@@ -33,29 +27,14 @@ namespace Common
 
 
         [Inject]
-        public void Construct(IGeneratorLaunchTrackerService generatorLaunchTrackerService,
-            IWindowService windowService)
-        {
+        public void Construct(IWindowService windowService) =>
             _windowService = windowService;
-            _generatorLaunchTrackerService = generatorLaunchTrackerService;
-        }
-
-        private void Awake()
-        {
-            _generatorLaunchTrackerService.OnLaunchHappened
-                .Subscribe(_ => GeneratorLaunched())
-                .AddTo(_disposable);
-        }
 
         private void Start() =>
             _observerTrigger.OnTriggerEnterHappened += TriggerEnter;
 
-        private void OnDestroy()
-        {
-            _disposable.Dispose();
-
+        private void OnDestroy() =>
             _observerTrigger.OnTriggerEnterHappened -= TriggerEnter;
-        }
 
         public void StartFlowerPutdown()
         {
@@ -73,12 +52,6 @@ namespace Common
             RotateGlass(0);
         }
 
-        private void GeneratorLaunched()
-        {
-            _summary += _launchOffset;
-
-            _biosphereFx.ShowFx(_summary);
-        }
 
         private void RotateGlass(float angle)
         {

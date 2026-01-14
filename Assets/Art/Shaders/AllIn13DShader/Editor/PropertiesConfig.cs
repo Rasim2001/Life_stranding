@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
@@ -138,10 +137,10 @@ namespace AllIn13DShader
 					res.AddIncompatibleKeyword(incompatibleKw);
 				}
 
-				string strAllowReset = matchCollection[0].Groups[5].Value.ToUpper();
+				string strAllowReset = matchCollection[0].Groups[5].Value.ToUpperInvariant();
 				res.allowReset = strAllowReset == "TRUE";
 			
-				string strKeywordsOp = matchCollection[0].Groups[2].Value.ToUpper();
+				string strKeywordsOp = matchCollection[0].Groups[2].Value.ToUpperInvariant();
 				if (!string.IsNullOrEmpty(strKeywordsOp))
 				{
 					res.keywordsOp = strKeywordsOp == "AND" ? KeywordsOp.AND : KeywordsOp.OR;
@@ -203,11 +202,11 @@ namespace AllIn13DShader
 				string keyword = string.Empty;
 				if(matchSplitted.Length == 1)
 				{
-					keyword = $"{matchSplitted[i].ToUpper()}";
+					keyword = $"{matchSplitted[i].ToUpperInvariant()}";
 				}
 				else
 				{
-					keyword = $"_{effectName}_{matchSplitted[i].ToUpper()}";
+					keyword = $"_{effectName}_{matchSplitted[i].ToUpperInvariant()}";
 				}
 
 				res[i] = new EffectKeywordData(keyword, displayName);
@@ -227,7 +226,7 @@ namespace AllIn13DShader
 			res.groupID = match.Groups[2].Value.Trim();
 			res.dependentEffectID = match.Groups[4].Value.Trim();
 			res.incompatibleWithEffectID = match.Groups[5].Value.Trim();
-			res.docEnabled = match.Groups[6].Value.Trim().ToUpper() == "TRUE";
+			res.docEnabled = match.Groups[6].Value.Trim().ToUpperInvariant() == "TRUE";
 			res.drawerID = match.Groups[7].Value.Trim();
 
 			string extraPassesRaw = match.Groups[8].Value.Trim();

@@ -188,9 +188,9 @@ float3 DirectLighting(float3 objectColor, EffectsData effectsData, AllIn1LightDa
 	return res;
 }
 
-float3 DirectLighting(float3 objectColor, float2 ssaoFactor, EffectsData effectsData)
+float3 DirectLighting(float3 objectColor, float2 ssaoFactor, EffectsData effectsData, AllIn1GI gi)
 {
-	AllIn1LightData mainLightData = GetMainLightData(effectsData.vertexWS, effectsData);
+	AllIn1LightData mainLightData = GetMainLightData(effectsData.vertexWS, effectsData, gi);
 
 
 	float3 res = objectColor;
@@ -221,7 +221,7 @@ float3 DirectLighting(float3 objectColor, float2 ssaoFactor, EffectsData effects
 	#if USE_CLUSTER_LIGHT_LOOP
 	UNITY_LOOP for (uint lightIndex = 0; lightIndex < min(URP_FP_DIRECTIONAL_LIGHTS_COUNT, MAX_VISIBLE_LIGHTS); lightIndex++)
 	{
-		AllIn1LightData additionalLightData = GetPointLightData(lightIndex, effectsData.vertexWS, effectsData.normalWS, effectsData);
+		AllIn1LightData additionalLightData = GetPointLightData(lightIndex, effectsData.vertexWS, effectsData.normalWS, effectsData, gi);
 		#ifdef ALLIN1_USE_LIGHT_LAYERS
 		if (IsMatchingLightLayer(additionalLightData.layerMask, meshRenderingLayers))
 		{
@@ -235,7 +235,7 @@ float3 DirectLighting(float3 objectColor, float2 ssaoFactor, EffectsData effects
 	
 	uint numAdditionalLights = NUM_ADDITIONAL_LIGHTS;
 	LIGHT_LOOP_BEGIN_ALLIN13D(numAdditionalLights, effectsData)
-		AllIn1LightData additionalLightData = GetPointLightData(lightIndex, effectsData.vertexWS, effectsData.normalWS, effectsData);
+		AllIn1LightData additionalLightData = GetPointLightData(lightIndex, effectsData.vertexWS, effectsData.normalWS, effectsData, gi);
 	#ifdef ALLIN1_USE_LIGHT_LAYERS
 		if (IsMatchingLightLayer(additionalLightData.layerMask, meshRenderingLayers))
 		{
@@ -253,9 +253,9 @@ float3 DirectLighting(float3 objectColor, float2 ssaoFactor, EffectsData effects
 	return res;
 }
 
-float3 IndirectLighting_Basic(float3 objectColor, float3 lightmap, float2 ssaoFactor, EffectsData effectsData)
+float3 IndirectLighting_Basic(float3 objectColor, float2 ssaoFactor, EffectsData effectsData, AllIn1GI gi)
 {
-	float3 ambientColor = GetAmbientColor(effectsData);
+	//float3 ambientColor = GetAmbientColor(effectsData);
 
 	float3 ao = 1.0;
 
@@ -264,7 +264,7 @@ float3 IndirectLighting_Basic(float3 objectColor, float3 lightmap, float2 ssaoFa
 	reflections = GetSkyColor(effectsData.vertexWS, effectsData.normalizedScreenSpaceUV, effectsData.normalWS, effectsData.viewDirWS, 1.0);
 #endif
 	
-	float3 indirectLighting = (ambientColor + lightmap) * objectColor;
+	float3 indirectLighting = /*(ambientColor + lightmap)*/gi.diffuse * objectColor;
 	indirectLighting += reflections;
 
 	indirectLighting *= ssaoFactor.y;
@@ -272,17 +272,17 @@ float3 IndirectLighting_Basic(float3 objectColor, float3 lightmap, float2 ssaoFa
 	return indirectLighting;
 }
 
-float3 CalculateLighting_Basic(float3 objectColor, float3 lightmap, float alpha, EffectsData effectsData)
+float3 CalculateLighting_Basic(float3 objectColor, float alpha, EffectsData effectsData, AllIn1GI gi)
 {
-	float2 ssaoFactor = GetSSAO(effectsData.normalizedScreenSpaceUV.xy, alpha);
+	float2 ssaoFactor = GetSSAO(effectsData.normalizedScreenSpaceUV.xy, alpha); 
 
-	float3 directLighting = DirectLighting(objectColor, ssaoFactor, effectsData);
+	float3 directLighting = DirectLighting(objectColor, ssaoFactor, effectsData, gi);
 	
 	
 	float3 indirectLighting = 0;	
 	//We add IndirectLighting only once
 #ifndef FORWARD_ADD_PASS
-	indirectLighting = IndirectLighting_Basic(objectColor, lightmap, ssaoFactor, effectsData);
+	indirectLighting = IndirectLighting_Basic(objectColor, ssaoFactor, effectsData, gi);
 	
 	#ifdef _AOMAP_ON
 		float3 aoMapValue = GetAOMapTerm(effectsData.mainUV);
@@ -300,10 +300,10 @@ float3 CalculateLighting_MetallicWorkflow(
 	float3 vertexWS, 
 	float3 normalWS, float3 tangentWS, float3 bitangentWS, 
 	float3 objectColor, float alpha,
-	float3 shadows, float3 lightmap, float3 ambientCol, float3 viewDirWS, 
-	float2 mainUV, FragmentData fragmentData, EffectsData effectsData)
+	float3 shadows, float3 ambientCol, float3 viewDirWS, 
+	float2 mainUV, FragmentData fragmentData, EffectsData effectsData, AllIn1GI gi)
 {
-	float3 res = CalculateLighting_PBR(objectColor, lightmap, alpha, effectsData);
+	float3 res = CalculateLighting_PBR(objectColor, alpha, effectsData, gi);
 
 	return res;
 }
@@ -313,10 +313,11 @@ float3 CalculateLighting_MetallicWorkflow(
 float3 CalculateLighting(float3 vertexWS, 
 	float3 normalWS, float3 tangentWS, float3 bitangentWS, 
 	float3 objectColor, float alpha,
-	float shadows, float3 lightmap, float3 ambientCol, float3 viewDirWS, 
+	float shadows, float3 ambientCol, float3 viewDirWS, 
 	float2 mainUV,
 	float3 lightColor, float3 lightDir,
-	FragmentData fragmentData, float lightAtten, EffectsData effectsData)
+	FragmentData fragmentData, float lightAtten, EffectsData effectsData, 
+	AllIn1GI gi)
 {
 #ifdef _CUSTOM_SHADOW_COLOR_ON
 	float3 shadowColor = lerp(1.0, global_shadowColor, 1 - shadows);
@@ -326,16 +327,17 @@ float3 CalculateLighting(float3 vertexWS,
 	
 	float3 res = 0;
 #ifdef _LIGHTMODEL_FASTLIGHTING
-	res = CalculateLighting_Basic(objectColor, lightmap, alpha, effectsData);
+	res = CalculateLighting_Basic(objectColor, alpha, effectsData, gi);
 #else
 	#ifdef _SHADINGMODEL_PBR
-		res = CalculateLighting_MetallicWorkflow(vertexWS, normalWS, tangentWS, 
-			bitangentWS, objectColor, alpha, shadowColor, 
-			lightmap, ambientCol, 
-			viewDirWS, mainUV, 
-			fragmentData, effectsData);
+		res = CalculateLighting_MetallicWorkflow(
+			vertexWS, 
+			normalWS, tangentWS, bitangentWS, 
+			objectColor, alpha, 
+			shadowColor, ambientCol, viewDirWS, 
+			mainUV, fragmentData, effectsData, gi);
 	#else
-		res = CalculateLighting_Basic(objectColor, lightmap, alpha, effectsData);
+		res = CalculateLighting_Basic(objectColor, alpha, effectsData, gi);
 	#endif
 #endif
 	

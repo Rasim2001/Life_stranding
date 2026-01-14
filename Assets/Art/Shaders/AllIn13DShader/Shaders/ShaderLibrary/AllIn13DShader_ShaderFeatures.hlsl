@@ -1,7 +1,6 @@
 #ifndef ALLIN13DSHADER_SHADERFEATURES_
 #define ALLIN13DSHADER_SHADERFEATURES_
 
-#pragma shader_feature_local _FOG_ON
 #pragma shader_feature_local _LIGHTMODEL_NONE
 #pragma shader_feature_local _LIGHTMODEL_CLASSIC
 #pragma shader_feature_local _LIGHTMODEL_TOON
@@ -69,8 +68,6 @@
 #pragma shader_feature_local _SUBSURFACE_SCATTERING_ON
 #pragma shader_feature_local _ALPHA_CUTOFF_ON
 #pragma shader_feature_local _FADE_ON
-#pragma shader_feature_local _FADEUVSET_UV1 
-#pragma shader_feature_local _FADEUVSET_UV2
 #pragma shader_feature_local _FADE_BURN_ON
 #pragma shader_feature_local _INTERSECTION_FADE_ON
 #pragma shader_feature_local _ALPHA_ROUND_ON
@@ -96,6 +93,7 @@
 #pragma shader_feature_local _OUTLINETYPE_SIMPLE
 #pragma shader_feature_local _OUTLINETYPE_CONSTANT
 #pragma shader_feature_local _OUTLINETYPE_FADEWITHDISTANCE
+#pragma shader_feature_local _FOG_ON
 
 
 #endif //ALLIN13DSHADER_SHADERFEATURES_
