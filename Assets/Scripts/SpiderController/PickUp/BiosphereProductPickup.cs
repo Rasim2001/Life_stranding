@@ -1,5 +1,6 @@
 using System.Linq;
 using Common;
+using Common.Biosphere;
 using Infastructure.Common.Pickup;
 using Infastructure.Services.PlayerInput;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
@@ -48,14 +49,14 @@ namespace SpiderController.PickUp
         {
             foreach (Collider collider in _biosphereChecker.Results)
             {
-                if (collider.TryGetComponent(out BiosphereWin biosphereWin) && _flower.IsPuttingDown == false)
+                if (collider.TryGetComponent(out BiosphereCheckpointIndicator biosphereWin) && _flower.IsPuttingDown == false)
                     _pickupDisplayer.Show(biosphereWin.PickupDisplayPoint);
             }
         }
 
         private void Hide(Collider obj)
         {
-            if (obj.TryGetComponent(out BiosphereWin biosphereWin))
+            if (obj.TryGetComponent(out BiosphereCheckpointIndicator biosphereWin))
                 _pickupDisplayer.Hide(biosphereWin.PickupDisplayPoint);
         }
 
@@ -66,11 +67,11 @@ namespace SpiderController.PickUp
             if (biosphere == null)
                 return;
 
-            BiosphereWin biosphereWin = biosphere.GetComponent<BiosphereWin>();
-            biosphereWin.StartFlowerPutdown();
+            BiosphereCheckpointIndicator biosphereCheckpointIndicator = biosphere.GetComponent<BiosphereCheckpointIndicator>();
+            biosphereCheckpointIndicator.StartFlowerPutdown();
 
-            _flower.Putdown(biosphereWin);
-            _pickupDisplayer.Hide(biosphereWin.PickupDisplayPoint);
+            _flower.Putdown(biosphereCheckpointIndicator);
+            _pickupDisplayer.Hide(biosphereCheckpointIndicator.PickupDisplayPoint);
         }
     }
 }
