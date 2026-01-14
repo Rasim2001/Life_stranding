@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Infastructure.CutScenes;
 using Infastructure.CutScenes.FlowerPickupCutscene;
@@ -20,6 +21,8 @@ namespace Infastructure.Services.CutScene
 
         private ICutSceneRunner _cutSceneRunner;
 
+        private CancellationTokenSource _currentCts;
+
         public bool IsActive
         {
             get => _isActive;
@@ -33,6 +36,7 @@ namespace Infastructure.Services.CutScene
         }
 
         private bool _isActive;
+        private GameObject _cutSceneObject;
 
         public CutSceneService(IStaticDataService staticDataService, DiContainer diContainer)
         {
@@ -41,32 +45,81 @@ namespace Infastructure.Services.CutScene
         }
 
 
-        public async UniTask StartCutsceneAsync(CutsceneId cutsceneId)
+        public async UniTask StartCutsceneAsync(CutsceneId cutsceneId, CancellationToken ct = default)
         {
+            CancelCurrent();
+
             CutsceneId = cutsceneId;
 
-            GameObject prefab = _staticDataService.CutScenesStaticData.Cutscenes
-                .First(x => x.Key == cutsceneId).Value;
+            _currentCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
 
-            GameObject cutSceneObject = _diContainer.InstantiatePrefab(prefab);
-            _cutSceneRunner = cutSceneObject.GetComponent<ICutSceneRunner>();
+            CancellationToken linkedToken = _currentCts.Token;
 
-            await Run();
+            try
+            {
+                linkedToken.ThrowIfCancellationRequested();
 
-            Object.Destroy(cutSceneObject);
+                GameObject prefab = _staticDataService.CutScenesStaticData.Cutscenes
+                    .First(x => x.Key == cutsceneId).Value;
+
+                _cutSceneObject = _diContainer.InstantiatePrefab(prefab);
+                _cutSceneRunner = _cutSceneObject.GetComponent<ICutSceneRunner>();
+
+                await Run(linkedToken);
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("Cutscene canceled");
+            }
+            catch (Exception e)
+            {
+                Debug.Log($"Cutscene canceled : {e.Message}");
+            }
+            finally
+            {
+                CleanupCutsceneObject();
+
+                IsActive = false;
+
+                _currentCts?.Dispose();
+                _currentCts = null;
+            }
+
+            Object.Destroy(_cutSceneObject);
         }
 
-        public void StartCutscene()
+        private void CancelCurrent()
         {
-            Run().Forget();
+            if (_currentCts == null)
+                return;
+
+            try
+            {
+                _currentCts.Cancel();
+            }
+            catch
+            {
+                // TODO:
+            }
         }
 
-        private async UniTask Run()
+        private void CleanupCutsceneObject()
+        {
+            _cutSceneRunner = null;
+
+            if (_cutSceneObject != null)
+            {
+                Object.Destroy(_cutSceneObject);
+                _cutSceneObject = null;
+            }
+        }
+
+        private async UniTask Run(CancellationToken linkedToken)
         {
             IsActive = true;
 
-            await _cutSceneRunner.PlayAsync();
-            await UniTask.Delay(TimeSpan.FromSeconds(_cutSceneRunner.BlendingTime));
+            await _cutSceneRunner.PlayAsync(linkedToken);
+            await UniTask.Delay(TimeSpan.FromSeconds(_cutSceneRunner.BlendingTime), cancellationToken: linkedToken);
 
             IsActive = false;
         }

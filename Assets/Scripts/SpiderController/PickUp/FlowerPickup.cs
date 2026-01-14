@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Infastructure.Common.Pickup;
 using Infastructure.CutScenes;
@@ -34,7 +35,9 @@ namespace SpiderController.PickUp
         private HealthBarUI HealthBar => _spiderUI.HealthBar;
         private SpiderHealth SpiderHealth => _spiderUI.SpiderHealth;
 
-        private bool _isFirstTime;
+        private bool _isFirstTime = true;
+
+        private CancellationTokenSource _lifetimeCts;
 
         public FlowerPickup(
             IInputService inputService,
@@ -62,10 +65,12 @@ namespace SpiderController.PickUp
 
         public void Initialize()
         {
-            _isFirstTime = true;
-
             _flower.OnDroppedFromPlatform += DropFlowerHappened;
             _flower.OnGroundTriggered += GroundTriggered;
+
+            _lifetimeCts?.Cancel();
+            _lifetimeCts?.Dispose();
+            _lifetimeCts = new CancellationTokenSource();
 
             HealthBar.PlayFadeHologramEffect();
         }
@@ -76,6 +81,10 @@ namespace SpiderController.PickUp
 
             _flower.OnGroundTriggered -= GroundTriggered;
             _flower.OnDroppedFromPlatform -= DropFlowerHappened;
+
+            _lifetimeCts?.Cancel();
+            _lifetimeCts?.Dispose();
+            _lifetimeCts = null;
         }
 
         public void Update()
@@ -113,14 +122,18 @@ namespace SpiderController.PickUp
             HealthBar.ShowHologram();
         }
 
-        private void GroundTriggered() => 
+        private void GroundTriggered() =>
             SpiderHealth.TakeDamage(_spiderStaticData.DamageAmount);
 
         private async UniTask PickupFlow()
         {
             _isFirstTime = false;
 
-            await _cutSceneService.StartCutsceneAsync(CutsceneId.FlowerPickupCutscene);
+            CancellationToken token = _lifetimeCts.Token;
+
+            await _cutSceneService.StartCutsceneAsync(CutsceneId.FlowerPickupCutscene, _lifetimeCts.Token);
+
+            token.ThrowIfCancellationRequested();
 
             _windowService.OpenProductDescriptionPopup(ProductType.Flower);
 

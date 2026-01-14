@@ -262,7 +262,7 @@ namespace SpiderController
             _checkpointPickup.Initialize();
 
             _generatorPickup = new GeneratorPickup(_hintReceiverService, _inputService, _pickupDisplayer,
-                _platformObjectsService, _windowService, _generatorChecker);
+                _platformObjectsService, _windowService, _cutSceneService, _generatorChecker);
             _generatorPickup.Initialize();
 
             _biosphereProductPickup =
