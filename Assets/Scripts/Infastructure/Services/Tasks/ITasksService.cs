@@ -1,9 +1,9 @@
 using System;
 using UI;
 
-namespace Infastructure.Services.TaskPopupChecker
+namespace Infastructure.Services.Tasks
 {
-    public interface ITaskPopupCheckerService
+    public interface ITasksService
     {
         void AddTask(TaskId taskId);
         bool IsWasOpened(TaskId taskId);

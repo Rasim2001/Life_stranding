@@ -4,7 +4,7 @@ using Infastructure.Services.Ability;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Restart;
 using Infastructure.Services.StartGame;
-using Infastructure.Services.TaskPopupChecker;
+using Infastructure.Services.Tasks;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
 using Infastructure.StaticData.Task;
@@ -30,18 +30,18 @@ namespace Infastructure.Services.Window
         private readonly UIGameplayRootViewModel _gamePlayViewModel;
         private readonly IStaticDataService _staticDataService;
         private readonly IAbilityService _abilityService;
-        private readonly ITaskPopupCheckerService _taskPopupCheckerService;
+        private readonly ITasksService _tasksService;
         private readonly ICutSceneService _cutSceneService;
         private readonly IRestartService _restartService;
         private IStartGameReceiver _startGameReceiver;
 
         public WindowService(UIGameplayRootViewModel gamePlayViewModel, IStaticDataService staticDataService,
-            IAbilityService abilityService, ITaskPopupCheckerService taskPopupCheckerService,
+            IAbilityService abilityService, ITasksService tasksService,
             ICutSceneService cutSceneService, IRestartService restartService, IStartGameReceiver startGameReceiver)
         {
             _startGameReceiver = startGameReceiver;
             _abilityService = abilityService;
-            _taskPopupCheckerService = taskPopupCheckerService;
+            _tasksService = tasksService;
             _cutSceneService = cutSceneService;
             _restartService = restartService;
             _staticDataService = staticDataService;
@@ -112,10 +112,10 @@ namespace Infastructure.Services.Window
 
         public void OpenTaskPopup(TaskId taskId)
         {
-            if (_taskPopupCheckerService.IsWasOpened(taskId))
+            if (_tasksService.IsWasOpened(taskId))
                 return;
 
-            _taskPopupCheckerService.AddTask(taskId);
+            _tasksService.AddTask(taskId);
 
             TaskData taskData = _staticDataService.TasksStaticData.TaskDatas[taskId];
             TaskPopupViewModel model = new TaskPopupViewModel(taskData);

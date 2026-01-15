@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Common;
 using HighlightPlus;
 using HUD;
@@ -12,6 +13,7 @@ using Infastructure.StaticData.StaticDataService;
 using Infastructure.StaticData.XRay;
 using SpiderController.Platform;
 using SpiderController.StateMachine;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 using Zenject;
 
@@ -21,6 +23,7 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
     {
         [SerializeField] private LayerMask _groundLayer;
         [SerializeField] private GameObject[] _flowerVariants;
+        [SerializeField] private HighlightEffect _outlineEffect;
 
         public ProductType ProductType { get; set; }
 
@@ -41,6 +44,7 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
         private ISlowTimeRunner _slowTimeRunner;
 
         private bool _isInside;
+        private Coroutine _outlineCoroutine;
 
         [Inject]
         public void Construct(IStaticDataService staticDataService, ILastChanceQTEService lastChanceQteService,
@@ -97,11 +101,26 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
         {
             base.Update();
 
-            //_highlightEffect.SetHighlighted(IsOnPlatform && !PlatformSelector.IsInsideOfBlinkPlace(Collider));
+            if (!IsOnPlatform)
+                return;
+
+            if (PlatformSelector.IsInsideOfBlinkPlace(Collider))
+            {
+                StopCoroutine();
+
+                _outlineEffect.SetHighlighted(false);
+            }
+            else
+                _outlineCoroutine ??= StartCoroutine(OutlineCoroutineAnimation());
         }
 
-        private void OnDestroy() =>
+
+        private void OnDestroy()
+        {
+            StopCoroutine();
+
             _flowerSelector.Clear();
+        }
 
         public void ResetFlowerVariant() =>
             _flowerSelector.Reset();
@@ -187,6 +206,30 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             Collider.enabled = true;
 
             StopSimulatePhysics();
+        }
+
+
+        private void StopCoroutine()
+        {
+            if (_outlineCoroutine != null)
+            {
+                StopCoroutine(_outlineCoroutine);
+                _outlineCoroutine = null;
+            }
+        }
+
+        private IEnumerator OutlineCoroutineAnimation()
+        {
+            while (true)
+            {
+                _outlineEffect.SetHighlighted(true);
+
+                yield return new WaitForSeconds(0.1f);
+
+                _outlineEffect.SetHighlighted(false);
+
+                yield return new WaitForSeconds(0.1f);
+            }
         }
 
         private void StartSimulatePhysicsAfterPutdown()

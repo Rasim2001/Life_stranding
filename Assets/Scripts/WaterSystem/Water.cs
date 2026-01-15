@@ -3,7 +3,7 @@ using Infastructure.Services.Defeat;
 using Infastructure.Services.ProgressWatchers;
 using Infastructure.Services.SaveLoadService;
 using Infastructure.Services.SpiderTrack;
-using Infastructure.Services.TaskPopupChecker;
+using Infastructure.Services.Tasks;
 using Infastructure.StaticData.GlobalWater;
 using Infastructure.StaticData.StaticDataService;
 using UnityEngine;
@@ -14,7 +14,7 @@ namespace WaterSystem
     public class Water : MonoBehaviour, ISavedProgress
     {
         private ISpiderTrackService _trackService;
-        private ITaskPopupCheckerService _taskPopupCheckerService;
+        private ITasksService _tasksService;
         private IStaticDataService _staticDataService;
         private IDefeatWindowService _defeatWindowService;
         private IProgressWatchersService _progressWatchersService;
@@ -33,7 +33,7 @@ namespace WaterSystem
         [Inject]
         public void Construct(
             ISpiderTrackService trackService,
-            ITaskPopupCheckerService taskPopupCheckerService,
+            ITasksService tasksService,
             IStaticDataService staticDataService,
             IDefeatWindowService defeatWindowService,
             IProgressWatchersService progressWatchersService)
@@ -41,7 +41,7 @@ namespace WaterSystem
             _progressWatchersService = progressWatchersService;
             _defeatWindowService = defeatWindowService;
             _staticDataService = staticDataService;
-            _taskPopupCheckerService = taskPopupCheckerService;
+            _tasksService = tasksService;
             _trackService = trackService;
         }
 
@@ -50,7 +50,7 @@ namespace WaterSystem
 
         private void Start()
         {
-            _taskPopupCheckerService.AllTasksCompleted += AllTaskCompleted;
+            _tasksService.AllTasksCompleted += AllTaskCompleted;
             _trackService.OnFlowerInitialized += FlowerInitialize;
             _trackService.OnSpiderInitialized += SpiderInitialize;
 
@@ -74,7 +74,7 @@ namespace WaterSystem
 
             _progressWatchersService.Release(this);
 
-            _taskPopupCheckerService.AllTasksCompleted -= AllTaskCompleted;
+            _tasksService.AllTasksCompleted -= AllTaskCompleted;
         }
 
 
