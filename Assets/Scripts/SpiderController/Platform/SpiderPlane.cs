@@ -41,6 +41,8 @@ namespace SpiderController.Platform
         private Transform _cameraTransform;
 
         private float _returnTimer = 0;
+        private float _lastPositionX;
+        private bool _centerMouseHolding;
 
 
         public SpiderPlane(
@@ -93,10 +95,25 @@ namespace SpiderController.Platform
                 !_abilityService.IsExploredAbility(ProductType.Flower))
                 return;
 
-            if (_inputService.LeftMousePressed)
+            if (_inputService.CenterMousePressed)
+            {
+                _centerMouseHolding = true;
                 StartInput();
-            else if (_inputService.LeftMouseUp)
+            }
+            else if (_inputService.CenterMouseUp)
+            {
+                _centerMouseHolding = false;
                 ReleaseInput();
+            }
+
+            if (!_centerMouseHolding)
+            {
+                if (_inputService.LeftMousePressed)
+                    StartInput();
+                else if (_inputService.LeftMouseUp)
+                    ReleaseInput();
+            }
+
 
             if (_isMouseHold)
                 HandleMousePosition();
@@ -169,13 +186,19 @@ namespace SpiderController.Platform
             Vector2 mousePos = Input.mousePosition;
             Vector2 screenSize = new Vector2(Screen.width, Screen.height);
 
-            _mouseInput.x = -(mousePos.x - _initialMousePosition.x) / (screenSize.x / 2);
+            if (_centerMouseHolding)
+                _mouseInput.x = -(mousePos.x - _initialMousePosition.x - _lastPositionX) / (screenSize.x / 2);
+            else
+                _mouseInput.x = -(mousePos.x - _initialMousePosition.x) / (screenSize.x / 2);
+
             _mouseInput.y = -(mousePos.y - _initialMousePosition.y) / (screenSize.y / 2);
 
             _mouseInput = Vector2.ClampMagnitude(_mouseInput, 1f);
             _mouseInput *= SpiderStaticData.PlaneSensitivity;
 
             _mouseInput = ConvertInputFromCameraToSpiderSpace(_mouseInput);
+
+            _lastPositionX = mousePos.x - _initialMousePosition.x;
         }
 
         private void HandleJoystickPosition()
@@ -202,7 +225,10 @@ namespace SpiderController.Platform
             float targetAngleZ = Mathf.Clamp(_mouseInput.x * SpiderStaticData.MaxAngle, -SpiderStaticData.MaxAngle,
                 SpiderStaticData.MaxAngle);
 
-            Quaternion targetLocalRotation = Quaternion.Euler(targetAngleX, 0f, targetAngleZ);
+            Vector3 targetLocalEulerAngles = new Vector3(targetAngleX, 0, targetAngleZ);
+            Debug.DrawRay(_rotationPlaneTransform.position, targetLocalEulerAngles * 2, Color.black);
+
+            Quaternion targetLocalRotation = Quaternion.Euler(targetLocalEulerAngles);
 
             RotateTo(targetLocalRotation);
         }
@@ -253,6 +279,11 @@ namespace SpiderController.Platform
 
             spiderForward.Normalize();
             cameraForward.Normalize();
+
+            Vector3 origin = _rotationPlaneTransform.position;
+
+            Debug.DrawRay(origin, cameraForward * 2f, Color.red);
+            Debug.DrawRay(origin, spiderForward * 2f, Color.blue);
 
             float signedAngle = Vector3.SignedAngle(cameraForward, spiderForward, up);
             float rad = signedAngle * Mathf.Deg2Rad;

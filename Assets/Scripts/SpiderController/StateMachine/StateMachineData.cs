@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using UnityEngine;
 
 namespace SpiderController.StateMachine
@@ -31,6 +32,7 @@ namespace SpiderController.StateMachine
         public Vector3 ExplosionAngularVector;
         public Vector3 LastValidGroundPosition;
         public Quaternion LastValidGroundRotation;
+        public bool IsInAimingState;
 
         public float RotationAmount;
 

@@ -9,6 +9,7 @@ using PickupObjects.PickUpOnPlatform;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Airborn;
+using SpiderController.StateMachine.States.Ground.Aiming;
 using SpiderController.TriggerChecker;
 using UnityEngine;
 
@@ -60,6 +61,14 @@ namespace SpiderController.StateMachine.States.Ground
 
             if (IsNotMoveableLayer())
                 return;
+
+            if (InputService.CenterMousePressed)
+            {
+                if (IsInputZero())
+                    StateMachine.SwitchState<AimIdlingState>();
+                else
+                    StateMachine.SwitchState<AimRunningState>();
+            }
 
             if (_groundChecker.IsTouchesWithLegs == false)
                 StateMachine.SwitchState<FallingWithControlState>();

@@ -10,5 +10,7 @@ namespace Infastructure.Services.Magnet
         void Initialize(StateMachineData stateMachineData);
         bool IsActive { get; }
         event Action<bool> OnFreezActiveChanged;
+        void FreezeForAiming();
+        void UnfreezeForAiming();
     }
 }

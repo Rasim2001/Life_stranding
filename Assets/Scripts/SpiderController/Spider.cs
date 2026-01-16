@@ -279,6 +279,8 @@ namespace SpiderController
                     _inputService,
                     _staticDataService,
                     _cutSceneService,
+                    _platformObjectsService,
+                    _stableWorldUp,
                     _legs,
                     flower,
                     energySystem);

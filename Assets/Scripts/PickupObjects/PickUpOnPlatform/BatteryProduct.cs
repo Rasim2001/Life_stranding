@@ -98,6 +98,14 @@ namespace PickupObjects.PickUpOnPlatform
             }
         }
 
+        public override void ThrowObject()
+        {
+            base.ThrowObject();
+
+            _stateMachineData.TotalWeight -= _productData.Weight;
+
+            _xRayService.Add(_xRayMarker);
+        }
 
         public override void StopSimulatePhysics()
         {
