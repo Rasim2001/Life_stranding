@@ -13,13 +13,12 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ALBEDOVERTEXCOLORMODE_REPLACE
-  - _ALLIN13D_SURFACE_TRANSPARENT
   - _ALPHA_ROUND_ON
   - _CAST_SHADOWS_ON
   - _COLORRAMPLIGHTINGSTAGE_BEFORELIGHTING
   - _GREYSCALESTAGE_BEFORELIGHTING
   - _HEIGHTGRADIENTPOSITIONSPACE_LOCAL
-  - _LIGHTMODEL_CLASSIC
+  - _LIGHTMODEL_TOON
   - _MATCAPBLENDMODE_MULTIPLY
   - _OUTLINETYPE_NONE
   - _RECEIVEDSHADOWSTYPE_CLASSIC
@@ -38,7 +37,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: 2000
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
@@ -199,14 +198,14 @@ Material:
     - _AlphaClip: 0
     - _AlphaCutoffOn: 0
     - _AlphaCutoffValue: 0.25
-    - _AlphaRoundOn: 1
+    - _AlphaRoundOn: 3
     - _AlphaToMask: 0
     - _AnisoShininess: 0.85
     - _Anisotropy: 0.45
     - _Blend: 0
-    - _BlendDst: 10
+    - _BlendDst: 0
     - _BlendModePreserveSpecular: 1
-    - _BlendSrc: 5
+    - _BlendSrc: 1
     - _BlendingMaskCutoffB: 0.1
     - _BlendingMaskCutoffG: 0.1
     - _BlendingMaskCutoffWhite: 0.15
@@ -279,7 +278,7 @@ Material:
     - _GreyscaleLuminosity: 0
     - _HalfLambertWrap: 1
     - _HandDrawn: 0
-    - _HandDrawnAmount: 10
+    - _HandDrawnAmount: 0
     - _HandDrawnSpeed: 5
     - _HardnessFakeGI: 0.75
     - _HeightGradientOn: 0
@@ -313,7 +312,7 @@ Material:
     - _IntersectionFadeFactor: 1
     - _IntersectionFadeOn: 0
     - _IntersectionGlowOn: 0
-    - _LightModel: 1
+    - _LightModel: 2
     - _LightmapColorCorrection: 0
     - _Matcap: 0
     - _MatcapBlend: 1
@@ -344,21 +343,21 @@ Material:
     - _PixelateSize: 32
     - _Posterize: 0
     - _PosterizeGamma: 0.75
-    - _PosterizeNumColors: 8
+    - _PosterizeNumColors: 1
     - _QueueOffset: 0
     - _RecalculateNormals: 0
     - _ReceiveShadows: 1
     - _ReceivedShadowsType: 0
     - _Reflections: 0
     - _ReflectionsAtten: 0.5
-    - _RenderPreset: 2
+    - _RenderPreset: 1
     - _RimAttenuation: 1
     - _RimLighting: 0
     - _RimLightingStage: 0
     - _SSSAtten: 1
     - _SSSFrontAtten: 0.3
     - _SSSFrontPower: 3
-    - _SSSPower: 0
+    - _SSSPower: 1
     - _ScaleWithCameraDistance: 0
     - _ScreenSpaceUVOn: 0
     - _ScrollTextureOn: 0
@@ -423,7 +422,7 @@ Material:
     - _WindVerticalMaskMinY: -1
     - _WorkflowMode: 1
     - _ZTestMode: 4
-    - _ZWrite: 0
+    - _ZWrite: 1
     m_Colors:
     - _AOColor: {r: 0, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
