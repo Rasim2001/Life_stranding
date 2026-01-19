@@ -33,6 +33,7 @@ using SpiderController.Scanner;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine;
 using SpiderController.Thruster;
+using SpiderController.Trajectory;
 using SpiderController.TriggerChecker;
 using SpiderController.UI.Health;
 using SpiderController.UI.Stickers;
@@ -57,6 +58,7 @@ namespace SpiderController
         [SerializeField] private BiosphereChecker _biosphereChecker;
         [SerializeField] private ObserverTrigger _waterObserverTrigger;
         [SerializeField] private BodyOrientation _bodyOrientation;
+        [SerializeField] private TrajectoryRender _trajectoryRender;
 
         [SerializeField] private Stickers _stickers;
 
@@ -229,7 +231,7 @@ namespace SpiderController
 
             _spiderPlane = new SpiderPlane(_spiderUI.PlaneIndicatorUI, _rotationPlaneTransform, _inputService,
                 _abilityService, _staticDataService, _windowService, _cameraProviderService, _stableWorldUp,
-                _stateMachineData);
+                _stateMachineData, _trajectoryRender);
             _spiderPlane.Initialize();
 
             _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _platformObjectsService, _windowService,
@@ -279,6 +281,8 @@ namespace SpiderController
                     _inputService,
                     _staticDataService,
                     _cutSceneService,
+                    _platformObjectsService,
+                    _stableWorldUp,
                     _legs,
                     flower,
                     energySystem);

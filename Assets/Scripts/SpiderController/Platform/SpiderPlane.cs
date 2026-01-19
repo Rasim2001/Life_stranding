@@ -8,6 +8,7 @@ using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
 using SpiderController.StateMachine;
+using SpiderController.Trajectory;
 using SpiderController.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -24,6 +25,7 @@ namespace SpiderController.Platform
         private readonly ICameraProviderService _cameraProviderService;
         private readonly IStableWorldUp _stableWorldUp;
         private readonly StateMachineData _stateMachineData;
+        private readonly TrajectoryRender _trajectoryRender;
         private readonly PressedMouseButtonIndicatorUI _pressedMouseButtonIndicatorUI;
         private readonly Transform _rotationPlaneTransform;
         private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
@@ -41,10 +43,11 @@ namespace SpiderController.Platform
         private Transform _cameraTransform;
 
         private float _returnTimer = 0;
+        private float _lastPositionX;
+        private bool _centerMouseHolding;
 
 
-        public SpiderPlane(
-            PressedMouseButtonIndicatorUI pressedMouseButtonIndicatorUI,
+        public SpiderPlane(PressedMouseButtonIndicatorUI pressedMouseButtonIndicatorUI,
             Transform rotationPlaneTransform,
             IInputService inputService,
             IAbilityService abilityService,
@@ -52,7 +55,8 @@ namespace SpiderController.Platform
             IWindowService windowService,
             ICameraProviderService cameraProviderService,
             IStableWorldUp stableWorldUp,
-            StateMachineData stateMachineData)
+            StateMachineData stateMachineData,
+            TrajectoryRender trajectoryRender)
         {
             _windowService = windowService;
             _cameraProviderService = cameraProviderService;
@@ -63,6 +67,7 @@ namespace SpiderController.Platform
             _pressedMouseButtonIndicatorUI = pressedMouseButtonIndicatorUI;
             _rotationPlaneTransform = rotationPlaneTransform;
             _stateMachineData = stateMachineData;
+            _trajectoryRender = trajectoryRender;
         }
 
         public void Initialize()
@@ -75,6 +80,7 @@ namespace SpiderController.Platform
             _inputService.OnJoystickDisableHappend += DisableJoystick;
 
             _stateMachineData.OnFallingDownStateChanged += OnFallingDownStateEnter;
+            _stateMachineData.AimingStateChanged += OnAimingStateChanged;
         }
 
         public void Destroy()
@@ -93,10 +99,22 @@ namespace SpiderController.Platform
                 !_abilityService.IsExploredAbility(ProductType.Flower))
                 return;
 
-            if (_inputService.LeftMousePressed)
-                StartInput();
-            else if (_inputService.LeftMouseUp)
-                ReleaseInput();
+            if (_inputService.CenterMousePressed)
+                OnCenterMouseHoldStarted();
+            else if (_inputService.CenterMouseUp)
+                OnCenterMouseHoldEnded();
+
+            if (_centerMouseHolding)
+                _trajectoryRender.FollowTrajectory(_rotationPlaneTransform.position, _rotationPlaneTransform.up * 10);
+
+            if (!_centerMouseHolding)
+            {
+                if (_inputService.LeftMousePressed)
+                    StartInput();
+                else if (_inputService.LeftMouseUp)
+                    ReleaseInput();
+            }
+
 
             if (_isMouseHold)
                 HandleMousePosition();
@@ -112,6 +130,28 @@ namespace SpiderController.Platform
                 if (_joystickInputSource.IsRotationButtonPressed == false && _waitTimeJoystick > 0)
                     HandleJoystickPosition();
             }
+        }
+
+        private void OnAimingStateChanged()
+        {
+            if (_stateMachineData.IsInAimingState == false)
+                OnCenterMouseHoldEnded();
+        }
+
+        private void OnCenterMouseHoldStarted()
+        {
+            _centerMouseHolding = true;
+
+            _trajectoryRender.Show();
+            StartInput();
+        }
+
+        private void OnCenterMouseHoldEnded()
+        {
+            _centerMouseHolding = false;
+
+            _trajectoryRender.Hide();
+            ReleaseInput();
         }
 
         private void ReleaseInput()
@@ -169,13 +209,19 @@ namespace SpiderController.Platform
             Vector2 mousePos = Input.mousePosition;
             Vector2 screenSize = new Vector2(Screen.width, Screen.height);
 
-            _mouseInput.x = -(mousePos.x - _initialMousePosition.x) / (screenSize.x / 2);
+            if (_centerMouseHolding)
+                _mouseInput.x = -(mousePos.x - _initialMousePosition.x - _lastPositionX) / (screenSize.x / 2);
+            else
+                _mouseInput.x = -(mousePos.x - _initialMousePosition.x) / (screenSize.x / 2);
+
             _mouseInput.y = -(mousePos.y - _initialMousePosition.y) / (screenSize.y / 2);
 
             _mouseInput = Vector2.ClampMagnitude(_mouseInput, 1f);
             _mouseInput *= SpiderStaticData.PlaneSensitivity;
 
             _mouseInput = ConvertInputFromCameraToSpiderSpace(_mouseInput);
+
+            _lastPositionX = mousePos.x - _initialMousePosition.x;
         }
 
         private void HandleJoystickPosition()
@@ -202,7 +248,8 @@ namespace SpiderController.Platform
             float targetAngleZ = Mathf.Clamp(_mouseInput.x * SpiderStaticData.MaxAngle, -SpiderStaticData.MaxAngle,
                 SpiderStaticData.MaxAngle);
 
-            Quaternion targetLocalRotation = Quaternion.Euler(targetAngleX, 0f, targetAngleZ);
+            Vector3 targetLocalEulerAngles = new Vector3(targetAngleX, 0, targetAngleZ);
+            Quaternion targetLocalRotation = Quaternion.Euler(targetLocalEulerAngles);
 
             RotateTo(targetLocalRotation);
         }

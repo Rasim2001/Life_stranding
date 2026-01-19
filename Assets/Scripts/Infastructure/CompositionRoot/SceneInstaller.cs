@@ -1,6 +1,7 @@
 using Infastructure.Common;
 using Infastructure.Common.Pickup;
 using Infastructure.Common.StableWorlUpManagement;
+using Infastructure.Common.Trajectory;
 using Infastructure.CutScenes.FlowerPickupCutscene;
 using Infastructure.Factories.GameFactories;
 using Infastructure.PlatformRegistry;
@@ -90,6 +91,8 @@ namespace Infastructure.CompositionRoot
             BindSlowTimeService();
 
             BindCutSceneService();
+
+            BindTrajectoryEndPointDisplayer();
         }
 
         private void BindUI()
@@ -200,6 +203,15 @@ namespace Infastructure.CompositionRoot
                 .Bind<IPickupDisplayer>()
                 .To<PickupDisplayer>()
                 .FromComponentInNewPrefabResource(AssetsPath.PickupDisplayerPath)
+                .AsSingle();
+        }
+
+        private void BindTrajectoryEndPointDisplayer()
+        {
+            Container
+                .Bind<ITrajectoryEndPointDisplayer>()
+                .To<TrajectoryEndPointDisplayer>()
+                .FromComponentInNewPrefabResource(AssetsPath.TrajectoryEndPointDisplayerPath)
                 .AsSingle();
         }
 

@@ -88,6 +88,8 @@ namespace HUD
             if (_terrain != null)
                 _terrain.OnTerrainScanStart -= TerrainStartHappened;
 
+            _canvasGroup.DOKill();
+
             CinemachineCore.CameraUpdatedEvent.RemoveListener(UpdateIndicator);
         }
 

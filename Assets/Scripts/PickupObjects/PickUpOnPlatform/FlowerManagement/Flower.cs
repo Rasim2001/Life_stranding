@@ -141,6 +141,19 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             StartRotation = Quaternion.Euler(_productData.StartRotationEuler);
         }
 
+
+        public override void ThrowObject()
+        {
+            base.ThrowObject();
+
+            _flowerPointIndicator.ShowTargetPoint();
+            _stateMachineData.TotalWeight -= _productData.Weight;
+
+            OnDroppedFromPlatform?.Invoke();
+
+            _xRayService.Add(_xRayMarker);
+        }
+
         protected override void OnCollisionEnter(Collision other)
         {
             base.OnCollisionEnter(other);
@@ -181,6 +194,7 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
 
             _xRayService.Add(_xRayMarker);
         }
+
 
         public void Putdown(ICheckpointInfo checkPoint)
         {

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Services.CutScene;
+using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
@@ -9,6 +11,7 @@ using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Airborn;
 using SpiderController.StateMachine.States.Ground;
+using SpiderController.StateMachine.States.Ground.Aiming;
 using UnityEngine;
 
 namespace SpiderController.StateMachine
@@ -25,6 +28,8 @@ namespace SpiderController.StateMachine
             IInputService inputService,
             IStaticDataService staticDataService,
             ICutSceneService cutSceneService,
+            IPlatformObjectsService platformObjectsService,
+            IStableWorldUp stableWorldUp,
             LegDataStruct[] legs,
             Flower flower,
             EnergySystem energySystem)
@@ -62,6 +67,10 @@ namespace SpiderController.StateMachine
                 new RecoveryState(this, inputService, staticDataService, cutSceneService, spider, stateMachineData,
                     legs, flower,
                     energySystem),
+                new AimIdlingState(this, inputService, staticDataService, cutSceneService, platformObjectsService,
+                    spider, stateMachineData, legs, flower, energySystem),
+                new AimRunningState(this, inputService, staticDataService, cutSceneService, platformObjectsService,
+                    spider, stateMachineData, legs, flower, energySystem),
             };
 
             _currentState = _states[0];

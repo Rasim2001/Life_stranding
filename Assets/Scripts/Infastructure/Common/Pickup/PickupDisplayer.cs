@@ -15,13 +15,11 @@ namespace Infastructure.Common.Pickup
 
         private IPoolObjects<PickupView> _poolObjects;
         private IXRayService _xRayService;
-        private ISpiderTrackService _spiderTrackService;
 
         [Inject]
         public void Construct(IPoolObjects<PickupView> poolObjects, IXRayService xRayService,
             ISpiderTrackService spiderTrackService)
         {
-            _spiderTrackService = spiderTrackService;
             _xRayService = xRayService;
             _poolObjects = poolObjects;
         }

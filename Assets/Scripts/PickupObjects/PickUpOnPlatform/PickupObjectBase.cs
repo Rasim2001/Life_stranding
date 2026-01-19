@@ -9,7 +9,7 @@ using Zenject;
 namespace PickupObjects.PickUpOnPlatform
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class PickupObjectBase : MonoBehaviour
+    public class PickupObjectBase : MonoBehaviour, IThrowable
     {
         private readonly float _linearDamping = 10;
         private readonly float _angularDamping = 10;
@@ -50,6 +50,27 @@ namespace PickupObjects.PickUpOnPlatform
             _platformArmature = platformTransform;
 
             _spiderRigidbody = _platformArmature.GetComponentInParent<Spider>().Rigidbody;
+        }
+
+        public virtual void ThrowObject()
+        {
+            IsOnPlatform = false;
+
+            PlatformSelector.ReturnToDefaultMaterial();
+
+            _platformObjectsService.PickupObjects.Remove(this);
+
+            IsOnPlatform = false;
+            Rigidbody.useGravity = true;
+            Rigidbody.angularDamping = _angularDefaultDamping;
+            Rigidbody.linearDamping = _linearDefaultDamping;
+            Rigidbody.constraints = RigidbodyConstraints.None;
+
+            PlatformSelector.ResetExcludeLayerMask();
+
+            transform.SetParent(null);
+
+            Rigidbody.linearVelocity = transform.up * 10;
         }
 
         protected virtual void Awake()
