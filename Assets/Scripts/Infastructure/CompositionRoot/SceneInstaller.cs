@@ -19,7 +19,7 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.Services.QTE;
 using Infastructure.Services.SlowTime;
 using Infastructure.Services.SpiderTrack;
-using Infastructure.Services.TaskPopupChecker;
+using Infastructure.Services.Tasks;
 using Infastructure.Services.Timer;
 using Infastructure.Services.VolumeManagement;
 using Infastructure.Services.Window;
@@ -225,6 +225,6 @@ namespace Infastructure.CompositionRoot
             Container.BindInterfacesAndSelfTo<WindowService>().AsSingle();
 
         private void BindTaskPopupCheckerService() =>
-            Container.BindInterfacesAndSelfTo<TaskPopupCheckerService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<TasksService>().AsSingle();
     }
 }

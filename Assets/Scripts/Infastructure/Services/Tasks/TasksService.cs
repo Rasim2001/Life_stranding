@@ -4,25 +4,27 @@ using Infastructure.Data;
 using Infastructure.Services.ProgressWatchers;
 using Infastructure.Services.SaveLoadService;
 using UI;
-using UnityEngine;
-using WaterSystem;
-using Zenject;
 
-namespace Infastructure.Services.TaskPopupChecker
+namespace Infastructure.Services.Tasks
 {
-    public class TaskPopupCheckerService : ITaskPopupCheckerService, ISavedProgress
+    public class TasksService : ITasksService, ISavedProgress
     {
         public event Action AllTasksCompleted;
 
         private readonly IProgressWatchersService _progressWatchersService;
 
         private List<TaskId> _taskIds = new List<TaskId>();
+        private bool _isCheating;
 
-        public TaskPopupCheckerService(IProgressWatchersService progressWatchersService) =>
+        public TasksService(IProgressWatchersService progressWatchersService) =>
             _progressWatchersService = progressWatchersService;
 
-        public void Initialize() =>
+        public void Initialize()
+        {
             _progressWatchersService.RegisterWatcher(this);
+
+            _isCheating = true;
+        }
 
         public void LoadProgress(PlayerProgress progress) =>
             _taskIds = new List<TaskId>(progress.TaskPopupData.CompletedTaskIds);
@@ -41,8 +43,10 @@ namespace Infastructure.Services.TaskPopupChecker
             _taskIds.Add(taskId);
         }
 
-        public bool IsWasOpened(TaskId taskId) =>
-            _taskIds.Contains(taskId);
+        public bool IsWasOpened(TaskId taskId)
+        {
+            return _taskIds.Contains(taskId) || _isCheating;
+        }
 
         public void Dispose()
         {

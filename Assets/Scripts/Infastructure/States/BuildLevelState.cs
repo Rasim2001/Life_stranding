@@ -10,7 +10,7 @@ using Infastructure.Services.ProgressWatchers;
 using Infastructure.Services.Restart;
 using Infastructure.Services.SaveLoadService;
 using Infastructure.Services.StartGame;
-using Infastructure.Services.TaskPopupChecker;
+using Infastructure.Services.Tasks;
 using Infastructure.Services.Timer;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.StaticDataService;
@@ -37,7 +37,7 @@ namespace Infastructure.States
         private readonly IWindowService _windowService;
         private ICameraProviderService _cameraProviderService;
         private readonly IProgressWatchersService _progressWatchersService;
-        private readonly ITaskPopupCheckerService _taskPopupCheckerService;
+        private readonly ITasksService _tasksService;
         private readonly IStartGameReceiver _startGameReceiver;
         private readonly ISaveLoadService _saveLoadService;
 
@@ -55,14 +55,14 @@ namespace Infastructure.States
             ITimerService timerService,
             ICameraProviderService cameraProviderService,
             IProgressWatchersService progressWatchersService,
-            ITaskPopupCheckerService taskPopupCheckerService,
+            ITasksService tasksService,
             IStartGameReceiver startGameReceiver,
             ISaveLoadService saveLoadService
         )
         {
             _cameraProviderService = cameraProviderService;
             _progressWatchersService = progressWatchersService;
-            _taskPopupCheckerService = taskPopupCheckerService;
+            _tasksService = tasksService;
             _startGameReceiver = startGameReceiver;
             _saveLoadService = saveLoadService;
             _windowService = windowService;
@@ -101,7 +101,7 @@ namespace Infastructure.States
             _startGameReceiver.OnStartGameHappened += InitGameWorld;
 
             _progressWatchersService.Clear();
-            _taskPopupCheckerService.Initialize();
+            _tasksService.Initialize();
             _abilityService.Initialize();
             _inputService.Initialize();
             _timerService.StartTimer();
@@ -113,7 +113,7 @@ namespace Infastructure.States
             _startGameReceiver.OnStartGameHappened -= InitGameWorld;
 
             _abilityService.Dispose();
-            _taskPopupCheckerService.Dispose();
+            _tasksService.Dispose();
         }
 
 
