@@ -123,12 +123,6 @@ namespace SpiderController.Platform
             _platformRegistryService.CurrentPlatformData.Collider.excludeLayers = 0;
         }
 
-        public bool IsInsideOfBlinkPlace(Collider productCollider)
-        {
-            Collider blinkCollider = _platformRegistryService.CurrentPlatformData.BlinkDetectionCollider;
-
-            return IsInside(productCollider, blinkCollider);
-        }
 
         private void SetEmissionMaterial(bool isActive)
         {
@@ -136,6 +130,13 @@ namespace SpiderController.Platform
 
             _platformRegistryService.CurrentPlatformData.MeshRenderer.material =
                 isActive ? _emissionMaterial : _defaultMaterial;
+        }
+
+        public bool IsInsideOfBlinkPlace(Collider productCollider)
+        {
+            Collider blinkCollider = _platformRegistryService.CurrentPlatformData.BlinkDetectionCollider;
+
+            return IsInside(productCollider, blinkCollider);
         }
 
 

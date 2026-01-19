@@ -286,7 +286,7 @@ Shader "AllIn13DShader/AllIn13DShader_NoShadowCaster"
 		[EffectProperty(TRIPLANAR_MAPPING)]_FaceDownCutoff("Face Down Cutoff", Range(-1, 1)) = 0.25
 		[EffectProperty(TRIPLANAR_MAPPING)]_TriplanarSharpness("Sharpness", Range(1, 200)) = 15.0
 		[EffectProperty(TRIPLANAR_MAPPING)][Toggle(_TRIPLANAR_NOISE_TRANSITION_ON)]_TriplanarNoiseTransitionOn("Noise Transition", Float) = 0
-		[EffectProperty(ParentEffect# TRIPLANAR_MAPPING, Keywords(_TRIPLANAR_NOISE_TRANSITION_ON), AllowReset# True)] _TriplanarNoiseTex("Noise Tex (RGB)", 2D) = "white" {}
+		[EffectProperty(ParentEffect# TRIPLANAR_MAPPING, Keywords(_TRIPLANAR_NOISE_TRANSITION_ON), AllowReset# True)] _TriplanarNoiseTex("Noise Tex", 2D) = "white" {}
 		[EffectProperty(ParentEffect# TRIPLANAR_MAPPING, Keywords(_TRIPLANAR_NOISE_TRANSITION_ON), AllowReset# True)] _TriplanarTransitionPower("Transition Power", Range(0, 1.0)) = 0.75
 
 		//Texture Blending

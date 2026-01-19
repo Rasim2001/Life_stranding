@@ -4,7 +4,7 @@ namespace AllIn13DShader
 {
 	public static class Constants
 	{
-		public static string VERSION = "2.61";
+		public static string VERSION = "2.62";
 		
 		public const string EFFECT_ATTRIBUTE_PREFIX = "Effect(";
 		public const string EFFECT_PROPERTY_ATTRIBUTE_PREFIX = "EffectProperty(";

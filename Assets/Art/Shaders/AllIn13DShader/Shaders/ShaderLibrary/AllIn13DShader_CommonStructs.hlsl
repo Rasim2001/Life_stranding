@@ -357,21 +357,22 @@ float3 GetTriplanarWeights(float3 normal, float2 uv)
 {
 	float3 weights = abs(normal);
 
-	float3 transition = 0.0;
+	float transition = 0.0;
 #ifdef _TRIPLANAR_NOISE_TRANSITION_ON
 	float2 scaleUV = ACCESS_PROP_FLOAT4(_TriplanarNoiseTex_ST).xy;
-	transition = SAMPLE_TEX2D(_TriplanarNoiseTex, uv * scaleUV).rgb;
+	transition = SAMPLE_TEX2D(_TriplanarNoiseTex, uv * scaleUV).r;
 	transition = (transition - 0.5) * 2.0;
 	transition *= ACCESS_PROP_FLOAT(_TriplanarTransitionPower);
-
-	normal += transition;
+	
+	normal.xz = lerp(float2(-0.5, -0.5), float2(0.5, 0.5), transition);
+	
 	normal = normalize(normal);
 	weights = abs(normal);
 #endif
-
+	
 	weights = pow(weights, ACCESS_PROP_FLOAT(_TriplanarSharpness));
 	weights = weights / (weights.x + weights.y + weights.z);
-
+	
 	return weights;
 }
 #endif
