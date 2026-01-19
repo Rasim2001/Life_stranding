@@ -20,6 +20,7 @@
 #pragma shader_feature_local _REFLECTIONS_CLASSIC
 #pragma shader_feature_local _REFLECTIONS_TOON
 #pragma shader_feature_local _NORMAL_MAP_ON
+#pragma shader_feature_local _FLAT_NORMALS_ON
 #pragma shader_feature_local _CUSTOM_SHADOW_COLOR_ON
 #pragma shader_feature_local _AFFECTED_BY_LIGHTMAPS_ON
 #pragma shader_feature_local _LIGHTMAP_COLOR_CORRECTION_ON
@@ -59,6 +60,7 @@
 #pragma shader_feature_local _TRIPLANAR_MAPPING_ON
 #pragma shader_feature_local _TRIPLANARNORMALSPACE_LOCAL
 #pragma shader_feature_local _TRIPLANARNORMALSPACE_WORLD
+#pragma shader_feature_local _TRIPLANAR_NOISE_TRANSITION_ON
 #pragma shader_feature_local _TEXTURE_BLENDING_ON
 #pragma shader_feature_local _TEXTUREBLENDINGSOURCE_VERTEXCOLOR
 #pragma shader_feature_local _TEXTUREBLENDINGSOURCE_TEXTURE
@@ -68,6 +70,9 @@
 #pragma shader_feature_local _SUBSURFACE_SCATTERING_ON
 #pragma shader_feature_local _ALPHA_CUTOFF_ON
 #pragma shader_feature_local _FADE_ON
+#pragma shader_feature_local _FADEUVSET_UV1
+#pragma shader_feature_local _FADEUVSET_UV2
+#pragma shader_feature_local _FADEUVSET_WORLD_SPACE
 #pragma shader_feature_local _FADE_BURN_ON
 #pragma shader_feature_local _INTERSECTION_FADE_ON
 #pragma shader_feature_local _ALPHA_ROUND_ON

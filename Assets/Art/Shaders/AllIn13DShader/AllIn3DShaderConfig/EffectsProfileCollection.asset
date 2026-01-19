@@ -53,6 +53,12 @@ MonoBehaviour:
         kwEnabledIndex: 0
         subkeywordEntriesEnum: []
         subkeywordEntriesToggle: []
+      - effectID: FLAT_NORMALS
+        displayName: Flat Normals
+        isEnabled: 1
+        kwEnabledIndex: 0
+        subkeywordEntriesEnum: []
+        subkeywordEntriesToggle: []
       - effectID: CUSTOM_SHADOW_COLOR
         displayName: Custom Shadow Color
         isEnabled: 1
@@ -250,7 +256,11 @@ MonoBehaviour:
           keywords:
           - _TRIPLANARNORMALSPACE_LOCAL
           - _TRIPLANARNORMALSPACE_WORLD
-        subkeywordEntriesToggle: []
+        subkeywordEntriesToggle:
+        - propertyName: 
+          isEnabled: 0
+          keyword: _TRIPLANAR_NOISE_TRANSITION_ON
+          displayName: Noise Transition
       - effectID: TEXTURE_BLENDING
         displayName: Texture Blending
         isEnabled: 1
@@ -297,7 +307,17 @@ MonoBehaviour:
         displayName: Fade
         isEnabled: 1
         kwEnabledIndex: 0
-        subkeywordEntriesEnum: []
+        subkeywordEntriesEnum:
+        - propertyName: _FadeUVSet
+          kwIndexEnabled: 0
+          displayNames:
+          - UV1
+          - UV2
+          - WORLD_SPACE
+          keywords:
+          - _FADEUVSET_UV1
+          - _FADEUVSET_UV2
+          - _FADEUVSET_WORLD_SPACE
         subkeywordEntriesToggle:
         - propertyName: 
           isEnabled: 0
