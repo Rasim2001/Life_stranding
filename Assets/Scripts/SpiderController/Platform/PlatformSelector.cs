@@ -138,6 +138,13 @@ namespace SpiderController.Platform
                 isActive ? _emissionMaterial : _defaultMaterial;
         }
 
+        public bool IsInsideOfBlinkPlace(Collider productCollider)
+        {
+            Collider blinkCollider = _platformRegistryService.CurrentPlatformData.BlinkDetectionCollider;
+
+            return IsInside(productCollider, blinkCollider);
+        }
+
 
         private void KeyboardInput()
         {
