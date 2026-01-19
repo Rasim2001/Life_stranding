@@ -2,7 +2,7 @@ namespace Infastructure.Services.Timer
 {
     public interface ITimerService
     {
-        void StartTimer();
+        void Initialize();
         string GetTravelledTime();
     }
 }

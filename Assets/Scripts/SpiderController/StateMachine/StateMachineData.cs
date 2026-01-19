@@ -1,10 +1,13 @@
 using System;
+using DG.Tweening;
+using UnityEditor.Embree;
 using UnityEngine;
 
 namespace SpiderController.StateMachine
 {
     public class StateMachineData
     {
+        public event Action AimingStateChanged;
         public event Action<bool> OnFallingDownStateChanged;
         public event Action OnTotalWeightChanged;
 
@@ -31,6 +34,21 @@ namespace SpiderController.StateMachine
         public Vector3 ExplosionAngularVector;
         public Vector3 LastValidGroundPosition;
         public Quaternion LastValidGroundRotation;
+        public bool IsInAimingState
+        {
+            get => _isInAimingState;
+            set
+            {
+                bool newValue = value;
+
+                if (newValue != _isInAimingState)
+                {
+                    _isInAimingState = value;
+
+                    AimingStateChanged?.Invoke();
+                }
+            }
+        }
 
         public float RotationAmount;
 
@@ -76,6 +94,7 @@ namespace SpiderController.StateMachine
         private float _speed;
         private bool _IsFallingDownWithoutEnergyState;
         private float _totalWeight;
+        private bool _isInAimingState;
 
         public void Clear()
         {

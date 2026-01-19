@@ -49,6 +49,7 @@ namespace CameraFollow
 
         private float _maxRotationY = 3.0f;
         private ICameraProviderService _cameraProviderService;
+        private bool _centerMouseHolding;
 
         [Inject]
         public void Construct(
@@ -93,6 +94,8 @@ namespace CameraFollow
             _inputService.OnJoystickDisableHappend += JoystickDisabled;
 
             _cursorVisibleService.OnHideCursorHappened += StartInput;
+
+            StartInput();
         }
 
         private void OnDestroy()
@@ -110,10 +113,22 @@ namespace CameraFollow
             if (_target == null || _defeatWindowService.IsDefeated)
                 return;
 
-            if (_isMouseRotating)
-                CalculateMoveCamera();
+            if (!_centerMouseHolding)
+            {
+                if (_isMouseRotating)
+                    CalculateMoveCamera();
+                else
+                    ClimbMoveCamera();
+            }
             else
+            {
+                float mouseX = _inputService.MouseXAxis;
+
+                _xRotation += mouseX * SpiderStaticData.MouseRotationSpeedX;
+
                 ClimbMoveCamera();
+            }
+
 
             float upAngle = Vector3.Angle(transform.up, _cameraProviderService.CameraTransform.up);
 
@@ -137,6 +152,21 @@ namespace CameraFollow
 
         private void JoystickDisabled() =>
             _joystickInputSource = null;
+
+        private void HandleMouse()
+        {
+            if (_inputService.CenterMousePressed)
+                _centerMouseHolding = true;
+
+            if (_inputService.CenterMouseUp)
+                _centerMouseHolding = false;
+
+            if (_inputService.LeftMousePressed)
+                ReleaseInput();
+
+            if (_inputService.LeftMouseUp)
+                StartInput();
+        }
 
         private void RotateCamera()
         {
@@ -205,15 +235,6 @@ namespace CameraFollow
                 _cameraSystem.ThirdPersonFollow.ShoulderOffset.z);
         }
 
-
-        private void HandleMouse()
-        {
-            if (_inputService.LeftMousePressed)
-                ReleaseInput();
-
-            if (_inputService.LeftMouseUp)
-                StartInput();
-        }
 
         private void WorldUpRotate() =>
             _stableWorldUp.Rotate(_target.rotation);

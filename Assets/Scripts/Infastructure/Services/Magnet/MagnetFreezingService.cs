@@ -91,6 +91,22 @@ namespace Infastructure.Services.Magnet
             IsActive = false;
         }
 
+        public void FreezeForAiming()
+        {
+            foreach (PickupObjectBase pickupObject in _platformObjectsService.PickupObjects)
+                pickupObject.IsFreezingOnPlatform = true;
+
+            IsActive = true;
+        }
+
+        public void UnfreezeForAiming()
+        {
+            foreach (PickupObjectBase pickupObject in _platformObjectsService.PickupObjects)
+                pickupObject.IsFreezingOnPlatform = false;
+
+            IsActive = false;
+        }
+
         private void WaitTimeWithMagnet() =>
             WaitTimeWithMagnetAsync().Forget();
 

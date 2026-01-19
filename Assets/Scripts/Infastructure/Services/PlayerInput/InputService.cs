@@ -49,7 +49,7 @@ namespace Infastructure.Services.PlayerInput
                     : _joystickInputSource?.InputVector ?? Vector3.zero;
             }
         }
-
+        
         public bool PauseButtonPressed =>
             _inputSource.PauseButtonPressed || (_joystickInputSource?.PauseButtonPressed ?? false);
 
