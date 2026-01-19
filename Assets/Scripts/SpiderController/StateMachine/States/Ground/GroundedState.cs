@@ -71,15 +71,28 @@ namespace SpiderController.StateMachine.States.Ground
             }
 
             if (_groundChecker.IsTouchesWithLegs == false)
+            {
+                Data.IsInAimingState = false;
+
                 StateMachine.SwitchState<FallingWithControlState>();
+            }
+
 
             if (InputService.JumpPressed && Data.CurrentEnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling &&
                 Spider.AbilityService.IsExploredAbility(ProductType.JumpSkillProduct))
+            {
+                Data.IsInAimingState = false;
+
                 StateMachine.SwitchState<JumpingState>();
+            }
 
             if (InputService.JerkPressed && Data.CurrentEnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling &&
                 Spider.AbilityService.IsExploredAbility(ProductType.JerkSkillProduct))
+            {
+                Data.IsInAimingState = false;
+
                 StateMachine.SwitchState<JerkState>();
+            }
         }
 
         private bool CanUse()

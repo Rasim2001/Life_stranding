@@ -8,6 +8,7 @@ using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
 using SpiderController.StateMachine;
+using SpiderController.Trajectory;
 using SpiderController.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -24,6 +25,7 @@ namespace SpiderController.Platform
         private readonly ICameraProviderService _cameraProviderService;
         private readonly IStableWorldUp _stableWorldUp;
         private readonly StateMachineData _stateMachineData;
+        private readonly TrajectoryRender _trajectoryRender;
         private readonly PressedMouseButtonIndicatorUI _pressedMouseButtonIndicatorUI;
         private readonly Transform _rotationPlaneTransform;
         private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
@@ -45,8 +47,7 @@ namespace SpiderController.Platform
         private bool _centerMouseHolding;
 
 
-        public SpiderPlane(
-            PressedMouseButtonIndicatorUI pressedMouseButtonIndicatorUI,
+        public SpiderPlane(PressedMouseButtonIndicatorUI pressedMouseButtonIndicatorUI,
             Transform rotationPlaneTransform,
             IInputService inputService,
             IAbilityService abilityService,
@@ -54,7 +55,8 @@ namespace SpiderController.Platform
             IWindowService windowService,
             ICameraProviderService cameraProviderService,
             IStableWorldUp stableWorldUp,
-            StateMachineData stateMachineData)
+            StateMachineData stateMachineData,
+            TrajectoryRender trajectoryRender)
         {
             _windowService = windowService;
             _cameraProviderService = cameraProviderService;
@@ -65,6 +67,7 @@ namespace SpiderController.Platform
             _pressedMouseButtonIndicatorUI = pressedMouseButtonIndicatorUI;
             _rotationPlaneTransform = rotationPlaneTransform;
             _stateMachineData = stateMachineData;
+            _trajectoryRender = trajectoryRender;
         }
 
         public void Initialize()
@@ -77,6 +80,7 @@ namespace SpiderController.Platform
             _inputService.OnJoystickDisableHappend += DisableJoystick;
 
             _stateMachineData.OnFallingDownStateChanged += OnFallingDownStateEnter;
+            _stateMachineData.AimingStateChanged += OnAimingStateChanged;
         }
 
         public void Destroy()
@@ -96,15 +100,12 @@ namespace SpiderController.Platform
                 return;
 
             if (_inputService.CenterMousePressed)
-            {
-                _centerMouseHolding = true;
-                StartInput();
-            }
+                OnCenterMouseHoldStarted();
             else if (_inputService.CenterMouseUp)
-            {
-                _centerMouseHolding = false;
-                ReleaseInput();
-            }
+                OnCenterMouseHoldEnded();
+
+            if (_centerMouseHolding)
+                _trajectoryRender.FollowTrajectory(_rotationPlaneTransform.position, _rotationPlaneTransform.up * 10);
 
             if (!_centerMouseHolding)
             {
@@ -129,6 +130,28 @@ namespace SpiderController.Platform
                 if (_joystickInputSource.IsRotationButtonPressed == false && _waitTimeJoystick > 0)
                     HandleJoystickPosition();
             }
+        }
+
+        private void OnAimingStateChanged()
+        {
+            if (_stateMachineData.IsInAimingState == false)
+                OnCenterMouseHoldEnded();
+        }
+
+        private void OnCenterMouseHoldStarted()
+        {
+            _centerMouseHolding = true;
+
+            _trajectoryRender.Show();
+            StartInput();
+        }
+
+        private void OnCenterMouseHoldEnded()
+        {
+            _centerMouseHolding = false;
+
+            _trajectoryRender.Hide();
+            ReleaseInput();
         }
 
         private void ReleaseInput()
@@ -226,8 +249,6 @@ namespace SpiderController.Platform
                 SpiderStaticData.MaxAngle);
 
             Vector3 targetLocalEulerAngles = new Vector3(targetAngleX, 0, targetAngleZ);
-            Debug.DrawRay(_rotationPlaneTransform.position, targetLocalEulerAngles * 2, Color.black);
-
             Quaternion targetLocalRotation = Quaternion.Euler(targetLocalEulerAngles);
 
             RotateTo(targetLocalRotation);
@@ -279,11 +300,6 @@ namespace SpiderController.Platform
 
             spiderForward.Normalize();
             cameraForward.Normalize();
-
-            Vector3 origin = _rotationPlaneTransform.position;
-
-            Debug.DrawRay(origin, cameraForward * 2f, Color.red);
-            Debug.DrawRay(origin, spiderForward * 2f, Color.blue);
 
             float signedAngle = Vector3.SignedAngle(cameraForward, spiderForward, up);
             float rad = signedAngle * Mathf.Deg2Rad;

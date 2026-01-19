@@ -67,14 +67,6 @@ namespace SpiderController.Platform
             InitializePlatform(_platformIds[_currentIndex]);
         }
 
-        private void SetEmissionMaterial(bool isActive)
-        {
-            _magnetIsActive = isActive;
-
-            _platformRegistryService.CurrentPlatformData.MeshRenderer.material =
-                isActive ? _emissionMaterial : _defaultMaterial;
-        }
-
         public void Destroy()
         {
             _inputService.OnJoystickEnableHappend -= JoystickEnabled;
@@ -119,17 +111,31 @@ namespace SpiderController.Platform
             return _IsOnPlatform;
         }
 
-        public void SetExcludeLayerMask() =>
+        public void SetExcludeLayerMask()
+        {
             _platformRegistryService.CurrentPlatformData.Collider.excludeLayers = _excludeLayers;
+        }
 
-        public void ResetExcludeLayerMask() =>
+        public void ResetExcludeLayerMask()
+        {
+            _IsOnPlatform = false;
+
             _platformRegistryService.CurrentPlatformData.Collider.excludeLayers = 0;
+        }
 
         public bool IsInsideOfBlinkPlace(Collider productCollider)
         {
             Collider blinkCollider = _platformRegistryService.CurrentPlatformData.BlinkDetectionCollider;
 
             return IsInside(productCollider, blinkCollider);
+        }
+
+        private void SetEmissionMaterial(bool isActive)
+        {
+            _magnetIsActive = isActive;
+
+            _platformRegistryService.CurrentPlatformData.MeshRenderer.material =
+                isActive ? _emissionMaterial : _defaultMaterial;
         }
 
 

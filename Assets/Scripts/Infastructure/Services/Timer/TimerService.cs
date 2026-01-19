@@ -20,7 +20,7 @@ namespace Infastructure.Services.Timer
             _localizationService = localizationService;
         }
 
-        public void StartTimer() =>
+        public void Initialize() =>
             _isStarting = true;
 
         public string GetTravelledTime()

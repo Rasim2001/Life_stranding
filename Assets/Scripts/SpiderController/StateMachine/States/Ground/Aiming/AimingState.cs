@@ -32,10 +32,11 @@ namespace SpiderController.StateMachine.States.Ground.Aiming
         {
             base.Enter();
 
-            Spider.MagnetFreezingService.FreezeForAiming();
+            Data.AimingStateChanged += OnAimingStateChanged;
 
             if (Data.IsInAimingState == false)
             {
+                Spider.MagnetFreezingService.FreezeForAiming();
                 Data.IsInAimingState = true;
 
                 _localMoveTween?.Kill();
@@ -47,7 +48,7 @@ namespace SpiderController.StateMachine.States.Ground.Aiming
         {
             base.Exit();
 
-            Spider.MagnetFreezingService.UnfreezeForAiming();
+            Data.AimingStateChanged -= OnAimingStateChanged;
         }
 
         public override void Update()
@@ -56,29 +57,36 @@ namespace SpiderController.StateMachine.States.Ground.Aiming
 
             if (InputService.CenterMouseUp)
             {
-                Data.IsInAimingState = false;
-
                 ThrowAllObjects();
 
                 if (IsInputZero())
                     StateMachine.SwitchState<IdlingState>();
                 else
                     StateMachine.SwitchState<RunningState>();
-
-                Vector3 targetPosition = Spider.RotationPlaneTransform.localPosition;
-                targetPosition.y = _defaultPosition.y;
-
-                _localMoveTween?.Kill();
-                _localMoveTween = Spider.RotationPlaneTransform.DOLocalMove(targetPosition, 0.05f);
             }
+        }
+
+        private void OnAimingStateChanged()
+        {
+            if (Data.IsInAimingState == false)
+                ThrowAllObjects();
         }
 
         private void ThrowAllObjects()
         {
+            Data.IsInAimingState = false;
+            Spider.MagnetFreezingService.UnfreezeForAiming();
+
+            Vector3 targetPosition = Spider.RotationPlaneTransform.localPosition;
+            targetPosition.y = _defaultPosition.y;
+
             int count = _platformObjectsService.PickupObjects.Count;
 
             for (int i = 0; i < count; i++)
                 _platformObjectsService.PickupObjects[i].GetComponent<IThrowable>().ThrowObject();
+
+            _localMoveTween?.Kill();
+            _localMoveTween = Spider.RotationPlaneTransform.DOLocalMove(targetPosition, 0.05f);
         }
     }
 }

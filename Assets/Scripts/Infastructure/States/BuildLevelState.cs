@@ -80,8 +80,6 @@ namespace Infastructure.States
 
         public void Initialize()
         {
-            _cameraProviderService.SetCamera(Camera.main);
-
             InitServices();
             InitGameplayRootUI();
         }
@@ -100,11 +98,13 @@ namespace Infastructure.States
         {
             _startGameReceiver.OnStartGameHappened += InitGameWorld;
 
-            _progressWatchersService.Clear();
+            _cameraProviderService.SetCamera(Camera.main);
             _tasksService.Initialize();
             _abilityService.Initialize();
             _inputService.Initialize();
-            _timerService.StartTimer();
+            _timerService.Initialize();
+
+            _progressWatchersService.Clear();
         }
 
 
@@ -117,13 +117,8 @@ namespace Infastructure.States
         }
 
 
-        private void Restart()
-        {
+        private void Restart() =>
             _startGameReceiver.StartGame();
-
-            /*foreach (ProductType productType in _restartService.ExploredProducts)
-                _abilityService.PickUpAbility(productType);*/
-        }
 
 
         private void InitGameWorld()

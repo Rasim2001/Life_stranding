@@ -70,7 +70,7 @@ namespace PickupObjects.PickUpOnPlatform
 
             transform.SetParent(null);
 
-            Rigidbody.linearVelocity = transform.up * 5;
+            Rigidbody.linearVelocity = transform.up * 10;
         }
 
         protected virtual void Awake()

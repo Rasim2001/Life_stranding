@@ -184,8 +184,6 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
         {
             base.StartSimulatePhysics();
 
-            Debug.Log("StartSimulatePhysics");
-
             _lastChanceQteService.StartQTE();
             _slowTimeRunner.SlowDown();
             _flowerPointIndicator.ShowTargetPoint();
