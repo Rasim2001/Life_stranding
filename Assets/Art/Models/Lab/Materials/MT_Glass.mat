@@ -30,25 +30,26 @@ Material:
   - _ALPHA_CUTOFF_ON
   - _CAST_SHADOWS_ON
   - _COLORRAMPLIGHTINGSTAGE_BEFORELIGHTING
+  - _FADEUVSET_UV1
   - _GREYSCALESTAGE_BEFORELIGHTING
   - _HEIGHTGRADIENTPOSITIONSPACE_LOCAL
   - _HIGHLIGHTS_ON
-  - _LIGHTMODEL_CLASSIC
+  - _LIGHTMODEL_HALFLAMBERT
   - _MATCAPBLENDMODE_MULTIPLY
+  - _MATCAP_ON
   - _OUTLINETYPE_NONE
   - _RECEIVEDSHADOWSTYPE_CLASSIC
   - _RECEIVE_SHADOWS_ON
-  - _REFLECTIONS_NONE
+  - _REFLECTIONS_CLASSIC
   - _RIMLIGHTINGSTAGE_BEFORELIGHTING
   - _RIM_LIGHTING_ON
   - _SHADINGMODEL_PBR
-  - _SPECULARMODEL_TOON
+  - _SPECULARMODEL_CLASSIC
   - _TEXTUREBLENDINGMODE_RGB
   - _TEXTUREBLENDINGSOURCE_VERTEXCOLOR
   - _TRIPLANARNORMALSPACE_WORLD
   - _USE_WIND_VERTICAL_MASK
   m_InvalidKeywords:
-  - _FADEUVSET_UV1
   - _GLITCHWORLDSPACE_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -130,7 +131,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MatcapTex:
-        m_Texture: {fileID: 2800000, guid: cf3a2315564d4de4eb8601b697dea358, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7e3265eb9cf6d8740824e72287dc4109, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -278,7 +279,7 @@ Material:
     - _FlatNormalsBlend: 1
     - _FlatNormalsEnabled: 0
     - _FogOn: 0
-    - _GeneralAlpha: 0.174
+    - _GeneralAlpha: 0.365
     - _Glitch: 0
     - _GlitchAmount: 0.5
     - _GlitchSpeed: 2.5
@@ -291,14 +292,14 @@ Material:
     - _Greyscale: 0
     - _GreyscaleBlending: 1
     - _GreyscaleLuminosity: 0
-    - _HalfLambertWrap: 1
+    - _HalfLambertWrap: 0.5
     - _HandDrawn: 0
     - _HandDrawnAmount: 10
     - _HandDrawnSpeed: 5
     - _HardnessFakeGI: 0.75
     - _HeightGradientOn: 0
     - _HeightGradientPositionSpace: 0
-    - _HighlightCutoff: 0.416
+    - _HighlightCutoff: 0.954
     - _HighlightSmoothness: 1
     - _Highlights: 1
     - _HighlightsStrength: 1
@@ -327,24 +328,24 @@ Material:
     - _IntersectionFadeFactor: 1
     - _IntersectionFadeOn: 0
     - _IntersectionGlowOn: 0
-    - _LightModel: 1
+    - _LightModel: 4
     - _LightmapColorCorrection: 0
-    - _Matcap: 0
-    - _MatcapBlend: 1
+    - _Matcap: 1
+    - _MatcapBlend: 0.294
     - _MatcapBlendMode: 0
-    - _MatcapIntensity: 1
+    - _MatcapIntensity: 0.75
     - _MaxCameraDistance: 1000
     - _MaxDistanceToFade: 100
     - _MaxFadeDistance: 250
     - _MaxGradientHeight: 0.75
     - _MaxInflate: 0.2
     - _MaxRim: 1
-    - _Metallic: 0.346
+    - _Metallic: 1
     - _MetallicMapOn: 0
     - _MinDistanceToFade: 0
     - _MinGradientHeight: 0
     - _MinInflate: 0
-    - _MinRim: 0.989
+    - _MinRim: 0.994
     - _NearFade: 0
     - _NormalInfluence: 0.5
     - _NormalMapEnabled: 0
@@ -363,10 +364,10 @@ Material:
     - _RecalculateNormals: 0
     - _ReceiveShadows: 1
     - _ReceivedShadowsType: 0
-    - _Reflections: 0
+    - _Reflections: 1
     - _ReflectionsAtten: 0.5
     - _RenderPreset: 2
-    - _RimAttenuation: 0.846
+    - _RimAttenuation: 1
     - _RimLighting: 1
     - _RimLightingStage: 0
     - _SSSAtten: 1
@@ -383,11 +384,11 @@ Material:
     - _ShakeBlend: 1
     - _ShakeSpeedMult: 1
     - _Shininess: 16
-    - _Smoothness: 0.567
+    - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularAtten: 1
     - _SpecularHighlights: 1
-    - _SpecularModel: 2
+    - _SpecularModel: 1
     - _SpecularToonCutoff: 0.35
     - _SpecularToonSmoothness: 0
     - _SpherizeNormals: 0
@@ -450,14 +451,14 @@ Material:
     - _GradientHeightColor01: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _GradientHeightColor02: {r: 1, g: 1, b: 1, a: 1}
     - _GreyscaleTintColor: {r: 1, g: 1, b: 1, a: 1}
-    - _HighlightOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _HighlightOffset: {r: 0, g: 0, b: 1, a: 0}
     - _HighlightsColor: {r: 2, g: 2, b: 2, a: 1}
     - _HitColor: {r: 1, g: 1, b: 1, a: 1}
     - _HologramColor: {r: 1.25, g: 2.8, b: 6.8, a: 1}
     - _HologramLineDirection: {r: 0, g: 1, b: 0, a: 0}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
-    - _RimColor: {r: 1, g: 1, b: 1, a: 1}
-    - _RimOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _RimColor: {r: 0.759434, g: 1, b: 0.88104, a: 1}
+    - _RimOffset: {r: 0.06, g: -0.87, b: 0, a: 0}
     - _SSSColor: {r: 1, g: 1, b: 1, a: 1}
     - _ShakeMaxDisplacement: {r: 0.1, g: 0.1, b: 0.1, a: 0}
     - _ShakeSpeed: {r: 41, g: 49, b: 45, a: 0}
