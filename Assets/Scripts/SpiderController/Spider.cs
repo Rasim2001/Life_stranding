@@ -11,6 +11,7 @@ using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
+using Infastructure.Services.GravityGun;
 using Infastructure.Services.Hint;
 using Infastructure.Services.Magnet;
 using Infastructure.Services.Pause;
@@ -59,6 +60,7 @@ namespace SpiderController
         [SerializeField] private ObserverTrigger _waterObserverTrigger;
         [SerializeField] private BodyOrientation _bodyOrientation;
         [SerializeField] private TrajectoryRender _trajectoryRender;
+        [SerializeField] private LayerMask _grabTargetLayer;
 
         [SerializeField] private Stickers _stickers;
 
@@ -124,12 +126,15 @@ namespace SpiderController
         private IDefeatWindowService _defeatWindowService;
 
         private StateMachineData _stateMachineData;
-        private IHintReceiverService _hintReceiverService;
+        private SpiderOverlayStateMachine _overlayStateMachine;
         private MagnetSkill _magnetSkill;
+
+        private IHintReceiverService _hintReceiverService;
         private ICameraProviderService _cameraProviderService;
         private IStableWorldUp _stableWorldUp;
         private IProgressWatchersService _progressWatchersService;
         private IPersistentProgressService _persistentProgressService;
+        private IGravityGunDisplayer _gravityGunDisplayer;
 
 
         [Inject]
@@ -153,8 +158,10 @@ namespace SpiderController
             ICameraProviderService cameraProviderService,
             IStableWorldUp stableWorldUp,
             IProgressWatchersService progressWatchersService,
-            IPersistentProgressService persistentProgressService)
+            IPersistentProgressService persistentProgressService,
+            IGravityGunDisplayer gravityGunDisplayer)
         {
+            _gravityGunDisplayer = gravityGunDisplayer;
             _persistentProgressService = persistentProgressService;
             _progressWatchersService = progressWatchersService;
             _stableWorldUp = stableWorldUp;
@@ -282,10 +289,13 @@ namespace SpiderController
                     _staticDataService,
                     _cutSceneService,
                     _platformObjectsService,
-                    _stableWorldUp,
                     _legs,
                     flower,
                     energySystem);
+
+            _overlayStateMachine =
+                new SpiderOverlayStateMachine(_inputService, _gravityGunDisplayer, _cameraProviderService,
+                    _stateMachineData, _rotationPlaneTransform, _grabTargetLayer);
 
             _progressWatchersService.RegisterWatcher(_energyPickup);
         }
@@ -305,6 +315,10 @@ namespace SpiderController
 
             _spiderStateMachine.HandleInput();
             _spiderStateMachine.Update();
+
+            _overlayStateMachine.HandleInput();
+            _overlayStateMachine.Update();
+
             _spiderPlane.Update();
             _flowerPickup.Update();
             _batteryProductPickup.Update();
@@ -333,6 +347,7 @@ namespace SpiderController
                 return;
 
             _spiderStateMachine.FixedUpdate();
+            _overlayStateMachine.FixedUpdate();
             _spiderPlane.FixedUpdate();
         }
 
@@ -342,6 +357,7 @@ namespace SpiderController
                 return;
 
             _spiderStateMachine.LateUpdate();
+            _overlayStateMachine.LateUpdate();
         }
     }
 }

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
@@ -18,7 +17,6 @@ namespace SpiderController.StateMachine
 {
     public class SpiderStateMachine : ISpiderStateMachine
     {
-        private readonly ICutSceneService _cutSceneService;
         private readonly List<ISpiderState> _states;
 
         private ISpiderState _currentState;
@@ -29,12 +27,10 @@ namespace SpiderController.StateMachine
             IStaticDataService staticDataService,
             ICutSceneService cutSceneService,
             IPlatformObjectsService platformObjectsService,
-            IStableWorldUp stableWorldUp,
             LegDataStruct[] legs,
             Flower flower,
             EnergySystem energySystem)
         {
-            _cutSceneService = cutSceneService;
             _states = new List<ISpiderState>()
             {
                 new IdlingState(this, inputService, staticDataService, cutSceneService, spider, stateMachineData, legs,

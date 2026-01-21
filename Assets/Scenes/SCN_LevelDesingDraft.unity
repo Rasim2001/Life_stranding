@@ -401,6 +401,50 @@ Transform:
   - {fileID: 2091247459}
   m_Father: {fileID: 372291820}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &234936662
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 234936663}
+  - component: {fileID: 234936664}
+  m_Layer: 0
+  m_Name: Battery_First(Test)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &234936663
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 234936662}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.09571541, y: -0.060917962, z: 0.0051840097, w: -0.99352944}
+  m_LocalPosition: {x: 4.9045267, y: 13.6, z: 174.91913}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2107553777}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &234936664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 234936662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 165540b3994d4d1aa0a763c6682d139b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &372291819
 GameObject:
   m_ObjectHideFlags: 0
@@ -1251,15 +1295,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4779785902586724549, guid: 152f3c747afd9384ab1e67ba79cbaab6, type: 3}
       propertyPath: m_LocalScale.x
-      value: 10
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4779785902586724549, guid: 152f3c747afd9384ab1e67ba79cbaab6, type: 3}
       propertyPath: m_LocalScale.y
-      value: 10
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4779785902586724549, guid: 152f3c747afd9384ab1e67ba79cbaab6, type: 3}
       propertyPath: m_LocalScale.z
-      value: 10
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5290741223646042421, guid: 152f3c747afd9384ab1e67ba79cbaab6, type: 3}
       propertyPath: InitialModule.startColor.maxColor.b
@@ -1275,15 +1319,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6540290925611818517, guid: 152f3c747afd9384ab1e67ba79cbaab6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.464151
+      value: 49.194
       objectReference: {fileID: 0}
     - target: {fileID: 6540290925611818517, guid: 152f3c747afd9384ab1e67ba79cbaab6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 14.843775
+      value: 59.263
       objectReference: {fileID: 0}
     - target: {fileID: 6540290925611818517, guid: 152f3c747afd9384ab1e67ba79cbaab6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 157.04446
+      value: 22.755
       objectReference: {fileID: 0}
     - target: {fileID: 6540290925611818517, guid: 152f3c747afd9384ab1e67ba79cbaab6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1693,7 +1737,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1364980154}
   m_Layer: 0
-  m_Name: '------VOLUME------'
+  m_Name: ------VOLUME------
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1867,7 +1911,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1428254967}
   m_Layer: 0
-  m_Name: '------GAMEOBJECT------'
+  m_Name: ------GAMEOBJECT------
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2936,6 +2980,9 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 936295684931448712, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 788896945002014771, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      insertIndex: 1
+      addedObject: {fileID: 234936663}
     - targetCorrespondingSourceObject: {fileID: 788896945002014771, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
       insertIndex: -1
       addedObject: {fileID: 384132820}

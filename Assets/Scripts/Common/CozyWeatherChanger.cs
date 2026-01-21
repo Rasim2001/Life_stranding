@@ -1,5 +1,4 @@
 using DistantLands.Cozy;
-using Infastructure.Services.CutScene;
 using Infastructure.Services.StartGame;
 using UnityEngine;
 using Zenject;

@@ -12,6 +12,7 @@ using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
 using Infastructure.Services.Explosion;
 using Infastructure.Services.GeneratorLaunchTracker;
+using Infastructure.Services.GravityGun;
 using Infastructure.Services.Hint;
 using Infastructure.Services.Magnet;
 using Infastructure.Services.PauseWindow;
@@ -93,6 +94,8 @@ namespace Infastructure.CompositionRoot
             BindCutSceneService();
 
             BindTrajectoryEndPointDisplayer();
+
+            BindGravityGunDisplayer();
         }
 
         private void BindUI()
@@ -118,6 +121,15 @@ namespace Infastructure.CompositionRoot
                 .Bind<ISlowTimeRunner>()
                 .To<SlowTimeRunner>()
                 .FromComponentInNewPrefabResource(AssetsPath.SlowTimeRunnerPath)
+                .AsSingle();
+        }
+
+        private void BindGravityGunDisplayer()
+        {
+            Container
+                .Bind<IGravityGunDisplayer>()
+                .To<GravityGunDisplayer>()
+                .FromComponentInNewPrefabResource(AssetsPath.GravityGunDisplayerPath)
                 .AsSingle();
         }
 

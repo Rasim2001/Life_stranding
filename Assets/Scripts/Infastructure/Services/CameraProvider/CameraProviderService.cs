@@ -12,5 +12,6 @@ namespace Infastructure.Services.CameraProvider
             Camera = camera;
             CameraTransform = camera.transform;
         }
+        
     }
 }

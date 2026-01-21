@@ -96,7 +96,7 @@ namespace SpiderController.Platform
         public void Update()
         {
             if (_stateMachineData.IsFallingDownWithoutEnergyState ||
-                !_abilityService.IsExploredAbility(ProductType.Flower))
+                !_abilityService.IsExploredAbility(ProductType.Flower) || _stateMachineData.IsInGravityGunState)
                 return;
 
             if (_inputService.CenterMousePressed)
@@ -114,7 +114,6 @@ namespace SpiderController.Platform
                 else if (_inputService.LeftMouseUp)
                     ReleaseInput();
             }
-
 
             if (_isMouseHold)
                 HandleMousePosition();

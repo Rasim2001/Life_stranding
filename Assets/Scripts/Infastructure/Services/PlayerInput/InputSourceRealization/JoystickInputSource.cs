@@ -83,6 +83,8 @@ public class JoystickInputSource : IInputSource
 
     public bool PickupPressed => Pickup.WasPressedThisFrame();
     public bool TabPressed => Scan.WasPressedThisFrame();
+    public bool GravityGunPressed { get; }
+    public bool GravityGunUp { get; }
 
     public bool AnyKeyPressed() =>
         false;

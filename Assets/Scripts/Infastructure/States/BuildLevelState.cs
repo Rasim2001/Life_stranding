@@ -166,8 +166,8 @@ namespace Infastructure.States
         private Spider InitSpider(Flower flower) =>
             _gameFactory.CreateSpider(flower);
 
-        private void InitCameraSystem(Spider spiderTransform) =>
-            _gameFactory.CreateCameraSystem(spiderTransform);
+        private void InitCameraSystem(Spider spider) =>
+            _gameFactory.CreateCameraSystem(spider);
 
         private Flower InitFlower() =>
             _gameFactory.CreateFlower();

@@ -40,7 +40,7 @@ namespace CameraFollow
             _spider = spider;
 
             _cameraFollower.transform.position = _spider.transform.position + new Vector3(0, 0, 20);
-            _cameraFollower.SetTarget(_spider.transform);
+            _cameraFollower.SetTarget(_spider);
 
             _spider.OnShakeCameraHappened += ShakeCamera;
         }

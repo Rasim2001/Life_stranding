@@ -50,6 +50,8 @@ namespace SpiderController.StateMachine
             }
         }
 
+        public bool IsInGravityGunState;
+
         public float RotationAmount;
 
         public float DistanceFromGround = 0.5f;

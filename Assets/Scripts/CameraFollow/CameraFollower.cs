@@ -9,6 +9,8 @@ using Infastructure.Services.PlayerInput.InputSourceRealization;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
+using SpiderController;
+using SpiderController.StateMachine;
 using Unity.Cinemachine;
 using UnityEngine;
 using Zenject;
@@ -43,6 +45,7 @@ namespace CameraFollow
 
         private float _cameraRotationSpeed;
         private JoystickInputSource _joystickInputSource;
+        private StateMachineData _spiderData;
 
         private float _defaultY;
         private Quaternion _orbitStartRotation;
@@ -80,8 +83,11 @@ namespace CameraFollow
         public void Initialize(CameraSystem cameraSystem) =>
             _cameraSystem = cameraSystem;
 
-        public void SetTarget(Transform spiderTransform) =>
-            _target = spiderTransform;
+        public void SetTarget(Spider spider)
+        {
+            _target = spider.transform;
+            _spiderData = spider.StateMachineData;
+        }
 
         private void Start()
         {
@@ -155,6 +161,9 @@ namespace CameraFollow
 
         private void HandleMouse()
         {
+            if (_spiderData.IsInGravityGunState)
+                return;
+
             if (_inputService.CenterMousePressed)
                 _centerMouseHolding = true;
 

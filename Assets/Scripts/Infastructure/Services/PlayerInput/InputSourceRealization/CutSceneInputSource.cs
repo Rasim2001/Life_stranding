@@ -32,6 +32,8 @@ namespace Infastructure.Services.PlayerInput.InputSourceRealization
 
         public bool JumpUp { get; set; }
         public bool TabPressed { get; }
+        public bool GravityGunPressed { get; }
+        public bool GravityGunUp { get; }
 
         public bool AnyKeyPressed() =>
             false;
