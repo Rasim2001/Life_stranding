@@ -109,7 +109,6 @@ namespace Infastructure.Services.QTE
             _lastChanceBarUI.ShowHologram();
 
             DOTween.To(() => _allAttemptsFill, x => _allAttemptsFill = x, _allAttempts, 1)
-                .SetUpdate(true)
                 .OnUpdate(() => _lastChanceBarUI.SetValue(_allAttemptsFill / _defaultAllAttempts));
         }
 
@@ -133,7 +132,7 @@ namespace Infastructure.Services.QTE
                 await UniTask.Yield(cancellationToken: _cts.Token);
 
             await UniTask.Delay(TimeSpan.FromSeconds(LastChanceStaticData.PressWaitTime),
-                cancellationToken: _cts.Token, delayType: DelayType.UnscaledDeltaTime);
+                cancellationToken: _cts.Token);
 
             _lastChanceRootUI.ChangeDeSelectedSprite();
 

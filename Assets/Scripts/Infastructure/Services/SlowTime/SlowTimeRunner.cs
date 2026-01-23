@@ -5,15 +5,24 @@ namespace Infastructure.Services.SlowTime
 {
     public class SlowTimeRunner : MonoBehaviour, ISlowTimeRunner
     {
-        private MMF_Player _feedbackPlayer;
+        [SerializeField] private MMF_Player _feedbackPlayer;
 
-        private void Awake() =>
-            _feedbackPlayer = GetComponent<MMF_Player>();
+        private bool _isRunning;
 
-        public void SlowDown() =>
+        public void SlowDown()
+        {
+            _isRunning = true;
+
             _feedbackPlayer.PlayFeedbacks();
+        }
 
-        public void StopSlowDown() =>
+        public void StopSlowDown()
+        {
+            _isRunning = false;
+
             _feedbackPlayer.StopFeedbacks();
+        }
+
+        public bool IsRunning() => _isRunning;
     }
 }

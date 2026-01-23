@@ -143,6 +143,8 @@ namespace SpiderController.Platform
 
             _trajectoryRender.Show();
             StartInput();
+
+            _initialMousePosition.y = 1;
         }
 
         private void OnCenterMouseHoldEnded()

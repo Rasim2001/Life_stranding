@@ -1,6 +1,7 @@
 using System;
 using DG.Tweening;
 using Infastructure.Services.CameraProvider;
+using Infastructure.Services.Pause;
 using Infastructure.StaticData.LastChance;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
@@ -25,19 +26,30 @@ namespace Infastructure.Services.QTE
 
         private IStaticDataService _staticDataService;
         private ICameraProviderService _cameraProviderService;
+        private IPauseService _pauseService;
 
         [Inject]
-        public void Construct(IStaticDataService staticDataService, ICameraProviderService cameraProviderService)
+        public void Construct(IStaticDataService staticDataService, ICameraProviderService cameraProviderService,
+            IPauseService pauseService)
         {
+            _pauseService = pauseService;
             _cameraProviderService = cameraProviderService;
             _staticDataService = staticDataService;
         }
 
-        private void Start() =>
-            Clear();
+        private void Start()
+        {
+            _pauseService.OnPauseChanged += PauseChanged;
 
-        private void OnDestroy() =>
             Clear();
+        }
+
+        private void OnDestroy()
+        {
+            _pauseService.OnPauseChanged -= PauseChanged;
+
+            Clear();
+        }
 
         public void SetFlowerTransform(Flower flower) =>
             _flower = flower;
@@ -82,6 +94,22 @@ namespace Infastructure.Services.QTE
         public void ChangeDeSelectedSprite() =>
             _iconImage.sprite = LastChanceStaticData.DeselectedSprite;
 
+
+        private void PauseChanged()
+        {
+            if (_pauseService.IsPaused)
+            {
+                Debug.Log("Paused");
+
+                _shrinkRingTween?.Pause();
+            }
+            else
+            {
+                Debug.Log("Playing");
+
+                _shrinkRingTween?.Play();
+            }
+        }
 
         private void ShrinkingRing(Action OnHappened)
         {

@@ -42,5 +42,6 @@ namespace Infastructure.Common
         public const string WindowsLocalizationStaticDataPath = "StaticData/UI/WindowStaticLocalizationData";
         public const string LastChanceStaticDataPath = "StaticData/QTE/LastChanceData";
         public const string CutSceneStaticDataPath = "StaticData/CutScenes/CutScenesData";
+        public const string GravityGunStaticDataPath = "StaticData/Spider/GravityGunData";
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Infastructure.StaticData.Cutscenes;
 using Infastructure.StaticData.GlobalWater;
+using Infastructure.StaticData.GravityGun;
 using Infastructure.StaticData.HUD;
 using Infastructure.StaticData.LastChance;
 using Infastructure.StaticData.Materials;
@@ -29,5 +30,6 @@ namespace Infastructure.StaticData.StaticDataService
         WindowsLocalizationStaticData WindowsLocalizationStaticData { get; }
         LastChanceStaticData LastChanceStaticData { get; }
         CutScenesStaticData CutScenesStaticData { get; }
+        GravityGunStaticData GravityGunStaticData { get; }
     }
 }

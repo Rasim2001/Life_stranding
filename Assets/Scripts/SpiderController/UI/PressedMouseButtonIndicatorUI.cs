@@ -26,5 +26,8 @@ namespace SpiderController.UI
             _scaleTween = _image.rectTransform.DOScale(Vector3.one, 0.25f);
             _image.color = _pressedColor;
         }
+
+        private void OnDestroy() =>
+            _scaleTween?.Kill();
     }
 }

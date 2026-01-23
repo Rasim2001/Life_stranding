@@ -6,5 +6,6 @@ namespace Infastructure.Services.SlowTime
     {
         void SlowDown();
         void StopSlowDown();
+        bool IsRunning();
     }
 }

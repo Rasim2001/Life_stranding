@@ -1,12 +1,9 @@
-using System;
-using Cysharp.Threading.Tasks;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.UI.LastChanceQTE;
-using SpiderController.UI.Stickers;
 using UnityEngine;
 using Zenject;
 
@@ -68,16 +65,5 @@ namespace SpiderController.UI.Health
 
         private void CutsceneActiveChanged(bool cutSceneIsActive) =>
             _canvasRootUI.SetActive(!cutSceneIsActive);
-
-        private void Defeat() =>
-            DefeatAsync().Forget();
-
-
-        private async UniTask DefeatAsync()
-        {
-            await UniTask.Delay(TimeSpan.FromSeconds(3));
-
-            _windowService.OpenDefeatPopup();
-        }
     }
 }

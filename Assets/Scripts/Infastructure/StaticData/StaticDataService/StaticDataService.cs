@@ -1,6 +1,7 @@
 ﻿using Infastructure.Common;
 using Infastructure.StaticData.Cutscenes;
 using Infastructure.StaticData.GlobalWater;
+using Infastructure.StaticData.GravityGun;
 using Infastructure.StaticData.HUD;
 using Infastructure.StaticData.LastChance;
 using Infastructure.StaticData.Materials;
@@ -31,6 +32,8 @@ namespace Infastructure.StaticData.StaticDataService
         public LastChanceStaticData LastChanceStaticData { get; private set; }
         public CutScenesStaticData CutScenesStaticData { get; private set; }
 
+        public GravityGunStaticData GravityGunStaticData { get; private set; }
+
         public void LoadStaticData()
         {
             GameStaticData = Resources.Load<GameStaticData>(AssetsPath.GameDataPath);
@@ -49,6 +52,7 @@ namespace Infastructure.StaticData.StaticDataService
 
             LastChanceStaticData = Resources.Load<LastChanceStaticData>(AssetsPath.LastChanceStaticDataPath);
             CutScenesStaticData = Resources.Load<CutScenesStaticData>(AssetsPath.CutSceneStaticDataPath);
+            GravityGunStaticData = Resources.Load<GravityGunStaticData>(AssetsPath.GravityGunStaticDataPath);
         }
     }
 }
