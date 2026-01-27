@@ -173,6 +173,7 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             base.StopSimulatePhysics();
 
             _isTriggered = false;
+
             _flowerPointIndicator.HideTargetPoint();
 
             _stateMachineData.TotalWeight += _productData.Weight;

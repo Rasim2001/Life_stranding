@@ -4,7 +4,6 @@ using Infastructure.Services.CutScene;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
-using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
 using SpiderController.UI;
 using UnityEngine;
@@ -24,13 +23,16 @@ namespace SpiderController.StateMachine.States
         protected EnergyBarUI EnergyBarUI => Spider.SpiderUI.EnergyBar;
         protected Transform CameraTransform => Spider.CameraProviderService.CameraTransform;
 
-        private readonly Flower _flower;
         private readonly IStaticDataService _staticDataService;
-        private readonly ICutSceneService _cutSceneService;
         private readonly IInputService _inputService;
         private readonly float _legMoveDeadzone = 0.04f;
 
         private readonly Vector3[] _legPositions;
+
+        private int _legCount;
+
+        private bool _isAdhesionActivated;
+        private float _adhesionTime = 0.1f;
 
 
         protected MovementState(
@@ -41,13 +43,10 @@ namespace SpiderController.StateMachine.States
             Spider spider,
             StateMachineData stateMachineData,
             LegDataStruct[] legs,
-            Flower flower,
             EnergySystem energySystem)
         {
             _inputService = inputService;
             _staticDataService = staticDataService;
-            _cutSceneService = cutSceneService;
-            _flower = flower;
             EnergySystem = energySystem;
 
             StateMachine = stateMachine;
@@ -194,6 +193,7 @@ namespace SpiderController.StateMachine.States
             return !n1.Leg.IsMoving && !n2.Leg.IsMoving;
         }
 
+
         private void AdjustBodyHeight()
         {
             Vector3 avgLegPos = Vector3.zero;
@@ -256,10 +256,30 @@ namespace SpiderController.StateMachine.States
             if (count == 0)
                 return;
 
-            if (count != Legs.Length)
-                CalculateAdhesion();
+            if (_isAdhesionActivated)
+            {
+                if (_adhesionTime > 0)
+                {
+                    CalculateAdhesion();
+                    _adhesionTime -= Time.deltaTime;
+                }
+                else
+                {
+                    _isAdhesionActivated = false;
+                    _adhesionTime = 0.1f;
+                }
+            }
             else
-                CalculateGroundWithAllLegs(normalSum, count);
+            {
+                if (count != Legs.Length)
+                {
+                    _isAdhesionActivated = true;
+
+                    CalculateAdhesion();
+                }
+                else
+                    CalculateGroundWithAllLegs(normalSum, count);
+            }
         }
 
         private void CalculateGroundWithAllLegs(Vector3 normalSum, int count)
@@ -278,8 +298,11 @@ namespace SpiderController.StateMachine.States
             if (angleDeg > 180f)
                 angleDeg -= 360f;
 
-            float angleRad = angleDeg * Mathf.Deg2Rad;
-            Vector3 angularVel = axis.normalized * (angleRad / Time.fixedDeltaTime);
+            float absAngle = Mathf.Abs(angleDeg);
+            float t = Mathf.InverseLerp(0, 5, absAngle);
+            float filteredAngleRad = Mathf.Sign(angleDeg) * t * absAngle * Mathf.Deg2Rad;
+
+            Vector3 angularVel = axis.normalized * (filteredAngleRad / Time.fixedDeltaTime);
             Vector3 angularExplosionVector = Data.ExplosionAngularVector;
 
             Rigidbody.angularVelocity = angularVel + angularExplosionVector;

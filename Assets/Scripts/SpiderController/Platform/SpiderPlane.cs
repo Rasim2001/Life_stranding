@@ -131,6 +131,14 @@ namespace SpiderController.Platform
             }
         }
 
+        public void FixedUpdate()
+        {
+            if (_stateMachineData.IsFallingDownWithoutEnergyState)
+                RotateWithoutEnergyTo(_targetLocalRotationInFallingDownState);
+            else
+                ApplyRotation();
+        }
+
         private void OnAimingStateChanged()
         {
             if (_stateMachineData.IsInAimingState == false)
@@ -197,14 +205,6 @@ namespace SpiderController.Platform
             _targetLocalRotationInFallingDownState = Quaternion.Euler(randomAngleX, randomAngleY, randomAngleZ);
         }
 
-        public void FixedUpdate()
-        {
-            if (_stateMachineData.IsFallingDownWithoutEnergyState)
-                RotateWithoutEnergyTo(_targetLocalRotationInFallingDownState);
-            else
-                ApplyRotation();
-        }
-
         private void HandleMousePosition()
         {
             Vector2 mousePos = Input.mousePosition;
@@ -218,6 +218,7 @@ namespace SpiderController.Platform
             _mouseInput.y = -(mousePos.y - _initialMousePosition.y) / (screenSize.y / 2);
 
             _mouseInput = Vector2.ClampMagnitude(_mouseInput, 1f);
+
             _mouseInput *= SpiderStaticData.PlaneSensitivity;
 
             _mouseInput = ConvertInputFromCameraToSpiderSpace(_mouseInput);

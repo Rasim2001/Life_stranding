@@ -24,7 +24,7 @@ namespace SpiderController.StateMachine.States.Ground
             StateMachineData stateMachineData,
             LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(stateMachine, inputService,
             staticDataService, cutSceneService, spider,
-            stateMachineData, legs, flower, energySystem)
+            stateMachineData, legs, energySystem)
         {
             _groundChecker = spider.GroundChecker;
         }

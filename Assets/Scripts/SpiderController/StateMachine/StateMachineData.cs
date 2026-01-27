@@ -1,6 +1,4 @@
 using System;
-using DG.Tweening;
-using UnityEditor.Embree;
 using UnityEngine;
 
 namespace SpiderController.StateMachine

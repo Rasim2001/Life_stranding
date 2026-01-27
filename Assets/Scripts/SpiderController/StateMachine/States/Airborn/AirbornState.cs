@@ -16,7 +16,7 @@ namespace SpiderController.StateMachine.States.Airborn
             StateMachineData stateMachineData,
             LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(stateMachine, inputService,
             staticDataService, cutSceneService, spider,
-            stateMachineData, legs, flower, energySystem)
+            stateMachineData, legs, energySystem)
         {
         }
 

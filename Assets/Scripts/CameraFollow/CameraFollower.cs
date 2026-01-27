@@ -34,14 +34,12 @@ namespace CameraFollow
         private Vector3 _velocity;
 
         private bool _isMouseRotating;
-        private float _mouseSensitivity;
         private CinemachineInputAxisController _axisController;
         private CameraSystem _cameraSystem;
 
         private float _yRotation;
         private float _xRotation;
-        private float _cameraRotationSpeedX;
-        private float _cameraRotationSpeedY;
+        private float _xRotationAiming;
 
         private float _cameraRotationSpeed;
         private JoystickInputSource _joystickInputSource;
@@ -49,6 +47,7 @@ namespace CameraFollow
 
         private float _defaultY;
         private Quaternion _orbitStartRotation;
+        private Quaternion _orbitStartRotationAiming;
 
         private float _maxRotationY = 3.0f;
         private ICameraProviderService _cameraProviderService;
@@ -75,10 +74,6 @@ namespace CameraFollow
             _inputService = inputService;
         }
 
-        private void Awake()
-        {
-            _mouseSensitivity = 2;
-        }
 
         public void Initialize(CameraSystem cameraSystem) =>
             _cameraSystem = cameraSystem;
@@ -119,20 +114,18 @@ namespace CameraFollow
             if (_target == null || _defeatWindowService.IsDefeated)
                 return;
 
-            if (!_centerMouseHolding)
+            CameraCalculateHandle();
+
+            if (_isMouseRotating)
             {
-                if (_isMouseRotating)
-                    CalculateMoveCamera();
+                if (_centerMouseHolding)
+                {
+                    RotateCameraAiming();
+                }
                 else
-                    ClimbMoveCamera();
-            }
-            else
-            {
-                float mouseX = _inputService.MouseXAxis;
-
-                _xRotation += mouseX * SpiderStaticData.MouseRotationSpeedX;
-
-                ClimbMoveCamera();
+                {
+                    RotateCamera();
+                }
             }
 
 
@@ -145,13 +138,29 @@ namespace CameraFollow
             HandleMouse();
         }
 
+        private void CameraCalculateHandle()
+        {
+            if (!_centerMouseHolding)
+            {
+                if (_isMouseRotating)
+                    CalculateMoveCamera();
+                else
+                    ClimbMoveCamera();
+            }
+            else
+            {
+                float mouseX = _inputService.MouseXAxis;
+
+                _xRotationAiming += mouseX * SpiderStaticData.MouseRotationSpeedX;
+
+                ClimbMoveCamera();
+            }
+        }
+
         private void FixedUpdate()
         {
             if (_target == null || _defeatWindowService.IsDefeated)
                 return;
-
-            if (_isMouseRotating)
-                RotateCamera();
 
             MoveToTarget();
         }
@@ -165,10 +174,19 @@ namespace CameraFollow
                 return;
 
             if (_inputService.CenterMousePressed)
+            {
                 _centerMouseHolding = true;
 
+                _orbitStartRotationAiming = transform.rotation;
+                _xRotationAiming = 0f;
+            }
+
             if (_inputService.CenterMouseUp)
+            {
+                StartInput();
+
                 _centerMouseHolding = false;
+            }
 
             if (_inputService.LeftMousePressed)
                 ReleaseInput();
@@ -179,7 +197,7 @@ namespace CameraFollow
 
         private void RotateCamera()
         {
-            Vector3 up = _cameraProviderService.CameraTransform.up;
+            Vector3 up = _stableWorldUp.StableWorldUpTransform.up;
             Quaternion yaw = Quaternion.AngleAxis(_xRotation, up);
 
             Quaternion targetRot = yaw * _orbitStartRotation;
@@ -187,7 +205,21 @@ namespace CameraFollow
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
                 targetRot,
-                Time.fixedDeltaTime * _cameraRotationSpeed
+                Time.deltaTime * _cameraRotationSpeed
+            );
+        }
+
+        private void RotateCameraAiming()
+        {
+            Vector3 up = _stableWorldUp.StableWorldUpTransform.up;
+            Quaternion yaw = Quaternion.AngleAxis(_xRotationAiming, up);
+
+            Quaternion targetRot = yaw * _orbitStartRotationAiming;
+
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRot,
+                Time.deltaTime * _cameraRotationSpeed
             );
         }
 
@@ -214,7 +246,6 @@ namespace CameraFollow
                 _yRotation,
                 targetY,
                 _cameraRotationSpeed * Time.deltaTime);
-
 
             float yLerp = Mathf.Lerp(
                 _cameraSystem.ThirdPersonFollow.ShoulderOffset.y,
@@ -249,17 +280,14 @@ namespace CameraFollow
             _stableWorldUp.Rotate(_target.rotation);
 
 
-        private void ReleaseInput()
-        {
-            //_xRotation = 0;
-
+        private void ReleaseInput() =>
             _isMouseRotating = false;
-        }
 
         private void StartInput()
         {
+            _xRotation = 0;
+
             _isMouseRotating = true;
-            _xRotation = 0f;
 
             if (_stableWorldUp.StableWorldUpTransform == null)
                 return;

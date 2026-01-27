@@ -16,7 +16,7 @@ namespace SpiderController.StateMachine.States.Ground
             IStaticDataService staticDataService, ICutSceneService cutSceneService, Spider spider,
             StateMachineData stateMachineData,
             LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(stateMachine, inputService,
-            staticDataService, cutSceneService, spider, stateMachineData, legs, flower, energySystem)
+            staticDataService, cutSceneService, spider, stateMachineData, legs, energySystem)
         {
         }
 
