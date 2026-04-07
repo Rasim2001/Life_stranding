@@ -15,14 +15,14 @@ namespace UI.MVVM.Base
             _subscriptions.Add(viewModel.OpenedScreen.Subscribe(newScreenViewModel =>
                 _windowsContainer.OpenScreen(newScreenViewModel)));
 
-            foreach (WindowViewModel openedPopup in viewModel.OpenedPopups)
-                _windowsContainer.OpenPopup(openedPopup);
-
             _subscriptions.Add(viewModel.OpenedPopups.ObserveAdd().Subscribe(e =>
                 _windowsContainer.OpenPopup(e.Value)));
 
             _subscriptions.Add(viewModel.OpenedPopups.ObserveRemove().Subscribe(e =>
                 _windowsContainer.ClosePopup(e.Value)));
+
+            foreach (WindowViewModel openedPopup in viewModel.OpenedPopups)
+                _windowsContainer.OpenPopup(openedPopup);
 
             OnBind(viewModel);
         }

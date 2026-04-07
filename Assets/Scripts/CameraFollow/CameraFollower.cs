@@ -1,4 +1,3 @@
-using System;
 using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CursorVisible;

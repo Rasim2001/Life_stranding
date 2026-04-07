@@ -1,16 +1,9 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Infastructure.Data
 {
     public static class DataExtensions
     {
-        public static string ToJson(this object obj) =>
-            JsonUtility.ToJson(obj);
-
-        public static T ToDeserialized<T>(this string json) =>
-            JsonUtility.FromJson<T>(json);
-
         public static Vector3Data AsVectorData(this Vector3 vector) =>
             new(vector.x, vector.y, vector.z);
 
