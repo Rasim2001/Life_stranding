@@ -39,6 +39,15 @@ namespace PickupObjects.PickUpOnPlatform
             base.StopSimulatePhysics();
 
             _stateMachineData.TotalWeight += _productData.Weight;
+
+            Debug.Log(_stateMachineData.TotalWeight);
+        }
+
+        public override void ThrowObject()
+        {
+            base.ThrowObject();
+
+            _stateMachineData.TotalWeight -= _productData.Weight;
         }
 
         public override void StartSimulatePhysics()
@@ -46,6 +55,8 @@ namespace PickupObjects.PickUpOnPlatform
             base.StartSimulatePhysics();
 
             _stateMachineData.TotalWeight -= _productData.Weight;
+
+            Debug.Log(_stateMachineData.TotalWeight);
         }
     }
 }

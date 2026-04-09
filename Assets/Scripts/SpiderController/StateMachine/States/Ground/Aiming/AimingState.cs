@@ -17,11 +17,25 @@ namespace SpiderController.StateMachine.States.Ground.Aiming
 
         private Tween _localMoveTween;
 
-        protected AimingState(ISpiderStateMachine stateMachine, IInputService inputService,
-            IStaticDataService staticDataService, ICutSceneService cutSceneService,
-            IPlatformObjectsService platformObjectsService, Spider spider,
-            StateMachineData stateMachineData, LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(
-            stateMachine, inputService, staticDataService, cutSceneService, spider, stateMachineData, legs, flower,
+        protected AimingState(
+            ISpiderStateMachine stateMachine,
+            IInputService inputService,
+            IStaticDataService staticDataService, 
+            ICutSceneService cutSceneService,
+            IPlatformObjectsService platformObjectsService, 
+            Spider spider,
+            StateMachineData stateMachineData, 
+            LegDataStruct[] legs, 
+            Flower flower,
+            EnergySystem energySystem) : base(
+            stateMachine, 
+            inputService, 
+            staticDataService, 
+            cutSceneService, 
+            spider,
+            stateMachineData, 
+            legs, 
+            flower,
             energySystem)
         {
             _platformObjectsService = platformObjectsService;

@@ -1,5 +1,3 @@
-using System;
-using Infastructure.Services.CutScene;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using MoreMountains.Feedbacks;
@@ -16,9 +14,11 @@ namespace CameraFollow
         [SerializeField] private CameraFollower _cameraFollower;
         [SerializeField] private CinemachineRotationComposer _rotationComposer;
         [SerializeField] private CinemachineThirdPersonFollow _thirdPersonFollow;
+        [SerializeField] private CinemachineCamera _cinemachineCamera;
+
         [SerializeField] private MMF_Player _cameraShake;
-        public CinemachineRotationComposer RotationComposer => _rotationComposer;
         public CinemachineThirdPersonFollow ThirdPersonFollow => _thirdPersonFollow;
+        public CinemachineCamera CinemachineCamera => _cinemachineCamera;
         private MMF_CinemachineImpulse Impulse => _cameraShake.GetFeedbackOfType<MMF_CinemachineImpulse>();
         private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
 

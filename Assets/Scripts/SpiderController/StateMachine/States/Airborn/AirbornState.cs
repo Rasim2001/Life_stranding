@@ -39,8 +39,10 @@ namespace SpiderController.StateMachine.States.Airborn
             SetGroundLegs();
         }
 
-        private void WeightChanged() =>
+        private void WeightChanged()
+        {
             SetSpeed(SpiderStaticData.Speed);
+        }
 
 
         public override void Update()

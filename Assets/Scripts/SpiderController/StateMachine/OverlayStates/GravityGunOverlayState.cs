@@ -64,8 +64,9 @@ namespace SpiderController.StateMachine.OverlayStates
         {
             if (_inputService.LeftMousePressed)
             {
-                if (Physics.Raycast(CameraTransform.position, CameraTransform.forward, out RaycastHit hit,
-                        Mathf.Infinity, _gravityGunStaticData.GrabTargetLayer))
+                Ray ray = _displayer.GetAimRay(_cameraProviderService.Camera);
+
+                if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, _gravityGunStaticData.GrabTargetLayer))
                 {
                     if (hit.collider != null)
                     {

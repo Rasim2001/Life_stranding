@@ -98,17 +98,9 @@ namespace Infastructure.Services.QTE
         private void PauseChanged()
         {
             if (_pauseService.IsPaused)
-            {
-                Debug.Log("Paused");
-
                 _shrinkRingTween?.Pause();
-            }
             else
-            {
-                Debug.Log("Playing");
-
                 _shrinkRingTween?.Play();
-            }
         }
 
         private void ShrinkingRing(Action OnHappened)

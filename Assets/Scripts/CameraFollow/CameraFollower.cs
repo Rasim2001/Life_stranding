@@ -52,6 +52,7 @@ namespace CameraFollow
         private ICameraProviderService _cameraProviderService;
         private bool _centerMouseHolding;
 
+
         [Inject]
         public void Construct(
             IInputService inputService,
@@ -113,6 +114,8 @@ namespace CameraFollow
             if (_target == null || _defeatWindowService.IsDefeated)
                 return;
 
+            UpdateVerticalFov();
+
             CameraCalculateHandle();
 
             if (_isMouseRotating)
@@ -135,6 +138,18 @@ namespace CameraFollow
 
             WorldUpRotate();
             HandleMouse();
+        }
+
+        private void UpdateVerticalFov()
+        {
+            float targetFov = 
+                _spiderData.IsInGravityGunState ? 50f :
+                _spiderData.IsInAimingState ? 90 : 70f;
+
+            _cameraSystem.CinemachineCamera.Lens.FieldOfView = Mathf.Lerp(
+                _cameraSystem.CinemachineCamera.Lens.FieldOfView,
+                targetFov,
+                Time.deltaTime * 5f);
         }
 
         private void CameraCalculateHandle()
@@ -297,6 +312,7 @@ namespace CameraFollow
                 forward = Vector3.Cross(worldUp, transform.right);
 
             forward.Normalize();
+
             _orbitStartRotation = Quaternion.LookRotation(forward, worldUp);
             transform.rotation = _orbitStartRotation;
         }
