@@ -103,6 +103,8 @@ namespace SpiderController.PickUp
             _windowService.OpenTaskPopup(TaskId.GeneratorTask);
 
             _flower.Putdown(checkPoint);
+            _platformObjectsService.Remove(_flower);
+
             _spiderUI.HealthBar.PlayFadeHologramEffect();
             _pickupDisplayer.Hide(checkPointCollider.transform);
         }
@@ -122,6 +124,8 @@ namespace SpiderController.PickUp
             checkPoint.StartFlowerPickup();
 
             _flower.PickUpAfterPutdown();
+            _platformObjectsService.Add(_flower);
+
             _pickupDisplayer.Hide(checkPointCollider.transform);
         }
     }

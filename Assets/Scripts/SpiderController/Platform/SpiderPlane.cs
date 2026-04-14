@@ -18,16 +18,17 @@ namespace SpiderController.Platform
 {
     public class SpiderPlane
     {
+        private readonly SpiderStateContext _stateContext;
         private readonly IInputService _inputService;
         private readonly IAbilityService _abilityService;
         private readonly IStaticDataService _staticDataService;
         private readonly IWindowService _windowService;
         private readonly ICameraProviderService _cameraProviderService;
         private readonly IStableWorldUp _stableWorldUp;
-        private readonly StateMachineData _stateMachineData;
-        private readonly TrajectoryRender _trajectoryRender;
-        private readonly PressedMouseButtonIndicatorUI _pressedMouseButtonIndicatorUI;
-        private readonly Transform _rotationPlaneTransform;
+        private TrajectoryRender _trajectoryRender => _stateContext.TrajectoryRender;
+        private StateMachineData StateMachineData => _stateContext.Data;
+        private PressedMouseButtonIndicatorUI PressedMouseButtonIndicatorUI => _stateContext.SpiderUI.PlaneIndicatorUI;
+        private Transform RotationPlaneTransform => _stateContext.RotationPlaneTransform;
         private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
 
         private Vector2 _mouseInput;
@@ -46,28 +47,22 @@ namespace SpiderController.Platform
         private float _lastPositionX;
         private bool _centerMouseHolding;
 
-
-        public SpiderPlane(PressedMouseButtonIndicatorUI pressedMouseButtonIndicatorUI,
-            Transform rotationPlaneTransform,
+        public SpiderPlane(
+            SpiderStateContext stateContext,
             IInputService inputService,
             IAbilityService abilityService,
             IStaticDataService staticDataService,
             IWindowService windowService,
             ICameraProviderService cameraProviderService,
-            IStableWorldUp stableWorldUp,
-            StateMachineData stateMachineData,
-            TrajectoryRender trajectoryRender)
+            IStableWorldUp stableWorldUp)
         {
+            _stateContext = stateContext;
             _windowService = windowService;
             _cameraProviderService = cameraProviderService;
             _stableWorldUp = stableWorldUp;
             _inputService = inputService;
             _abilityService = abilityService;
             _staticDataService = staticDataService;
-            _pressedMouseButtonIndicatorUI = pressedMouseButtonIndicatorUI;
-            _rotationPlaneTransform = rotationPlaneTransform;
-            _stateMachineData = stateMachineData;
-            _trajectoryRender = trajectoryRender;
         }
 
         public void Initialize()
@@ -79,8 +74,8 @@ namespace SpiderController.Platform
             _inputService.OnJoystickEnableHappend += EnableJoystick;
             _inputService.OnJoystickDisableHappend += DisableJoystick;
 
-            _stateMachineData.OnFallingDownStateChanged += OnFallingDownStateEnter;
-            _stateMachineData.AimingStateChanged += OnAimingStateChanged;
+            StateMachineData.OnFallingDownStateChanged += OnFallingDownStateEnter;
+            StateMachineData.AimingStateChanged += OnAimingStateChanged;
         }
 
         public void Destroy()
@@ -90,14 +85,14 @@ namespace SpiderController.Platform
             _inputService.OnJoystickEnableHappend -= EnableJoystick;
             _inputService.OnJoystickDisableHappend -= DisableJoystick;
 
-            _stateMachineData.OnFallingDownStateChanged -= OnFallingDownStateEnter;
+            StateMachineData.OnFallingDownStateChanged -= OnFallingDownStateEnter;
         }
 
         public void Update()
         {
-            if (_stateMachineData.IsFallingDownWithoutEnergyState || 
-                !_abilityService.IsExploredAbility(ProductType.Flower) || 
-                _stateMachineData.IsInGravityGunState)
+            if (StateMachineData.IsFallingDownWithoutEnergyState ||
+                !_abilityService.IsExploredAbility(ProductType.Flower) ||
+                StateMachineData.IsInGravityGunState)
                 return;
 
             if (_inputService.CenterMousePressed)
@@ -106,7 +101,7 @@ namespace SpiderController.Platform
                 OnCenterMouseHoldEnded();
 
             if (_centerMouseHolding)
-                _trajectoryRender.FollowTrajectory(_rotationPlaneTransform.position, _rotationPlaneTransform.up * 10);
+                _trajectoryRender.FollowTrajectory(RotationPlaneTransform.position, RotationPlaneTransform.up * 10);
 
             if (!_centerMouseHolding)
             {
@@ -134,7 +129,7 @@ namespace SpiderController.Platform
 
         public void FixedUpdate()
         {
-            if (_stateMachineData.IsFallingDownWithoutEnergyState)
+            if (StateMachineData.IsFallingDownWithoutEnergyState)
                 RotateWithoutEnergyTo(_targetLocalRotationInFallingDownState);
             else
                 ApplyRotation();
@@ -142,7 +137,7 @@ namespace SpiderController.Platform
 
         private void OnAimingStateChanged()
         {
-            if (_stateMachineData.IsInAimingState == false)
+            if (StateMachineData.IsInAimingState == false)
                 OnCenterMouseHoldEnded();
         }
 
@@ -166,14 +161,14 @@ namespace SpiderController.Platform
 
         private void ReleaseInput()
         {
-            _pressedMouseButtonIndicatorUI.Hide();
+            PressedMouseButtonIndicatorUI.Hide();
             _isMouseHold = false;
             _mouseInput = Vector2.zero;
         }
 
         private void StartInput()
         {
-            _pressedMouseButtonIndicatorUI.Show();
+            PressedMouseButtonIndicatorUI.Show();
             _isMouseHold = true;
             _returnTimer = 0;
 
@@ -234,12 +229,12 @@ namespace SpiderController.Platform
 
             if (_mouseInput.sqrMagnitude > Mathf.Epsilon && _joystickInputActive == false)
             {
-                _pressedMouseButtonIndicatorUI.Show();
+                PressedMouseButtonIndicatorUI.Show();
                 _joystickInputActive = true;
             }
             else if (_mouseInput.sqrMagnitude < Mathf.Epsilon && _joystickInputActive)
             {
-                _pressedMouseButtonIndicatorUI.Hide();
+                PressedMouseButtonIndicatorUI.Hide();
                 _joystickInputActive = false;
             }
         }
@@ -269,15 +264,15 @@ namespace SpiderController.Platform
 
                 float curveT = SpiderStaticData.PlaneReturnCurve.Evaluate(_returnTimer);
 
-                _rotationPlaneTransform.localRotation = Quaternion.Slerp(
-                    _rotationPlaneTransform.localRotation,
+                RotationPlaneTransform.localRotation = Quaternion.Slerp(
+                    RotationPlaneTransform.localRotation,
                     targetLocalRotation,
                     curveT);
             }
             else*/
             {
-                _rotationPlaneTransform.localRotation = Quaternion.Slerp(
-                    _rotationPlaneTransform.localRotation,
+                RotationPlaneTransform.localRotation = Quaternion.Slerp(
+                    RotationPlaneTransform.localRotation,
                     targetLocalRotation,
                     t);
             }
@@ -285,8 +280,8 @@ namespace SpiderController.Platform
 
         private void RotateWithoutEnergyTo(Quaternion targetLocalRotation)
         {
-            _rotationPlaneTransform.localRotation = Quaternion.Slerp(
-                _rotationPlaneTransform.localRotation,
+            RotationPlaneTransform.localRotation = Quaternion.Slerp(
+                RotationPlaneTransform.localRotation,
                 targetLocalRotation,
                 Time.fixedDeltaTime * SpiderStaticData.PlaneRotationSpeed);
         }
@@ -295,7 +290,7 @@ namespace SpiderController.Platform
         {
             Vector3 up = _stableWorldUp.StableWorldUpTransform.up;
 
-            Vector3 spiderForward = Vector3.ProjectOnPlane(_rotationPlaneTransform.parent.forward, up);
+            Vector3 spiderForward = Vector3.ProjectOnPlane(RotationPlaneTransform.parent.forward, up);
             Vector3 cameraForward = Vector3.ProjectOnPlane(_cameraTransform.forward, up);
 
             if (spiderForward.sqrMagnitude < Mathf.Epsilon || cameraForward.sqrMagnitude < Mathf.Epsilon)

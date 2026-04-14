@@ -1,9 +1,11 @@
+using System.Linq;
 using DG.Tweening;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
+using PickupObjects.PickUpOnPlatform;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
 using UnityEngine;
@@ -20,21 +22,21 @@ namespace SpiderController.StateMachine.States.Ground.Aiming
         protected AimingState(
             ISpiderStateMachine stateMachine,
             IInputService inputService,
-            IStaticDataService staticDataService, 
+            IStaticDataService staticDataService,
             ICutSceneService cutSceneService,
-            IPlatformObjectsService platformObjectsService, 
+            IPlatformObjectsService platformObjectsService,
             Spider spider,
-            StateMachineData stateMachineData, 
-            LegDataStruct[] legs, 
+            StateMachineData stateMachineData,
+            LegDataStruct[] legs,
             Flower flower,
             EnergySystem energySystem) : base(
-            stateMachine, 
-            inputService, 
-            staticDataService, 
-            cutSceneService, 
+            stateMachine,
+            inputService,
+            staticDataService,
+            cutSceneService,
             spider,
-            stateMachineData, 
-            legs, 
+            stateMachineData,
+            legs,
             flower,
             energySystem)
         {
@@ -97,7 +99,7 @@ namespace SpiderController.StateMachine.States.Ground.Aiming
             int count = _platformObjectsService.PickupObjects.Count;
 
             for (int i = 0; i < count; i++)
-                _platformObjectsService.PickupObjects[i].GetComponent<IThrowable>().ThrowObject();
+                _platformObjectsService.Throw(_platformObjectsService.PickupObjects[i]);
 
             _localMoveTween?.Kill();
             _localMoveTween = Spider.RotationPlaneTransform.DOLocalMove(targetPosition, 0.05f);

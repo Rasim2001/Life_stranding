@@ -3,6 +3,7 @@ using Infastructure.Common.Pickup;
 using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Common.Trajectory;
 using Infastructure.CutScenes.FlowerPickupCutscene;
+using Infastructure.Factories;
 using Infastructure.Factories.GameFactories;
 using Infastructure.PlatformRegistry;
 using Infastructure.Services.Ability;
@@ -96,6 +97,8 @@ namespace Infastructure.CompositionRoot
             BindTrajectoryEndPointDisplayer();
 
             BindGravityGunDisplayer();
+
+            BindDiFactory();
         }
 
         private void BindUI()
@@ -132,6 +135,10 @@ namespace Infastructure.CompositionRoot
                 .FromComponentInNewPrefabResource(AssetsPath.GravityGunDisplayerPath)
                 .AsSingle();
         }
+
+        private void BindDiFactory() =>
+            Container.BindInterfacesAndSelfTo<DiFactory>().AsSingle();
+
 
         private void BindVolumeService() =>
             Container.BindInterfacesAndSelfTo<VolumeService>().AsSingle();

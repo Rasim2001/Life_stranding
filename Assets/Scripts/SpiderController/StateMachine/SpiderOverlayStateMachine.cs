@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.GravityGun;
+using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.StateMachine.OverlayStates;
@@ -16,14 +17,19 @@ namespace SpiderController.StateMachine
 
         private ISpiderState _currentState;
 
-        public SpiderOverlayStateMachine(IInputService inputService, IGravityGunDisplayer displayer,
-            ICameraProviderService cameraProviderService, IStaticDataService staticDataService,
-            StateMachineData stateMachineData, Transform rotationPlaneTransform)
+        public SpiderOverlayStateMachine(
+            IInputService inputService,
+            IGravityGunDisplayer displayer,
+            ICameraProviderService cameraProviderService,
+            IStaticDataService staticDataService,
+            IPlatformObjectsService platformObjectsService,
+            StateMachineData stateMachineData,
+            Transform rotationPlaneTransform)
         {
             _states = new List<ISpiderState>()
             {
                 new EmptyOverlayState(this, inputService),
-                new GravityGunOverlayState(this, inputService, cameraProviderService, displayer, stateMachineData,
+                new GravityGunOverlayState(this, platformObjectsService, inputService, cameraProviderService, displayer, stateMachineData,
                     rotationPlaneTransform, staticDataService.GravityGunStaticData),
             };
 

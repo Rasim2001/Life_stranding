@@ -1,5 +1,6 @@
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.GravityGun;
+using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.GravityGun;
 using PickupObjects.PickUpOnPlatform;
@@ -9,6 +10,7 @@ namespace SpiderController.StateMachine.OverlayStates
 {
     public class GravityGunOverlayState : ISpiderState
     {
+        private readonly IPlatformObjectsService _platformObjectsService;
         private readonly ISpiderStateMachine _stateMachine;
         private readonly IInputService _inputService;
         private readonly ICameraProviderService _cameraProviderService;
@@ -24,6 +26,7 @@ namespace SpiderController.StateMachine.OverlayStates
 
         public GravityGunOverlayState(
             ISpiderStateMachine stateMachine,
+            IPlatformObjectsService platformObjectsService,
             IInputService inputService,
             ICameraProviderService cameraProviderService,
             IGravityGunDisplayer displayer,
@@ -31,6 +34,7 @@ namespace SpiderController.StateMachine.OverlayStates
             Transform rotationPlaneTransform,
             GravityGunStaticData gravityGunStaticData)
         {
+            _platformObjectsService = platformObjectsService;
             _stateMachine = stateMachine;
             _inputService = inputService;
             _cameraProviderService = cameraProviderService;
@@ -102,7 +106,7 @@ namespace SpiderController.StateMachine.OverlayStates
                 if (pickupObjectBase.IsOnPlatform)
                     return;
 
-                pickupObjectBase.StopSimulatePhysics();
+                _platformObjectsService.Add(pickupObjectBase);
 
                 _grabbedRigidbody = null;
                 _stateMachine.SwitchState<EmptyOverlayState>();

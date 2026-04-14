@@ -2,6 +2,7 @@ using System;
 using DG.Tweening;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.Pause;
+using Infastructure.Services.PlatformObjects;
 using Infastructure.StaticData.LastChance;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
@@ -27,11 +28,13 @@ namespace Infastructure.Services.QTE
         private IStaticDataService _staticDataService;
         private ICameraProviderService _cameraProviderService;
         private IPauseService _pauseService;
+        private IPlatformObjectsService _platformObjectsService;
 
         [Inject]
         public void Construct(IStaticDataService staticDataService, ICameraProviderService cameraProviderService,
-            IPauseService pauseService)
+            IPauseService pauseService, IPlatformObjectsService platformObjectsService)
         {
+            _platformObjectsService = platformObjectsService;
             _pauseService = pauseService;
             _cameraProviderService = cameraProviderService;
             _staticDataService = staticDataService;
@@ -55,7 +58,7 @@ namespace Infastructure.Services.QTE
             _flower = flower;
 
         public void PickUpFlower() =>
-            _flower.StopSimulatePhysics();
+            _platformObjectsService.Add(_flower);
 
         public void Show(Action OnShrinkRingFinishHappened)
         {

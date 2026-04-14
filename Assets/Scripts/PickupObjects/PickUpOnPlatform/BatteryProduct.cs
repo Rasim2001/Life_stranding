@@ -7,17 +7,13 @@ using Infastructure.Services.XRay;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
 using Infastructure.StaticData.XRay;
-using SpiderController.Platform;
 using SpiderController.StateMachine;
-using UnityEngine;
 using Zenject;
 
 namespace PickupObjects.PickUpOnPlatform
 {
-    public class BatteryProduct : PickupObjectBase, IProduct, ISavedProgress
+    public class BatteryProduct : PickupObjectBase, ISavedProgress
     {
-        public ProductType ProductType { get; set; }
-
         private XRayMarker _xRayMarker;
         private IXRayService _xRayService;
         private IStaticDataService _staticDataService;
@@ -42,15 +38,16 @@ namespace PickupObjects.PickUpOnPlatform
         }
 
 
-        public override void Initialize(Transform platformTransform, PlatformSelector platformSelector)
+        /*public override void Initialize(Transform platformTransform, PlatformSelector platformSelector)
         {
             base.Initialize(platformTransform, platformSelector);
 
             _productData = _staticDataService.ProductsStaticData.ProductsDictionary[ProductType];
+            
             Speed = _productData.Speed;
             StartPosition = _productData.StartPositionVector;
             StartRotation = Quaternion.Euler(_productData.StartRotationEuler);
-        }
+        }*/
 
         public void Initialize(StateMachineData stateMachineData) =>
             _stateMachineData = stateMachineData;
@@ -107,7 +104,7 @@ namespace PickupObjects.PickUpOnPlatform
             _xRayService.Add(_xRayMarker);
         }
 
-        public override void StopSimulatePhysics()
+        /*public override void StopSimulatePhysics()
         {
             if (!IsOnPlatform)
                 _stateMachineData.TotalWeight += _productData.Weight;
@@ -115,16 +112,16 @@ namespace PickupObjects.PickUpOnPlatform
             base.StopSimulatePhysics();
 
             _xRayService.Remove(_xRayMarker);
-        }
+        }*/
 
-        public override void StartSimulatePhysics()
+        /*public override void StartSimulatePhysics()
         {
             base.StartSimulatePhysics();
 
             _stateMachineData.TotalWeight -= _productData.Weight;
 
             _xRayService.Add(_xRayMarker);
-        }
+        }*/
 
         public void PutdownOnGenerator(Generator generator)
         {
@@ -134,12 +131,12 @@ namespace PickupObjects.PickUpOnPlatform
             IsPuttingDown = true;
             Collider.enabled = false;
 
-            PlatformSelector.IsOnPlatform(Collider);
+            //PlatformSelector.IsOnPlatform(Collider);
             Rigidbody.isKinematic = true;
 
             _stateMachineData.TotalWeight -= _productData.Weight;
 
-            base.StartSimulatePhysics();
+            //base.StartSimulatePhysics();
         }
     }
 }

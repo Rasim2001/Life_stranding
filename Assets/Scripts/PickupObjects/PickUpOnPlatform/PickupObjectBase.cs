@@ -1,205 +1,120 @@
-using System;
 using Infastructure.Services.PlatformObjects;
+using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
-using SpiderController;
-using SpiderController.Platform;
 using UnityEngine;
 using Zenject;
 
 namespace PickupObjects.PickUpOnPlatform
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class PickupObjectBase : MonoBehaviour, IThrowable
+    public class PickupObjectBase : MonoBehaviour, IProduct
     {
-        private readonly float _linearDamping = 10;
-        private readonly float _angularDamping = 10;
+        private const float PlatformLinearDamping = 10;
+        private const float PlatformAngularDamping = 10;
 
+        public ProductType ProductType { get; set; }
         public bool IsOnPlatform { get; private set; }
         public Rigidbody Rigidbody { get; private set; }
+        public Collider Collider { get; private set; }
 
         public bool IsFreezingOnPlatform;
-
         public bool WasOnPlatform;
         public bool IsPuttingDown;
 
-        protected Vector3 StartPosition { get; set; }
-        protected Quaternion StartRotation { get; set; }
-        protected float Speed { get; set; }
-        protected Collider Collider { get; private set; }
-        protected PlatformSelector PlatformSelector { get; private set; }
+        public Vector3 StartPosition { get; private set; }
+        public Quaternion StartRotation { get; private set; }
+        public float Speed { get; private set; }
 
         private Vector3 _customPositionOffset = Vector3.zero;
+        private float _defaultLinearDamping;
+        private float _defaultAngularDamping;
 
-        private Transform _platformArmature;
         private IPlatformObjectsService _platformObjectsService;
-
-        private Rigidbody _spiderRigidbody;
-
-
-        private float _linearDefaultDamping;
-        private float _angularDefaultDamping;
-
+        private IStaticDataService _staticDataService;
 
         [Inject]
-        public void Construct(IPlatformObjectsService platformObjectsService) =>
+        public void Construct(
+            IPlatformObjectsService platformObjectsService,
+            IStaticDataService staticDataService)
+        {
+            _staticDataService = staticDataService;
             _platformObjectsService = platformObjectsService;
-
-        public virtual void Initialize(Transform platformTransform, PlatformSelector platformSelector)
-        {
-            PlatformSelector = platformSelector;
-            _platformArmature = platformTransform;
-
-            _spiderRigidbody = _platformArmature.GetComponentInParent<Spider>().Rigidbody;
-        }
-
-        public virtual void ThrowObject()
-        {
-            IsOnPlatform = false;
-
-            PlatformSelector.ReturnToDefaultMaterial();
-
-            _platformObjectsService.PickupObjects.Remove(this);
-
-            IsOnPlatform = false;
-            Rigidbody.useGravity = true;
-            Rigidbody.angularDamping = _angularDefaultDamping;
-            Rigidbody.linearDamping = _linearDefaultDamping;
-            Rigidbody.constraints = RigidbodyConstraints.None;
-
-            PlatformSelector.ResetExcludeLayerMask();
-
-            transform.SetParent(null);
-
-            Rigidbody.linearVelocity = transform.up * 10;
         }
 
         protected virtual void Awake()
         {
             Rigidbody = GetComponent<Rigidbody>();
-
-            _linearDefaultDamping = Rigidbody.linearDamping;
-            _angularDefaultDamping = Rigidbody.angularDamping;
-
             Collider = GetComponent<Collider>();
+
+            _defaultLinearDamping = Rigidbody.linearDamping;
+            _defaultAngularDamping = Rigidbody.angularDamping;
         }
 
-        protected virtual void Update()
+        public virtual void Initialize()
         {
-            if (IsOnPlatform)
-                transform.localRotation = Quaternion.Euler(StartRotation.eulerAngles.x, 0, 0);
+            ProductData productData =
+                _staticDataService.ProductsStaticData.ProductsDictionary[ProductType];
 
-            if (!IsOnPlatform || IsFreezingOnPlatform || IsPuttingDown)
-                return;
-
-            IsOnPlatform = PlatformSelector.IsOnPlatform(Collider);
-
-            if (IsPlatformUpsideDown())
-            {
-                StartSimulatePhysics();
-                return;
-            }
-
-            if (IsOnPlatform)
-                SimulateRotation();
-            else
-                StartSimulatePhysics();
+            Speed = productData.Speed;
+            StartPosition = productData.StartPositionVector;
+            StartRotation = Quaternion.Euler(productData.StartRotationEuler);
         }
 
-        private void FixedUpdate()
+        public virtual void AttachToPlatform(Transform platformTransform)
         {
-            if (!IsOnPlatform || IsPuttingDown)
-                return;
-
-            if (Rigidbody.constraints == RigidbodyConstraints.FreezeRotation)
-                Rigidbody.linearVelocity =
-                    new Vector3(_spiderRigidbody.linearVelocity.x, 0, _spiderRigidbody.linearVelocity.z);
-        }
-
-        protected virtual void OnCollisionEnter(Collision other)
-        {
-            if (other.gameObject.layer == LayerMask.NameToLayer("Default"))
-                Rigidbody.constraints = IsOnPlatform ? RigidbodyConstraints.FreezeRotation : RigidbodyConstraints.None;
-        }
-
-        protected virtual void OnCollisionExit(Collision other)
-        {
-            if (other.gameObject.layer == LayerMask.NameToLayer("Default"))
-                Rigidbody.constraints = IsOnPlatform ? RigidbodyConstraints.FreezeAll : RigidbodyConstraints.None;
-        }
-
-        public void SetCustomOffsetPosition(Vector3 position) =>
-            _customPositionOffset = position;
-
-
-        public virtual void StopSimulatePhysics()
-        {
-            if (!_platformObjectsService.PickupObjects.Contains(this))
-                _platformObjectsService.PickupObjects.Add(this);
-
             if (!WasOnPlatform)
                 WasOnPlatform = true;
 
             IsOnPlatform = true;
+
             Rigidbody.useGravity = false;
-            Rigidbody.angularDamping = _angularDamping;
-            Rigidbody.linearDamping = _linearDamping;
+            Rigidbody.angularDamping = PlatformAngularDamping;
+            Rigidbody.linearDamping = PlatformLinearDamping;
             Rigidbody.constraints = RigidbodyConstraints.FreezeAll;
             Rigidbody.isKinematic = false;
 
-            PlatformSelector.SetExcludeLayerMask();
-
-            transform.SetParent(_platformArmature);
-
+            transform.SetParent(platformTransform);
             transform.localPosition = StartPosition + _customPositionOffset;
             transform.localRotation = StartRotation;
         }
 
 
-        public virtual void StartSimulatePhysics()
+        public virtual void GetChanceAttachToPlatform()
         {
-            PlatformSelector.ReturnToDefaultMaterial();
+        }
 
-            _platformObjectsService.PickupObjects.Remove(this);
+        public virtual void ThrowObject() =>
+            Rigidbody.linearVelocity = transform.up * 10;
 
+        public void DetachFromPlatform()
+        {
             IsOnPlatform = false;
-            Rigidbody.useGravity = true;
-            Rigidbody.angularDamping = _angularDefaultDamping;
-            Rigidbody.linearDamping = _linearDefaultDamping;
-            Rigidbody.constraints = RigidbodyConstraints.None;
 
-            PlatformSelector.ResetExcludeLayerMask();
+            Rigidbody.useGravity = true;
+            Rigidbody.angularDamping = _defaultAngularDamping;
+            Rigidbody.linearDamping = _defaultLinearDamping;
+            Rigidbody.constraints = RigidbodyConstraints.None;
 
             transform.SetParent(null);
         }
 
-        private bool IsPlatformUpsideDown()
+        public void SetCustomOffsetPosition(Vector3 position) =>
+            _customPositionOffset = position;
+
+        protected virtual void OnCollisionEnter(Collision other)
         {
-            Vector3 worldUp = -Physics.gravity.normalized;
-            float dot = Vector3.Dot(_platformArmature.up, worldUp);
-            return dot < Mathf.Epsilon;
+            if (other.gameObject.layer == LayerMask.NameToLayer("Default"))
+                Rigidbody.constraints = IsOnPlatform
+                    ? RigidbodyConstraints.FreezeRotation
+                    : RigidbodyConstraints.None;
         }
 
-
-        private void SimulateRotation()
+        protected virtual void OnCollisionExit(Collision other)
         {
-            Vector3 platformRotation = _platformArmature.eulerAngles;
-
-            float angleX = Mathf.Deg2Rad * platformRotation.x;
-            float angleZ = Mathf.Deg2Rad * platformRotation.z;
-
-            Vector3 gravityForce = new Vector3(
-                -Mathf.Sin(angleZ),
-                0f,
-                Mathf.Sin(angleX)
-            );
-
-            Vector3 movementVector = gravityForce * (Time.deltaTime * Speed);
-            movementVector = StartRotation * movementVector;
-
-            transform.Translate(movementVector, Space.Self);
-
-            transform.localPosition =
-                new Vector3(transform.localPosition.x, StartPosition.y, transform.localPosition.z);
+            if (other.gameObject.layer == LayerMask.NameToLayer("Default"))
+                Rigidbody.constraints = IsOnPlatform
+                    ? RigidbodyConstraints.FreezeAll
+                    : RigidbodyConstraints.None;
         }
     }
 }

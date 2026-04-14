@@ -5,8 +5,9 @@ namespace SpiderController
 {
     public class SpiderImpactReceiver
     {
-        private readonly StateMachineData _stateMachineData;
-        private readonly Transform _spiderTransform;
+        private readonly SpiderStateContext _stateContext;
+        private StateMachineData Data => _stateContext.Data;
+        private Transform Transform => _stateContext.Transform;
 
         private const float ExplosionDecayRate = 5f;
         private const float MinThreshold = 0.1f;
@@ -14,32 +15,29 @@ namespace SpiderController
         private const float AngularDecayRate = 2f;
         private const float AngularForceMultiplier = 0.5f;
 
-        public SpiderImpactReceiver(StateMachineData stateMachineData, Transform spiderTransform)
-        {
-            _stateMachineData = stateMachineData;
-            _spiderTransform = spiderTransform;
-        }
+        public SpiderImpactReceiver(SpiderStateContext stateContext) =>
+            _stateContext = stateContext;
 
         public void ApplyExplosionForce(Vector3 explosionPosition, float force, float radius)
         {
-            Vector3 direction = (_spiderTransform.position - explosionPosition).normalized;
+            Vector3 direction = (Transform.position - explosionPosition).normalized;
 
-            float distance = Vector3.Distance(_spiderTransform.position, explosionPosition);
+            float distance = Vector3.Distance(Transform.position, explosionPosition);
             float distanceFactor = Mathf.Clamp01(1f - distance / radius);
 
-            Vector3 torqueAxis = Vector3.Cross(direction, _spiderTransform.up).normalized;
+            Vector3 torqueAxis = Vector3.Cross(direction, Transform.up).normalized;
 
-            _stateMachineData.ExplosionAngularVector = torqueAxis * (force * distanceFactor * AngularForceMultiplier);
-            _stateMachineData.ExplosionVector = direction * (force * distanceFactor);
+            Data.ExplosionAngularVector = torqueAxis * (force * distanceFactor * AngularForceMultiplier);
+            Data.ExplosionVector = direction * (force * distanceFactor);
         }
 
         public void Update()
         {
-            _stateMachineData.ExplosionVector =
-                DampVector(_stateMachineData.ExplosionVector, ExplosionDecayRate);
+            Data.ExplosionVector =
+                DampVector(Data.ExplosionVector, ExplosionDecayRate);
 
-            _stateMachineData.ExplosionAngularVector =
-                DampVector(_stateMachineData.ExplosionAngularVector, AngularDecayRate);
+            Data.ExplosionAngularVector =
+                DampVector(Data.ExplosionAngularVector, AngularDecayRate);
         }
 
         private Vector3 DampVector(Vector3 value, float decayRate)

@@ -20,7 +20,6 @@ using PickupObjects.PickUpOnPlatform;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using PickupObjects.Skills;
 using SpiderController;
-using SpiderController.UI.Health;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
@@ -89,8 +88,8 @@ namespace Infastructure.Factories.GameFactories
             hud.RegisterFlowerPoint(flower);
             hud.RegisterFinishTarget(_biospherePointService.PointIndicator);
 
-            flower.Initialize(hud.FlowerPointIndicator, spider.StateMachineData);
-            flower.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
+            flower.Initialize(hud.FlowerPointIndicator);
+            flower.Initialize();
 
             _xRayService.Initialize(hud.XRayCollectionContainer, hud.transform, hud.DisabledContainer);
 
@@ -177,7 +176,7 @@ namespace Infastructure.Factories.GameFactories
 
                 _xRayService.Add(xRayMarker);
 
-                batteryProduct.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
+                batteryProduct.Initialize();
                 batteryProduct.Initialize(spider.StateMachineData);
 
                 _progressWatchersService.RegisterWatchers(batteryProduct.gameObject);
@@ -234,7 +233,7 @@ namespace Infastructure.Factories.GameFactories
                 IProduct product = elephantProduct.GetComponent<IProduct>();
                 product.ProductType = productType;
 
-                elephantProduct.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
+                elephantProduct.Initialize();
                 elephantProduct.Initialize(spider.StateMachineData);
             }
         }
@@ -312,7 +311,7 @@ namespace Infastructure.Factories.GameFactories
             TerrainScanIconsRenderer terrainScanIconsRenderer =
                 terrainScanObject.GetComponentInChildren<TerrainScanIconsRenderer>();
             terrainScanIconsRenderer.Initialize(_cameraProviderService.CameraTransform);
-            
+
             _xRayService.Initialize();
         }
 

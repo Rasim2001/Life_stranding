@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace SpiderController.StateMachine
 {
+    [Serializable]
     public class StateMachineData
     {
         public event Action AimingStateChanged;

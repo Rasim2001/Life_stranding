@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Infastructure.Common.Pickup;
@@ -9,6 +10,7 @@ using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.Spider;
+using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
@@ -26,12 +28,13 @@ namespace SpiderController.PickUp
         private readonly IWindowService _windowService;
         private readonly IDefeatWindowService _defeatWindowService;
         private readonly ICutSceneService _cutSceneService;
+        private readonly IStaticDataService _staticDataService;
+        private readonly SpiderStateContext _stateContext;
 
-        private readonly FlowerChecker _flowerChecker;
         private readonly Flower _flower;
-        private readonly SpiderUI _spiderUI;
-        private readonly SpiderStaticData _spiderStaticData;
-
+        private FlowerChecker _flowerChecker => _stateContext.FlowerChecker;
+        private SpiderStaticData _spiderStaticData => _staticDataService.SpiderStaticData;
+        private SpiderUI _spiderUI => _stateContext.SpiderUI;
         private HealthBarUI HealthBar => _spiderUI.HealthBar;
         private SpiderHealth SpiderHealth => _spiderUI.SpiderHealth;
 
@@ -40,27 +43,26 @@ namespace SpiderController.PickUp
         private CancellationTokenSource _lifetimeCts;
 
         public FlowerPickup(
+            SpiderStateContext stateContext,
+            Flower flower,
             IInputService inputService,
             IPickupDisplayer pickupDisplayer,
             IPlatformObjectsService platformObjectsService,
             IWindowService windowService,
             IDefeatWindowService defeatWindowService,
             ICutSceneService cutSceneService,
-            FlowerChecker flowerChecker,
-            Flower flower,
-            SpiderUI spiderUI,
-            SpiderStaticData spiderStaticData)
+            IStaticDataService staticDataService)
         {
+            _stateContext = stateContext;
             _inputService = inputService;
             _pickupDisplayer = pickupDisplayer;
             _platformObjectsService = platformObjectsService;
             _windowService = windowService;
             _defeatWindowService = defeatWindowService;
             _cutSceneService = cutSceneService;
-            _flowerChecker = flowerChecker;
+            _staticDataService = staticDataService;
+
             _flower = flower;
-            _spiderUI = spiderUI;
-            _spiderStaticData = spiderStaticData;
         }
 
         public void Initialize()
@@ -99,7 +101,9 @@ namespace SpiderController.PickUp
                 {
                     _windowService.OpenProductDescriptionPopup(ProductType.Flower);
 
-                    _flower.StopSimulatePhysics();
+                    _platformObjectsService.Add(_flower);
+
+                    //_flower.StopSimulatePhysics();  //TODO:
                     HealthBar.PlayFadeHologramEffect();
                 }
             }
@@ -115,7 +119,20 @@ namespace SpiderController.PickUp
 
 
         private bool CanDisplay() =>
-            _flowerChecker.IsTouching && _flower.Rigidbody.IsSleeping() && !_flower.IsOnPlatform;
+            _flowerChecker.Results.Count > 0 && _flowerChecker.Results.Any(IsFlowerReadyToPickup);
+
+        private bool IsFlowerReadyToPickup(Collider col)
+        {
+            if (col == null)
+                return false;
+
+            if (!col.TryGetComponent(out Flower flower))
+                return false;
+
+            return flower.Rigidbody.IsSleeping() &&
+                   !flower.IsOnPlatform &&
+                   !flower.IsPuttingDown;
+        }
 
         private void DropFlowerHappened()
         {
@@ -137,7 +154,8 @@ namespace SpiderController.PickUp
 
             _windowService.OpenProductDescriptionPopup(ProductType.Flower);
 
-            _flower.StopSimulatePhysics();
+            _platformObjectsService.Add(_flower);
+            //_flower.StopSimulatePhysics();  //TODO:
             HealthBar.PlayFadeHologramEffect();
         }
     }

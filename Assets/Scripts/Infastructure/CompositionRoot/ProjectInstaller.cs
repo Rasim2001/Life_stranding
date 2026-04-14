@@ -1,5 +1,6 @@
 using Infastructure.Common;
 using Infastructure.Common.Pickup;
+using Infastructure.Factories;
 using Infastructure.Factories.ProjectFactories;
 using Infastructure.Localization;
 using Infastructure.Services.CursorVisible;
@@ -74,7 +75,6 @@ namespace Infastructure.CompositionRoot
         private void BindCursorVisibleService() =>
             Container.BindInterfacesAndSelfTo<CursorVisibleService>().AsSingle();
 
-        
 
         private void BindRestartService() =>
             Container.BindInterfacesAndSelfTo<RestartService>().AsSingle();

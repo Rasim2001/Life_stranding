@@ -5,6 +5,7 @@ using HighlightPlus;
 using Infastructure.Common.Pickup;
 using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Data;
+using Infastructure.Factories;
 using Infastructure.PlatformRegistry;
 using Infastructure.Services.Ability;
 using Infastructure.Services.CameraProvider;
@@ -46,7 +47,6 @@ namespace SpiderController
     [RequireComponent(typeof(Rigidbody))]
     public class Spider : SerializedMonoBehaviour, ISavedProgress
     {
-        [SerializeField] private ComponentProviderBase _provider;
         [SerializeField] private SpiderUI _spiderUI;
         [SerializeField] private ThrusterSystem _thrusterSystem;
         [SerializeField] private ScannerAnimator _scannerAnimator;
@@ -62,9 +62,9 @@ namespace SpiderController
         [SerializeField] private TrajectoryRender _trajectoryRender;
 
         [SerializeField] private Stickers _stickers;
+        [SerializeField] private GroundChecker _groundChecker;
 
         [SerializeField] private Transform _rotationPlaneTransform;
-        [SerializeField] private GroundChecker _groundChecker;
 
         [SerializeField] private HighlightEffect[] _energyHighlightEffects;
         [SerializeField] private LegDataStruct[] _legs;
@@ -122,7 +122,7 @@ namespace SpiderController
         private IAbilityService _abilityService;
         private IDefeatWindowService _defeatWindowService;
 
-        private StateMachineData _stateMachineData;
+        [SerializeField] private StateMachineData _stateMachineData;
         private SpiderOverlayStateMachine _overlayStateMachine;
         private MagnetSkill _magnetSkill;
 
@@ -133,9 +133,10 @@ namespace SpiderController
         private IPersistentProgressService _persistentProgressService;
         private IGravityGunDisplayer _gravityGunDisplayer;
 
-
         [Inject]
         public void Construct(
+            IDiFactory diFactory,
+            IPlatformObjectsService platformObjectsService,
             IInputService inputService,
             IStaticDataService staticDataService,
             IPickupDisplayer pickupDisplayer,
@@ -143,7 +144,6 @@ namespace SpiderController
             IBiospherePointService biospherePointService,
             ICutSceneService cutSceneService,
             IMagnetFreezingService magnetFreezingService,
-            IPlatformObjectsService platformObjectsService,
             IXRayService xRayService,
             IPlatformRegistryService platformRegistryService,
             IWindowService windowService,
@@ -158,6 +158,7 @@ namespace SpiderController
             IPersistentProgressService persistentProgressService,
             IGravityGunDisplayer gravityGunDisplayer)
         {
+            _diFactory = diFactory;
             _gravityGunDisplayer = gravityGunDisplayer;
             _persistentProgressService = persistentProgressService;
             _progressWatchersService = progressWatchersService;
@@ -179,6 +180,9 @@ namespace SpiderController
             _inputService = inputService;
         }
 
+        private IDiFactory _diFactory;
+
+
         public void LoadProgress(PlayerProgress progress)
         {
             if (progress.WorldProgressData.SpiderData.Position == null)
@@ -194,11 +198,8 @@ namespace SpiderController
             progress.WorldProgressData.SpiderData.Rotation = transform.localEulerAngles.AsVectorData();
         }
 
-        private void Awake()
-        {
-            _provider.Initialize();
+        private void Awake() =>
             _rigidbody = GetComponent<Rigidbody>();
-        }
 
         private void Start() =>
             _defeatWindowService.OnDefeatHappened += Defeat;
@@ -228,22 +229,40 @@ namespace SpiderController
             _stateMachineData.EnergyFillAmount = _staticDataService.SpiderStaticData.EnergyFillAmount;
             _stateMachineData.OnShakeHappened += distanceFalling => OnShakeCameraHappened?.Invoke(distanceFalling);
 
-            _magnetFreezingService.Initialize(_stateMachineData);
+
+            SpiderStateContext stateContext = new SpiderStateContext(
+                transform,
+                _rotationPlaneTransform,
+                _rigidbody,
+                _spiderUI,
+                _thrusterSystem,
+                _scannerAnimator,
+                _flowerChecker,
+                _batteryChecker,
+                _energyChecker,
+                _elephantChecker,
+                _skillChecker,
+                _checkpointChecker,
+                _generatorChecker,
+                _biosphereChecker,
+                _waterObserverTrigger,
+                _trajectoryRender,
+                _stickers,
+                _groundChecker,
+                _stateMachineData
+            );
+
 
             EnergyLegs energyLegs = new EnergyLegs(_energyHighlightEffects);
 
-            EnergySystem energySystem = new EnergySystem(_stateMachineData, _spiderUI.EnergyBar, _cutSceneService);
+            EnergySystem energySystem = _diFactory.Create<EnergySystem>(stateContext);
 
-            _spiderImpactReceiver = new SpiderImpactReceiver(_stateMachineData, transform);
+            _spiderImpactReceiver = _diFactory.Create<SpiderImpactReceiver>(stateContext);
 
-            _spiderPlane = new SpiderPlane(_spiderUI.PlaneIndicatorUI, _rotationPlaneTransform, _inputService,
-                _abilityService, _staticDataService, _windowService, _cameraProviderService, _stableWorldUp,
-                _stateMachineData, _trajectoryRender);
+            _spiderPlane = _diFactory.Create<SpiderPlane>(stateContext);
             _spiderPlane.Initialize();
 
-            _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _platformObjectsService, _windowService,
-                _defeatWindowService, _cutSceneService, _flowerChecker, flower, _spiderUI,
-                _staticDataService.SpiderStaticData);
+            _flowerPickup = _diFactory.Create<FlowerPickup>(stateContext, flower);
             _flowerPickup.Initialize();
 
             _batteryProductPickup = new BatteryProductPickup(_hintReceiverService, _inputService, _pickupDisplayer,
@@ -293,9 +312,10 @@ namespace SpiderController
                     flower,
                     energySystem);
 
-            _overlayStateMachine =
-                new SpiderOverlayStateMachine(_inputService, _gravityGunDisplayer, _cameraProviderService,
-                    _staticDataService, _stateMachineData, _rotationPlaneTransform);
+            _overlayStateMachine = _diFactory.Create<SpiderOverlayStateMachine>(_stateMachineData, _rotationPlaneTransform);
+
+            _magnetFreezingService.Initialize(_stateMachineData);
+            _platformObjectsService.Initialize(stateContext, _platformSelector);
 
             _progressWatchersService.RegisterWatcher(_energyPickup);
         }
@@ -315,6 +335,8 @@ namespace SpiderController
 
             _spiderStateMachine.HandleInput();
             _spiderStateMachine.Update();
+
+            _platformObjectsService.Update();
 
             _overlayStateMachine.HandleInput();
             _overlayStateMachine.Update();
@@ -345,6 +367,8 @@ namespace SpiderController
         {
             if (_spiderStateMachine == null || _pauseService.IsPaused || _defeatWindowService.IsDefeated)
                 return;
+
+            _platformObjectsService.FixedUpdate();
 
             _spiderStateMachine.FixedUpdate();
             _overlayStateMachine.FixedUpdate();
