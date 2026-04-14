@@ -46,6 +46,7 @@ namespace SpiderController
     [RequireComponent(typeof(Rigidbody))]
     public class Spider : SerializedMonoBehaviour, ISavedProgress
     {
+        [SerializeField] private ComponentProviderBase _provider;
         [SerializeField] private SpiderUI _spiderUI;
         [SerializeField] private ThrusterSystem _thrusterSystem;
         [SerializeField] private ScannerAnimator _scannerAnimator;
@@ -193,8 +194,11 @@ namespace SpiderController
             progress.WorldProgressData.SpiderData.Rotation = transform.localEulerAngles.AsVectorData();
         }
 
-        private void Awake() =>
+        private void Awake()
+        {
+            _provider.Initialize();
             _rigidbody = GetComponent<Rigidbody>();
+        }
 
         private void Start() =>
             _defeatWindowService.OnDefeatHappened += Defeat;
