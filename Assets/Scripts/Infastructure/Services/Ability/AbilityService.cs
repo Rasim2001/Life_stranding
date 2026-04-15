@@ -30,7 +30,7 @@ namespace Infastructure.Services.Ability
         {
             _progressWatchersService.RegisterWatcher(this);
 
-            //_isCheating = true;
+            _isCheating = true;
         }
 
         public void LoadProgress(PlayerProgress progress) =>

@@ -86,7 +86,7 @@ namespace PickupObjects.PickUpOnPlatform
         public virtual void ThrowObject() =>
             Rigidbody.linearVelocity = transform.up * 10;
 
-        public void DetachFromPlatform()
+        public virtual void DetachFromPlatform()
         {
             IsOnPlatform = false;
 

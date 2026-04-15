@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Infastructure.Factories;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.GravityGun;
 using Infastructure.Services.PlatformObjects;
@@ -17,20 +18,12 @@ namespace SpiderController.StateMachine
 
         private ISpiderState _currentState;
 
-        public SpiderOverlayStateMachine(
-            IInputService inputService,
-            IGravityGunDisplayer displayer,
-            ICameraProviderService cameraProviderService,
-            IStaticDataService staticDataService,
-            IPlatformObjectsService platformObjectsService,
-            StateMachineData stateMachineData,
-            Transform rotationPlaneTransform)
+        public SpiderOverlayStateMachine(IDiFactory diFactory, SpiderStateContext stateContext)
         {
             _states = new List<ISpiderState>()
             {
-                new EmptyOverlayState(this, inputService),
-                new GravityGunOverlayState(this, platformObjectsService, inputService, cameraProviderService, displayer, stateMachineData,
-                    rotationPlaneTransform, staticDataService.GravityGunStaticData),
+                diFactory.Create<EmptyOverlayState>(this),
+                diFactory.Create<GravityGunOverlayState>(this, stateContext)
             };
 
             _currentState = _states[0];

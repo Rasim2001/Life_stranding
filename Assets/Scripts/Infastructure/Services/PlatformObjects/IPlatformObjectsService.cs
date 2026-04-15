@@ -20,5 +20,6 @@ namespace Infastructure.Services.PlatformObjects
 
         void Update();
         void FixedUpdate();
+        void ThrowAll();
     }
 }

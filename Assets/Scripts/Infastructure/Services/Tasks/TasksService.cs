@@ -23,7 +23,7 @@ namespace Infastructure.Services.Tasks
         {
             _progressWatchersService.RegisterWatcher(this);
 
-            //_isCheating = true;
+            _isCheating = true;
         }
 
         public void LoadProgress(PlayerProgress progress) =>

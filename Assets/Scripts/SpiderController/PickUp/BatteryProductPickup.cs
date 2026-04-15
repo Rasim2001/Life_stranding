@@ -18,7 +18,7 @@ namespace SpiderController.PickUp
         private readonly BatteryProductChecker _batteryProductChecker;
         private readonly FlowerChecker _flowerChecker;
         private readonly IPlatformObjectsService _platformObjectsService;
-        private IHintReceiverService _hintReceiverService;
+        private readonly IHintReceiverService _hintReceiverService;
 
         private bool _isShowed;
 
@@ -48,7 +48,7 @@ namespace SpiderController.PickUp
         {
             if (_inputService.PickupPressed)
             {
-                if ( /*_flowerChecker.IsTouching && */_batteryProductChecker.Results.Count > 0)
+                if (_flowerChecker.Results.Count > 0 && _batteryProductChecker.Results.Count > 0)
                     _hintReceiverService.OnProductHint?.Invoke();
 
                 if (CanPickup())
@@ -61,7 +61,7 @@ namespace SpiderController.PickUp
         private bool CanPickup()
         {
             return !_platformObjectsService.HasAny<Flower>() && !_platformObjectsService.HasAny<ElephantProduct>() &&
-                /*!_flowerChecker.IsTouching &&*/ _batteryProductChecker.Results.Any(IsBatteryReadyToPickup);
+                   _flowerChecker.Results.Count == 0 && _batteryProductChecker.Results.Any(IsBatteryReadyToPickup);
         }
 
         private void TryShow()
@@ -114,8 +114,8 @@ namespace SpiderController.PickUp
 
                 BatteryProduct batteryProduct = batteryProducts[i].GetComponent<BatteryProduct>();
                 batteryProduct.SetCustomOffsetPosition(offset);
-                //batteryProduct.StopSimulatePhysics();  //TODO:
 
+                _platformObjectsService.Add(batteryProduct);
                 _pickupDisplayer.Hide(batteryProduct.transform);
             }
         }

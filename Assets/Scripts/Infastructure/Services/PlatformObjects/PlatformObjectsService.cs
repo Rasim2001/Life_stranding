@@ -75,6 +75,25 @@ namespace Infastructure.Services.PlatformObjects
             obj.ThrowObject();
         }
 
+        public void ThrowAll()
+        {
+            if (_objects.Count == 0)
+                return;
+
+            _platformSelector.ReturnToDefaultMaterial();
+            _platformSelector.ResetExcludeLayerMask();
+
+            foreach (PickupObjectBase obj in _objects)
+            {
+                RemoveWeight(obj);
+
+                obj.DetachFromPlatform();
+                obj.ThrowObject();
+            }
+
+            _objects.Clear();
+        }
+
         public void Update()
         {
             for (int i = _objects.Count - 1; i >= 0; i--)

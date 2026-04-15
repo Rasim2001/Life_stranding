@@ -1,54 +1,41 @@
+using Common;
+using Infastructure.Services.XRay;
 using Infastructure.StaticData.Product;
-using Infastructure.StaticData.StaticDataService;
-using SpiderController.StateMachine;
+using Infastructure.StaticData.XRay;
+using UnityEngine;
 using Zenject;
 
 namespace PickupObjects.PickUpOnPlatform
 {
     public class ElephantProduct : PickupObjectBase
     {
-        private IStaticDataService _staticDataService;
-
-        private StateMachineData _stateMachineData;
-        private ProductData _productData;
-
+        private XRayMarker _xRayMarker;
+        private IXRayService _xRayService;
 
         [Inject]
-        public void Construct(IStaticDataService staticDataService) =>
-            _staticDataService = staticDataService;
+        public void Construct(IXRayService xRayService) =>
+            _xRayService = xRayService;
 
-        /*public override void Initialize(Transform platformTransform, PlatformSelector platformSelector)
-        {
-            base.Initialize(platformTransform, platformSelector);
 
-            _productData = _staticDataService.ProductsStaticData.ProductsDictionary[ProductType];
-            Speed = _productData.Speed;
-            StartPosition = _productData.StartPositionVector;
-            StartRotation = Quaternion.Euler(_productData.StartRotationEuler);
-        }*/
-
-        public void Initialize(StateMachineData stateMachineData) =>
-            _stateMachineData = stateMachineData;
-
-        /*public override void StopSimulatePhysics()
-        {
-            base.StopSimulatePhysics();
-
-            _stateMachineData.TotalWeight += _productData.Weight;
-        }*/
-
-        public override void ThrowObject()
+        public override void ThrowObject() 
         {
             base.ThrowObject();
 
-            _stateMachineData.TotalWeight -= _productData.Weight;
+            //_xRayService.Add(_xRayMarker);
         }
 
-        /*public override void StartSimulatePhysics()
+        public override void AttachToPlatform(Transform platformTransform)
         {
-            base.StartSimulatePhysics();
+            base.AttachToPlatform(platformTransform);
 
-            _stateMachineData.TotalWeight -= _productData.Weight;
-        }*/
+            //_xRayService.Remove(_xRayMarker);
+        }
+
+        public override void DetachFromPlatform()
+        {
+            base.DetachFromPlatform();
+
+            //_xRayService.Add(_xRayMarker);
+        }
     }
 }

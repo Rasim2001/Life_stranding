@@ -94,7 +94,7 @@ namespace SpiderController.StateMachine
         private readonly float _slowdownFactor = 0.25f;
         private float _speed;
         private bool _IsFallingDownWithoutEnergyState;
-        private float _totalWeight;
+        [SerializeField] private float _totalWeight;
         private bool _isInAimingState;
 
         public void Clear()

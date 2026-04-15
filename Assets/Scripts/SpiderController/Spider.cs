@@ -265,40 +265,31 @@ namespace SpiderController
             _flowerPickup = _diFactory.Create<FlowerPickup>(stateContext, flower);
             _flowerPickup.Initialize();
 
-            _batteryProductPickup = new BatteryProductPickup(_hintReceiverService, _inputService, _pickupDisplayer,
-                _platformObjectsService, _batteryChecker, _flowerChecker);
+            _batteryProductPickup = _diFactory.Create<BatteryProductPickup>(_batteryChecker, _flowerChecker);
             _batteryProductPickup.Initialize();
 
-            _energyPickup = new EnergyPickup(_persistentProgressService, _inputService, _pickupDisplayer, _xRayService,
-                _windowService, _energyChecker, SpiderUI.EnergyBar, _stateMachineData, energyLegs);
+            _energyPickup = _diFactory.Create<EnergyPickup>(stateContext, _energyChecker, energyLegs);
             _energyPickup.Initialize();
 
-            _elephantProductPickup = new ElephantProductPickup(_inputService, _pickupDisplayer, _platformObjectsService,
-                _platformRegistryService, _elephantChecker);
+            _elephantProductPickup = _diFactory.Create<ElephantProductPickup>(_elephantChecker);
             _elephantProductPickup.Initialize();
 
-            _skillProductPickup = new SkillProductPickup(_inputService, _pickupDisplayer, _xRayService, _windowService,
-                _skillChecker);
+            _skillProductPickup = _diFactory.Create<SkillProductPickup>(_skillChecker);
             _skillProductPickup.Initialize();
 
-            _platformSelector = new PlatformSelector(_stateMachineData, _staticDataService, _platformRegistryService,
-                _inputService, _magnetFreezingService);
+            _platformSelector = _diFactory.Create<PlatformSelector>(_stateMachineData);
             _platformSelector.Initialize();
 
-            _checkpointPickup = new CheckpointPickup(_hintReceiverService, _inputService, _pickupDisplayer,
-                _windowService, _platformObjectsService, _checkpointChecker, flower, _spiderUI);
+            _checkpointPickup = _diFactory.Create<CheckpointPickup>(_checkpointChecker, flower, _spiderUI);
             _checkpointPickup.Initialize();
 
-            _generatorPickup = new GeneratorPickup(_hintReceiverService, _inputService, _pickupDisplayer,
-                _platformObjectsService, _windowService, _cutSceneService, _generatorChecker);
+            _generatorPickup = _diFactory.Create<GeneratorPickup>(_generatorChecker);
             _generatorPickup.Initialize();
 
-            _biosphereProductPickup =
-                new BiosphereProductPickup(_inputService, _pickupDisplayer, _biosphereChecker, flower);
+            _biosphereProductPickup = _diFactory.Create<BiosphereProductPickup>(_biosphereChecker, flower);
             _biosphereProductPickup.Initialize();
 
-            _magnetSkill = new MagnetSkill(_windowService, _inputService, _staticDataService, _abilityService,
-                _magnetFreezingService, _stateMachineData, energySystem, _spiderUI);
+            _magnetSkill = _diFactory.Create<MagnetSkill>(stateContext, energySystem);
             _magnetSkill.Initialize();
 
             _spiderStateMachine =
@@ -312,7 +303,7 @@ namespace SpiderController
                     flower,
                     energySystem);
 
-            _overlayStateMachine = _diFactory.Create<SpiderOverlayStateMachine>(_stateMachineData, _rotationPlaneTransform);
+            _overlayStateMachine = _diFactory.Create<SpiderOverlayStateMachine>(stateContext);
 
             _magnetFreezingService.Initialize(_stateMachineData);
             _platformObjectsService.Initialize(stateContext, _platformSelector);

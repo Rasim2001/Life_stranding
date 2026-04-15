@@ -177,7 +177,6 @@ namespace Infastructure.Factories.GameFactories
                 _xRayService.Add(xRayMarker);
 
                 batteryProduct.Initialize();
-                batteryProduct.Initialize(spider.StateMachineData);
 
                 _progressWatchersService.RegisterWatchers(batteryProduct.gameObject);
             }
@@ -234,7 +233,6 @@ namespace Infastructure.Factories.GameFactories
                 product.ProductType = productType;
 
                 elephantProduct.Initialize();
-                elephantProduct.Initialize(spider.StateMachineData);
             }
         }
 

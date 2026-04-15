@@ -3,6 +3,7 @@ using Infastructure.Services.GravityGun;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.StaticData.GravityGun;
+using Infastructure.StaticData.StaticDataService;
 using PickupObjects.PickUpOnPlatform;
 using UnityEngine;
 
@@ -15,11 +16,13 @@ namespace SpiderController.StateMachine.OverlayStates
         private readonly IInputService _inputService;
         private readonly ICameraProviderService _cameraProviderService;
         private readonly IGravityGunDisplayer _displayer;
-        private readonly StateMachineData _data;
-        private readonly Transform _rotationPlaneTransform;
-        private readonly GravityGunStaticData _gravityGunStaticData;
-
+        private readonly IStaticDataService _staticDataService;
+        private readonly SpiderStateContext _stateContext;
+        private StateMachineData Data => _stateContext.Data;
+        private Transform RotationPlaneTransform => _stateContext.RotationPlaneTransform;
+        private GravityGunStaticData GravityGunStaticData => _staticDataService.GravityGunStaticData;
         private Transform CameraTransform => _cameraProviderService.CameraTransform;
+
         private bool _isHolding;
         private Rigidbody _grabbedRigidbody;
 
@@ -30,30 +33,29 @@ namespace SpiderController.StateMachine.OverlayStates
             IInputService inputService,
             ICameraProviderService cameraProviderService,
             IGravityGunDisplayer displayer,
-            StateMachineData data,
-            Transform rotationPlaneTransform,
-            GravityGunStaticData gravityGunStaticData)
+            IStaticDataService staticDataService,
+            SpiderStateContext stateContext
+        )
         {
             _platformObjectsService = platformObjectsService;
             _stateMachine = stateMachine;
             _inputService = inputService;
             _cameraProviderService = cameraProviderService;
             _displayer = displayer;
-            _data = data;
-            _rotationPlaneTransform = rotationPlaneTransform;
-            _gravityGunStaticData = gravityGunStaticData;
+            _staticDataService = staticDataService;
+            _stateContext = stateContext;
         }
 
         public void Enter()
         {
-            _data.IsInGravityGunState = true;
+            Data.IsInGravityGunState = true;
 
             _displayer.Show();
         }
 
         public void Exit()
         {
-            _data.IsInGravityGunState = false;
+            Data.IsInGravityGunState = false;
 
             _displayer.Hide();
         }
@@ -70,7 +72,7 @@ namespace SpiderController.StateMachine.OverlayStates
             {
                 Ray ray = _displayer.GetAimRay(_cameraProviderService.Camera);
 
-                if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, _gravityGunStaticData.GrabTargetLayer))
+                if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, GravityGunStaticData.GrabTargetLayer))
                 {
                     if (hit.collider != null)
                     {
@@ -99,8 +101,8 @@ namespace SpiderController.StateMachine.OverlayStates
 
         private void TryPickup()
         {
-            if (Vector3.Distance(_grabbedRigidbody.position, _rotationPlaneTransform.position) <
-                _gravityGunStaticData.GrabDistance)
+            if (Vector3.Distance(_grabbedRigidbody.position, RotationPlaneTransform.position) <
+                GravityGunStaticData.GrabDistance)
             {
                 PickupObjectBase pickupObjectBase = _grabbedRigidbody.GetComponent<PickupObjectBase>();
                 if (pickupObjectBase.IsOnPlatform)
@@ -117,14 +119,14 @@ namespace SpiderController.StateMachine.OverlayStates
         {
             Vector3 toTarget = GrabPoint - _grabbedRigidbody.position;
 
-            Vector3 force = toTarget * _gravityGunStaticData.GrabForce;
+            Vector3 force = toTarget * GravityGunStaticData.GrabForce;
 
             _grabbedRigidbody.AddForce(force, ForceMode.Acceleration);
 
             _grabbedRigidbody.linearVelocity =
                 Vector3.ClampMagnitude(
                     _grabbedRigidbody.linearVelocity,
-                    _gravityGunStaticData.MaxGrabVelocity
+                    GravityGunStaticData.MaxGrabVelocity
                 );
         }
 
@@ -134,6 +136,6 @@ namespace SpiderController.StateMachine.OverlayStates
 
         private Vector3 GrabPoint =>
             CameraTransform.position +
-            CameraTransform.forward * _gravityGunStaticData.GrabDistance;
+            CameraTransform.forward * GravityGunStaticData.GrabDistance;
     }
 }

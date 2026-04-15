@@ -27,8 +27,6 @@ namespace SpiderController.UI
 
             ShowHologram();
 
-            Debug.Log("starts");
-
             _terrain = TerrainScan.Instance;
             _terrain.OnTerrainScanStart += TerrainStart;
         }

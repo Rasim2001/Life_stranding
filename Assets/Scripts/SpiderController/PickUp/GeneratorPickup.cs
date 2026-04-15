@@ -109,6 +109,8 @@ namespace SpiderController.PickUp
             generator.StartGeneratorAsync().Forget();
             battery.PutdownOnGenerator(generator);
 
+            _platformObjectsService.Remove(battery);
+
             await _cutSceneService.StartCutsceneAsync(CutsceneId.GeneratorCutScene, token);
 
             token.ThrowIfCancellationRequested();
@@ -148,6 +150,8 @@ namespace SpiderController.PickUp
 
             generator.StartGenerator();
             battery.PutdownOnGenerator(generator);
+
+            _platformObjectsService.Remove(battery);
 
             _windowService.OpenTaskPopup(TaskId.LastTask);
         }

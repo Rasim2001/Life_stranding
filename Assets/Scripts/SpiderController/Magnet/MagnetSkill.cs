@@ -14,12 +14,13 @@ namespace SpiderController.Magnet
     {
         private readonly IInputService _inputService;
         private readonly IWindowService _windowService;
-        private readonly StateMachineData _stateMachineData;
         private readonly EnergySystem _energySystem;
-        private readonly SpiderUI _spiderUI;
         private readonly IStaticDataService _staticDataService;
         private readonly IAbilityService _abilityService;
         private readonly IMagnetFreezingService _magnetFreezingService;
+        private readonly SpiderStateContext _stateContext;
+        private SpiderUI SpiderUI => _stateContext.SpiderUI;
+        private StateMachineData Data => _stateContext.Data;
 
         private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
 
@@ -29,17 +30,15 @@ namespace SpiderController.Magnet
             IStaticDataService staticDataService,
             IAbilityService abilityService,
             IMagnetFreezingService magnetFreezingService,
-            StateMachineData stateMachineData,
-            EnergySystem energySystem,
-            SpiderUI spiderUI)
+            SpiderStateContext stateContext,
+            EnergySystem energySystem)
         {
             _windowService = windowService;
-            _stateMachineData = stateMachineData;
             _energySystem = energySystem;
-            _spiderUI = spiderUI;
             _staticDataService = staticDataService;
             _abilityService = abilityService;
             _magnetFreezingService = magnetFreezingService;
+            _stateContext = stateContext;
             _inputService = inputService;
         }
 
@@ -57,31 +56,31 @@ namespace SpiderController.Magnet
             else if (_inputService.RightMouseUp)
                 HideMagnet();
 
-            if (_stateMachineData.IsMouseHolding)
+            if (Data.IsMouseHolding)
                 _energySystem.SpendEnergy(SpiderStaticData.EnergySpendFreezingFlowerSpeed);
 
-            if (_stateMachineData.CurrentEnergyFillAmount <= 0)
+            if (Data.CurrentEnergyFillAmount <= 0)
                 _magnetFreezingService.Unfreeze();
         }
 
         private void HideMagnet()
         {
-            _stateMachineData.IsMouseHolding = false;
+            Data.IsMouseHolding = false;
 
-            _spiderUI.MagnetIndicatorUI.Hide();
+            SpiderUI.MagnetIndicatorUI.Hide();
             _magnetFreezingService.Unfreeze();
 
-            _spiderUI.EnergyBar.PlayFadeHologramEffect();
+            SpiderUI.EnergyBar.PlayFadeHologramEffect();
         }
 
         private void ShowMagnet()
         {
-            _spiderUI.MagnetIndicatorUI.Show();
+            SpiderUI.MagnetIndicatorUI.Show();
             _magnetFreezingService.Freeze();
 
-            _stateMachineData.IsMouseHolding = true;
+            Data.IsMouseHolding = true;
 
-            _spiderUI.EnergyBar.ShowHologram();
+            SpiderUI.EnergyBar.ShowHologram();
         }
     }
 }

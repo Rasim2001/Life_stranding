@@ -96,10 +96,7 @@ namespace SpiderController.StateMachine.States.Ground.Aiming
             Vector3 targetPosition = Spider.RotationPlaneTransform.localPosition;
             targetPosition.y = _defaultPosition.y;
 
-            int count = _platformObjectsService.PickupObjects.Count;
-
-            for (int i = 0; i < count; i++)
-                _platformObjectsService.Throw(_platformObjectsService.PickupObjects[i]);
+            _platformObjectsService.ThrowAll();
 
             _localMoveTween?.Kill();
             _localMoveTween = Spider.RotationPlaneTransform.DOLocalMove(targetPosition, 0.05f);

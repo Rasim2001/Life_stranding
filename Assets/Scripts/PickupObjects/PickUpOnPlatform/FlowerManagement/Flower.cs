@@ -57,8 +57,6 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
         public void Initialize(FlowerPointIndicator flowerPointIndicator) =>
             _flowerPointIndicator = flowerPointIndicator;
 
-        // --- Save/Load ---
-
         public void LoadProgress(PlayerProgress progress)
         {
             if (progress.WorldProgressData.FlowerData.Position == null)
