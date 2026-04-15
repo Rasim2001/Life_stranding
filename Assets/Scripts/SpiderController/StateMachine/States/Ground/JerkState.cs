@@ -1,10 +1,12 @@
+using Infastructure.Services.Ability;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CutScene;
+using Infastructure.Services.Pause;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.Window;
 using Infastructure.StaticData.StaticDataService;
-using PickupObjects;
-using PickupObjects.PickUpOnPlatform;
-using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
+using SpiderController.TriggerChecker;
 using SpiderController.UI;
 using UnityEngine;
 
@@ -14,12 +16,12 @@ namespace SpiderController.StateMachine.States.Ground
     {
         private float _dashTimer;
 
-        public JerkState(ISpiderStateMachine stateMachine, IInputService inputService,
-            IStaticDataService staticDataService, ICutSceneService cutSceneService, Spider spider,
-            StateMachineData stateMachineData,
-            LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(stateMachine, inputService,
-            staticDataService, cutSceneService, spider,
-            stateMachineData, legs, flower, energySystem)
+        protected JerkState(
+            ISpiderStateMachine stateMachine,
+            SpiderServiceContext serviceContext,
+            SpiderStateContext stateContext,
+            EnergySystem energySystem) :
+            base(stateMachine, serviceContext, stateContext, energySystem)
         {
         }
 

@@ -1,24 +1,36 @@
-using Infastructure.Services.CutScene;
+using Common;
+using Infastructure.Services.Ability;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.Window;
+using Infastructure.StaticData.GlobalWater;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
-using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
+using SpiderController.TriggerChecker;
+using SpiderController.UI;
+using SpiderController.UI.Stickers;
 using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Airborn
 {
     public class AirbornState : MovementState
     {
-        protected AirbornState(ISpiderStateMachine stateMachine, IInputService inputService,
-            IStaticDataService staticDataService, ICutSceneService cutSceneService, Spider spider,
-            StateMachineData stateMachineData,
-            LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(stateMachine, inputService,
-            staticDataService, cutSceneService, spider,
-            stateMachineData, legs, energySystem)
+        protected GroundChecker SpiderGroundChecker => StateContext.GroundChecker;
+        protected ObserverTrigger WaterObserverTrigger => StateContext.WaterObserverTrigger;
+        protected EnergyBarUI EnergyBarUI => SpiderUI.EnergyBar;
+        protected Stickers Stickers => StateContext.Stickers;
+        private WaterStaticData WaterStaticData => ServiceContext.StaticDataService.WaterStaticData;
+
+        protected AirbornState(
+            ISpiderStateMachine stateMachine,
+            SpiderServiceContext serviceContext,
+            SpiderStateContext stateContext,
+            EnergySystem energySystem) : base(stateMachine, serviceContext, stateContext, energySystem)
         {
         }
+
 
         public override void Enter()
         {
@@ -52,7 +64,7 @@ namespace SpiderController.StateMachine.States.Airborn
             Data.YVelocity -= SpiderStaticData.BaseGravity * Data.AirbornSpeed * Time.deltaTime;
 
             if (InputService.JerkPressed && Data.CurrentEnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling &&
-                Spider.AbilityService.IsExploredAbility(ProductType.JerkSkillProduct))
+                AbilityService.IsExploredAbility(ProductType.JerkSkillProduct))
                 StateMachine.SwitchState<JerkState>();
         }
 
@@ -93,7 +105,7 @@ namespace SpiderController.StateMachine.States.Airborn
 
         protected void ShakeCamera()
         {
-            float currentY = Spider.transform.position.y;
+            float currentY = Transform.position.y;
             float distanceFalling = Mathf.Abs(Data.GlobalY - currentY);
 
             if (distanceFalling > SpiderStaticData.MinShakeDistance)
@@ -105,9 +117,9 @@ namespace SpiderController.StateMachine.States.Airborn
 
         protected void OnTriggerEnterWithWater(Collider obj)
         {
-            GameObject prefab = Spider.WaterStaticData.WaterSplashPrefab;
+            GameObject prefab = WaterStaticData.WaterSplashPrefab;
 
-            Object.Instantiate(prefab, Spider.transform.position + new Vector3(0, 0), Quaternion.identity);
+            Object.Instantiate(prefab, Transform.position + new Vector3(0, 0), Quaternion.identity);
         }
 
 
@@ -132,7 +144,7 @@ namespace SpiderController.StateMachine.States.Airborn
             }
 
             if (axis.sqrMagnitude < 1e-6f)
-                axis = Spider.transform.right;
+                axis = Transform.right;
 
             axis.Normalize();
 

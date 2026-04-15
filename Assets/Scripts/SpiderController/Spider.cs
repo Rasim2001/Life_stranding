@@ -2,29 +2,15 @@ using System;
 using System.Collections.Generic;
 using Common;
 using HighlightPlus;
-using Infastructure.Common.Pickup;
-using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Data;
 using Infastructure.Factories;
 using Infastructure.PlatformRegistry;
-using Infastructure.Services.Ability;
-using Infastructure.Services.CameraProvider;
-using Infastructure.Services.CheckPoint;
-using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
-using Infastructure.Services.GravityGun;
-using Infastructure.Services.Hint;
 using Infastructure.Services.Magnet;
 using Infastructure.Services.Pause;
 using Infastructure.Services.PlatformObjects;
-using Infastructure.Services.PlayerInput;
-using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.ProgressWatchers;
 using Infastructure.Services.SaveLoadService;
-using Infastructure.Services.Window;
-using Infastructure.Services.XRay;
-using Infastructure.States;
-using Infastructure.StaticData.GlobalWater;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using Sirenix.OdinInspector;
@@ -70,28 +56,9 @@ namespace SpiderController
         [SerializeField] private LegDataStruct[] _legs;
         [SerializeField] private Dictionary<PlatformId, PlatformData> _platformDatas;
 
-        public IMagnetFreezingService MagnetFreezingService => _magnetFreezingService;
-        public IEventSystemSelector EventSystemSelector => _eventSystemSelector;
-        public IAbilityService AbilityService => _abilityService;
-        public IPauseService PauseService => _pauseService;
-        public ICutSceneService CutSceneService => _cutSceneService;
-        public IWindowService WindowService => _windowService;
-        public ICameraProviderService CameraProviderService => _cameraProviderService;
-        public Rigidbody Rigidbody => _rigidbody;
-        public GroundChecker GroundChecker => _groundChecker;
-        public SpiderUI SpiderUI => _spiderUI;
-        public SpiderImpactReceiver SpiderImpactReceiver => _spiderImpactReceiver;
-        public Transform RotationPlaneTransform => _rotationPlaneTransform;
-        public ThrusterSystem ThrusterSystem => _thrusterSystem;
-        public ScannerAnimator ScannerAnimator => _scannerAnimator;
-        public PlatformSelector PlatformSelector => _platformSelector;
-        public ObserverTrigger WaterObserverTrigger => _waterObserverTrigger;
-        public WaterStaticData WaterStaticData => _staticDataService.WaterStaticData;
-        public StateMachineData StateMachineData => _stateMachineData;
-        public Stickers Stickers => _stickers;
-
 
         [HideInEditorMode] public Action<float> OnShakeCameraHappened;
+        public StateMachineData StateMachineData => _stateMachineData;
 
         private Rigidbody _rigidbody;
         private SpiderStateMachine _spiderStateMachine;
@@ -108,79 +75,40 @@ namespace SpiderController
         private GeneratorPickup _generatorPickup;
         private BiosphereProductPickup _biosphereProductPickup;
 
-        private IInputService _inputService;
-        private IStaticDataService _staticDataService;
-        private IPickupDisplayer _pickupDisplayer;
-        private ICutSceneService _cutSceneService;
-        private IMagnetFreezingService _magnetFreezingService;
-        private IPlatformObjectsService _platformObjectsService;
-        private IXRayService _xRayService;
-        private IPlatformRegistryService _platformRegistryService;
-        private IWindowService _windowService;
-        private IEventSystemSelector _eventSystemSelector;
-        private IPauseService _pauseService;
-        private IAbilityService _abilityService;
-        private IDefeatWindowService _defeatWindowService;
-
-        [SerializeField] private StateMachineData _stateMachineData;
+        private StateMachineData _stateMachineData;
         private SpiderOverlayStateMachine _overlayStateMachine;
         private MagnetSkill _magnetSkill;
 
-        private IHintReceiverService _hintReceiverService;
-        private ICameraProviderService _cameraProviderService;
-        private IStableWorldUp _stableWorldUp;
+        private IMagnetFreezingService _magnetFreezingService;
+        private IPlatformObjectsService _platformObjectsService;
+        private IPlatformRegistryService _platformRegistryService;
+        private IPauseService _pauseService;
+        private IDefeatWindowService _defeatWindowService;
         private IProgressWatchersService _progressWatchersService;
-        private IPersistentProgressService _persistentProgressService;
-        private IGravityGunDisplayer _gravityGunDisplayer;
+        private IDiFactory _diFactory;
+        private IStaticDataService _staticData;
+
 
         [Inject]
         public void Construct(
+            IStaticDataService staticData,
             IDiFactory diFactory,
             IPlatformObjectsService platformObjectsService,
-            IInputService inputService,
-            IStaticDataService staticDataService,
-            IPickupDisplayer pickupDisplayer,
-            IStateMachine stateMachine,
-            IBiospherePointService biospherePointService,
-            ICutSceneService cutSceneService,
             IMagnetFreezingService magnetFreezingService,
-            IXRayService xRayService,
             IPlatformRegistryService platformRegistryService,
-            IWindowService windowService,
-            IEventSystemSelector eventSystemSelector,
             IPauseService pauseService,
-            IAbilityService abilityService,
             IDefeatWindowService defeatWindowService,
-            IHintReceiverService hintReceiverService,
-            ICameraProviderService cameraProviderService,
-            IStableWorldUp stableWorldUp,
-            IProgressWatchersService progressWatchersService,
-            IPersistentProgressService persistentProgressService,
-            IGravityGunDisplayer gravityGunDisplayer)
+            IProgressWatchersService progressWatchersService)
         {
+            _staticData = staticData;
             _diFactory = diFactory;
-            _gravityGunDisplayer = gravityGunDisplayer;
-            _persistentProgressService = persistentProgressService;
             _progressWatchersService = progressWatchersService;
-            _stableWorldUp = stableWorldUp;
-            _cameraProviderService = cameraProviderService;
-            _hintReceiverService = hintReceiverService;
             _defeatWindowService = defeatWindowService;
-            _abilityService = abilityService;
             _pauseService = pauseService;
-            _eventSystemSelector = eventSystemSelector;
-            _windowService = windowService;
             _platformRegistryService = platformRegistryService;
-            _xRayService = xRayService;
             _platformObjectsService = platformObjectsService;
             _magnetFreezingService = magnetFreezingService;
-            _cutSceneService = cutSceneService;
-            _pickupDisplayer = pickupDisplayer;
-            _staticDataService = staticDataService;
-            _inputService = inputService;
         }
-
-        private IDiFactory _diFactory;
 
 
         public void LoadProgress(PlayerProgress progress)
@@ -223,12 +151,13 @@ namespace SpiderController
 
         public void Initialize(Flower flower)
         {
+            SpiderServiceContext serviceContext = _diFactory.Create<SpiderServiceContext>();
+
             _platformRegistryService.Register(_platformDatas);
 
             _stateMachineData = new StateMachineData();
-            _stateMachineData.EnergyFillAmount = _staticDataService.SpiderStaticData.EnergyFillAmount;
+            _stateMachineData.EnergyFillAmount = _staticData.SpiderStaticData.EnergyFillAmount;
             _stateMachineData.OnShakeHappened += distanceFalling => OnShakeCameraHappened?.Invoke(distanceFalling);
-
 
             SpiderStateContext stateContext = new SpiderStateContext(
                 transform,
@@ -249,7 +178,8 @@ namespace SpiderController
                 _trajectoryRender,
                 _stickers,
                 _groundChecker,
-                _stateMachineData
+                _stateMachineData,
+                _legs
             );
 
 
@@ -292,17 +222,7 @@ namespace SpiderController
             _magnetSkill = _diFactory.Create<MagnetSkill>(stateContext, energySystem);
             _magnetSkill.Initialize();
 
-            _spiderStateMachine =
-                new SpiderStateMachine(this,
-                    _stateMachineData,
-                    _inputService,
-                    _staticDataService,
-                    _cutSceneService,
-                    _platformObjectsService,
-                    _legs,
-                    flower,
-                    energySystem);
-
+            _spiderStateMachine = _diFactory.Create<SpiderStateMachine>(stateContext, serviceContext, energySystem);
             _overlayStateMachine = _diFactory.Create<SpiderOverlayStateMachine>(stateContext);
 
             _magnetFreezingService.Initialize(_stateMachineData);
@@ -348,8 +268,8 @@ namespace SpiderController
 
         private void Defeat()
         {
-            Rigidbody.linearVelocity = Vector3.zero;
-            Rigidbody.angularVelocity = Vector3.zero;
+            _rigidbody.linearVelocity = Vector3.zero;
+            _rigidbody.angularVelocity = Vector3.zero;
 
             _stateMachineData.Clear();
         }

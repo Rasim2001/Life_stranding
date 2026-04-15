@@ -51,10 +51,10 @@ namespace Infastructure.CutScenes.Custom.Receivers
 
             if (notification is ExplosionMarker explosionMarker)
             {
-                Transform target = explosionMarker.Target.Resolve(director);
+                /*Transform target = explosionMarker.Target.Resolve(director);
                 if (target)
                     _spider.SpiderImpactReceiver.ApplyExplosionForce(target.position, explosionMarker.Force,
-                        explosionMarker.Radius);
+                        explosionMarker.Radius);*/
             }
             else if (notification is MoveToTargetMarker moveToTargetMarker)
             {

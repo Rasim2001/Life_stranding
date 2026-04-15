@@ -1,40 +1,29 @@
-using Infastructure.Services.CutScene;
-using Infastructure.Services.PlayerInput;
-using Infastructure.StaticData.StaticDataService;
-using PickupObjects.PickUpOnPlatform;
-using PickupObjects.PickUpOnPlatform.FlowerManagement;
-using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
-using SpiderController.TriggerChecker;
 
 namespace SpiderController.StateMachine.States.Airborn
 {
     public class FallingState : AirbornState
     {
-        private readonly GroundChecker _spiderGroundChecker;
-
-        public FallingState(ISpiderStateMachine stateMachine, IInputService inputService,
-            IStaticDataService staticDataService, ICutSceneService cutSceneService, Spider spider,
-            StateMachineData stateMachineData,
-            LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(stateMachine, inputService,
-            staticDataService, cutSceneService, spider,
-            stateMachineData, legs, flower, energySystem)
+        protected FallingState(
+            ISpiderStateMachine stateMachine,
+            SpiderServiceContext serviceContext,
+            SpiderStateContext stateContext,
+            EnergySystem energySystem) : base(stateMachine, serviceContext, stateContext, energySystem)
         {
-            _spiderGroundChecker = spider.GroundChecker;
         }
 
         public override void Enter()
         {
             base.Enter();
 
-            Spider.WaterObserverTrigger.OnTriggerEnterHappened += OnTriggerEnterWithWater;
+            WaterObserverTrigger.OnTriggerEnterHappened += OnTriggerEnterWithWater;
 
             Data.YVelocity = 0;
-            Data.GlobalY = Spider.transform.position.y;
+            Data.GlobalY = Transform.position.y;
             Data.AirbornSpeed = SpiderStaticData.FallSpeed;
 
-            Spider.MagnetFreezingService.Freeze();
-            Spider.ThrusterSystem.Open(true);
+            MagnetFreezingService.Freeze();
+            ThrusterSystem.Open(true);
 
             EnergyBarUI.ShowHologram();
         }
@@ -43,10 +32,10 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Exit();
 
-            Spider.WaterObserverTrigger.OnTriggerEnterHappened -= OnTriggerEnterWithWater;
+            WaterObserverTrigger.OnTriggerEnterHappened -= OnTriggerEnterWithWater;
 
-            Spider.ThrusterSystem.Open(false);
-            Spider.MagnetFreezingService.Unfreeze();
+            ThrusterSystem.Open(false);
+            MagnetFreezingService.Unfreeze();
         }
 
 
@@ -62,7 +51,7 @@ namespace SpiderController.StateMachine.States.Airborn
             if (Data.CurrentEnergyFillAmount <= 0)
                 StateMachine.SwitchState<FallingWithoutEnergyState>();
 
-            if (_spiderGroundChecker.IsTouchesWithLegs)
+            if (SpiderGroundChecker.IsTouchesWithLegs)
             {
                 ShakeCamera();
 

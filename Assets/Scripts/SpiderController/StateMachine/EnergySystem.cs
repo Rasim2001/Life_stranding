@@ -13,7 +13,6 @@ namespace SpiderController.StateMachine
         private StateMachineData Data => _stateContext.Data;
         private EnergyBarUI EnergyBar => _stateContext.SpiderUI.EnergyBar;
 
-
         public EnergySystem(
             SpiderStateContext stateContext,
             ICutSceneService cutSceneService)

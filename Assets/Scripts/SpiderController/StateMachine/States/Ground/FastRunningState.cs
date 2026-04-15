@@ -1,22 +1,24 @@
+using Infastructure.Services.Ability;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CutScene;
+using Infastructure.Services.Pause;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.Window;
 using Infastructure.StaticData.StaticDataService;
-using PickupObjects;
-using PickupObjects.PickUpOnPlatform;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
-using SpiderController.UI;
+using SpiderController.TriggerChecker;
 
 namespace SpiderController.StateMachine.States.Ground
 {
     public class FastRunningState : GroundedState
     {
-        public FastRunningState(ISpiderStateMachine stateMachine, IInputService inputService,
-            IStaticDataService staticDataService, ICutSceneService cutSceneService, Spider spider,
-            StateMachineData stateMachineData,
-            LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(stateMachine, inputService,
-            staticDataService, cutSceneService, spider,
-            stateMachineData, legs, flower, energySystem)
+        protected FastRunningState(
+            ISpiderStateMachine stateMachine,
+            SpiderServiceContext serviceContext,
+            SpiderStateContext stateContext,
+            EnergySystem energySystem) :
+            base(stateMachine, serviceContext, stateContext, energySystem)
         {
         }
 
@@ -24,7 +26,7 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Enter();
 
-            Spider.WindowService.OnWindowOpened += ReturnToNormalMovement;
+            WindowService.OnWindowOpened += ReturnToNormalMovement;
 
             Data.OnTotalWeightChanged += WeightChanged;
             Data.DistanceFromGround = SpiderStaticData.DistanceFromGround;
@@ -39,7 +41,7 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Exit();
 
-            Spider.WindowService.OnWindowOpened -= ReturnToNormalMovement;
+            WindowService.OnWindowOpened -= ReturnToNormalMovement;
 
             Data.OnTotalWeightChanged -= WeightChanged;
 

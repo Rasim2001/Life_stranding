@@ -33,14 +33,14 @@ namespace Infastructure.Services.Explosion
 
         private void Explode(Vector3 explosionPosition, int explosionForce, float radius)
         {
-            int size = Physics.OverlapSphereNonAlloc(explosionPosition, radius, _results, _spiderMask);
+            /*int size = Physics.OverlapSphereNonAlloc(explosionPosition, radius, _results, _spiderMask);
 
             for (int i = 0; i < size; i++)
             {
                 Spider spider = _results[i].GetComponent<Spider>();
                 if (spider != null)
                     spider.SpiderImpactReceiver.ApplyExplosionForce(explosionPosition, explosionForce, radius);
-            }
+            }*/
         }
     }
 }

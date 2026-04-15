@@ -79,13 +79,6 @@ namespace PickupObjects.PickUpOnPlatform
         }
 
 
-        public virtual void GetChanceAttachToPlatform()
-        {
-        }
-
-        public virtual void ThrowObject() =>
-            Rigidbody.linearVelocity = transform.up * 10;
-
         public virtual void DetachFromPlatform()
         {
             IsOnPlatform = false;
@@ -97,6 +90,13 @@ namespace PickupObjects.PickUpOnPlatform
 
             transform.SetParent(null);
         }
+
+        public virtual void GetChanceAttachToPlatform()
+        {
+        }
+
+        public virtual void ThrowObject() =>
+            Rigidbody.linearVelocity = transform.up * 10;
 
         public void SetCustomOffsetPosition(Vector3 position) =>
             _customPositionOffset = position;

@@ -1,21 +1,23 @@
+using Infastructure.Services.Ability;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CutScene;
+using Infastructure.Services.Magnet;
+using Infastructure.Services.Pause;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.Window;
 using Infastructure.StaticData.StaticDataService;
-using PickupObjects.PickUpOnPlatform.FlowerManagement;
-using SpiderController.SpiderMove;
+using SpiderController.TriggerChecker;
 
 namespace SpiderController.StateMachine.States.Ground.Aiming
 {
     public class AimRunningState : AimingState
     {
-        public AimRunningState(ISpiderStateMachine stateMachine, IInputService inputService,
-            IStaticDataService staticDataService, ICutSceneService cutSceneService,
-            IPlatformObjectsService platformObjectsService, Spider spider,
-            StateMachineData stateMachineData, LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(
-            stateMachine, inputService, staticDataService, cutSceneService, platformObjectsService, spider,
-            stateMachineData, legs, flower,
-            energySystem)
+        protected AimRunningState(
+            ISpiderStateMachine stateMachine,
+            SpiderServiceContext serviceContext,
+            SpiderStateContext stateContext,
+            EnergySystem energySystem) : base(stateMachine, serviceContext, stateContext, energySystem)
         {
         }
 

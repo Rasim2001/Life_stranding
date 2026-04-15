@@ -1,5 +1,6 @@
 using Common;
 using SpiderController.Scanner;
+using SpiderController.SpiderMove;
 using SpiderController.StateMachine;
 using SpiderController.Thruster;
 using SpiderController.Trajectory;
@@ -31,8 +32,10 @@ namespace SpiderController
         public Stickers Stickers { get; }
         public GroundChecker GroundChecker { get; }
         public StateMachineData Data { get; }
+        public LegDataStruct[] Legs { get; }
 
-        public SpiderStateContext(Transform transform,
+        public SpiderStateContext(
+            Transform transform,
             Transform rotationPlaneTransform,
             Rigidbody rigidbody,
             SpiderUI spiderUI,
@@ -50,7 +53,8 @@ namespace SpiderController
             TrajectoryRender trajectoryRender,
             Stickers stickers,
             GroundChecker groundChecker,
-            StateMachineData data)
+            StateMachineData data,
+            LegDataStruct[] legs)
         {
             RotationPlaneTransform = rotationPlaneTransform;
             Rigidbody = rigidbody;
@@ -71,6 +75,7 @@ namespace SpiderController
             Stickers = stickers;
             GroundChecker = groundChecker;
             Data = data;
+            Legs = legs;
         }
     }
 }

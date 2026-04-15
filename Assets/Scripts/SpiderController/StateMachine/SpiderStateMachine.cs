@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Infastructure.Factories;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
@@ -18,52 +19,26 @@ namespace SpiderController.StateMachine
 
         private ISpiderState _currentState;
 
-        public SpiderStateMachine(Spider spider,
-            StateMachineData stateMachineData,
-            IInputService inputService,
-            IStaticDataService staticDataService,
-            ICutSceneService cutSceneService,
-            IPlatformObjectsService platformObjectsService,
-            LegDataStruct[] legs,
-            Flower flower,
+        public SpiderStateMachine(
+            IDiFactory diFactory,
+            SpiderStateContext stateContext,
+            SpiderServiceContext serviceContext,
             EnergySystem energySystem)
         {
             _states = new List<ISpiderState>()
             {
-                new IdlingState(this, inputService, staticDataService, cutSceneService, spider, stateMachineData, legs,
-                    flower,
-                    energySystem),
-                new RunningState(this, inputService, staticDataService, cutSceneService, spider, stateMachineData, legs,
-                    flower,
-                    energySystem),
-                new FastRunningState(this, inputService, staticDataService, cutSceneService, spider, stateMachineData,
-                    legs, flower,
-                    energySystem),
-                new JumpingState(this, inputService, staticDataService, cutSceneService, spider, stateMachineData, legs,
-                    flower,
-                    energySystem),
-                new FallingState(this, inputService, staticDataService, cutSceneService, spider, stateMachineData, legs,
-                    flower,
-                    energySystem),
-                new FallingWithoutEnergyState(this, inputService, staticDataService, cutSceneService, spider,
-                    stateMachineData, legs,
-                    flower, energySystem),
-                new JerkState(this, inputService, staticDataService, cutSceneService, spider, stateMachineData, legs,
-                    flower,
-                    energySystem),
-                new SlowdownState(this, inputService, staticDataService, cutSceneService, spider, stateMachineData,
-                    legs, flower,
-                    energySystem),
-                new FallingWithControlState(this, inputService, staticDataService, spider, cutSceneService,
-                    stateMachineData, legs,
-                    flower, energySystem),
-                new RecoveryState(this, inputService, staticDataService, cutSceneService, spider, stateMachineData,
-                    legs, flower,
-                    energySystem),
-                new AimIdlingState(this, inputService, staticDataService, cutSceneService, platformObjectsService,
-                    spider, stateMachineData, legs, flower, energySystem),
-                new AimRunningState(this, inputService, staticDataService, cutSceneService, platformObjectsService,
-                    spider, stateMachineData, legs, flower, energySystem),
+                diFactory.Create<IdlingState>(this, serviceContext, stateContext, energySystem),
+                diFactory.Create<RunningState>(this, serviceContext, stateContext, energySystem),
+                diFactory.Create<FastRunningState>(this, serviceContext, stateContext, energySystem),
+                diFactory.Create<JumpingState>(this, serviceContext, stateContext, energySystem),
+                diFactory.Create<FallingState>(this, serviceContext, stateContext, energySystem),
+                diFactory.Create<FallingWithoutEnergyState>(this, serviceContext, stateContext, energySystem),
+                diFactory.Create<JerkState>(this, serviceContext, stateContext, energySystem),
+                diFactory.Create<SlowdownState>(this, serviceContext, stateContext, energySystem),
+                diFactory.Create<FallingWithControlState>(this, serviceContext, stateContext, energySystem),
+                diFactory.Create<RecoveryState>(this, serviceContext, stateContext, energySystem),
+                diFactory.Create<AimIdlingState>(this, serviceContext, stateContext, energySystem),
+                diFactory.Create<AimRunningState>(this, serviceContext, stateContext, energySystem),
             };
 
             _currentState = _states[0];

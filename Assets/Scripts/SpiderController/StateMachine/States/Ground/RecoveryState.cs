@@ -1,22 +1,22 @@
 using System;
 using Cysharp.Threading.Tasks;
-using Infastructure.Services.CutScene;
+using Infastructure.Services.Ability;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.Window;
 using Infastructure.StaticData.StaticDataService;
-using PickupObjects.PickUpOnPlatform;
-using PickupObjects.PickUpOnPlatform.FlowerManagement;
-using SpiderController.SpiderMove;
 using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Ground
 {
     public class RecoveryState : MovementState
     {
-        public RecoveryState(ISpiderStateMachine stateMachine, IInputService inputService,
-            IStaticDataService staticDataService, ICutSceneService cutSceneService, Spider spider,
-            StateMachineData stateMachineData,
-            LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(stateMachine, inputService,
-            staticDataService, cutSceneService, spider, stateMachineData, legs, energySystem)
+        protected RecoveryState(
+            ISpiderStateMachine stateMachine,
+            SpiderServiceContext serviceContext,
+            SpiderStateContext stateContext,
+            EnergySystem energySystem) :
+            base(stateMachine, serviceContext, stateContext, energySystem)
         {
         }
 
@@ -34,8 +34,8 @@ namespace SpiderController.StateMachine.States.Ground
 
             if (IsNotMoveableLayer() == false)
             {
-                Spider.Rigidbody.linearVelocity = Vector3.zero;
-                Spider.Rigidbody.angularVelocity = Vector3.zero;
+                Rigidbody.linearVelocity = Vector3.zero;
+                Rigidbody.angularVelocity = Vector3.zero;
 
                 StateMachine.SwitchState<IdlingState>();
 
@@ -45,8 +45,8 @@ namespace SpiderController.StateMachine.States.Ground
             /*Spider.Rigidbody.linearVelocity = Vector3.zero;
             Spider.Rigidbody.angularVelocity = Vector3.zero;*/
 
-            Spider.transform.position = Data.LastValidGroundPosition;
-            Spider.transform.rotation = Data.LastValidGroundRotation;
+            Transform.position = Data.LastValidGroundPosition;
+            Transform.rotation = Data.LastValidGroundRotation;
 
             await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
 
