@@ -1,3 +1,4 @@
+using Cameras.SpiderCameras;
 using Infastructure.Services.Ability;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CutScene;
@@ -12,6 +13,7 @@ namespace SpiderController
 {
     public class SpiderServiceContext
     {
+        public ISpiderCamera SpiderCamera { get; }
         public IInputService InputService { get; }
         public IStaticDataService StaticDataService { get; }
         public ICameraProviderService CameraProviderService { get; }
@@ -25,6 +27,7 @@ namespace SpiderController
 
 
         public SpiderServiceContext(
+            ISpiderCamera spiderCamera,
             IInputService inputService,
             IStaticDataService staticDataService,
             ICameraProviderService cameraProviderService,
@@ -35,6 +38,7 @@ namespace SpiderController
             ICutSceneService cutSceneService,
             IMagnetFreezingService magnetFreezingService, IPlatformObjectsService platformObjectsService)
         {
+            SpiderCamera = spiderCamera;
             InputService = inputService;
             StaticDataService = staticDataService;
             CameraProviderService = cameraProviderService;

@@ -1,8 +1,5 @@
-using System.Globalization;
-using Infastructure.Services.SpiderTrack;
 using TMPro;
 using UnityEngine;
-using Zenject;
 
 namespace HUD
 {

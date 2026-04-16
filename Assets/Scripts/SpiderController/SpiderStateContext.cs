@@ -77,5 +77,7 @@ namespace SpiderController
             Data = data;
             Legs = legs;
         }
+        
+        
     }
 }

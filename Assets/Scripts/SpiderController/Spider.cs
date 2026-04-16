@@ -56,8 +56,6 @@ namespace SpiderController
         [SerializeField] private LegDataStruct[] _legs;
         [SerializeField] private Dictionary<PlatformId, PlatformData> _platformDatas;
 
-
-        [HideInEditorMode] public Action<float> OnShakeCameraHappened;
         public StateMachineData StateMachineData => _stateMachineData;
 
         private Rigidbody _rigidbody;
@@ -157,7 +155,6 @@ namespace SpiderController
 
             _stateMachineData = new StateMachineData();
             _stateMachineData.EnergyFillAmount = _staticData.SpiderStaticData.EnergyFillAmount;
-            _stateMachineData.OnShakeHappened += distanceFalling => OnShakeCameraHappened?.Invoke(distanceFalling);
 
             SpiderStateContext stateContext = new SpiderStateContext(
                 transform,
@@ -184,7 +181,6 @@ namespace SpiderController
 
 
             EnergyLegs energyLegs = new EnergyLegs(_energyHighlightEffects);
-
             EnergySystem energySystem = _diFactory.Create<EnergySystem>(stateContext);
 
             _spiderImpactReceiver = _diFactory.Create<SpiderImpactReceiver>(stateContext);

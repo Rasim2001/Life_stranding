@@ -6,5 +6,6 @@ namespace Infastructure.Common.StableWorlUpManagement
     {
         void Rotate(Quaternion targetRotation);
         Transform StableWorldUpTransform { get; }
+        void Initialize();
     }
 }

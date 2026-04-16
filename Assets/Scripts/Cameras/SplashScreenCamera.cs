@@ -2,7 +2,7 @@ using Infastructure.Services.StartGame;
 using UnityEngine;
 using Zenject;
 
-namespace CameraFollow
+namespace Cameras
 {
     public class SplashScreenCamera : MonoBehaviour
     {

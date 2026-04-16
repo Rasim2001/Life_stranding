@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using CameraFollow;
+using Cameras;
 using Common;
 using GameDevBuddies;
 using HUD;
@@ -9,7 +9,8 @@ using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CheckPoint;
 using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.ProgressWatchers;
-using Infastructure.Services.SpiderTrack;
+using Infastructure.Services.Registries.FlowerRegistry;
+using Infastructure.Services.Registries.SpiderRegistry;
 using Infastructure.Services.XRay;
 using Infastructure.StaticData;
 using Infastructure.StaticData.Product;
@@ -33,22 +34,30 @@ namespace Infastructure.Factories.GameFactories
         private readonly IStaticDataService _staticDataService;
         private readonly IBiospherePointService _biospherePointService;
         private readonly IXRayService _xRayService;
-        private readonly ISpiderTrackService _spiderTrackService;
         private readonly ICameraProviderService _cameraProviderService;
         private readonly IProgressWatchersService _progressWatchersService;
         private readonly IPersistentProgressService _progressService;
+        private readonly IFlowerRegistryService _flowerRegistryService;
+        private readonly ISpiderRegistryService _spiderRegistryService;
 
         private string ActiveSceneName => SceneManager.GetActiveScene().name;
 
-        public GameFactory(DiContainer diContainer, IStaticDataService staticDataService,
-            IBiospherePointService biospherePointService, IXRayService xRayService,
-            ISpiderTrackService spiderTrackService, ICameraProviderService cameraProviderService,
-            IProgressWatchersService progressWatchersService, IPersistentProgressService progressService)
+        public GameFactory(
+            DiContainer diContainer,
+            IStaticDataService staticDataService,
+            IBiospherePointService biospherePointService,
+            IXRayService xRayService,
+            ICameraProviderService cameraProviderService,
+            IProgressWatchersService progressWatchersService,
+            IPersistentProgressService progressService,
+            IFlowerRegistryService flowerRegistryService,
+            ISpiderRegistryService spiderRegistryService)
         {
-            _spiderTrackService = spiderTrackService;
             _cameraProviderService = cameraProviderService;
             _progressWatchersService = progressWatchersService;
             _progressService = progressService;
+            _flowerRegistryService = flowerRegistryService;
+            _spiderRegistryService = spiderRegistryService;
             _diContainer = diContainer;
             _staticDataService = staticDataService;
             _biospherePointService = biospherePointService;
@@ -63,9 +72,7 @@ namespace Infastructure.Factories.GameFactories
                 worldData.WorldPosition, worldData.WorldRotation, null);
             spider.Initialize(flower);
 
-            _spiderTrackService.Spider = spider;
-            _spiderTrackService.Flower = flower;
-
+            _spiderRegistryService.RegisterSpider(spider);
             _progressWatchersService.RegisterWatchers(spider.gameObject);
 
             return spider;
@@ -73,9 +80,11 @@ namespace Infastructure.Factories.GameFactories
 
         public void CreateCameraSystem(Spider spider)
         {
+            /*
             CameraSystem cameraSystem =
                 _diContainer.InstantiatePrefabResourceForComponent<CameraSystem>(AssetsPath.CameraSystemPath);
             cameraSystem.Initialize(spider);
+        */
         }
 
         public HudUI CreateHUD(Flower flower, Spider spider)
@@ -146,6 +155,7 @@ namespace Infastructure.Factories.GameFactories
 
             _xRayService.Add(xRayMarker);
 
+            _flowerRegistryService.RegisterFlower(flower);
             _progressWatchersService.RegisterWatchers(flower.gameObject);
 
             return flower;

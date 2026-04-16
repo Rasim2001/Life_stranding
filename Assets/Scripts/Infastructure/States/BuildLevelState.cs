@@ -1,11 +1,10 @@
 using System;
-using Infastructure.Common;
+using Cameras.SpiderCameras;
+using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Factories.GameFactories;
 using Infastructure.Services.Ability;
 using Infastructure.Services.CameraProvider;
-using Infastructure.Services.CheckPoint;
 using Infastructure.Services.PlayerInput;
-using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.ProgressWatchers;
 using Infastructure.Services.Restart;
 using Infastructure.Services.SaveLoadService;
@@ -13,7 +12,6 @@ using Infastructure.Services.StartGame;
 using Infastructure.Services.Tasks;
 using Infastructure.Services.Timer;
 using Infastructure.Services.Window;
-using Infastructure.StaticData.StaticDataService;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController;
 using SpiderController.UI.Health;
@@ -25,29 +23,23 @@ namespace Infastructure.States
     public class BuildLevelState : IInitializable, IDisposable
     {
         private readonly IGameFactory _gameFactory;
-        private readonly IStaticDataService _staticData;
         private readonly IGameUIFactory _uiFactory;
-        private readonly IPersistentProgressService _progressService;
-        private readonly ISceneLoader _sceneLoader;
-        private readonly IBiospherePointService _biospherePointService;
         private readonly IInputService _inputService;
         private readonly IRestartService _restartService;
         private readonly IAbilityService _abilityService;
         private readonly ITimerService _timerService;
         private readonly IWindowService _windowService;
-        private ICameraProviderService _cameraProviderService;
+        private readonly ICameraProviderService _cameraProviderService;
         private readonly IProgressWatchersService _progressWatchersService;
         private readonly ITasksService _tasksService;
         private readonly IStartGameReceiver _startGameReceiver;
         private readonly ISaveLoadService _saveLoadService;
+        private readonly ISpiderCamera _spiderCamera;
+        private readonly IStableWorldUp _stableWorldUp;
 
         public BuildLevelState(
             IGameFactory gameFactory,
-            IStaticDataService staticData,
             IGameUIFactory uiFactory,
-            IPersistentProgressService progressService,
-            ISceneLoader sceneLoader,
-            IBiospherePointService biospherePointService,
             IInputService inputService,
             IWindowService windowService,
             IRestartService restartService,
@@ -57,7 +49,9 @@ namespace Infastructure.States
             IProgressWatchersService progressWatchersService,
             ITasksService tasksService,
             IStartGameReceiver startGameReceiver,
-            ISaveLoadService saveLoadService
+            ISaveLoadService saveLoadService,
+            ISpiderCamera spiderCamera,
+            IStableWorldUp stableWorldUp
         )
         {
             _cameraProviderService = cameraProviderService;
@@ -65,16 +59,14 @@ namespace Infastructure.States
             _tasksService = tasksService;
             _startGameReceiver = startGameReceiver;
             _saveLoadService = saveLoadService;
+            _spiderCamera = spiderCamera;
+            _stableWorldUp = stableWorldUp;
             _windowService = windowService;
             _restartService = restartService;
             _abilityService = abilityService;
             _timerService = timerService;
             _gameFactory = gameFactory;
-            _staticData = staticData;
             _uiFactory = uiFactory;
-            _progressService = progressService;
-            _sceneLoader = sceneLoader;
-            _biospherePointService = biospherePointService;
             _inputService = inputService;
         }
 
@@ -103,6 +95,7 @@ namespace Infastructure.States
             _abilityService.Initialize();
             _inputService.Initialize();
             _timerService.Initialize();
+            _stableWorldUp.Initialize();
 
             _progressWatchersService.Clear();
         }
@@ -141,6 +134,7 @@ namespace Infastructure.States
 
             InitLastChanceRoot(flower, spider);
 
+            _spiderCamera.Initialize();
             _saveLoadService.InitLoadingProgress();
         }
 

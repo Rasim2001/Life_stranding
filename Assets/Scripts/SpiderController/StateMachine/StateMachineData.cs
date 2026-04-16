@@ -10,9 +10,6 @@ namespace SpiderController.StateMachine
         public event Action<bool> OnFallingDownStateChanged;
         public event Action OnTotalWeightChanged;
 
-
-        public Action<float> OnShakeHappened;
-
         public bool IsFallingDownWithoutEnergyState
         {
             get => _IsFallingDownWithoutEnergyState;
@@ -94,7 +91,7 @@ namespace SpiderController.StateMachine
         private readonly float _slowdownFactor = 0.25f;
         private float _speed;
         private bool _IsFallingDownWithoutEnergyState;
-        [SerializeField] private float _totalWeight;
+        private float _totalWeight;
         private bool _isInAimingState;
 
         public void Clear()

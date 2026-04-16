@@ -1,3 +1,4 @@
+using Cameras.SpiderCameras;
 using Common;
 using Infastructure.Services.Ability;
 using Infastructure.Services.CameraProvider;
@@ -22,6 +23,7 @@ namespace SpiderController.StateMachine.States.Airborn
         protected EnergyBarUI EnergyBarUI => SpiderUI.EnergyBar;
         protected Stickers Stickers => StateContext.Stickers;
         private WaterStaticData WaterStaticData => ServiceContext.StaticDataService.WaterStaticData;
+        private ISpiderCamera Camera => ServiceContext.SpiderCamera;
 
         protected AirbornState(
             ISpiderStateMachine stateMachine,
@@ -111,7 +113,7 @@ namespace SpiderController.StateMachine.States.Airborn
             if (distanceFalling > SpiderStaticData.MinShakeDistance)
             {
                 Data.GlobalY = 0;
-                Data.OnShakeHappened?.Invoke(distanceFalling);
+                Camera.ShakeCamera(distanceFalling);
             }
         }
 

@@ -24,11 +24,11 @@ namespace Infastructure.Common.StableWorlUpManagement
             _staticDataService = staticDataService;
         }
 
-        private void Awake() =>
+        public void Initialize()
+        {
             _cinemachineBrain = _cameraProviderService.CameraTransform.GetComponent<CinemachineBrain>();
-
-        private void Start() =>
             _cinemachineBrain.WorldUpOverride = transform;
+        }
 
         public void Rotate(Quaternion targetRotation)
         {
