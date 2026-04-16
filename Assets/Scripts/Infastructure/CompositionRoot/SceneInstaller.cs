@@ -17,6 +17,7 @@ using Infastructure.Services.GravityGun;
 using Infastructure.Services.Hint;
 using Infastructure.Services.Magnet;
 using Infastructure.Services.PauseWindow;
+using Infastructure.Services.PickupRewindRegistry;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.QTE;
@@ -102,6 +103,8 @@ namespace Infastructure.CompositionRoot
             BindDiFactory();
 
             BindSpiderCamera();
+
+            BindPickupRewindRegistry();
         }
 
         private void BindUI()
@@ -120,6 +123,9 @@ namespace Infastructure.CompositionRoot
 
             BindCameraProviderService();
         }
+
+        private void BindPickupRewindRegistry() =>
+            Container.BindInterfacesAndSelfTo<PickupRewindRegistryService>().AsSingle();
 
         private void BindSpiderCamera()
         {

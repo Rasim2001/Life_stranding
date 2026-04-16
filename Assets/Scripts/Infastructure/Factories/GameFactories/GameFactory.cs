@@ -7,6 +7,7 @@ using HUD;
 using Infastructure.Common;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CheckPoint;
+using Infastructure.Services.PickupRewindRegistry;
 using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.ProgressWatchers;
 using Infastructure.Services.Registries.FlowerRegistry;
@@ -39,6 +40,7 @@ namespace Infastructure.Factories.GameFactories
         private readonly IPersistentProgressService _progressService;
         private readonly IFlowerRegistryService _flowerRegistryService;
         private readonly ISpiderRegistryService _spiderRegistryService;
+        private readonly IPickupRewindRegistryService _pickupRewindRegistryService;
 
         private string ActiveSceneName => SceneManager.GetActiveScene().name;
 
@@ -51,13 +53,15 @@ namespace Infastructure.Factories.GameFactories
             IProgressWatchersService progressWatchersService,
             IPersistentProgressService progressService,
             IFlowerRegistryService flowerRegistryService,
-            ISpiderRegistryService spiderRegistryService)
+            ISpiderRegistryService spiderRegistryService,
+            IPickupRewindRegistryService pickupRewindRegistryService)
         {
             _cameraProviderService = cameraProviderService;
             _progressWatchersService = progressWatchersService;
             _progressService = progressService;
             _flowerRegistryService = flowerRegistryService;
             _spiderRegistryService = spiderRegistryService;
+            _pickupRewindRegistryService = pickupRewindRegistryService;
             _diContainer = diContainer;
             _staticDataService = staticDataService;
             _biospherePointService = biospherePointService;
@@ -155,6 +159,7 @@ namespace Infastructure.Factories.GameFactories
 
             _xRayService.Add(xRayMarker);
 
+            _pickupRewindRegistryService.Register(flower);
             _flowerRegistryService.RegisterFlower(flower);
             _progressWatchersService.RegisterWatchers(flower.gameObject);
 
@@ -168,8 +173,7 @@ namespace Infastructure.Factories.GameFactories
             ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
             GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
 
-            foreach (WorldData worldData in _staticDataService.GameStaticData.GameDatas[ActiveSceneName]
-                         .BatteriesPoints)
+            foreach (WorldData worldData in _staticDataService.GameStaticData.GameDatas[ActiveSceneName].BatteriesPoints)
             {
                 BatteryProduct batteryProduct =
                     _diContainer.InstantiatePrefabForComponent<BatteryProduct>(prefab, worldData.WorldPosition,
@@ -188,6 +192,7 @@ namespace Infastructure.Factories.GameFactories
 
                 batteryProduct.Initialize();
 
+                _pickupRewindRegistryService.Register(batteryProduct);
                 _progressWatchersService.RegisterWatchers(batteryProduct.gameObject);
             }
         }

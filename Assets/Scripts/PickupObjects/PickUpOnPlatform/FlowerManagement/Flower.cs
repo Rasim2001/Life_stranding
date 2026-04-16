@@ -9,6 +9,7 @@ using Infastructure.Services.SaveLoadService;
 using Infastructure.Services.SlowTime;
 using Infastructure.Services.XRay;
 using Infastructure.StaticData.XRay;
+using PickupObjects.Rewind;
 using UnityEngine;
 using Zenject;
 
@@ -87,7 +88,6 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             progress.WorldProgressData.FlowerData.IsOnPlatform = IsOnPlatform;
         }
 
-        // --- Outline (пока оставляем тут, потом → FlowerVisuals) ---
 
         private void Update()
         {
@@ -111,6 +111,23 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             _flowerPointIndicator.ShowTargetPoint();
             OnDroppedFromPlatform?.Invoke();
             _xRayService.Add(_xRayMarker);
+        }
+
+        public override void ApplyFinalSnapshot(PickupObjectSnapshot snapshot)
+        {
+            base.ApplyFinalSnapshot(snapshot);
+
+            if (IsOnPlatform)
+            {
+                _isTriggered = false;
+                _flowerPointIndicator.HideTargetPoint();
+                _xRayService.Remove(_xRayMarker);
+            }
+            else
+            {
+                _flowerPointIndicator.ShowTargetPoint();
+                _xRayService.Add(_xRayMarker);
+            }
         }
 
         public override void AttachToPlatform(Transform platformTransform)

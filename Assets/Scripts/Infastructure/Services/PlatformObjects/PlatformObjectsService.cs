@@ -46,6 +46,17 @@ namespace Infastructure.Services.PlatformObjects
             _platformSelector.SetExcludeLayerMask();
         }
 
+        public void AddAfterRewind(PickupObjectBase obj)
+        {
+            if (_objects.Contains(obj))
+                return;
+
+            _objects.Add(obj);
+            AddWeight(obj);
+
+            _platformSelector.SetExcludeLayerMask();
+        }
+
         public void Remove(PickupObjectBase obj)
         {
             if (!_objects.Contains(obj))
@@ -112,8 +123,6 @@ namespace Infastructure.Services.PlatformObjects
                     obj.GetChanceAttachToPlatform();
                     Remove(obj);
 
-                    //obj.StartSimulatePhysics();
-
                     continue;
                 }
 
@@ -125,8 +134,6 @@ namespace Infastructure.Services.PlatformObjects
                 {
                     obj.GetChanceAttachToPlatform();
                     Remove(obj);
-
-                    //obj.StartSimulatePhysics();
                 }
             }
         }

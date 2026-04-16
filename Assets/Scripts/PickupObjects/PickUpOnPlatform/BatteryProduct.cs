@@ -7,6 +7,7 @@ using Infastructure.Services.XRay;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
 using Infastructure.StaticData.XRay;
+using PickupObjects.Rewind;
 using SpiderController.StateMachine;
 using UnityEngine;
 using Zenject;
@@ -80,6 +81,16 @@ namespace PickupObjects.PickUpOnPlatform
             base.ThrowObject();
 
             _xRayService.Add(_xRayMarker);
+        }
+
+        public override void ApplyFinalSnapshot(PickupObjectSnapshot snapshot)
+        {
+            base.ApplyFinalSnapshot(snapshot);
+
+            if (IsOnPlatform)
+                _xRayService.Remove(_xRayMarker);
+            else
+                _xRayService.Add(_xRayMarker);
         }
 
         public override void AttachToPlatform(Transform platformTransform)

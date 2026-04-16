@@ -4,6 +4,7 @@ using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Magnet;
 using Infastructure.Services.Pause;
+using Infastructure.Services.PickupRewindRegistry;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Window;
@@ -24,6 +25,7 @@ namespace SpiderController
         public ICutSceneService CutSceneService { get; }
         public IMagnetFreezingService MagnetFreezingService { get; set; }
         public IPlatformObjectsService PlatformObjectsService { get; set; }
+        public IPickupRewindRegistryService PickupRewindRegistryService { get; }
 
 
         public SpiderServiceContext(
@@ -36,7 +38,9 @@ namespace SpiderController
             IEventSystemSelector systemSelector,
             IPauseService pauseService,
             ICutSceneService cutSceneService,
-            IMagnetFreezingService magnetFreezingService, IPlatformObjectsService platformObjectsService)
+            IMagnetFreezingService magnetFreezingService,
+            IPlatformObjectsService platformObjectsService,
+            IPickupRewindRegistryService pickupRewindRegistryService)
         {
             SpiderCamera = spiderCamera;
             InputService = inputService;
@@ -49,6 +53,7 @@ namespace SpiderController
             CutSceneService = cutSceneService;
             MagnetFreezingService = magnetFreezingService;
             PlatformObjectsService = platformObjectsService;
+            PickupRewindRegistryService = pickupRewindRegistryService;
         }
     }
 }
