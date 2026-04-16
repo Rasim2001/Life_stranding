@@ -147,7 +147,7 @@ namespace GameDevBuddies
             // Cache the footstep information so that it would get rendered.
             RecordedFootsteps[_freeFootstepSlotIndex] = footstepInfo;
 
-            // Update the index to the next free slot so that the next footstep can be placed.
+            // FixedUpdate the index to the next free slot so that the next footstep can be placed.
             _freeFootstepSlotIndex++;
             if (_freeFootstepSlotIndex >= _maxFootstepsCount)
             {

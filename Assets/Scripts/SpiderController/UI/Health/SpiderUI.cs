@@ -31,7 +31,6 @@ namespace SpiderController.UI.Health
         private SpiderHealth _spiderHealth;
         private IStaticDataService _staticDataService;
         private ICutSceneService _cutSceneService;
-        private IWindowService _windowService;
         private IDefeatWindowService _defeatWindowService;
 
         [Inject]
@@ -39,7 +38,6 @@ namespace SpiderController.UI.Health
             IWindowService windowService, IDefeatWindowService defeatWindowService)
         {
             _defeatWindowService = defeatWindowService;
-            _windowService = windowService;
             _cutSceneService = cutSceneService;
             _staticDataService = staticDataService;
         }

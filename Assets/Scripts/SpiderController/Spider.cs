@@ -20,6 +20,8 @@ using SpiderController.Platform;
 using SpiderController.Scanner;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine;
+using SpiderController.StateMachine.States;
+using SpiderController.StateMachine.States.Rewind;
 using SpiderController.Thruster;
 using SpiderController.Trajectory;
 using SpiderController.TriggerChecker;
@@ -33,6 +35,7 @@ namespace SpiderController
     [RequireComponent(typeof(Rigidbody))]
     public class Spider : SerializedMonoBehaviour, ISavedProgress
     {
+        [SerializeField] private BodyOrientation _bodyOrientation;
         [SerializeField] private SpiderUI _spiderUI;
         [SerializeField] private ThrusterSystem _thrusterSystem;
         [SerializeField] private ScannerAnimator _scannerAnimator;
@@ -76,6 +79,7 @@ namespace SpiderController
         private StateMachineData _stateMachineData;
         private SpiderOverlayStateMachine _overlayStateMachine;
         private MagnetSkill _magnetSkill;
+        private SpiderRewindRecorder _rewindRecorder;
 
         private IMagnetFreezingService _magnetFreezingService;
         private IPlatformObjectsService _platformObjectsService;
@@ -108,6 +112,12 @@ namespace SpiderController
             _magnetFreezingService = magnetFreezingService;
         }
 
+        private void Awake() =>
+            _rigidbody = GetComponent<Rigidbody>();
+
+        private void Start() =>
+            _defeatWindowService.OnDefeatHappened += Defeat;
+
 
         public void LoadProgress(PlayerProgress progress)
         {
@@ -124,11 +134,6 @@ namespace SpiderController
             progress.WorldProgressData.SpiderData.Rotation = transform.localEulerAngles.AsVectorData();
         }
 
-        private void Awake() =>
-            _rigidbody = GetComponent<Rigidbody>();
-
-        private void Start() =>
-            _defeatWindowService.OnDefeatHappened += Defeat;
 
         private void OnDestroy()
         {
@@ -176,11 +181,13 @@ namespace SpiderController
                 _stickers,
                 _groundChecker,
                 _stateMachineData,
-                _legs
+                _legs,
+                _bodyOrientation
             );
 
 
             EnergyLegs energyLegs = new EnergyLegs(_energyHighlightEffects);
+
             EnergySystem energySystem = _diFactory.Create<EnergySystem>(stateContext);
 
             _spiderImpactReceiver = _diFactory.Create<SpiderImpactReceiver>(stateContext);
@@ -218,7 +225,16 @@ namespace SpiderController
             _magnetSkill = _diFactory.Create<MagnetSkill>(stateContext, energySystem);
             _magnetSkill.Initialize();
 
-            _spiderStateMachine = _diFactory.Create<SpiderStateMachine>(stateContext, serviceContext, energySystem);
+            _rewindRecorder = _diFactory.Create<SpiderRewindRecorder>(stateContext, _platformSelector);
+
+            _spiderStateMachine =
+                _diFactory.Create<SpiderStateMachine>(
+                    stateContext,
+                    serviceContext,
+                    energySystem,
+                    _rewindRecorder,
+                    _platformSelector);
+
             _overlayStateMachine = _diFactory.Create<SpiderOverlayStateMachine>(stateContext);
 
             _magnetFreezingService.Initialize(_stateMachineData);
@@ -280,6 +296,7 @@ namespace SpiderController
             _spiderStateMachine.FixedUpdate();
             _overlayStateMachine.FixedUpdate();
             _spiderPlane.FixedUpdate();
+            _rewindRecorder.FixedUpdate();
         }
 
         private void LateUpdate()

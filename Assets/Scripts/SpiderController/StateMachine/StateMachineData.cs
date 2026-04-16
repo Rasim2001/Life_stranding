@@ -81,17 +81,18 @@ namespace SpiderController.StateMachine
             }
         }
 
+        public bool CanRecordFootprints = true;
+
         public bool IsMouseHolding;
         public bool IsStandingUpAfterFalling;
 
         public float TerrainTimer;
         public float TerrainTimerDefault;
 
-
         private readonly float _slowdownFactor = 0.25f;
         private float _speed;
-        private bool _IsFallingDownWithoutEnergyState;
         private float _totalWeight;
+        private bool _IsFallingDownWithoutEnergyState;
         private bool _isInAimingState;
 
         public void Clear()

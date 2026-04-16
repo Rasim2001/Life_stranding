@@ -20,12 +20,25 @@ namespace SpiderController.SpiderMove
         private IInputService _inputService;
         private Quaternion _targetWorldRot;
 
+        public Quaternion LegsRootBoneRotation =>
+            _legsRootBone != null ? _legsRootBone.localRotation : Quaternion.identity;
+
+        public Quaternion RaycastRigRotation =>
+            _raycastRig != null ? _raycastRig.localRotation : Quaternion.identity;
+
+        public Quaternion HeadRootRotation =>
+            _headRootBone != null ? _headRootBone.localRotation : Quaternion.identity;
+
         [Inject]
         public void Construct(ICameraProviderService cameraProviderService, IInputService inputService)
         {
             _inputService = inputService;
             _cameraProviderService = cameraProviderService;
         }
+
+        public void Freeze() => enabled = false;
+        public void Unfreeze() => enabled = true;
+
 
         private void Awake()
         {
@@ -65,6 +78,13 @@ namespace SpiderController.SpiderMove
             RotateBoneLocalY(_legsRootBone, _legsRootDefaultLocalEuler, _targetWorldRot, speed);
             RotateBoneLocalY(_headRootBone, _headDefaultLocalEuler, _targetWorldRot, speed);
             RotateBoneLocalY(_raycastRig, _raycastDefaultLocalEuler, _targetWorldRot, speed);
+        }
+
+        public void SetBonesRotation(Quaternion legsRootRotation, Quaternion raycastRigRotation, Quaternion headRootRotation)
+        {
+            _legsRootBone.localRotation = legsRootRotation;
+            _raycastRig.localRotation = raycastRigRotation;
+            _headRootBone.localRotation = headRootRotation;
         }
 
 

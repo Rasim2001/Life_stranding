@@ -31,6 +31,13 @@ namespace Cameras.SpiderCameras
             get => _cinemachineCamera.Lens.FieldOfView;
             set => _cinemachineCamera.Lens.FieldOfView = value;
         }
+
+        public float Distance
+        {
+            get => _thirdPersonFollow.CameraDistance;
+            set => _thirdPersonFollow.CameraDistance = value;
+        }
+
         private MMF_CinemachineImpulse Impulse =>
             _cameraShake.GetFeedbackOfType<MMF_CinemachineImpulse>();
 
@@ -40,6 +47,7 @@ namespace Cameras.SpiderCameras
         private SpiderCameraFollower _follower;
         private SpiderCameraFov _fov;
         private SpiderCameraOrbit _orbit;
+        private SpiderCameraDistance _distance;
 
 
         [Inject]
@@ -53,6 +61,7 @@ namespace Cameras.SpiderCameras
         {
             _follower = _diFactory.Create<SpiderCameraFollower>(_pivot);
             _fov = _diFactory.Create<SpiderCameraFov>(this);
+            _distance = _diFactory.Create<SpiderCameraDistance>(this);
 
             _orbit = _diFactory.Create<SpiderCameraOrbit>(this, _pivot);
             _orbit.Initialize();
@@ -76,7 +85,7 @@ namespace Cameras.SpiderCameras
             _cameraShake.PlayFeedbacks();
         }
 
-        private void OnDestroy() => 
+        private void OnDestroy() =>
             _orbit.Destroy();
 
         private void Update()
@@ -87,6 +96,7 @@ namespace Cameras.SpiderCameras
             _follower.Update();
             _fov.Update();
             _orbit.Update();
+            _distance.Update();
         }
 
         private void FixedUpdate()

@@ -96,7 +96,6 @@ namespace WaterSystem
                 _defeatWindowService.OpenDefeatWindow();
             }
 
-
             _actualSpeed = Mathf.Abs(Spider.transform.position.y - transform.position.y) >
                            WaterStaticData.DistanceToSwitchSpeed
                 ? _farSpeed

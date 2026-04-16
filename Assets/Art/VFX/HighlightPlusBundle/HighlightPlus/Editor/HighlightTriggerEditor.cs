@@ -88,7 +88,7 @@ namespace HighlightPlus {
                     EditorGUI.BeginChangeCheck();
                     EditorGUILayout.PropertyField(keepSelection);
                     if (EditorGUI.EndChangeCheck()) {
-                        // Update all triggers
+                        // FixedUpdate all triggers
                         HighlightTrigger[] triggers = Misc.FindObjectsOfType<HighlightTrigger>();
                         foreach(HighlightTrigger t in triggers) {
                             if (t.keepSelection != keepSelection.boolValue) {

@@ -96,7 +96,7 @@ namespace SpiderController.UI
             foreach (Image otherObject in _otherObjects)
             {
                 if (otherObject == null)
-                    return;
+                    continue;
 
                 Color seg = otherObject.color;
                 seg.a = 0;

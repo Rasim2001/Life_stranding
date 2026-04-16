@@ -46,5 +46,8 @@ namespace SpiderController.UI.Health
             if (CurrentHP <= 0)
                 _defeatWindowService.OpenDefeatWindow();
         }
+
+        public void Heal(float amount) =>
+            CurrentHP = Mathf.Min(CurrentHP + amount, MaxHp);
     }
 }

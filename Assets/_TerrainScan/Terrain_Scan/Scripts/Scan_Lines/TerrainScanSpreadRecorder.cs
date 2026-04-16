@@ -85,7 +85,7 @@ namespace GameDevBuddies
                 };
                 recordedSpreadingFrames.Add(frame);
 
-                // Update animation to progress towards the next frame.
+                // FixedUpdate animation to progress towards the next frame.
                 UpdateAnimation(timeDelta);
 
                 currentRecordingTime += timeDelta;

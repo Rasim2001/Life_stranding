@@ -1561,7 +1561,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1835283336038136795}
-  - {fileID: 2926695606217634599}
   - {fileID: 501494927562022210}
   - {fileID: 1498908518501730004}
   - {fileID: 8042183286134516524}
@@ -5680,57 +5679,6 @@ Transform:
   - {fileID: 1899280339829773721}
   m_Father: {fileID: 1897091207113528360}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &5196902079446665342
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2926695606217634599}
-  - component: {fileID: 3877133752795317131}
-  m_Layer: 15
-  m_Name: FlowerChecker2
-  m_TagString: Untagged
-  m_Icon: {fileID: 3443629218296621865, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &2926695606217634599
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5196902079446665342}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 781452967789582327}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3877133752795317131
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5196902079446665342}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e0f864ec8c8453e83732c9e126e6444, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _observerTrigger: {fileID: 0}
-  Results: []
-  _flowerLayer:
-    serializedVersion: 2
-    m_Bits: 512
-  _radius: 3
-  IsTouching: 0
 --- !u!1 &5299582915730319307
 GameObject:
   m_ObjectHideFlags: 0
@@ -6913,11 +6861,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _observerTrigger: {fileID: 2343771013716916601}
   Results: []
-  _flowerLayer:
-    serializedVersion: 2
-    m_Bits: 512
-  _radius: 3
-  IsTouching: 0
 --- !u!1 &6027271150478261828
 GameObject:
   m_ObjectHideFlags: 0
@@ -12892,9 +12835,7 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: OnShakeCameraHappened
-      Entry: 6
-      Data: 
+  _bodyOrientation: {fileID: 7989140216671697372}
   _spiderUI: {fileID: 6551946587942082740}
   _thrusterSystem: {fileID: 4992772893408233192}
   _scannerAnimator: {fileID: 1678454106847131119}
@@ -12925,26 +12866,6 @@ MonoBehaviour:
     Raycast: {fileID: 4957002421866192317}
   - Leg: {fileID: 6062356870736479998}
     Raycast: {fileID: 6395569757360196741}
-  _stateMachineData:
-    Input: {x: 0, y: 0, z: 0}
-    Velocity: {x: 0, y: 0, z: 0}
-    ExplosionVector: {x: 0, y: 0, z: 0}
-    ExplosionAngularVector: {x: 0, y: 0, z: 0}
-    LastValidGroundPosition: {x: 0, y: 0, z: 0}
-    LastValidGroundRotation: {x: 0, y: 0, z: 0, w: 0}
-    IsInGravityGunState: 0
-    RotationAmount: 0
-    DistanceFromGround: 0.5
-    YVelocity: 0
-    XVelocity: 0
-    GlobalY: 0
-    AirbornSpeed: 0
-    CurrentEnergyFillAmount: 1
-    EnergyFillAmount: 0
-    IsMouseHolding: 0
-    IsStandingUpAfterFalling: 0
-    TerrainTimer: 0
-    TerrainTimerDefault: 0
 --- !u!114 &6551946587942082740
 MonoBehaviour:
   m_ObjectHideFlags: 0

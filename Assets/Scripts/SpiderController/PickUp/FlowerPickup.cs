@@ -151,9 +151,8 @@ namespace SpiderController.PickUp
             token.ThrowIfCancellationRequested();
 
             _windowService.OpenProductDescriptionPopup(ProductType.Flower);
-
             _platformObjectsService.Add(_flower);
-            //_flower.StopSimulatePhysics();  //TODO:
+
             HealthBar.PlayFadeHologramEffect();
         }
     }

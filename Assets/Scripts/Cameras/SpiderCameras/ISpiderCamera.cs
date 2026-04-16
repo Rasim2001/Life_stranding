@@ -6,6 +6,7 @@ namespace Cameras.SpiderCameras
     {
         Vector3 ShoulderOffset { get; set; }
         float FieldOfView { get; set; }
+        float Distance { get; set; }
         void Initialize();
         void ShakeCamera(float distanceFalling);
     }

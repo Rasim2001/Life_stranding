@@ -4,6 +4,7 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.Spider;
 using SpiderController.SpiderMove;
+using SpiderController.StateMachine.States.Rewind;
 using SpiderController.Thruster;
 using SpiderController.UI.Health;
 using UnityEngine;
@@ -72,6 +73,9 @@ namespace SpiderController.StateMachine.States
 
         public virtual void Update()
         {
+            if (Input.GetKeyDown(KeyCode.R))
+                StateMachine.SwitchState<RewindState>();
+
             TryMoveLegs();
             UpdateTerranTime();
         }

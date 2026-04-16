@@ -1,4 +1,3 @@
-using System;
 using Infastructure.Services.Ability;
 using PickupObjects;
 using UnityEngine;

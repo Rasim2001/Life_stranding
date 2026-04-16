@@ -33,9 +33,9 @@ namespace SpiderController
         public GroundChecker GroundChecker { get; }
         public StateMachineData Data { get; }
         public LegDataStruct[] Legs { get; }
+        public BodyOrientation BodyOrientation { get; }
 
-        public SpiderStateContext(
-            Transform transform,
+        public SpiderStateContext(Transform transform,
             Transform rotationPlaneTransform,
             Rigidbody rigidbody,
             SpiderUI spiderUI,
@@ -54,7 +54,8 @@ namespace SpiderController
             Stickers stickers,
             GroundChecker groundChecker,
             StateMachineData data,
-            LegDataStruct[] legs)
+            LegDataStruct[] legs,
+            BodyOrientation bodyOrientation)
         {
             RotationPlaneTransform = rotationPlaneTransform;
             Rigidbody = rigidbody;
@@ -76,8 +77,7 @@ namespace SpiderController
             GroundChecker = groundChecker;
             Data = data;
             Legs = legs;
+            BodyOrientation = bodyOrientation;
         }
-        
-        
     }
 }
