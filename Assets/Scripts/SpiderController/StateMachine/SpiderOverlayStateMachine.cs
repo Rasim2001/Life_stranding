@@ -23,7 +23,8 @@ namespace SpiderController.StateMachine
             _states = new List<ISpiderState>()
             {
                 diFactory.Create<EmptyOverlayState>(this),
-                diFactory.Create<GravityGunOverlayState>(this, stateContext)
+                diFactory.Create<GravityGunOverlayState>(this, stateContext),
+                diFactory.Create<TeleportOverlayState>(this, stateContext)
             };
 
             _currentState = _states[0];

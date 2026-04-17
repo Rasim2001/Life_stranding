@@ -195,7 +195,7 @@ namespace Cameras.SpiderCameras
 
         private void HandleMouse()
         {
-            if (Spider == null || Data.IsInGravityGunState)
+            if (Spider == null || Data.IsGravityGunState)
                 return;
 
             if (_inputService.CenterMousePressed)

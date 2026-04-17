@@ -85,6 +85,7 @@ public class JoystickInputSource : IInputSource
     public bool TabPressed => Scan.WasPressedThisFrame();
     public bool GravityGunPressed { get; }
     public bool GravityGunUp { get; }
+    public bool TeleportPressed { get; }
 
     public bool AnyKeyPressed() =>
         false;

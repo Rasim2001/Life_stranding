@@ -80,8 +80,10 @@ namespace Infastructure.Services.PlayerInput
 
         public bool CenterMouseUp => _inputSource.CenterMouseUp || (_joystickInputSource?.CenterMouseUp ?? false);
 
-        public bool GravityGunPressed =>  _inputSource.GravityGunPressed || (_joystickInputSource?.GravityGunPressed ?? false);
+        public bool GravityGunPressed => _inputSource.GravityGunPressed || (_joystickInputSource?.GravityGunPressed ?? false);
         public bool GravityGunUp => _inputSource.GravityGunUp || (_joystickInputSource?.GravityGunUp ?? false);
+        public bool TeleportPressed => _inputSource.TeleportPressed || (_joystickInputSource?.TeleportPressed ?? false);
+
 
         public float ScrollWheelAxis
         {

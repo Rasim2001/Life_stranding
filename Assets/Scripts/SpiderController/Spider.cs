@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Common;
 using HighlightPlus;
@@ -20,7 +19,6 @@ using SpiderController.Platform;
 using SpiderController.Scanner;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine;
-using SpiderController.StateMachine.States;
 using SpiderController.StateMachine.States.Rewind;
 using SpiderController.Thruster;
 using SpiderController.Trajectory;

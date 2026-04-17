@@ -46,7 +46,8 @@ namespace SpiderController.StateMachine
             }
         }
 
-        public bool IsInGravityGunState;
+        public bool IsGravityGunState;
+        public bool IsTeleportState;
 
         public float RotationAmount;
 

@@ -25,6 +25,7 @@ using Infastructure.Services.Registries.FlowerRegistry;
 using Infastructure.Services.Registries.SpiderRegistry;
 using Infastructure.Services.SlowTime;
 using Infastructure.Services.Tasks;
+using Infastructure.Services.Teleports;
 using Infastructure.Services.Timer;
 using Infastructure.Services.VolumeManagement;
 using Infastructure.Services.Window;
@@ -105,6 +106,10 @@ namespace Infastructure.CompositionRoot
             BindSpiderCamera();
 
             BindPickupRewindRegistry();
+
+            BindTeleportDisplayer();
+
+            BindTeleportService();
         }
 
         private void BindUI()
@@ -126,6 +131,9 @@ namespace Infastructure.CompositionRoot
 
         private void BindPickupRewindRegistry() =>
             Container.BindInterfacesAndSelfTo<PickupRewindRegistryService>().AsSingle();
+
+        private void BindTeleportService() =>
+            Container.BindInterfacesAndSelfTo<TeleportService>().AsSingle();
 
         private void BindSpiderCamera()
         {
@@ -157,6 +165,15 @@ namespace Infastructure.CompositionRoot
                 .Bind<IGravityGunDisplayer>()
                 .To<GravityGunDisplayer>()
                 .FromComponentInNewPrefabResource(AssetsPath.GravityGunDisplayerPath)
+                .AsSingle();
+        }
+
+        private void BindTeleportDisplayer()
+        {
+            Container
+                .Bind<ITeleportDisplayer>()
+                .To<TeleportDisplayer>()
+                .FromComponentInNewPrefabResource(AssetsPath.TeleportDisplayerPath)
                 .AsSingle();
         }
 

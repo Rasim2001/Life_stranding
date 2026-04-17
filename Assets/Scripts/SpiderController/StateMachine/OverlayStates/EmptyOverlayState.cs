@@ -25,6 +25,9 @@ namespace SpiderController.StateMachine.OverlayStates
         {
             if (_inputService.GravityGunPressed)
                 _stateMachine.SwitchState<GravityGunOverlayState>();
+
+            if (_inputService.TeleportPressed)
+                _stateMachine.SwitchState<TeleportOverlayState>();
         }
 
         public void Update()

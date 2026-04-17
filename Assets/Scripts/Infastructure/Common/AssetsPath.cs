@@ -9,6 +9,7 @@ namespace Infastructure.Common
         public const string TrajectoryEndPointDisplayerPath = "Prefabs/UI/TrajectoryEndPointDisplayer";
         public const string SlowTimeRunnerPath = "Prefabs/SlowTimeRunner";
         public const string GravityGunDisplayerPath = "Prefabs/UI/GravityGunDisplayer";
+        public const string TeleportDisplayerPath = "Prefabs/UI/TeleportDisplayer";
         public const string SpiderCameraPath = "Prefabs/CameraSystem/CameraSystem";
         public const string GlobalWaterPath = "Prefabs/Water/GlobalWater";
         public const string WaterFallsPath = "Prefabs/Water/WaterFalls";

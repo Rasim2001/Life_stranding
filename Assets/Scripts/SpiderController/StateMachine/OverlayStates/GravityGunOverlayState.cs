@@ -48,14 +48,14 @@ namespace SpiderController.StateMachine.OverlayStates
 
         public void Enter()
         {
-            Data.IsInGravityGunState = true;
+            Data.IsGravityGunState = true;
 
             _displayer.Show();
         }
 
         public void Exit()
         {
-            Data.IsInGravityGunState = false;
+            Data.IsGravityGunState = false;
 
             _displayer.Hide();
         }
