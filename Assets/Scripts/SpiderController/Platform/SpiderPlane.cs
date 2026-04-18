@@ -92,7 +92,7 @@ namespace SpiderController.Platform
         {
             if (StateMachineData.IsFallingDownWithoutEnergyState ||
                 !_abilityService.IsExploredAbility(ProductType.Flower) ||
-                StateMachineData.IsGravityGunState)
+                StateMachineData.IsGravityGunState || StateMachineData.IsTeleportState)
                 return;
 
             if (_inputService.CenterMousePressed)

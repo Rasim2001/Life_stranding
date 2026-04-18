@@ -6,5 +6,6 @@ namespace UI.Curtain
         void Show();
         void Hide();
         bool IsShowing { get; }
+        void FandeIn(float time);
     }
 }

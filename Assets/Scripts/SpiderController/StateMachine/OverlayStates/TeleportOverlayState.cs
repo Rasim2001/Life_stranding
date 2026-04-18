@@ -2,120 +2,93 @@ using Common.Extensions;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.Teleports;
-using SpiderController;
-using SpiderController.StateMachine;
-using SpiderController.StateMachine.OverlayStates;
 using UnityEngine;
 
-public class TeleportOverlayState : ISpiderState
+namespace SpiderController.StateMachine.OverlayStates
 {
-    private const float MaxRayDistance = 30f;
-    private const float MinRayDistance = 10f;
-
-    private static readonly Vector3 PortalHalfExtents = new Vector3(0.5f, 1f, 0.05f);
-
-    private readonly ISpiderStateMachine _stateMachine;
-    private readonly ITeleportService _teleportService;
-    private readonly IInputService _inputService;
-    private readonly ICameraProviderService _cameraProviderService;
-    private readonly ITeleportDisplayer _displayer;
-    private readonly SpiderStateContext _stateContext;
-
-    private StateMachineData Data => _stateContext.Data;
-    private Transform CameraTransform => _cameraProviderService.CameraTransform;
-
-    public TeleportOverlayState(
-        ISpiderStateMachine stateMachine,
-        ITeleportService teleportService,
-        IInputService inputService,
-        ICameraProviderService cameraProviderService,
-        ITeleportDisplayer displayer,
-        SpiderStateContext stateContext)
+    public class TeleportOverlayState : ISpiderState
     {
-        _stateMachine = stateMachine;
-        _teleportService = teleportService;
-        _inputService = inputService;
-        _cameraProviderService = cameraProviderService;
-        _displayer = displayer;
-        _stateContext = stateContext;
-    }
+        private const float MaxRayDistance = 30f;
+        private const float MinRayDistance = 10;
 
-    public void Enter()
-    {
-        Data.IsTeleportState = true;
-        _displayer.Show();
-    }
+        private readonly ISpiderStateMachine _stateMachine;
+        private readonly ITeleportService _teleportService;
+        private readonly IInputService _inputService;
+        private readonly ICameraProviderService _cameraProviderService;
+        private readonly ITeleportDisplayer _displayer;
+        private readonly SpiderStateContext _stateContext;
 
-    public void Exit()
-    {
-        Data.IsTeleportState = false;
-        _displayer.Hide();
-    }
+        private StateMachineData Data => _stateContext.Data;
 
-    public void HandleInput()
-    {
-        if (_inputService.TeleportPressed)
-            _stateMachine.SwitchState<EmptyOverlayState>();
-    }
-
-    public void Update()
-    {
-        if (!_inputService.LeftMousePressed)
-            return;
-
-        if (TryGetSpawnPoint(out Vector3 position, out Vector3 normal))
-            _teleportService.SpawnNewTeleport(position, normal);
-        else
+        public TeleportOverlayState(
+            ISpiderStateMachine stateMachine,
+            ITeleportService teleportService,
+            IInputService inputService,
+            ICameraProviderService cameraProviderService,
+            ITeleportDisplayer displayer,
+            SpiderStateContext stateContext)
         {
-            Vector3 fallbackPosition = CameraTransform.position + CameraTransform.forward * MinRayDistance;
-            Vector3 fallbackNormal = -CameraTransform.forward;
-            _teleportService.SpawnNewTeleport(fallbackPosition, fallbackNormal);
+            _stateMachine = stateMachine;
+            _teleportService = teleportService;
+            _inputService = inputService;
+            _cameraProviderService = cameraProviderService;
+            _displayer = displayer;
+            _stateContext = stateContext;
         }
-    }
 
-    public void FixedUpdate()
-    {
-    }
+        public void Enter()
+        {
+            Data.IsTeleportState = true;
 
-    public void LateUpdate()
-    {
-    }
+            _displayer.Show();
+        }
 
-    private bool TryGetSpawnPoint(out Vector3 position, out Vector3 normal)
-    {
-        position = default;
-        normal = default;
+        public void Exit()
+        {
+            Data.IsTeleportState = false;
 
-        Ray ray = _displayer.GetAimRay(_cameraProviderService.Camera);
+            _displayer.Hide();
+        }
 
-        if (!Physics.Raycast(ray, out RaycastHit hit, MaxRayDistance, CollisionLayer.Default.AsMask()))
-            return false;
+        public void HandleInput()
+        {
+            if (_inputService.TeleportPressed)
+                _stateMachine.SwitchState<EmptyOverlayState>();
+        }
 
-        float distance = Vector3.Distance(hit.point, CameraTransform.position);
-        if (distance < MinRayDistance)
-            return false;
+        public void Update()
+        {
+            if (!_inputService.LeftMousePressed)
+                return;
 
-        if (!IsPlacementClear(hit.point, hit.normal))
-            return false;
+            Ray ray = _displayer.GetAimRay(_cameraProviderService.Camera);
 
-        position = hit.point;
-        normal = hit.normal;
+            if (!Physics.Raycast(ray, out RaycastHit hit, MaxRayDistance, CollisionLayer.Default.AsMask()))
+            {
+                Vector3 minFallbackPosition = ray.origin + ray.direction * MinRayDistance;
+                _teleportService.SpawnNewTeleport(minFallbackPosition);
 
-        return true;
-    }
+                return;
+            }
 
-    private bool IsPlacementClear(Vector3 surfacePoint, Vector3 surfaceNormal)
-    {
-        Vector3 boxCenter = surfacePoint + surfaceNormal * PortalHalfExtents.z;
+            float distance = Vector3.Distance(hit.point, ray.origin);
+            if (distance < MinRayDistance)
+                return;
 
-        Quaternion boxRotation = Quaternion.LookRotation(-surfaceNormal, Vector3.up);
+            Vector3 offset = (hit.point - ray.origin).normalized * 1.25f;
+            Vector3 fallbackPosition = hit.point - offset;
 
-        bool hasOverlap = Physics.CheckBox(
-            boxCenter,
-            PortalHalfExtents,
-            boxRotation,
-            CollisionLayer.Default.AsMask());
+            _teleportService.SpawnNewTeleport(fallbackPosition);
 
-        return !hasOverlap;
+            _stateMachine.SwitchState<EmptyOverlayState>();
+        }
+
+        public void FixedUpdate()
+        {
+        }
+
+        public void LateUpdate()
+        {
+        }
     }
 }

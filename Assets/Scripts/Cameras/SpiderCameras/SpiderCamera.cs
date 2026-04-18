@@ -85,6 +85,12 @@ namespace Cameras.SpiderCameras
             _cameraShake.PlayFeedbacks();
         }
 
+        public void AlignToSpider() =>
+            _orbit.AlignToSpider();
+
+        public void SnapToTarget() =>
+            _follower.Snap();
+
         private void OnDestroy() =>
             _orbit.Destroy();
 

@@ -5,8 +5,7 @@ namespace Infastructure.Services.Teleports
 {
     public interface ITeleportService
     {
-        Teleport SpawnNewTeleport(Vector3 position, Vector3 surfaceNormal);
+        Teleport SpawnNewTeleport(Vector3 position);
         void TryTeleportSpider(Teleport from);
-        Teleport GetTeleport(Vector3 position, Vector3 surfaceNormal);
     }
 }

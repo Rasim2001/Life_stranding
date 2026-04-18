@@ -9,5 +9,7 @@ namespace Cameras.SpiderCameras
         float Distance { get; set; }
         void Initialize();
         void ShakeCamera(float distanceFalling);
+        void SnapToTarget();
+        void AlignToSpider();
     }
 }

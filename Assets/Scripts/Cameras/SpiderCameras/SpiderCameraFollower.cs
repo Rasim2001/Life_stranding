@@ -32,6 +32,12 @@ namespace Cameras.SpiderCameras
             _pivot = pivot;
         }
 
+        public void Snap()
+        {
+            _pivot.position = Spider.transform.position;
+            _velocity = Vector3.zero;
+        }
+
         public void Update()
         {
             if (Spider == null || _defeatWindowService.IsDefeated)

@@ -58,6 +58,7 @@ namespace SpiderController
         [SerializeField] private Dictionary<PlatformId, PlatformData> _platformDatas;
 
         public StateMachineData StateMachineData => _stateMachineData;
+        public SpiderStateContext StateContext => _stateContext;
 
         private Rigidbody _rigidbody;
         private SpiderStateMachine _spiderStateMachine;
@@ -78,6 +79,7 @@ namespace SpiderController
         private SpiderOverlayStateMachine _overlayStateMachine;
         private MagnetSkill _magnetSkill;
         private SpiderRewindRecorder _rewindRecorder;
+        private SpiderStateContext _stateContext;
 
         private IMagnetFreezingService _magnetFreezingService;
         private IPlatformObjectsService _platformObjectsService;
@@ -159,7 +161,7 @@ namespace SpiderController
             _stateMachineData = new StateMachineData();
             _stateMachineData.EnergyFillAmount = _staticData.SpiderStaticData.EnergyFillAmount;
 
-            SpiderStateContext stateContext = new SpiderStateContext(
+            _stateContext = new SpiderStateContext(
                 transform,
                 _rotationPlaneTransform,
                 _rigidbody,
@@ -186,20 +188,20 @@ namespace SpiderController
 
             EnergyLegs energyLegs = new EnergyLegs(_energyHighlightEffects);
 
-            EnergySystem energySystem = _diFactory.Create<EnergySystem>(stateContext);
+            EnergySystem energySystem = _diFactory.Create<EnergySystem>(_stateContext);
 
-            _spiderImpactReceiver = _diFactory.Create<SpiderImpactReceiver>(stateContext);
+            _spiderImpactReceiver = _diFactory.Create<SpiderImpactReceiver>(_stateContext);
 
-            _spiderPlane = _diFactory.Create<SpiderPlane>(stateContext);
+            _spiderPlane = _diFactory.Create<SpiderPlane>(_stateContext);
             _spiderPlane.Initialize();
 
-            _flowerPickup = _diFactory.Create<FlowerPickup>(stateContext, flower);
+            _flowerPickup = _diFactory.Create<FlowerPickup>(_stateContext, flower);
             _flowerPickup.Initialize();
 
             _batteryProductPickup = _diFactory.Create<BatteryProductPickup>(_batteryChecker, _flowerChecker);
             _batteryProductPickup.Initialize();
 
-            _energyPickup = _diFactory.Create<EnergyPickup>(stateContext, _energyChecker, energyLegs);
+            _energyPickup = _diFactory.Create<EnergyPickup>(_stateContext, _energyChecker, energyLegs);
             _energyPickup.Initialize();
 
             _elephantProductPickup = _diFactory.Create<ElephantProductPickup>(_elephantChecker);
@@ -220,23 +222,23 @@ namespace SpiderController
             _biosphereProductPickup = _diFactory.Create<BiosphereProductPickup>(_biosphereChecker, flower);
             _biosphereProductPickup.Initialize();
 
-            _magnetSkill = _diFactory.Create<MagnetSkill>(stateContext, energySystem);
+            _magnetSkill = _diFactory.Create<MagnetSkill>(_stateContext, energySystem);
             _magnetSkill.Initialize();
 
-            _rewindRecorder = _diFactory.Create<SpiderRewindRecorder>(stateContext, _platformSelector);
+            _rewindRecorder = _diFactory.Create<SpiderRewindRecorder>(_stateContext, _platformSelector);
 
             _spiderStateMachine =
                 _diFactory.Create<SpiderStateMachine>(
-                    stateContext,
+                    _stateContext,
                     serviceContext,
                     energySystem,
                     _rewindRecorder,
                     _platformSelector);
 
-            _overlayStateMachine = _diFactory.Create<SpiderOverlayStateMachine>(stateContext);
+            _overlayStateMachine = _diFactory.Create<SpiderOverlayStateMachine>(_stateContext);
 
             _magnetFreezingService.Initialize(_stateMachineData);
-            _platformObjectsService.Initialize(stateContext, _platformSelector);
+            _platformObjectsService.Initialize(_stateContext, _platformSelector);
 
             _progressWatchersService.RegisterWatcher(_energyPickup);
         }

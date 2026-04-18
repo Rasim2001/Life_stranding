@@ -39,7 +39,6 @@ namespace SpiderController.SpiderMove
         public void Freeze() => enabled = false;
         public void Unfreeze() => enabled = true;
 
-
         private void Awake()
         {
             if (_legsRootBone != null)
@@ -78,6 +77,15 @@ namespace SpiderController.SpiderMove
             RotateBoneLocalY(_legsRootBone, _legsRootDefaultLocalEuler, _targetWorldRot, speed);
             RotateBoneLocalY(_headRootBone, _headDefaultLocalEuler, _targetWorldRot, speed);
             RotateBoneLocalY(_raycastRig, _raycastDefaultLocalEuler, _targetWorldRot, speed);
+        }
+
+        public void SnapOnTeleport()
+        {
+            _targetWorldRot = transform.rotation;
+
+            _legsRootBone.localEulerAngles = _legsRootDefaultLocalEuler;
+            _headRootBone.localEulerAngles = _headDefaultLocalEuler;
+            _raycastRig.localEulerAngles = _raycastDefaultLocalEuler;
         }
 
         public void SetBonesRotation(Quaternion legsRootRotation, Quaternion raycastRigRotation, Quaternion headRootRotation)
