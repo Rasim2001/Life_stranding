@@ -1,8 +1,9 @@
+using Cameras.SpiderCameras;
 using Infastructure.Common;
 using Infastructure.Common.Pickup;
 using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Common.Trajectory;
-using Infastructure.CutScenes.FlowerPickupCutscene;
+using Infastructure.Factories;
 using Infastructure.Factories.GameFactories;
 using Infastructure.PlatformRegistry;
 using Infastructure.Services.Ability;
@@ -12,25 +13,27 @@ using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
 using Infastructure.Services.Explosion;
 using Infastructure.Services.GeneratorLaunchTracker;
+using Infastructure.Services.GravityGun;
 using Infastructure.Services.Hint;
 using Infastructure.Services.Magnet;
 using Infastructure.Services.PauseWindow;
+using Infastructure.Services.PickupRewindRegistry;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
 using Infastructure.Services.QTE;
+using Infastructure.Services.Registries.FlowerRegistry;
+using Infastructure.Services.Registries.SpiderRegistry;
 using Infastructure.Services.SlowTime;
-using Infastructure.Services.SpiderTrack;
 using Infastructure.Services.Tasks;
+using Infastructure.Services.Teleports;
 using Infastructure.Services.Timer;
 using Infastructure.Services.VolumeManagement;
 using Infastructure.Services.Window;
 using Infastructure.Services.XRay;
 using Infastructure.States;
 using UI.MVVM.View.Root;
-using UI.MVVM.View.TaskPopup;
 using UnityEngine;
 using UnityEngine.Rendering;
-using WaterSystem;
 using Zenject;
 
 namespace Infastructure.CompositionRoot
@@ -76,7 +79,9 @@ namespace Infastructure.CompositionRoot
 
             BindAbilityService();
 
-            BindSpiderTrackService();
+            BindSpiderRegistryService();
+
+            BindFlowerRegistryService();
 
             BindTimerService();
 
@@ -93,6 +98,18 @@ namespace Infastructure.CompositionRoot
             BindCutSceneService();
 
             BindTrajectoryEndPointDisplayer();
+
+            BindGravityGunDisplayer();
+
+            BindDiFactory();
+
+            BindSpiderCamera();
+
+            BindPickupRewindRegistry();
+
+            BindTeleportDisplayer();
+
+            BindTeleportService();
         }
 
         private void BindUI()
@@ -112,6 +129,27 @@ namespace Infastructure.CompositionRoot
             BindCameraProviderService();
         }
 
+        private void BindPickupRewindRegistry() =>
+            Container.BindInterfacesAndSelfTo<PickupRewindRegistryService>().AsSingle();
+
+        private void BindTeleportService() =>
+            Container.BindInterfacesAndSelfTo<TeleportService>().AsSingle();
+
+        private void BindSpiderCamera()
+        {
+            Container
+                .Bind<ISpiderCamera>()
+                .To<SpiderCamera>()
+                .FromComponentInNewPrefabResource(AssetsPath.SpiderCameraPath)
+                .AsSingle();
+        }
+
+        private void BindSpiderRegistryService() =>
+            Container.BindInterfacesAndSelfTo<SpiderRegistryService>().AsSingle();
+
+        private void BindFlowerRegistryService() =>
+            Container.BindInterfacesAndSelfTo<FlowerRegistryService>().AsSingle();
+
         private void BindSlowTimeService()
         {
             Container
@@ -120,6 +158,28 @@ namespace Infastructure.CompositionRoot
                 .FromComponentInNewPrefabResource(AssetsPath.SlowTimeRunnerPath)
                 .AsSingle();
         }
+
+        private void BindGravityGunDisplayer()
+        {
+            Container
+                .Bind<IGravityGunDisplayer>()
+                .To<GravityGunDisplayer>()
+                .FromComponentInNewPrefabResource(AssetsPath.GravityGunDisplayerPath)
+                .AsSingle();
+        }
+
+        private void BindTeleportDisplayer()
+        {
+            Container
+                .Bind<ITeleportDisplayer>()
+                .To<TeleportDisplayer>()
+                .FromComponentInNewPrefabResource(AssetsPath.TeleportDisplayerPath)
+                .AsSingle();
+        }
+
+        private void BindDiFactory() =>
+            Container.BindInterfacesAndSelfTo<DiFactory>().AsSingle();
+
 
         private void BindVolumeService() =>
             Container.BindInterfacesAndSelfTo<VolumeService>().AsSingle();
@@ -148,9 +208,6 @@ namespace Infastructure.CompositionRoot
 
         private void BindTimerService() =>
             Container.BindInterfacesAndSelfTo<TimerService>().AsSingle();
-
-        private void BindSpiderTrackService() =>
-            Container.BindInterfacesAndSelfTo<SpiderTrackService>().AsSingle();
 
         private void BindPauseWindowService() =>
             Container.BindInterfacesAndSelfTo<PauseWindowService>().AsSingle();

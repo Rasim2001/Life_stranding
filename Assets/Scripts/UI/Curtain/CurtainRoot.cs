@@ -39,6 +39,15 @@ namespace UI.Curtain
                 .Append(_fadeTween);
         }
 
+        public void FandeIn(float time)
+        {
+            _canvasGroup.alpha = 1;
+
+            _fadeTween?.Kill();
+
+            _fadeTween = DOTween.To(() => _canvasGroup.alpha, x => _canvasGroup.alpha = x, 0, time).SetDelay(0.25f);
+        }
+
         public void Show()
         {
             if (Mathf.Approximately(_canvasGroup.alpha, 1))

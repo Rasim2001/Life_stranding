@@ -1,15 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
-using CameraFollow;
+using Cameras;
 using Common;
 using GameDevBuddies;
 using HUD;
 using Infastructure.Common;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CheckPoint;
+using Infastructure.Services.PickupRewindRegistry;
 using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.ProgressWatchers;
-using Infastructure.Services.SpiderTrack;
+using Infastructure.Services.Registries.FlowerRegistry;
+using Infastructure.Services.Registries.SpiderRegistry;
 using Infastructure.Services.XRay;
 using Infastructure.StaticData;
 using Infastructure.StaticData.Product;
@@ -20,7 +22,6 @@ using PickupObjects.PickUpOnPlatform;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using PickupObjects.Skills;
 using SpiderController;
-using SpiderController.UI.Health;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
@@ -34,22 +35,33 @@ namespace Infastructure.Factories.GameFactories
         private readonly IStaticDataService _staticDataService;
         private readonly IBiospherePointService _biospherePointService;
         private readonly IXRayService _xRayService;
-        private readonly ISpiderTrackService _spiderTrackService;
         private readonly ICameraProviderService _cameraProviderService;
         private readonly IProgressWatchersService _progressWatchersService;
         private readonly IPersistentProgressService _progressService;
+        private readonly IFlowerRegistryService _flowerRegistryService;
+        private readonly ISpiderRegistryService _spiderRegistryService;
+        private readonly IPickupRewindRegistryService _pickupRewindRegistryService;
 
         private string ActiveSceneName => SceneManager.GetActiveScene().name;
 
-        public GameFactory(DiContainer diContainer, IStaticDataService staticDataService,
-            IBiospherePointService biospherePointService, IXRayService xRayService,
-            ISpiderTrackService spiderTrackService, ICameraProviderService cameraProviderService,
-            IProgressWatchersService progressWatchersService, IPersistentProgressService progressService)
+        public GameFactory(
+            DiContainer diContainer,
+            IStaticDataService staticDataService,
+            IBiospherePointService biospherePointService,
+            IXRayService xRayService,
+            ICameraProviderService cameraProviderService,
+            IProgressWatchersService progressWatchersService,
+            IPersistentProgressService progressService,
+            IFlowerRegistryService flowerRegistryService,
+            ISpiderRegistryService spiderRegistryService,
+            IPickupRewindRegistryService pickupRewindRegistryService)
         {
-            _spiderTrackService = spiderTrackService;
             _cameraProviderService = cameraProviderService;
             _progressWatchersService = progressWatchersService;
             _progressService = progressService;
+            _flowerRegistryService = flowerRegistryService;
+            _spiderRegistryService = spiderRegistryService;
+            _pickupRewindRegistryService = pickupRewindRegistryService;
             _diContainer = diContainer;
             _staticDataService = staticDataService;
             _biospherePointService = biospherePointService;
@@ -64,9 +76,7 @@ namespace Infastructure.Factories.GameFactories
                 worldData.WorldPosition, worldData.WorldRotation, null);
             spider.Initialize(flower);
 
-            _spiderTrackService.Spider = spider;
-            _spiderTrackService.Flower = flower;
-
+            _spiderRegistryService.RegisterSpider(spider);
             _progressWatchersService.RegisterWatchers(spider.gameObject);
 
             return spider;
@@ -74,9 +84,11 @@ namespace Infastructure.Factories.GameFactories
 
         public void CreateCameraSystem(Spider spider)
         {
+            /*
             CameraSystem cameraSystem =
                 _diContainer.InstantiatePrefabResourceForComponent<CameraSystem>(AssetsPath.CameraSystemPath);
             cameraSystem.Initialize(spider);
+        */
         }
 
         public HudUI CreateHUD(Flower flower, Spider spider)
@@ -89,8 +101,8 @@ namespace Infastructure.Factories.GameFactories
             hud.RegisterFlowerPoint(flower);
             hud.RegisterFinishTarget(_biospherePointService.PointIndicator);
 
-            flower.Initialize(hud.FlowerPointIndicator, spider.StateMachineData);
-            flower.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
+            flower.Initialize(hud.FlowerPointIndicator);
+            flower.Initialize();
 
             _xRayService.Initialize(hud.XRayCollectionContainer, hud.transform, hud.DisabledContainer);
 
@@ -147,6 +159,8 @@ namespace Infastructure.Factories.GameFactories
 
             _xRayService.Add(xRayMarker);
 
+            _pickupRewindRegistryService.Register(flower);
+            _flowerRegistryService.RegisterFlower(flower);
             _progressWatchersService.RegisterWatchers(flower.gameObject);
 
             return flower;
@@ -159,8 +173,7 @@ namespace Infastructure.Factories.GameFactories
             ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
             GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
 
-            foreach (WorldData worldData in _staticDataService.GameStaticData.GameDatas[ActiveSceneName]
-                         .BatteriesPoints)
+            foreach (WorldData worldData in _staticDataService.GameStaticData.GameDatas[ActiveSceneName].BatteriesPoints)
             {
                 BatteryProduct batteryProduct =
                     _diContainer.InstantiatePrefabForComponent<BatteryProduct>(prefab, worldData.WorldPosition,
@@ -177,9 +190,9 @@ namespace Infastructure.Factories.GameFactories
 
                 _xRayService.Add(xRayMarker);
 
-                batteryProduct.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
-                batteryProduct.Initialize(spider.StateMachineData);
+                batteryProduct.Initialize();
 
+                _pickupRewindRegistryService.Register(batteryProduct);
                 _progressWatchersService.RegisterWatchers(batteryProduct.gameObject);
             }
         }
@@ -234,8 +247,7 @@ namespace Infastructure.Factories.GameFactories
                 IProduct product = elephantProduct.GetComponent<IProduct>();
                 product.ProductType = productType;
 
-                elephantProduct.Initialize(spider.RotationPlaneTransform, spider.PlatformSelector);
-                elephantProduct.Initialize(spider.StateMachineData);
+                elephantProduct.Initialize();
             }
         }
 
@@ -312,7 +324,7 @@ namespace Infastructure.Factories.GameFactories
             TerrainScanIconsRenderer terrainScanIconsRenderer =
                 terrainScanObject.GetComponentInChildren<TerrainScanIconsRenderer>();
             terrainScanIconsRenderer.Initialize(_cameraProviderService.CameraTransform);
-            
+
             _xRayService.Initialize();
         }
 

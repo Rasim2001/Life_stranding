@@ -1,18 +1,14 @@
 using System;
-using DG.Tweening;
-using UnityEditor.Embree;
 using UnityEngine;
 
 namespace SpiderController.StateMachine
 {
+    [Serializable]
     public class StateMachineData
     {
         public event Action AimingStateChanged;
         public event Action<bool> OnFallingDownStateChanged;
         public event Action OnTotalWeightChanged;
-
-
-        public Action<float> OnShakeHappened;
 
         public bool IsFallingDownWithoutEnergyState
         {
@@ -50,6 +46,9 @@ namespace SpiderController.StateMachine
             }
         }
 
+        public bool IsGravityGunState;
+        public bool IsTeleportState;
+
         public float RotationAmount;
 
         public float DistanceFromGround = 0.5f;
@@ -83,17 +82,18 @@ namespace SpiderController.StateMachine
             }
         }
 
+        public bool CanRecordFootprints = true;
+
         public bool IsMouseHolding;
         public bool IsStandingUpAfterFalling;
 
         public float TerrainTimer;
         public float TerrainTimerDefault;
 
-
         private readonly float _slowdownFactor = 0.25f;
         private float _speed;
-        private bool _IsFallingDownWithoutEnergyState;
         private float _totalWeight;
+        private bool _IsFallingDownWithoutEnergyState;
         private bool _isInAimingState;
 
         public void Clear()

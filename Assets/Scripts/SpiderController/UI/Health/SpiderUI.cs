@@ -1,12 +1,9 @@
-using System;
-using Cysharp.Threading.Tasks;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController.UI.LastChanceQTE;
-using SpiderController.UI.Stickers;
 using UnityEngine;
 using Zenject;
 
@@ -34,7 +31,6 @@ namespace SpiderController.UI.Health
         private SpiderHealth _spiderHealth;
         private IStaticDataService _staticDataService;
         private ICutSceneService _cutSceneService;
-        private IWindowService _windowService;
         private IDefeatWindowService _defeatWindowService;
 
         [Inject]
@@ -42,7 +38,6 @@ namespace SpiderController.UI.Health
             IWindowService windowService, IDefeatWindowService defeatWindowService)
         {
             _defeatWindowService = defeatWindowService;
-            _windowService = windowService;
             _cutSceneService = cutSceneService;
             _staticDataService = staticDataService;
         }
@@ -68,16 +63,5 @@ namespace SpiderController.UI.Health
 
         private void CutsceneActiveChanged(bool cutSceneIsActive) =>
             _canvasRootUI.SetActive(!cutSceneIsActive);
-
-        private void Defeat() =>
-            DefeatAsync().Forget();
-
-
-        private async UniTask DefeatAsync()
-        {
-            await UniTask.Delay(TimeSpan.FromSeconds(3));
-
-            _windowService.OpenDefeatPopup();
-        }
     }
 }

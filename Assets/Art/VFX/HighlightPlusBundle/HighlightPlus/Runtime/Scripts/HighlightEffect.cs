@@ -1049,7 +1049,7 @@ namespace HighlightPlus
 
             if (label != null)
             {
-                // Update label position data
+                // FixedUpdate label position data
                 label.SetPosition(labelTarget == null ? transform : labelTarget,
                     Misc.vector3Zero,
                     new Vector3(0, labelVerticalOffset, 0),
@@ -1605,7 +1605,7 @@ namespace HighlightPlus
                 fade *= fadeDistance;
                 cbHighlight.SetGlobalFloat(ShaderParams.FadeFactor, fade);
 
-                // Update label
+                // FixedUpdate label
                 if (shouldUpdateLabel)
                 {
                     shouldUpdateLabel = false;

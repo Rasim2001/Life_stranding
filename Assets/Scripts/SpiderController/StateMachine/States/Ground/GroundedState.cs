@@ -2,32 +2,38 @@ using System;
 using Cysharp.Threading.Tasks;
 using GameDevBuddies;
 using Infastructure.Services.CutScene;
-using Infastructure.Services.PlayerInput;
-using Infastructure.StaticData.StaticDataService;
+using Infastructure.Services.Pause;
+using Infastructure.Services.PlatformObjects;
+using Infastructure.Services.Window;
 using PickupObjects;
-using PickupObjects.PickUpOnPlatform;
-using PickupObjects.PickUpOnPlatform.FlowerManagement;
-using SpiderController.SpiderMove;
+using SpiderController.Scanner;
 using SpiderController.StateMachine.States.Airborn;
 using SpiderController.StateMachine.States.Ground.Aiming;
 using SpiderController.TriggerChecker;
-using UnityEngine;
+using SpiderController.UI;
 
 namespace SpiderController.StateMachine.States.Ground
 {
     public class GroundedState : MovementState
     {
-        private readonly GroundChecker _groundChecker;
+        protected EnergyBarUI EnergyBarUI => SpiderUI.EnergyBar;
+        protected IPlatformObjectsService PlatformObjectsService => ServiceContext.PlatformObjectsService;
 
-        protected GroundedState(ISpiderStateMachine stateMachine, IInputService inputService,
-            IStaticDataService staticDataService, ICutSceneService cutSceneService, Spider spider,
-            StateMachineData stateMachineData,
-            LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(stateMachine, inputService,
-            staticDataService, cutSceneService, spider,
-            stateMachineData, legs, flower, energySystem)
+        private IEventSystemSelector SystemSelector => ServiceContext.SystemSelector;
+        private IPauseService PauseService => ServiceContext.PauseService;
+        private ICutSceneService CutSceneService => ServiceContext.CutSceneService;
+        private GroundChecker GroundChecker => StateContext.GroundChecker;
+
+        protected GroundedState(
+            ISpiderStateMachine stateMachine,
+            SpiderServiceContext serviceContext,
+            SpiderStateContext stateContext,
+            EnergySystem energySystem) : base(stateMachine, serviceContext, stateContext, energySystem)
         {
-            _groundChecker = spider.GroundChecker;
         }
+
+        private ScannerAnimator ScannerAnimator => StateContext.ScannerAnimator;
+
 
         public override void Enter()
         {
@@ -46,8 +52,8 @@ namespace SpiderController.StateMachine.States.Ground
 
             if (IsNotMoveableLayer() == false)
             {
-                Data.LastValidGroundPosition = Spider.Rigidbody.position;
-                Data.LastValidGroundRotation = Spider.Rigidbody.rotation;
+                Data.LastValidGroundPosition = Rigidbody.position;
+                Data.LastValidGroundRotation = Rigidbody.rotation;
             }
         }
 
@@ -62,6 +68,7 @@ namespace SpiderController.StateMachine.States.Ground
             if (IsNotMoveableLayer())
                 return;
 
+
             if (InputService.CenterMousePressed)
             {
                 if (IsInputZero())
@@ -70,7 +77,7 @@ namespace SpiderController.StateMachine.States.Ground
                     StateMachine.SwitchState<AimRunningState>();
             }
 
-            if (_groundChecker.IsTouchesWithLegs == false)
+            if (GroundChecker.IsTouchesWithLegs == false)
             {
                 Data.IsInAimingState = false;
 
@@ -79,7 +86,7 @@ namespace SpiderController.StateMachine.States.Ground
 
 
             if (InputService.JumpPressed && Data.CurrentEnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling &&
-                Spider.AbilityService.IsExploredAbility(ProductType.JumpSkillProduct))
+                AbilityService.IsExploredAbility(ProductType.JumpSkillProduct))
             {
                 Data.IsInAimingState = false;
 
@@ -87,7 +94,7 @@ namespace SpiderController.StateMachine.States.Ground
             }
 
             if (InputService.JerkPressed && Data.CurrentEnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling &&
-                Spider.AbilityService.IsExploredAbility(ProductType.JerkSkillProduct))
+                AbilityService.IsExploredAbility(ProductType.JerkSkillProduct))
             {
                 Data.IsInAimingState = false;
 
@@ -97,10 +104,9 @@ namespace SpiderController.StateMachine.States.Ground
 
         private bool CanUse()
         {
-            return InputService.TabPressed && !Spider.EventSystemSelector.HasFocusUI() &&
-                   Spider.AbilityService.IsExploredAbility(ProductType.TerrainScanSkillProduct) &&
-                   !Spider.PauseService.IsPaused &&
-                   !Spider.CutSceneService.IsActive;
+            return InputService.TabPressed && !SystemSelector.HasFocusUI() &&
+                   AbilityService.IsExploredAbility(ProductType.TerrainScanSkillProduct) &&
+                   !PauseService.IsPaused && !CutSceneService.IsActive;
         }
 
         private async UniTask StartTerrainScan()
@@ -111,7 +117,7 @@ namespace SpiderController.StateMachine.States.Ground
             Data.TerrainTimer = 5f;
             Data.TerrainTimerDefault = Data.TerrainTimer;
 
-            Spider.ScannerAnimator.PlayScanAnimation();
+            ScannerAnimator.PlayScanAnimation();
 
             await UniTask.Delay(TimeSpan.FromSeconds(0.4f));
 

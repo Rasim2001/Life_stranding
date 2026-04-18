@@ -7,32 +7,25 @@ using Infastructure.Services.XRay;
 using Infastructure.StaticData.Product;
 using Infastructure.StaticData.StaticDataService;
 using Infastructure.StaticData.XRay;
-using SpiderController.Platform;
+using PickupObjects.Rewind;
 using SpiderController.StateMachine;
 using UnityEngine;
 using Zenject;
 
 namespace PickupObjects.PickUpOnPlatform
 {
-    public class BatteryProduct : PickupObjectBase, IProduct, ISavedProgress
+    public class BatteryProduct : PickupObjectBase, ISavedProgress
     {
-        public ProductType ProductType { get; set; }
-
         private XRayMarker _xRayMarker;
         private IXRayService _xRayService;
-        private IStaticDataService _staticDataService;
 
         private ProductData _productData;
-        private StateMachineData _stateMachineData;
 
         private MarkerUniqueId _markerUniqueId;
 
         [Inject]
-        public void Construct(IXRayService xRayService, IStaticDataService staticDataService)
-        {
-            _staticDataService = staticDataService;
+        public void Construct(IXRayService xRayService) =>
             _xRayService = xRayService;
-        }
 
         protected override void Awake()
         {
@@ -40,20 +33,6 @@ namespace PickupObjects.PickUpOnPlatform
 
             _markerUniqueId = GetComponent<MarkerUniqueId>();
         }
-
-
-        public override void Initialize(Transform platformTransform, PlatformSelector platformSelector)
-        {
-            base.Initialize(platformTransform, platformSelector);
-
-            _productData = _staticDataService.ProductsStaticData.ProductsDictionary[ProductType];
-            Speed = _productData.Speed;
-            StartPosition = _productData.StartPositionVector;
-            StartRotation = Quaternion.Euler(_productData.StartRotationEuler);
-        }
-
-        public void Initialize(StateMachineData stateMachineData) =>
-            _stateMachineData = stateMachineData;
 
         private void Start() =>
             _xRayMarker = GetComponent<XRayMarker>();
@@ -72,7 +51,6 @@ namespace PickupObjects.PickUpOnPlatform
                 Collider.enabled = false;
                 Rigidbody.isKinematic = true;
             }
-
 
             transform.position = batteryProductData.Position.AsUnityVector();
             transform.localEulerAngles = batteryProductData.Rotation.AsUnityVector();
@@ -102,26 +80,29 @@ namespace PickupObjects.PickUpOnPlatform
         {
             base.ThrowObject();
 
-            _stateMachineData.TotalWeight -= _productData.Weight;
-
             _xRayService.Add(_xRayMarker);
         }
 
-        public override void StopSimulatePhysics()
+        public override void ApplyFinalSnapshot(PickupObjectSnapshot snapshot)
         {
-            if (!IsOnPlatform)
-                _stateMachineData.TotalWeight += _productData.Weight;
+            base.ApplyFinalSnapshot(snapshot);
 
-            base.StopSimulatePhysics();
+            if (IsOnPlatform)
+                _xRayService.Remove(_xRayMarker);
+            else
+                _xRayService.Add(_xRayMarker);
+        }
+
+        public override void AttachToPlatform(Transform platformTransform)
+        {
+            base.AttachToPlatform(platformTransform);
 
             _xRayService.Remove(_xRayMarker);
         }
 
-        public override void StartSimulatePhysics()
+        public override void DetachFromPlatform()
         {
-            base.StartSimulatePhysics();
-
-            _stateMachineData.TotalWeight -= _productData.Weight;
+            base.DetachFromPlatform();
 
             _xRayService.Add(_xRayMarker);
         }
@@ -134,12 +115,8 @@ namespace PickupObjects.PickUpOnPlatform
             IsPuttingDown = true;
             Collider.enabled = false;
 
-            PlatformSelector.IsOnPlatform(Collider);
+            //PlatformSelector.IsOnPlatform(Collider);
             Rigidbody.isKinematic = true;
-
-            _stateMachineData.TotalWeight -= _productData.Weight;
-
-            base.StartSimulatePhysics();
         }
     }
 }

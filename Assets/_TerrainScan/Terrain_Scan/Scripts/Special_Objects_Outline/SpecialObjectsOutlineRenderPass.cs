@@ -26,7 +26,7 @@ namespace GameDevBuddies
 
         public override void RecordRenderGraph(RenderGraph rg, ContextContainer ctx)
         {
-            // TODO: сделаем полноценную RG-реализацию позже.
+            // TODO: пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ RG-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ.
         }
 
         public SpecialObjectsOutlineRenderPass(string cameraTagId, SpecialObjectsOutlineNormalsPassSettings renderPassSettings)
@@ -91,7 +91,7 @@ namespace GameDevBuddies
                 drawingSettings.overrideMaterialPassIndex = _normalsRenderMaterialPassIndex;
             }
 
-            // Update the camera culling mask to the desired rendering layers for this render pass.
+            // FixedUpdate the camera culling mask to the desired rendering layers for this render pass.
             renderingData.cameraData.camera.TryGetCullingParameters(out ScriptableCullingParameters cullingParameters);
             cullingParameters.cullingMask = (uint)(int)_supportedLayersMask;
 

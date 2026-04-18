@@ -1,11 +1,5 @@
 using DG.Tweening;
-using Infastructure.Services.CutScene;
-using Infastructure.Services.PlayerInput;
-using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
-using PickupObjects.PickUpOnPlatform;
-using PickupObjects.PickUpOnPlatform.FlowerManagement;
-using SpiderController.SpiderMove;
 using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Ground
@@ -13,30 +7,32 @@ namespace SpiderController.StateMachine.States.Ground
     public class SlowdownState : GroundedState
     {
         private readonly Vector3 _defaultPosition;
+        private Transform RotationPlaneTransform => StateContext.RotationPlaneTransform;
 
         private Tween _localMoveTween;
 
-        public SlowdownState(ISpiderStateMachine stateMachine, IInputService inputService,
-            IStaticDataService staticDataService, ICutSceneService cutSceneService, Spider spider,
-            StateMachineData stateMachineData,
-            LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(stateMachine, inputService,
-            staticDataService, cutSceneService, spider,
-            stateMachineData, legs, flower, energySystem)
+        protected SlowdownState(
+            ISpiderStateMachine stateMachine,
+            SpiderServiceContext serviceContext,
+            SpiderStateContext stateContext,
+            EnergySystem energySystem) :
+            base(stateMachine, serviceContext, stateContext, energySystem)
         {
-            _defaultPosition = Spider.RotationPlaneTransform.localPosition;
+            _defaultPosition = RotationPlaneTransform.localPosition;
         }
+
 
         public override void Enter()
         {
             base.Enter();
 
-            Spider.WindowService.OnWindowOpened += ReturnToNormalMovement;
+            WindowService.OnWindowOpened += ReturnToNormalMovement;
             Data.OnTotalWeightChanged += WeightChanged;
             Data.DistanceFromGround = SpiderStaticData.SlowdownDistanceFromGround;
             SetSpeed(SpiderStaticData.SlowdownSpeed);
 
             _localMoveTween?.Kill();
-            _localMoveTween = Spider.RotationPlaneTransform.DOLocalMove(Vector3.zero, 0.5f);
+            _localMoveTween = RotationPlaneTransform.DOLocalMove(Vector3.zero, 0.5f);
 
             EnergyBarUI.PlayFadeHologramEffect();
         }
@@ -45,11 +41,11 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Exit();
 
-            Spider.WindowService.OnWindowOpened -= ReturnToNormalMovement;
+            WindowService.OnWindowOpened -= ReturnToNormalMovement;
             Data.OnTotalWeightChanged -= WeightChanged;
 
             _localMoveTween?.Kill();
-            _localMoveTween = Spider.RotationPlaneTransform.DOLocalMove(_defaultPosition, 0.5f);
+            _localMoveTween = RotationPlaneTransform.DOLocalMove(_defaultPosition, 0.5f);
         }
 
         public override void Update()
@@ -69,7 +65,7 @@ namespace SpiderController.StateMachine.States.Ground
         {
             if (IsInputZero())
                 StateMachine.SwitchState<IdlingState>();
-            else if (IsFastRunPressed() && Spider.AbilityService.IsExploredAbility(ProductType.FastRunSkillProduct))
+            else if (IsFastRunPressed() && AbilityService.IsExploredAbility(ProductType.FastRunSkillProduct))
                 StateMachine.SwitchState<FastRunningState>();
             else
                 StateMachine.SwitchState<RunningState>();

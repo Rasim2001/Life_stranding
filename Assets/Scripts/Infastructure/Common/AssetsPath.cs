@@ -8,6 +8,9 @@ namespace Infastructure.Common
         public const string PickupDisplayerPath = "Prefabs/UI/PickupDisplayerRoot";
         public const string TrajectoryEndPointDisplayerPath = "Prefabs/UI/TrajectoryEndPointDisplayer";
         public const string SlowTimeRunnerPath = "Prefabs/SlowTimeRunner";
+        public const string GravityGunDisplayerPath = "Prefabs/UI/GravityGunDisplayer";
+        public const string TeleportDisplayerPath = "Prefabs/UI/TeleportDisplayer";
+        public const string SpiderCameraPath = "Prefabs/CameraSystem/CameraSystem";
         public const string GlobalWaterPath = "Prefabs/Water/GlobalWater";
         public const string WaterFallsPath = "Prefabs/Water/WaterFalls";
         public const string StableWorldUpPath = "Prefabs/CameraSystem/StableWorldUp";
@@ -18,7 +21,6 @@ namespace Infastructure.Common
         public const string EventSystemPath = "Prefabs/UI/EventSystem";
 
         public const string SpiderPath = "Prefabs/Spider/Spider";
-        public const string CameraSystemPath = "Prefabs/CameraSystem/CameraSystem";
         public const string HUDPath = "Prefabs/HUD/HUD";
         public const string BiospherePointIndicatorPath = "Prefabs/Scene/BiospherePointIndicator";
         public const string CheckPointPath = "Prefabs/Scene/CheckPoint";
@@ -41,5 +43,6 @@ namespace Infastructure.Common
         public const string WindowsLocalizationStaticDataPath = "StaticData/UI/WindowStaticLocalizationData";
         public const string LastChanceStaticDataPath = "StaticData/QTE/LastChanceData";
         public const string CutSceneStaticDataPath = "StaticData/CutScenes/CutScenesData";
+        public const string GravityGunStaticDataPath = "StaticData/Spider/GravityGunData";
     }
 }

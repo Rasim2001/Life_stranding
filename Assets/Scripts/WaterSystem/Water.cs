@@ -1,11 +1,14 @@
 using Infastructure.Data;
 using Infastructure.Services.Defeat;
 using Infastructure.Services.ProgressWatchers;
+using Infastructure.Services.Registries.FlowerRegistry;
+using Infastructure.Services.Registries.SpiderRegistry;
 using Infastructure.Services.SaveLoadService;
-using Infastructure.Services.SpiderTrack;
 using Infastructure.Services.Tasks;
 using Infastructure.StaticData.GlobalWater;
 using Infastructure.StaticData.StaticDataService;
+using PickupObjects.PickUpOnPlatform.FlowerManagement;
+using SpiderController;
 using UnityEngine;
 using Zenject;
 
@@ -13,16 +16,17 @@ namespace WaterSystem
 {
     public class Water : MonoBehaviour, ISavedProgress
     {
-        private ISpiderTrackService _trackService;
         private ITasksService _tasksService;
         private IStaticDataService _staticDataService;
         private IDefeatWindowService _defeatWindowService;
         private IProgressWatchersService _progressWatchersService;
+        private ISpiderRegistryService _spiderRegistryService;
+        private IFlowerRegistryService _flowerRegistryService;
 
         private WaterStaticData WaterStaticData => _staticDataService.WaterStaticData;
 
-        private Transform _spiderTransform;
-        private Transform _flowerTransform;
+        private Spider Spider => _spiderRegistryService.Spider;
+        private Flower Flower => _flowerRegistryService.Flower;
 
         private float _farSpeed;
         private float _nearSpeed;
@@ -32,17 +36,19 @@ namespace WaterSystem
 
         [Inject]
         public void Construct(
-            ISpiderTrackService trackService,
             ITasksService tasksService,
             IStaticDataService staticDataService,
             IDefeatWindowService defeatWindowService,
-            IProgressWatchersService progressWatchersService)
+            IProgressWatchersService progressWatchersService,
+            ISpiderRegistryService spiderRegistryService,
+            IFlowerRegistryService flowerRegistryService)
         {
+            _flowerRegistryService = flowerRegistryService;
+            _spiderRegistryService = spiderRegistryService;
             _progressWatchersService = progressWatchersService;
             _defeatWindowService = defeatWindowService;
             _staticDataService = staticDataService;
             _tasksService = tasksService;
-            _trackService = trackService;
         }
 
         private void Awake() =>
@@ -51,8 +57,6 @@ namespace WaterSystem
         private void Start()
         {
             _tasksService.AllTasksCompleted += AllTaskCompleted;
-            _trackService.OnFlowerInitialized += FlowerInitialize;
-            _trackService.OnSpiderInitialized += SpiderInitialize;
 
             _farSpeed = WaterStaticData.FarSpeed;
             _nearSpeed = WaterStaticData.NearSpeed;
@@ -69,40 +73,30 @@ namespace WaterSystem
 
         private void OnDestroy()
         {
-            _trackService.OnFlowerInitialized -= FlowerInitialize;
-            _trackService.OnSpiderInitialized -= SpiderInitialize;
-
             _progressWatchersService.Release(this);
 
             _tasksService.AllTasksCompleted -= AllTaskCompleted;
         }
 
 
-        private void SpiderInitialize() =>
-            _spiderTransform = _trackService.Spider.transform;
-
-        private void FlowerInitialize() =>
-            _flowerTransform = _trackService.Flower.transform;
-
-
         private void AllTaskCompleted() =>
             _isStartingMove = true;
 
+
         private void Update()
         {
-            if (_isStartingMove == false || _spiderTransform == null || _flowerTransform == null)
+            if (_isStartingMove == false || Spider == null || Flower == null)
                 return;
 
-            if (transform.position.y - _spiderTransform.position.y > WaterStaticData.DistanceBetweenSpiderToDefeat ||
-                transform.position.y - _flowerTransform.position.y > WaterStaticData.DistanceBetweenSpiderToDefeat)
+            if (transform.position.y - Spider.transform.position.y > WaterStaticData.DistanceBetweenSpiderToDefeat ||
+                transform.position.y - Flower.transform.position.y > WaterStaticData.DistanceBetweenSpiderToDefeat)
             {
                 _isStartingMove = false;
 
                 _defeatWindowService.OpenDefeatWindow();
             }
 
-
-            _actualSpeed = Mathf.Abs(_spiderTransform.transform.position.y - transform.position.y) >
+            _actualSpeed = Mathf.Abs(Spider.transform.position.y - transform.position.y) >
                            WaterStaticData.DistanceToSwitchSpeed
                 ? _farSpeed
                 : _nearSpeed;

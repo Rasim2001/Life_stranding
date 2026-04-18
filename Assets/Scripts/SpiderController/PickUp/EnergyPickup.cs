@@ -23,10 +23,11 @@ namespace SpiderController.PickUp
         private readonly IPickupDisplayer _pickupDisplayer;
         private readonly IXRayService _xRayService;
         private readonly IWindowService _windowService;
+        private readonly SpiderStateContext _stateContext;
         private readonly EnergyChecker _energyChecker;
-        private readonly EnergyBarUI _energyBarUI;
-        private readonly StateMachineData _data;
         private readonly EnergyLegs _energyLegs;
+        private StateMachineData Data => _stateContext.Data;
+        private EnergyBarUI EnergyBarUI => _stateContext.SpiderUI.EnergyBar;
 
         public EnergyPickup(
             IPersistentProgressService persistentProgressService,
@@ -34,9 +35,8 @@ namespace SpiderController.PickUp
             IPickupDisplayer pickupDisplayer,
             IXRayService xRayService,
             IWindowService windowService,
+            SpiderStateContext stateContext,
             EnergyChecker energyChecker,
-            EnergyBarUI energyBarUI,
-            StateMachineData data,
             EnergyLegs energyLegs)
         {
             _persistentProgressService = persistentProgressService;
@@ -44,14 +44,16 @@ namespace SpiderController.PickUp
             _pickupDisplayer = pickupDisplayer;
             _xRayService = xRayService;
             _windowService = windowService;
+            _stateContext = stateContext;
             _energyChecker = energyChecker;
-            _energyBarUI = energyBarUI;
-            _data = data;
             _energyLegs = energyLegs;
         }
 
         public void Initialize() =>
             _energyChecker.OnRemoveHappened += Hide;
+
+        public void Destroy() =>
+            _energyChecker.OnRemoveHappened -= Hide;
 
         public void LoadProgress(PlayerProgress progress)
         {
@@ -59,14 +61,11 @@ namespace SpiderController.PickUp
 
             for (int i = 0; i < energyDatas.Count; i++)
             {
-                _data.EnergyFillAmount++;
+                Data.EnergyFillAmount++;
                 _energyLegs.AddEnergyOnLeg();
-                _energyBarUI.AddNewSegment();
+                EnergyBarUI.AddNewSegment();
             }
         }
-
-        public void Destroy() =>
-            _energyChecker.OnRemoveHappened -= Hide;
 
         public void Update()
         {
@@ -96,16 +95,16 @@ namespace SpiderController.PickUp
 
             for (int i = 0; i < count; i++)
             {
-                _data.EnergyFillAmount++;
+                Data.EnergyFillAmount++;
                 _energyLegs.AddEnergyOnLeg();
-                _energyBarUI.AddNewSegment();
+                EnergyBarUI.AddNewSegment();
 
                 Collider forDelete = _energyChecker.Results[i];
 
                 MarkerUniqueId markerUniqueId = forDelete.GetComponent<MarkerUniqueId>();
 
-                _persistentProgressService.PlayerProgress.WorldProgressData.EnergyDatas.Add(
-                    new EnergyData(markerUniqueId.UniqueId));
+                _persistentProgressService.PlayerProgress.WorldProgressData.EnergyDatas
+                    .Add(new EnergyData(markerUniqueId.UniqueId));
 
                 _pickupDisplayer.Hide(forDelete.transform);
                 _xRayService.Remove(forDelete.GetComponent<XRayMarker>());

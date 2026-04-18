@@ -1,11 +1,10 @@
-using System;
 using System.Collections;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Infastructure.Services.CheckPoint;
 using Infastructure.Services.Pause;
-using Infastructure.Services.SpiderTrack;
+using Infastructure.Services.Registries.SpiderRegistry;
 using Infastructure.States;
-using SpiderController.StateMachine;
 using TMPro;
 using UI.MVVM.Base;
 using UnityEngine;
@@ -22,18 +21,26 @@ namespace UI.MVVM.View.DefeatPopup
         [SerializeField] private FramePiecesUI _framePiecesUI;
         [SerializeField] private Animator _flowerAnimator;
 
+        private Transform SpiderTransform => _spiderRegistryService.Spider.transform;
+        private Transform BiospherePointIndicator => _biospherePointService.PointIndicator.transform;
+
         private IPauseService _pauseService;
         private IStateMachine _stateMachine;
-        private ISpiderTrackService _spiderTrackService;
+        private IBiospherePointService _biospherePointService;
+        private ISpiderRegistryService _spiderRegistryService;
 
         private Tween _containerRotateTween;
         private Coroutine _flowerCoroutine;
 
         [Inject]
-        public void Construct(IPauseService pauseService, IStateMachine stateMachine,
-            ISpiderTrackService spiderTrackService)
+        public void Construct(
+            IPauseService pauseService,
+            IStateMachine stateMachine,
+            IBiospherePointService biospherePointService,
+            ISpiderRegistryService spiderRegistryService)
         {
-            _spiderTrackService = spiderTrackService;
+            _spiderRegistryService = spiderRegistryService;
+            _biospherePointService = biospherePointService;
             _stateMachine = stateMachine;
             _pauseService = pauseService;
         }
@@ -51,7 +58,7 @@ namespace UI.MVVM.View.DefeatPopup
             _framePiecesUI.MoveFramePiecesAsync().Forget();
             _containerRotateTween = _container.DORotate(Vector3.zero, 0.2f).SetUpdate(true);
 
-            _distanceToGoalText.text = _spiderTrackService.GetDistanceToGoal();
+            _distanceToGoalText.text = GetFormattedDistance();
         }
 
         protected override void OnDestroy()
@@ -85,6 +92,15 @@ namespace UI.MVVM.View.DefeatPopup
                 StopCoroutine(_flowerCoroutine);
                 _flowerCoroutine = null;
             }
+        }
+
+        private string GetFormattedDistance()
+        {
+            float distance = Vector3.Distance(SpiderTransform.position, BiospherePointIndicator.position);
+            int meters = Mathf.FloorToInt(distance);
+            string formattedMeters = $"<font-weight=500>{meters:D3}<size=15>м</size></font-weight>";
+
+            return formattedMeters;
         }
     }
 }

@@ -49,7 +49,7 @@ namespace Infastructure.Services.PlayerInput
                     : _joystickInputSource?.InputVector ?? Vector3.zero;
             }
         }
-        
+
         public bool PauseButtonPressed =>
             _inputSource.PauseButtonPressed || (_joystickInputSource?.PauseButtonPressed ?? false);
 
@@ -79,6 +79,11 @@ namespace Infastructure.Services.PlayerInput
             _inputSource.CenterMousePressed || (_joystickInputSource?.CenterMousePressed ?? false);
 
         public bool CenterMouseUp => _inputSource.CenterMouseUp || (_joystickInputSource?.CenterMouseUp ?? false);
+
+        public bool GravityGunPressed => _inputSource.GravityGunPressed || (_joystickInputSource?.GravityGunPressed ?? false);
+        public bool GravityGunUp => _inputSource.GravityGunUp || (_joystickInputSource?.GravityGunUp ?? false);
+        public bool TeleportPressed => _inputSource.TeleportPressed || (_joystickInputSource?.TeleportPressed ?? false);
+
 
         public float ScrollWheelAxis
         {

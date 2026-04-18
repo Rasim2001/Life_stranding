@@ -10,7 +10,8 @@ namespace MoreMountains.Feedbacks
 	/// This feedback changes the timescale by sending a TimeScale event on play
 	/// </summary>
 	[AddComponentMenu("")]
-	[FeedbackHelp("This feedback triggers a MMTimeScaleEvent, which, if you have a MMTimeManager object in your scene, will be caught and used to modify the timescale according to the specified settings. These settings are the new timescale (0.5 will be twice slower than normal, 2 twice faster, etc), the duration of the timescale modification, and the optional speed at which to transition between normal and altered time scale.")]
+	[FeedbackHelp(
+		"This feedback triggers a MMTimeScaleEvent, which, if you have a MMTimeManager object in your scene, will be caught and used to modify the timescale according to the specified settings. These settings are the new timescale (0.5 will be twice slower than normal, 2 twice faster, etc), the duration of the timescale modification, and the optional speed at which to transition between normal and altered time scale.")]
 	[MovedFrom(false, null, "MoreMountains.Feedbacks")]
 	[FeedbackPath("Time/Timescale Modifier")]
 	public class MMF_TimescaleModifier : MMF_Feedback

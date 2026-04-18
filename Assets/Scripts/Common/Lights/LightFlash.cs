@@ -1,9 +1,5 @@
-using System;
-using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using Infastructure.Services.SpiderTrack;
 using UnityEngine;
-using Zenject;
 
 namespace Common.Lights
 {

@@ -12,7 +12,6 @@ namespace HUD
         private readonly RectTransform _canvasRect;
 
         private readonly Camera _mainCamera;
-        private bool _arrowShowing;
 
         private readonly RectTransform _arrowRectTransform;
         private readonly RectTransform _arrowCenterRectTransform;
@@ -151,14 +150,8 @@ namespace HUD
         }
 
 
-        private void Show(bool value)
-        {
-            if (_arrowShowing == value)
-                return;
-
-            _arrowShowing = value;
+        private void Show(bool value) =>
             _arrowUI.gameObject.SetActive(value);
-        }
 
         private void ShowArrow(bool value)
         {

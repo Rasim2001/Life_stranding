@@ -4,7 +4,7 @@ using GameDevBuddies;
 using HUD;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.Pool;
-using Infastructure.Services.SpiderTrack;
+using Infastructure.Services.Registries.SpiderRegistry;
 using Infastructure.StaticData.StaticDataService;
 using Infastructure.StaticData.XRay;
 using UnityEngine;
@@ -17,7 +17,7 @@ namespace Infastructure.Services.XRay
             new Dictionary<string, XRayOccluderUI>();
 
         private readonly IPoolObjects<XRayOccluderUI> _pools;
-        private readonly ISpiderTrackService _spiderTrackService;
+        private readonly ISpiderRegistryService _spiderRegistryService;
         private readonly ICameraProviderService _cameraProviderService;
         private readonly IStaticDataService _staticDataService;
 
@@ -28,11 +28,11 @@ namespace Infastructure.Services.XRay
         private TerrainScan _terrain;
 
         public XRayService(IStaticDataService staticDataService, IPoolObjects<XRayOccluderUI> pools,
-            ISpiderTrackService spiderTrackService, ICameraProviderService cameraProviderService)
+            ISpiderRegistryService spiderRegistryService, ICameraProviderService cameraProviderService)
         {
             _staticDataService = staticDataService;
             _pools = pools;
-            _spiderTrackService = spiderTrackService;
+            _spiderRegistryService = spiderRegistryService;
             _cameraProviderService = cameraProviderService;
         }
 
@@ -106,7 +106,7 @@ namespace Infastructure.Services.XRay
             foreach (XRayOccluderUI xRay in _xRayDictionary.Values)
             {
                 float distance = Vector3.Distance(xRay.TargetWorldObject.position,
-                    _spiderTrackService.Spider.transform.position);
+                    _spiderRegistryService.Spider.transform.position);
 
                 xRay.transform.SetParent(
                     distance < 50

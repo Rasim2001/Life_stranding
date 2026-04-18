@@ -2,7 +2,7 @@ using DG.Tweening;
 using GameDevBuddies;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CutScene;
-using Infastructure.Services.SpiderTrack;
+using Infastructure.Services.Registries.SpiderRegistry;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -29,16 +29,16 @@ namespace HUD
 
         private ICutSceneService _cutSceneService;
         private ICameraProviderService _cameraProviderService;
+        private ISpiderRegistryService _spiderRegistryService;
 
         private bool _cutSceneIsActive;
-        private ISpiderTrackService _spiderTrackService;
 
 
         [Inject]
         public void Construct(ICutSceneService cutSceneService, ICameraProviderService cameraProviderService,
-            ISpiderTrackService spiderTrackService)
+            ISpiderRegistryService spiderRegistryService)
         {
-            _spiderTrackService = spiderTrackService;
+            _spiderRegistryService = spiderRegistryService;
             _cameraProviderService = cameraProviderService;
             _cutSceneService = cutSceneService;
         }
@@ -53,7 +53,7 @@ namespace HUD
         public void RegisterFinishTarget(Transform finishTargetTransform)
         {
             ArrowUI arrowUI = Instantiate(_arrowUIPrefab, _arrowContainer);
-            arrowUI.Initialize(_spiderTrackService.Spider.transform, finishTargetTransform);
+            arrowUI.Initialize(_spiderRegistryService.Spider.transform, finishTargetTransform);
 
             _finishPointIndicator = new
                 FinishPointIndicator(arrowUI, _canvasRectTransform, finishTargetTransform,
@@ -63,7 +63,7 @@ namespace HUD
         public void RegisterFlowerPoint(Flower flower)
         {
             ArrowUI arrowUI = Instantiate(_arrowUIPrefab, _arrowContainer);
-            arrowUI.Initialize(_spiderTrackService.Spider.transform, flower.transform);
+            arrowUI.Initialize(_spiderRegistryService.Spider.transform, flower.transform);
 
             _flowerPointIndicator =
                 new FlowerPointIndicator(arrowUI, _canvasRectTransform, flower,

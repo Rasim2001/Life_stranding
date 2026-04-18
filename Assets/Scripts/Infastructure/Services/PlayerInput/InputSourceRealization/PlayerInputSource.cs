@@ -46,7 +46,9 @@ namespace Infastructure.Services.PlayerInput.InputSourceRealization
         public bool RightMouseUp => Input.GetMouseButtonUp(1);
         public bool CenterMousePressed => Input.GetMouseButtonDown(2);
         public bool CenterMouseUp => Input.GetMouseButtonUp(2);
-
+        public bool GravityGunPressed => Input.GetKeyDown(KeyCode.G);
+        public bool GravityGunUp => Input.GetKeyUp(KeyCode.G);
+        public bool TeleportPressed => Input.GetKeyDown(KeyCode.T);
         public float ScrollWheelAxis => Input.GetAxis(MouseScrollWheel);
         public float MouseXAxis => Input.GetAxis(MouseX);
         public float MouseYAxis => Input.GetAxis(MouseY);

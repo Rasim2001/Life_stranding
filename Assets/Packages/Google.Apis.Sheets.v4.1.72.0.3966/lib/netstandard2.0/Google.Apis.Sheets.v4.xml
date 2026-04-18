@@ -978,7 +978,7 @@
         <member name="M:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.GetRequest.InitParameters">
             <summary>Initializes Get parameter list.</summary>
         </member>
-        <member name="M:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.Update(Google.Apis.Sheets.v4.Data.ValueRange,System.String,System.String)">
+        <member name="M:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.FixedUpdate(Google.Apis.Sheets.v4.Data.ValueRange,System.String,System.String)">
             <summary>
             Sets values in a range of a spreadsheet. The caller must specify the spreadsheet ID, range, and a
             valueInputOption.
@@ -997,7 +997,7 @@
             </summary>
         </member>
         <member name="M:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.UpdateRequest.#ctor(Google.Apis.Services.IClientService,Google.Apis.Sheets.v4.Data.ValueRange,System.String,System.String)">
-            <summary>Constructs a new Update request.</summary>
+            <summary>Constructs a new FixedUpdate request.</summary>
         </member>
         <member name="P:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.UpdateRequest.SpreadsheetId">
             <summary>The ID of the spreadsheet to update.</summary>
@@ -1116,7 +1116,7 @@
             <summary>Gets the REST path.</summary>
         </member>
         <member name="M:Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.UpdateRequest.InitParameters">
-            <summary>Initializes Update parameter list.</summary>
+            <summary>Initializes FixedUpdate parameter list.</summary>
         </member>
         <member name="M:Google.Apis.Sheets.v4.SpreadsheetsResource.BatchUpdate(Google.Apis.Sheets.v4.Data.BatchUpdateSpreadsheetRequest,System.String)">
             <summary>
@@ -6765,7 +6765,7 @@
             <summary>The ETag of the item.</summary>
         </member>
         <member name="T:Google.Apis.Sheets.v4.Data.UpdateEmbeddedObjectPositionRequest">
-            <summary>Update an embedded object's position (such as a moving or resizing a chart or image).</summary>
+            <summary>FixedUpdate an embedded object's position (such as a moving or resizing a chart or image).</summary>
         </member>
         <member name="P:Google.Apis.Sheets.v4.Data.UpdateEmbeddedObjectPositionRequest.Fields">
             <summary>

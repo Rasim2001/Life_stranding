@@ -120,7 +120,7 @@ namespace Infastructure.CutScenes
 
         private void SkipCustom()
         {
-            _cutSceneService.IsActive = false;
+            _cutSceneService.IsRunning = false;
             _cutSceneService.HasPlayed = true;
 
             _mainBrainCamera.UpdateMethod = CinemachineBrain.UpdateMethods.FixedUpdate;

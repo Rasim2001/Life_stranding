@@ -94,6 +94,15 @@ namespace SpiderController.SpiderMove
 
             _movement.IsMoving = true;
         }
+        
+        public void SetPositionImmediate(Vector3 position)
+        {
+            _movement.IsMoving = false;
+            
+            _position = position;
+            transform.position = position;
+        }
+        
 
         private Vector3 GetSmoothAirbornPosition() =>
             Vector3.Lerp(transform.position, _movement.ToPosition,

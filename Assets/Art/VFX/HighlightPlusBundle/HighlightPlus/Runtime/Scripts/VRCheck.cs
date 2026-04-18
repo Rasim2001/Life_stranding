@@ -16,7 +16,7 @@ namespace HighlightPlus {
         public static bool isVrRunning;
 
 #if !ENABLE_XR
-            static bool IsActive() {
+            static bool IsRunning() {
                 return false;
             }
 

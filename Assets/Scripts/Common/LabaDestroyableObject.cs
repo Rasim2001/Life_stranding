@@ -46,8 +46,8 @@ namespace Common
 
         private void CutSceneStarted(bool isStarted)
         {
-            if (isStarted && _cutSceneService.CutsceneId == CutsceneId.FlowerPickupCutscene)
-                _coroutine = StartCoroutine(DestroyObjects());
+            /*if (isStarted && _cutSceneService.CutsceneId == CutsceneId.FlowerPickupCutscene)
+                _coroutine = StartCoroutine(DestroyObjects());*/
         }
 
         private IEnumerator DestroyObjects()

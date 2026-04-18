@@ -78,7 +78,9 @@ namespace SpiderController.PickUp
             HideElephant(elephantCollider);
 
             ElephantProduct elephantProduct = elephantCollider.GetComponent<ElephantProduct>();
-            elephantProduct.StopSimulatePhysics();
+            _platformObjectsService.Add(elephantProduct);
+
+            //elephantProduct.StopSimulatePhysics();  //TODO:
         }
 
         private void HideElephant(Collider obj) =>

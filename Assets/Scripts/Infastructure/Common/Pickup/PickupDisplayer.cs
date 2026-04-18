@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using HighlightPlus;
 using Infastructure.Services.Pool;
-using Infastructure.Services.SpiderTrack;
 using Infastructure.Services.XRay;
 using Infastructure.StaticData.XRay;
 using UnityEngine;
@@ -17,8 +16,7 @@ namespace Infastructure.Common.Pickup
         private IXRayService _xRayService;
 
         [Inject]
-        public void Construct(IPoolObjects<PickupView> poolObjects, IXRayService xRayService,
-            ISpiderTrackService spiderTrackService)
+        public void Construct(IPoolObjects<PickupView> poolObjects, IXRayService xRayService)
         {
             _xRayService = xRayService;
             _poolObjects = poolObjects;

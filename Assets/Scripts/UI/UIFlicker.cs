@@ -85,13 +85,13 @@ namespace UI
     [Serializable]
     public struct FlickerParams
     {
-        [Range(0f, 1f)] public float minAlpha; // во что «гасим»
-        [Range(0f, 1f)] public float maxAlpha; // во что «зажигаем»
-        [Min(0.01f)] public float halfPeriod; // полупериод (сек) — время от min до max
-        public Ease ease; // кривая яркости (туда-обратно)
-        public bool desync; // случайный сдвиг фазы на каждый Image
-        public bool ignoreTimeScale; // использовать UnscaledTime
-        public bool restoreOnStop; // вернуть исходную альфу при Stop
+        [Range(0f, 1f)] public float minAlpha;
+        [Range(0f, 1f)] public float maxAlpha;
+        [Min(0.01f)] public float halfPeriod;
+        public Ease ease;
+        public bool desync;
+        public bool ignoreTimeScale;
+        public bool restoreOnStop;
 
         public static FlickerParams Default => new FlickerParams
         {

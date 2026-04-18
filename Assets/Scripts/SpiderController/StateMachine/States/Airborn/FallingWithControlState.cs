@@ -1,38 +1,25 @@
-using Infastructure.Services.CutScene;
-using Infastructure.Services.PlayerInput;
-using Infastructure.StaticData.StaticDataService;
-using PickupObjects;
-using PickupObjects.PickUpOnPlatform;
-using PickupObjects.PickUpOnPlatform.FlowerManagement;
-using SpiderController.SpiderMove;
 using SpiderController.StateMachine.States.Ground;
-using SpiderController.TriggerChecker;
 using SpiderController.UI.Stickers;
-using UnityEngine;
 
 namespace SpiderController.StateMachine.States.Airborn
 {
     public class FallingWithControlState : AirbornState
     {
-        private readonly GroundChecker _spiderGroundChecker;
-
-        public FallingWithControlState(ISpiderStateMachine stateMachine, IInputService inputService,
-            IStaticDataService staticDataService, Spider spider, ICutSceneService cutSceneService,
-            StateMachineData stateMachineData,
-            LegDataStruct[] legs, Flower flower, EnergySystem energySystem) : base(stateMachine, inputService,
-            staticDataService, cutSceneService, spider,
-            stateMachineData, legs, flower, energySystem)
+        protected FallingWithControlState(
+            ISpiderStateMachine stateMachine,
+            SpiderServiceContext serviceContext,
+            SpiderStateContext stateContext,
+            EnergySystem energySystem) : base(stateMachine, serviceContext, stateContext, energySystem)
         {
-            _spiderGroundChecker = spider.GroundChecker;
         }
 
         public override void Enter()
         {
             base.Enter();
 
-            Spider.WaterObserverTrigger.OnTriggerEnterHappened += OnTriggerEnterWithWater;
+            WaterObserverTrigger.OnTriggerEnterHappened += OnTriggerEnterWithWater;
 
-            Data.GlobalY = Spider.transform.position.y;
+            Data.GlobalY = Transform.position.y;
             Data.AirbornSpeed = SpiderStaticData.FallWithoutEnergySpeed;
 
             SetCrossLegs();
@@ -42,7 +29,7 @@ namespace SpiderController.StateMachine.States.Airborn
         {
             base.Exit();
 
-            Spider.WaterObserverTrigger.OnTriggerEnterHappened -= OnTriggerEnterWithWater;
+            WaterObserverTrigger.OnTriggerEnterHappened -= OnTriggerEnterWithWater;
 
             SetUncrossLegs();
         }
@@ -55,12 +42,12 @@ namespace SpiderController.StateMachine.States.Airborn
             if (InputService.JumpPressed)
                 StateMachine.SwitchState<FallingState>();
 
-            if (_spiderGroundChecker.IsTouchesWithLegs)
+            if (SpiderGroundChecker.IsTouchesWithLegs)
             {
                 ShakeCamera();
 
                 Data.YVelocity = 0;
-                Spider.Stickers.PlaySticker(StickerEnum.FallingDown);
+                Stickers.PlaySticker(StickerEnum.FallingDown);
 
                 if (IsInputZero())
                     StateMachine.SwitchState<IdlingState>();
@@ -68,7 +55,5 @@ namespace SpiderController.StateMachine.States.Airborn
                     StateMachine.SwitchState<RunningState>();
             }
         }
-
-       
     }
 }

@@ -236,7 +236,7 @@ namespace GameDevBuddies
                 drawingSettings.overrideMaterialPassIndex = renderPassData.OverrideMaterialPassIndex;
             }
 
-            // Update the camera culling mask to the desired rendering layers for this render pass.
+            // FixedUpdate the camera culling mask to the desired rendering layers for this render pass.
             cullingParameters.cullingMask = (uint)(int)renderPassData.SupportedLayersMask;
 
             using (new ProfilingScope(cmd, renderPassData.ProfilingSampler))

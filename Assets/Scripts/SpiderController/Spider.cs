@@ -1,28 +1,15 @@
-using System;
 using System.Collections.Generic;
 using Common;
 using HighlightPlus;
-using Infastructure.Common.Pickup;
-using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Data;
+using Infastructure.Factories;
 using Infastructure.PlatformRegistry;
-using Infastructure.Services.Ability;
-using Infastructure.Services.CameraProvider;
-using Infastructure.Services.CheckPoint;
-using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
-using Infastructure.Services.Hint;
 using Infastructure.Services.Magnet;
 using Infastructure.Services.Pause;
 using Infastructure.Services.PlatformObjects;
-using Infastructure.Services.PlayerInput;
-using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.ProgressWatchers;
 using Infastructure.Services.SaveLoadService;
-using Infastructure.Services.Window;
-using Infastructure.Services.XRay;
-using Infastructure.States;
-using Infastructure.StaticData.GlobalWater;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using Sirenix.OdinInspector;
@@ -32,6 +19,7 @@ using SpiderController.Platform;
 using SpiderController.Scanner;
 using SpiderController.SpiderMove;
 using SpiderController.StateMachine;
+using SpiderController.StateMachine.States.Rewind;
 using SpiderController.Thruster;
 using SpiderController.Trajectory;
 using SpiderController.TriggerChecker;
@@ -45,6 +33,7 @@ namespace SpiderController
     [RequireComponent(typeof(Rigidbody))]
     public class Spider : SerializedMonoBehaviour, ISavedProgress
     {
+        [SerializeField] private BodyOrientation _bodyOrientation;
         [SerializeField] private SpiderUI _spiderUI;
         [SerializeField] private ThrusterSystem _thrusterSystem;
         [SerializeField] private ScannerAnimator _scannerAnimator;
@@ -57,42 +46,19 @@ namespace SpiderController
         [SerializeField] private GeneratorChecker _generatorChecker;
         [SerializeField] private BiosphereChecker _biosphereChecker;
         [SerializeField] private ObserverTrigger _waterObserverTrigger;
-        [SerializeField] private BodyOrientation _bodyOrientation;
         [SerializeField] private TrajectoryRender _trajectoryRender;
 
         [SerializeField] private Stickers _stickers;
+        [SerializeField] private GroundChecker _groundChecker;
 
         [SerializeField] private Transform _rotationPlaneTransform;
-        [SerializeField] private GroundChecker _groundChecker;
 
         [SerializeField] private HighlightEffect[] _energyHighlightEffects;
         [SerializeField] private LegDataStruct[] _legs;
         [SerializeField] private Dictionary<PlatformId, PlatformData> _platformDatas;
 
-        public IMagnetFreezingService MagnetFreezingService => _magnetFreezingService;
-        public IEventSystemSelector EventSystemSelector => _eventSystemSelector;
-        public IAbilityService AbilityService => _abilityService;
-        public IPauseService PauseService => _pauseService;
-        public ICutSceneService CutSceneService => _cutSceneService;
-        public IWindowService WindowService => _windowService;
-        public ICameraProviderService CameraProviderService => _cameraProviderService;
-        public Rigidbody Rigidbody => _rigidbody;
-        public GroundChecker GroundChecker => _groundChecker;
-        public SpiderUI SpiderUI => _spiderUI;
-        public SpiderImpactReceiver SpiderImpactReceiver => _spiderImpactReceiver;
-        public Transform RotationPlaneTransform => _rotationPlaneTransform;
-        public ThrusterSystem ThrusterSystem => _thrusterSystem;
-        public ScannerAnimator ScannerAnimator => _scannerAnimator;
-        public PlatformSelector PlatformSelector => _platformSelector;
-        public ObserverTrigger WaterObserverTrigger => _waterObserverTrigger;
-        public WaterStaticData WaterStaticData => _staticDataService.WaterStaticData;
         public StateMachineData StateMachineData => _stateMachineData;
-        public BodyOrientation BodyOrientation => _bodyOrientation;
-
-        public Stickers Stickers => _stickers;
-
-
-        [HideInEditorMode] public Action<float> OnShakeCameraHappened;
+        public SpiderStateContext StateContext => _stateContext;
 
         private Rigidbody _rigidbody;
         private SpiderStateMachine _spiderStateMachine;
@@ -109,71 +75,49 @@ namespace SpiderController
         private GeneratorPickup _generatorPickup;
         private BiosphereProductPickup _biosphereProductPickup;
 
-        private IInputService _inputService;
-        private IStaticDataService _staticDataService;
-        private IPickupDisplayer _pickupDisplayer;
-        private ICutSceneService _cutSceneService;
+        private StateMachineData _stateMachineData;
+        private SpiderOverlayStateMachine _overlayStateMachine;
+        private MagnetSkill _magnetSkill;
+        private SpiderRewindRecorder _rewindRecorder;
+        private SpiderStateContext _stateContext;
+
         private IMagnetFreezingService _magnetFreezingService;
         private IPlatformObjectsService _platformObjectsService;
-        private IXRayService _xRayService;
         private IPlatformRegistryService _platformRegistryService;
-        private IWindowService _windowService;
-        private IEventSystemSelector _eventSystemSelector;
         private IPauseService _pauseService;
-        private IAbilityService _abilityService;
         private IDefeatWindowService _defeatWindowService;
-
-        private StateMachineData _stateMachineData;
-        private IHintReceiverService _hintReceiverService;
-        private MagnetSkill _magnetSkill;
-        private ICameraProviderService _cameraProviderService;
-        private IStableWorldUp _stableWorldUp;
         private IProgressWatchersService _progressWatchersService;
-        private IPersistentProgressService _persistentProgressService;
+        private IDiFactory _diFactory;
+        private IStaticDataService _staticData;
 
 
         [Inject]
         public void Construct(
-            IInputService inputService,
-            IStaticDataService staticDataService,
-            IPickupDisplayer pickupDisplayer,
-            IStateMachine stateMachine,
-            IBiospherePointService biospherePointService,
-            ICutSceneService cutSceneService,
-            IMagnetFreezingService magnetFreezingService,
+            IStaticDataService staticData,
+            IDiFactory diFactory,
             IPlatformObjectsService platformObjectsService,
-            IXRayService xRayService,
+            IMagnetFreezingService magnetFreezingService,
             IPlatformRegistryService platformRegistryService,
-            IWindowService windowService,
-            IEventSystemSelector eventSystemSelector,
             IPauseService pauseService,
-            IAbilityService abilityService,
             IDefeatWindowService defeatWindowService,
-            IHintReceiverService hintReceiverService,
-            ICameraProviderService cameraProviderService,
-            IStableWorldUp stableWorldUp,
-            IProgressWatchersService progressWatchersService,
-            IPersistentProgressService persistentProgressService)
+            IProgressWatchersService progressWatchersService)
         {
-            _persistentProgressService = persistentProgressService;
+            _staticData = staticData;
+            _diFactory = diFactory;
             _progressWatchersService = progressWatchersService;
-            _stableWorldUp = stableWorldUp;
-            _cameraProviderService = cameraProviderService;
-            _hintReceiverService = hintReceiverService;
             _defeatWindowService = defeatWindowService;
-            _abilityService = abilityService;
             _pauseService = pauseService;
-            _eventSystemSelector = eventSystemSelector;
-            _windowService = windowService;
             _platformRegistryService = platformRegistryService;
-            _xRayService = xRayService;
             _platformObjectsService = platformObjectsService;
             _magnetFreezingService = magnetFreezingService;
-            _cutSceneService = cutSceneService;
-            _pickupDisplayer = pickupDisplayer;
-            _staticDataService = staticDataService;
-            _inputService = inputService;
         }
+
+        private void Awake() =>
+            _rigidbody = GetComponent<Rigidbody>();
+
+        private void Start() =>
+            _defeatWindowService.OnDefeatHappened += Defeat;
+
 
         public void LoadProgress(PlayerProgress progress)
         {
@@ -190,11 +134,6 @@ namespace SpiderController
             progress.WorldProgressData.SpiderData.Rotation = transform.localEulerAngles.AsVectorData();
         }
 
-        private void Awake() =>
-            _rigidbody = GetComponent<Rigidbody>();
-
-        private void Start() =>
-            _defeatWindowService.OnDefeatHappened += Defeat;
 
         private void OnDestroy()
         {
@@ -215,77 +154,91 @@ namespace SpiderController
 
         public void Initialize(Flower flower)
         {
+            SpiderServiceContext serviceContext = _diFactory.Create<SpiderServiceContext>();
+
             _platformRegistryService.Register(_platformDatas);
 
             _stateMachineData = new StateMachineData();
-            _stateMachineData.EnergyFillAmount = _staticDataService.SpiderStaticData.EnergyFillAmount;
-            _stateMachineData.OnShakeHappened += distanceFalling => OnShakeCameraHappened?.Invoke(distanceFalling);
+            _stateMachineData.EnergyFillAmount = _staticData.SpiderStaticData.EnergyFillAmount;
 
-            _magnetFreezingService.Initialize(_stateMachineData);
+            _stateContext = new SpiderStateContext(
+                transform,
+                _rotationPlaneTransform,
+                _rigidbody,
+                _spiderUI,
+                _thrusterSystem,
+                _scannerAnimator,
+                _flowerChecker,
+                _batteryChecker,
+                _energyChecker,
+                _elephantChecker,
+                _skillChecker,
+                _checkpointChecker,
+                _generatorChecker,
+                _biosphereChecker,
+                _waterObserverTrigger,
+                _trajectoryRender,
+                _stickers,
+                _groundChecker,
+                _stateMachineData,
+                _legs,
+                _bodyOrientation
+            );
+
 
             EnergyLegs energyLegs = new EnergyLegs(_energyHighlightEffects);
 
-            EnergySystem energySystem = new EnergySystem(_stateMachineData, _spiderUI.EnergyBar, _cutSceneService);
+            EnergySystem energySystem = _diFactory.Create<EnergySystem>(_stateContext);
 
-            _spiderImpactReceiver = new SpiderImpactReceiver(_stateMachineData, transform);
+            _spiderImpactReceiver = _diFactory.Create<SpiderImpactReceiver>(_stateContext);
 
-            _spiderPlane = new SpiderPlane(_spiderUI.PlaneIndicatorUI, _rotationPlaneTransform, _inputService,
-                _abilityService, _staticDataService, _windowService, _cameraProviderService, _stableWorldUp,
-                _stateMachineData, _trajectoryRender);
+            _spiderPlane = _diFactory.Create<SpiderPlane>(_stateContext);
             _spiderPlane.Initialize();
 
-            _flowerPickup = new FlowerPickup(_inputService, _pickupDisplayer, _platformObjectsService, _windowService,
-                _defeatWindowService, _cutSceneService, _flowerChecker, flower, _spiderUI,
-                _staticDataService.SpiderStaticData);
+            _flowerPickup = _diFactory.Create<FlowerPickup>(_stateContext, flower);
             _flowerPickup.Initialize();
 
-            _batteryProductPickup = new BatteryProductPickup(_hintReceiverService, _inputService, _pickupDisplayer,
-                _platformObjectsService, _batteryChecker, _flowerChecker);
+            _batteryProductPickup = _diFactory.Create<BatteryProductPickup>(_batteryChecker, _flowerChecker);
             _batteryProductPickup.Initialize();
 
-            _energyPickup = new EnergyPickup(_persistentProgressService, _inputService, _pickupDisplayer, _xRayService,
-                _windowService, _energyChecker, SpiderUI.EnergyBar, _stateMachineData, energyLegs);
+            _energyPickup = _diFactory.Create<EnergyPickup>(_stateContext, _energyChecker, energyLegs);
             _energyPickup.Initialize();
 
-            _elephantProductPickup = new ElephantProductPickup(_inputService, _pickupDisplayer, _platformObjectsService,
-                _platformRegistryService, _elephantChecker);
+            _elephantProductPickup = _diFactory.Create<ElephantProductPickup>(_elephantChecker);
             _elephantProductPickup.Initialize();
 
-            _skillProductPickup = new SkillProductPickup(_inputService, _pickupDisplayer, _xRayService, _windowService,
-                _skillChecker);
+            _skillProductPickup = _diFactory.Create<SkillProductPickup>(_skillChecker);
             _skillProductPickup.Initialize();
 
-            _platformSelector = new PlatformSelector(_stateMachineData, _staticDataService, _platformRegistryService,
-                _inputService, _magnetFreezingService);
+            _platformSelector = _diFactory.Create<PlatformSelector>(_stateMachineData);
             _platformSelector.Initialize();
 
-            _checkpointPickup = new CheckpointPickup(_hintReceiverService, _inputService, _pickupDisplayer,
-                _windowService, _platformObjectsService, _checkpointChecker, flower, _spiderUI);
+            _checkpointPickup = _diFactory.Create<CheckpointPickup>(_checkpointChecker, flower, _spiderUI);
             _checkpointPickup.Initialize();
 
-            _generatorPickup = new GeneratorPickup(_hintReceiverService, _inputService, _pickupDisplayer,
-                _platformObjectsService, _windowService, _cutSceneService, _generatorChecker);
+            _generatorPickup = _diFactory.Create<GeneratorPickup>(_generatorChecker);
             _generatorPickup.Initialize();
 
-            _biosphereProductPickup =
-                new BiosphereProductPickup(_inputService, _pickupDisplayer, _biosphereChecker, flower);
+            _biosphereProductPickup = _diFactory.Create<BiosphereProductPickup>(_biosphereChecker, flower);
             _biosphereProductPickup.Initialize();
 
-            _magnetSkill = new MagnetSkill(_windowService, _inputService, _staticDataService, _abilityService,
-                _magnetFreezingService, _stateMachineData, energySystem, _spiderUI);
+            _magnetSkill = _diFactory.Create<MagnetSkill>(_stateContext, energySystem);
             _magnetSkill.Initialize();
 
+            _rewindRecorder = _diFactory.Create<SpiderRewindRecorder>(_stateContext, _platformSelector);
+
             _spiderStateMachine =
-                new SpiderStateMachine(this,
-                    _stateMachineData,
-                    _inputService,
-                    _staticDataService,
-                    _cutSceneService,
-                    _platformObjectsService,
-                    _stableWorldUp,
-                    _legs,
-                    flower,
-                    energySystem);
+                _diFactory.Create<SpiderStateMachine>(
+                    _stateContext,
+                    serviceContext,
+                    energySystem,
+                    _rewindRecorder,
+                    _platformSelector);
+
+            _overlayStateMachine = _diFactory.Create<SpiderOverlayStateMachine>(_stateContext);
+
+            _magnetFreezingService.Initialize(_stateMachineData);
+            _platformObjectsService.Initialize(_stateContext, _platformSelector);
 
             _progressWatchersService.RegisterWatcher(_energyPickup);
         }
@@ -305,6 +258,12 @@ namespace SpiderController
 
             _spiderStateMachine.HandleInput();
             _spiderStateMachine.Update();
+
+            _platformObjectsService.Update();
+
+            _overlayStateMachine.HandleInput();
+            _overlayStateMachine.Update();
+
             _spiderPlane.Update();
             _flowerPickup.Update();
             _batteryProductPickup.Update();
@@ -321,8 +280,8 @@ namespace SpiderController
 
         private void Defeat()
         {
-            Rigidbody.linearVelocity = Vector3.zero;
-            Rigidbody.angularVelocity = Vector3.zero;
+            _rigidbody.linearVelocity = Vector3.zero;
+            _rigidbody.angularVelocity = Vector3.zero;
 
             _stateMachineData.Clear();
         }
@@ -332,8 +291,12 @@ namespace SpiderController
             if (_spiderStateMachine == null || _pauseService.IsPaused || _defeatWindowService.IsDefeated)
                 return;
 
+            _platformObjectsService.FixedUpdate();
+
             _spiderStateMachine.FixedUpdate();
+            _overlayStateMachine.FixedUpdate();
             _spiderPlane.FixedUpdate();
+            _rewindRecorder.FixedUpdate();
         }
 
         private void LateUpdate()
@@ -342,6 +305,7 @@ namespace SpiderController
                 return;
 
             _spiderStateMachine.LateUpdate();
+            _overlayStateMachine.LateUpdate();
         }
     }
 }

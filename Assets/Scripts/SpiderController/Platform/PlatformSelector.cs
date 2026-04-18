@@ -27,6 +27,7 @@ namespace SpiderController.Platform
         private readonly StateMachineData _stateMachineData;
         private readonly IInputService _inputService;
         private readonly IMagnetFreezingService _magnetFreezingService;
+        public int CurrentIndex => _currentIndex;
 
         private Material _defaultMaterial;
         private Material _emissionMaterial;
@@ -78,9 +79,6 @@ namespace SpiderController.Platform
         private void JoystickDisabled() =>
             _joystick = null;
 
-        private void JoystickEnabled(IInputSource obj) =>
-            _joystick = (JoystickInputSource)obj;
-
         public void Update()
         {
             KeyboardInput();
@@ -89,6 +87,20 @@ namespace SpiderController.Platform
             if (_IsOnPlatform && !_magnetFreezingService.IsActive)
                 ChangeMaterial();
         }
+
+        public void SetPlatformFromRewind(int index)
+        {
+            if (_currentIndex == index)
+                return;
+
+            _currentIndex = index;
+
+            SelectPlatform(_platformIds[_currentIndex]);
+        }
+
+
+        private void JoystickEnabled(IInputSource obj) =>
+            _joystick = (JoystickInputSource)obj;
 
 
         public void ReturnToDefaultMaterial()

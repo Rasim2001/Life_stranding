@@ -49,7 +49,7 @@ namespace GameDevBuddies
                 return;
             }
 
-            // Update current animation time on the material.
+            // FixedUpdate current animation time on the material.
             _iconsAnimationTime += Time.deltaTime;
             _iconsComputeShader.SetFloat("_CurrentAnimationTime", _iconsAnimationTime);
             _iconsComputeShader.SetFloat("_CurrentScanSpreadRange", CurrentSpreadDistance);

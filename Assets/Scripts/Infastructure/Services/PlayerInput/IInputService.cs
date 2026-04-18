@@ -27,6 +27,9 @@ namespace Infastructure.Services.PlayerInput
         bool TabPressed { get; }
         bool PauseButtonPressed { get; }
         bool AnyActionPressed { get; }
+        bool GravityGunPressed { get; }
+        bool GravityGunUp { get; }
+        bool TeleportPressed { get; }
         T GetInputSource<T>();
         void Initialize();
         event Action<IInputSource> OnJoystickEnableHappend;

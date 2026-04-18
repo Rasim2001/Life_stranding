@@ -27,6 +27,9 @@ namespace Infastructure.Services.PlayerInput.InputSourceRealization
         bool PickupPressed { get; }
         bool JumpUp { get; }
         bool TabPressed { get; }
+        bool GravityGunPressed { get; }
+        bool GravityGunUp { get; }
+        bool TeleportPressed { get; }
         bool AnyKeyPressed();
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,20 +21,14 @@ namespace SpiderController.UI.Health
             _hologramEffect = new HologramEffect(_segmentsOwn, GetContainers(), GetOtherObjects());
         }
 
-        private void OnDestroy()
-        {
+        private void OnDestroy() =>
             _hologramEffect.Clear();
-        }
 
-        public void PlayFadeHologramEffect()
-        {
+        public void PlayFadeHologramEffect() =>
             _hologramEffect.Play();
-        }
 
-        public void ShowHologram()
-        {
+        public void ShowHologram() =>
             _hologramEffect.Stop();
-        }
 
         protected override void UpdateFirstSegmentColorReduced()
         {

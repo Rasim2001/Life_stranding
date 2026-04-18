@@ -1,12 +1,12 @@
-using System.Collections.Generic;
-using System.Linq;
-using Infastructure.Services.CutScene;
+using Infastructure.Services.Ability;
+using Infastructure.Services.Magnet;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.Window;
 using Infastructure.StaticData.Spider;
-using Infastructure.StaticData.StaticDataService;
-using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.SpiderMove;
-using SpiderController.UI;
+using SpiderController.StateMachine.States.Rewind;
+using SpiderController.Thruster;
+using SpiderController.UI.Health;
 using UnityEngine;
 
 namespace SpiderController.StateMachine.States
@@ -14,48 +14,44 @@ namespace SpiderController.StateMachine.States
     public class MovementState : ISpiderState
     {
         protected readonly ISpiderStateMachine StateMachine;
-        protected readonly StateMachineData Data;
-        protected readonly Spider Spider;
-        protected readonly LegDataStruct[] Legs;
         protected readonly EnergySystem EnergySystem;
-        protected IInputService InputService => _inputService;
-        protected Rigidbody Rigidbody => Spider.Rigidbody;
-        protected SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
-        protected EnergyBarUI EnergyBarUI => Spider.SpiderUI.EnergyBar;
-        protected Transform CameraTransform => Spider.CameraProviderService.CameraTransform;
+        protected readonly SpiderStateContext StateContext;
+        protected readonly SpiderServiceContext ServiceContext;
 
-        private readonly Flower _flower;
-        private readonly IStaticDataService _staticDataService;
-        private readonly ICutSceneService _cutSceneService;
-        private readonly IInputService _inputService;
-        private readonly float _legMoveDeadzone = 0.04f;
+        protected IInputService InputService => ServiceContext.InputService;
+        protected IAbilityService AbilityService => ServiceContext.AbilityService;
+        protected IMagnetFreezingService MagnetFreezingService => ServiceContext.MagnetFreezingService;
+        protected IWindowService WindowService => ServiceContext.WindowService;
+        protected ThrusterSystem ThrusterSystem => StateContext.ThrusterSystem;
+        protected StateMachineData Data => StateContext.Data;
+        protected LegDataStruct[] Legs => StateContext.Legs;
+        protected SpiderStaticData SpiderStaticData => ServiceContext.StaticDataService.SpiderStaticData;
+        protected Transform Transform => StateContext.Transform;
+        protected Transform CameraTransform => ServiceContext.CameraProviderService.CameraTransform;
+        protected Rigidbody Rigidbody => StateContext.Rigidbody;
+        protected SpiderUI SpiderUI => StateContext.SpiderUI;
 
         private readonly Vector3[] _legPositions;
+        private readonly float _legMoveDeadzone = 0.04f;
+
+        private int _legCount;
+
+        private bool _isAdhesionActivated;
+        private float _adhesionTime = 0.1f;
 
 
         protected MovementState(
             ISpiderStateMachine stateMachine,
-            IInputService inputService,
-            IStaticDataService staticDataService,
-            ICutSceneService cutSceneService,
-            Spider spider,
-            StateMachineData stateMachineData,
-            LegDataStruct[] legs,
-            Flower flower,
+            SpiderServiceContext serviceContext,
+            SpiderStateContext stateContext,
             EnergySystem energySystem)
         {
-            _inputService = inputService;
-            _staticDataService = staticDataService;
-            _cutSceneService = cutSceneService;
-            _flower = flower;
+            ServiceContext = serviceContext;
             EnergySystem = energySystem;
-
             StateMachine = stateMachine;
-            Spider = spider;
-            Data = stateMachineData;
-            Legs = legs;
+            StateContext = stateContext;
 
-            _legPositions = new Vector3[Legs.Length];
+            _legPositions = new Vector3[StateContext.Legs.Length];
         }
 
 
@@ -69,7 +65,7 @@ namespace SpiderController.StateMachine.States
 
         public virtual void HandleInput()
         {
-            Data.Input = _inputService.InputVector;
+            Data.Input = InputService.InputVector;
             Data.Velocity = Data.Input * Data.Speed;
 
             Data.RotationAmount = Data.Input.x * SpiderStaticData.LerpForwardSpeed;
@@ -77,6 +73,9 @@ namespace SpiderController.StateMachine.States
 
         public virtual void Update()
         {
+            if (Input.GetKeyDown(KeyCode.R))
+                StateMachine.SwitchState<RewindState>();
+
             TryMoveLegs();
             UpdateTerranTime();
         }
@@ -101,16 +100,16 @@ namespace SpiderController.StateMachine.States
             Data.Input.sqrMagnitude < Mathf.Epsilon;
 
         protected bool IsFastRunPressed() =>
-            _inputService.IsLeftShiftPressed;
+            InputService.IsLeftShiftPressed;
 
         protected bool IsFastRunUp() =>
-            _inputService.IsLeftShiftUp;
+            InputService.IsLeftShiftUp;
 
         protected bool SlowdownPressed() =>
-            _inputService.CtrlPressed;
+            InputService.CtrlPressed;
 
         protected bool SlowdownUp() =>
-            _inputService.CtrlUp;
+            InputService.CtrlUp;
 
 
         protected virtual void TryMoveLegs()
@@ -145,7 +144,7 @@ namespace SpiderController.StateMachine.States
             Data.Speed = newValue;
 
         protected virtual Vector3 GetMovementY() =>
-            Spider.transform.up * Data.YVelocity;
+            Transform.up * Data.YVelocity;
 
         private void MoveBodySpider()
         {
@@ -174,11 +173,11 @@ namespace SpiderController.StateMachine.States
             {
                 Data.TerrainTimer -= Time.deltaTime;
 
-                Spider.SpiderUI.ReloadUI.SetValue(Data.TerrainTimer / Data.TerrainTimerDefault);
+                SpiderUI.ReloadUI.SetValue(Data.TerrainTimer / Data.TerrainTimerDefault);
 
                 if (Data.TerrainTimer <= 0)
                 {
-                    Spider.SpiderUI.ReloadUI.ShowHologram();
+                    SpiderUI.ReloadUI.ShowHologram();
                     Data.TerrainTimer = Mathf.NegativeInfinity;
                 }
             }
@@ -194,12 +193,13 @@ namespace SpiderController.StateMachine.States
             return !n1.Leg.IsMoving && !n2.Leg.IsMoving;
         }
 
+
         private void AdjustBodyHeight()
         {
             Vector3 avgLegPos = Vector3.zero;
             int count = 0;
 
-            Transform spiderTransform = Spider.transform;
+            Transform spiderTransform = Transform;
             for (int i = 0; i < Legs.Length; i++)
             {
                 if (Legs[i].Raycast.IsGrounded)
@@ -256,10 +256,30 @@ namespace SpiderController.StateMachine.States
             if (count == 0)
                 return;
 
-            if (count != Legs.Length)
-                CalculateAdhesion();
+            if (_isAdhesionActivated)
+            {
+                if (_adhesionTime > 0)
+                {
+                    CalculateAdhesion();
+                    _adhesionTime -= Time.deltaTime;
+                }
+                else
+                {
+                    _isAdhesionActivated = false;
+                    _adhesionTime = 0.1f;
+                }
+            }
             else
-                CalculateGroundWithAllLegs(normalSum, count);
+            {
+                if (count != Legs.Length)
+                {
+                    _isAdhesionActivated = true;
+
+                    CalculateAdhesion();
+                }
+                else
+                    CalculateGroundWithAllLegs(normalSum, count);
+            }
         }
 
         private void CalculateGroundWithAllLegs(Vector3 normalSum, int count)
@@ -267,7 +287,7 @@ namespace SpiderController.StateMachine.States
             Vector3 averageNormal = (normalSum / count).normalized;
 
             Quaternion targetRotation =
-                Quaternion.FromToRotation(Spider.transform.up, averageNormal) * Rigidbody.rotation;
+                Quaternion.FromToRotation(Transform.up, averageNormal) * Rigidbody.rotation;
 
             Quaternion smoothedRotation = Quaternion.Slerp(Rigidbody.rotation, targetRotation,
                 Time.fixedDeltaTime * SpiderStaticData.LerpSpeedFromGround);
@@ -278,8 +298,11 @@ namespace SpiderController.StateMachine.States
             if (angleDeg > 180f)
                 angleDeg -= 360f;
 
-            float angleRad = angleDeg * Mathf.Deg2Rad;
-            Vector3 angularVel = axis.normalized * (angleRad / Time.fixedDeltaTime);
+            float absAngle = Mathf.Abs(angleDeg);
+            float t = Mathf.InverseLerp(0, 5, absAngle);
+            float filteredAngleRad = Mathf.Sign(angleDeg) * t * absAngle * Mathf.Deg2Rad;
+
+            Vector3 angularVel = axis.normalized * (filteredAngleRad / Time.fixedDeltaTime);
             Vector3 angularExplosionVector = Data.ExplosionAngularVector;
 
             Rigidbody.angularVelocity = angularVel + angularExplosionVector;
@@ -306,10 +329,10 @@ namespace SpiderController.StateMachine.States
             Vector3 averageNormal = (normalSum / groundedCount).normalized;
 
             float blend = Mathf.Clamp01(groundedCount / 4f);
-            averageNormal = Vector3.Slerp(Spider.transform.up, averageNormal, blend);
+            averageNormal = Vector3.Slerp(Transform.up, averageNormal, blend);
 
             Quaternion targetRotation =
-                Quaternion.FromToRotation(Spider.transform.up, averageNormal) * Rigidbody.rotation;
+                Quaternion.FromToRotation(Transform.up, averageNormal) * Rigidbody.rotation;
 
             Quaternion smoothedRotation = Quaternion.Slerp(
                 Rigidbody.rotation,
