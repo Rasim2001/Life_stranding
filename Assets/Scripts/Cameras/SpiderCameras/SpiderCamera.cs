@@ -1,10 +1,8 @@
 using Infastructure.Factories;
-using Infastructure.Services.Registries.SpiderRegistry;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using MoreMountains.Feedbacks;
 using MoreMountains.FeedbacksForThirdParty;
-using SpiderController.StateMachine;
 using Unity.Cinemachine;
 using UnityEngine;
 using Zenject;
@@ -25,6 +23,7 @@ namespace Cameras.SpiderCameras
             get => _thirdPersonFollow.ShoulderOffset;
             set => _thirdPersonFollow.ShoulderOffset = value;
         }
+
 
         public float FieldOfView
         {
@@ -91,12 +90,14 @@ namespace Cameras.SpiderCameras
         public void SnapToTarget() =>
             _follower.Snap();
 
-        private void OnDestroy() =>
+        private void OnDestroy()
+        {
             _orbit.Destroy();
+        }
 
         private void Update()
         {
-            if (_follower == null || _fov == null || _orbit == null)
+            if (_orbit == null)
                 return;
 
             _follower.Update();

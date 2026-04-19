@@ -67,8 +67,6 @@ namespace SpiderController.StateMachine.States
         {
             Data.Input = InputService.InputVector;
             Data.Velocity = Data.Input * Data.Speed;
-
-            Data.RotationAmount = Data.Input.x * SpiderStaticData.LerpForwardSpeed;
         }
 
         public virtual void Update()

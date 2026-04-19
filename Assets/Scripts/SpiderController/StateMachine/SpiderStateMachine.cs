@@ -1,17 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Infastructure.Factories;
-using Infastructure.Services.CutScene;
-using Infastructure.Services.PlatformObjects;
-using Infastructure.Services.PlayerInput;
-using Infastructure.StaticData.StaticDataService;
-using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController.Platform;
-using SpiderController.SpiderMove;
-using SpiderController.StateMachine.States;
 using SpiderController.StateMachine.States.Airborn;
 using SpiderController.StateMachine.States.Ground;
-using SpiderController.StateMachine.States.Ground.Aiming;
 using SpiderController.StateMachine.States.Rewind;
 
 namespace SpiderController.StateMachine
@@ -42,8 +34,6 @@ namespace SpiderController.StateMachine
                 diFactory.Create<SlowdownState>(this, serviceContext, stateContext, energySystem),
                 diFactory.Create<FallingWithControlState>(this, serviceContext, stateContext, energySystem),
                 diFactory.Create<RecoveryState>(this, serviceContext, stateContext, energySystem),
-                diFactory.Create<AimIdlingState>(this, serviceContext, stateContext, energySystem),
-                diFactory.Create<AimRunningState>(this, serviceContext, stateContext, energySystem),
                 diFactory.Create<RewindState>(this, serviceContext, stateContext, energySystem, recorder, platformSelector),
             };
 

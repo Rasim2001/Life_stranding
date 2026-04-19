@@ -1,8 +1,8 @@
-namespace SpiderController.StateMachine.States.Ground.Aiming
+namespace SpiderController.StateMachine.OverlayStates.Aiming
 {
-    public class AimIdlingState : AimingState
+    public class AimIdlingOverlayState
     {
-        protected AimIdlingState(
+        /*protected AimIdlingOverlayState(
             ISpiderStateMachine stateMachine,
             SpiderServiceContext serviceContext,
             SpiderStateContext stateContext,
@@ -26,7 +26,7 @@ namespace SpiderController.StateMachine.States.Ground.Aiming
             if (IsInputZero())
                 return;
 
-            StateMachine.SwitchState<AimRunningState>();
-        }
+            StateMachine.SwitchState<AimRunningOverlayState>();
+        }*/
     }
 }

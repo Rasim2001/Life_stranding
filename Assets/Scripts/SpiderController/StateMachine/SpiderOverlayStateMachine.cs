@@ -1,13 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Infastructure.Factories;
-using Infastructure.Services.CameraProvider;
-using Infastructure.Services.GravityGun;
-using Infastructure.Services.PlatformObjects;
-using Infastructure.Services.PlayerInput;
-using Infastructure.StaticData.StaticDataService;
 using SpiderController.StateMachine.OverlayStates;
-using SpiderController.Trajectory;
 using UnityEngine;
 
 namespace SpiderController.StateMachine
@@ -24,7 +18,8 @@ namespace SpiderController.StateMachine
             {
                 diFactory.Create<EmptyOverlayState>(this),
                 diFactory.Create<GravityGunOverlayState>(this, stateContext),
-                diFactory.Create<TeleportOverlayState>(this, stateContext)
+                diFactory.Create<TeleportOverlayState>(this, stateContext),
+                diFactory.Create<AimingOverlayState>(this, stateContext)
             };
 
             _currentState = _states[0];

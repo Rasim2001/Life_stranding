@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Infastructure.Services.PlayerInput.InputSourceRealization
 {
-    public class CutSceneInputSource : IInputSource
+    public class LockInputSource : IInputSource
     {
         public void Enable()
         {

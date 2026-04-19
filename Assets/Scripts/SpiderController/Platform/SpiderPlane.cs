@@ -8,7 +8,6 @@ using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
 using SpiderController.StateMachine;
-using SpiderController.Trajectory;
 using SpiderController.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -25,8 +24,8 @@ namespace SpiderController.Platform
         private readonly IWindowService _windowService;
         private readonly ICameraProviderService _cameraProviderService;
         private readonly IStableWorldUp _stableWorldUp;
-        private TrajectoryRender _trajectoryRender => _stateContext.TrajectoryRender;
-        private StateMachineData StateMachineData => _stateContext.Data;
+
+        private StateMachineData Data => _stateContext.Data;
         private PressedMouseButtonIndicatorUI PressedMouseButtonIndicatorUI => _stateContext.SpiderUI.PlaneIndicatorUI;
         private Transform RotationPlaneTransform => _stateContext.RotationPlaneTransform;
         private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
@@ -38,14 +37,12 @@ namespace SpiderController.Platform
         private Quaternion _targetLocalRotationInFallingDownState;
 
         private JoystickInputSource _joystickInputSource;
-
         private bool _joystickInputActive;
         private float _waitTimeJoystick;
         private Transform _cameraTransform;
 
-        private float _returnTimer = 0;
+        private float _returnTimer;
         private float _lastPositionX;
-        private bool _centerMouseHolding;
 
         public SpiderPlane(
             SpiderStateContext stateContext,
@@ -74,8 +71,8 @@ namespace SpiderController.Platform
             _inputService.OnJoystickEnableHappend += EnableJoystick;
             _inputService.OnJoystickDisableHappend += DisableJoystick;
 
-            StateMachineData.OnFallingDownStateChanged += OnFallingDownStateEnter;
-            StateMachineData.AimingStateChanged += OnAimingStateChanged;
+            Data.AimingStateChanged += AimingStateChanged;
+            Data.OnFallingDownStateChanged += OnFallingDownStateEnter;
         }
 
         public void Destroy()
@@ -85,25 +82,18 @@ namespace SpiderController.Platform
             _inputService.OnJoystickEnableHappend -= EnableJoystick;
             _inputService.OnJoystickDisableHappend -= DisableJoystick;
 
-            StateMachineData.OnFallingDownStateChanged -= OnFallingDownStateEnter;
+            Data.OnFallingDownStateChanged -= OnFallingDownStateEnter;
         }
+
 
         public void Update()
         {
-            if (StateMachineData.IsFallingDownWithoutEnergyState ||
+            if (Data.IsFallingDownWithoutEnergyState ||
                 !_abilityService.IsExploredAbility(ProductType.Flower) ||
-                StateMachineData.IsGravityGunState || StateMachineData.IsTeleportState)
+                Data.IsGravityGunState)
                 return;
 
-            if (_inputService.CenterMousePressed)
-                OnCenterMouseHoldStarted();
-            else if (_inputService.CenterMouseUp)
-                OnCenterMouseHoldEnded();
-
-            if (_centerMouseHolding)
-                _trajectoryRender.FollowTrajectory(RotationPlaneTransform.position, RotationPlaneTransform.up * 10);
-
-            if (!_centerMouseHolding)
+            if (!Data.IsAimingState)
             {
                 if (_inputService.LeftMousePressed)
                     StartInput();
@@ -129,39 +119,30 @@ namespace SpiderController.Platform
 
         public void FixedUpdate()
         {
-            if (StateMachineData.IsFallingDownWithoutEnergyState)
+            if (Data.IsFallingDownWithoutEnergyState)
                 RotateWithoutEnergyTo(_targetLocalRotationInFallingDownState);
             else
                 ApplyRotation();
         }
 
-        private void OnAimingStateChanged()
+        private void AimingStateChanged()
         {
-            if (StateMachineData.IsInAimingState == false)
-                OnCenterMouseHoldEnded();
-        }
+            if (Data.IsAimingState)
+            {
+                _initialMousePosition.y = 1;
 
-        private void OnCenterMouseHoldStarted()
-        {
-            _centerMouseHolding = true;
-
-            _trajectoryRender.Show();
-            StartInput();
-
-            _initialMousePosition.y = 1;
-        }
-
-        private void OnCenterMouseHoldEnded()
-        {
-            _centerMouseHolding = false;
-
-            _trajectoryRender.Hide();
-            ReleaseInput();
+                StartInput();
+            }
+            else
+            {
+                ReleaseInput();
+            }
         }
 
         private void ReleaseInput()
         {
             PressedMouseButtonIndicatorUI.Hide();
+
             _isMouseHold = false;
             _mouseInput = Vector2.zero;
         }
@@ -206,7 +187,7 @@ namespace SpiderController.Platform
             Vector2 mousePos = Input.mousePosition;
             Vector2 screenSize = new Vector2(Screen.width, Screen.height);
 
-            if (_centerMouseHolding)
+            if (Data.IsAimingState)
                 _mouseInput.x = -(mousePos.x - _initialMousePosition.x - _lastPositionX) / (screenSize.x / 2);
             else
                 _mouseInput.x = -(mousePos.x - _initialMousePosition.x) / (screenSize.x / 2);
@@ -214,9 +195,7 @@ namespace SpiderController.Platform
             _mouseInput.y = -(mousePos.y - _initialMousePosition.y) / (screenSize.y / 2);
 
             _mouseInput = Vector2.ClampMagnitude(_mouseInput, 1f);
-
             _mouseInput *= SpiderStaticData.PlaneSensitivity;
-
             _mouseInput = ConvertInputFromCameraToSpiderSpace(_mouseInput);
 
             _lastPositionX = mousePos.x - _initialMousePosition.x;
@@ -241,41 +220,24 @@ namespace SpiderController.Platform
 
         private void ApplyRotation()
         {
-            float targetAngleX = Mathf.Clamp(-_mouseInput.y * SpiderStaticData.MaxAngle, -SpiderStaticData.MaxAngle,
-                SpiderStaticData.MaxAngle);
-            float targetAngleZ = Mathf.Clamp(_mouseInput.x * SpiderStaticData.MaxAngle, -SpiderStaticData.MaxAngle,
-                SpiderStaticData.MaxAngle);
+            float targetAngleX = Mathf.Clamp(-_mouseInput.y * SpiderStaticData.MaxAngle,
+                -SpiderStaticData.MaxAngle, SpiderStaticData.MaxAngle);
+            float targetAngleZ = Mathf.Clamp(_mouseInput.x * SpiderStaticData.MaxAngle,
+                -SpiderStaticData.MaxAngle, SpiderStaticData.MaxAngle);
 
-            Vector3 targetLocalEulerAngles = new Vector3(targetAngleX, 0, targetAngleZ);
-            Quaternion targetLocalRotation = Quaternion.Euler(targetLocalEulerAngles);
-
+            Quaternion targetLocalRotation = Quaternion.Euler(targetAngleX, 0, targetAngleZ);
             RotateTo(targetLocalRotation);
         }
-
 
         private void RotateTo(Quaternion targetLocalRotation)
         {
             float dt = Time.fixedDeltaTime;
             float t = 1f - Mathf.Exp(-SpiderStaticData.PlaneRotationSpeed * dt);
 
-            /*if (!_isMouseHold)
-            {
-                _returnTimer = Mathf.Clamp01(_returnTimer + Time.fixedDeltaTime);
-
-                float curveT = SpiderStaticData.PlaneReturnCurve.Evaluate(_returnTimer);
-
-                RotationPlaneTransform.localRotation = Quaternion.Slerp(
-                    RotationPlaneTransform.localRotation,
-                    targetLocalRotation,
-                    curveT);
-            }
-            else*/
-            {
-                RotationPlaneTransform.localRotation = Quaternion.Slerp(
-                    RotationPlaneTransform.localRotation,
-                    targetLocalRotation,
-                    t);
-            }
+            RotationPlaneTransform.localRotation = Quaternion.Slerp(
+                RotationPlaneTransform.localRotation,
+                targetLocalRotation,
+                t);
         }
 
         private void RotateWithoutEnergyTo(Quaternion targetLocalRotation)

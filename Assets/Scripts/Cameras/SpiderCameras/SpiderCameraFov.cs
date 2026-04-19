@@ -35,7 +35,7 @@ namespace Cameras.SpiderCameras
         {
             float targetFov =
                 Data.IsGravityGunState ? 50f :
-                Data.IsInAimingState ? 90f : 70f;
+                Data.IsAimingState ? 90f : 70f;
 
             _spiderCamera.FieldOfView = Mathf.Lerp(
                 _spiderCamera.FieldOfView,
