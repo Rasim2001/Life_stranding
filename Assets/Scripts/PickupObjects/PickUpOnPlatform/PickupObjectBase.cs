@@ -25,6 +25,7 @@ namespace PickupObjects.PickUpOnPlatform
         public Vector3 StartPosition { get; private set; }
         public Quaternion StartRotation { get; private set; }
         public float Speed { get; private set; }
+        protected IPlatformObjectsService PlatformObjectsService => _platformObjectsService;
 
         private Vector3 _customPositionOffset = Vector3.zero;
         private float _defaultLinearDamping;

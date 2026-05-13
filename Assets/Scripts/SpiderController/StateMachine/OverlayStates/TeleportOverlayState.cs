@@ -79,7 +79,6 @@ namespace SpiderController.StateMachine.OverlayStates
             Vector3 fallbackPosition = hit.point - offset;
 
             _teleportService.SpawnNewTeleport(fallbackPosition);
-
             _stateMachine.SwitchState<EmptyOverlayState>();
         }
 

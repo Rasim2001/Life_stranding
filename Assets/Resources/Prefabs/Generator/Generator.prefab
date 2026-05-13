@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 8093759520825115060}
   - component: {fileID: 3639117273225882907}
   - component: {fileID: 1863036739421716988}
+  - component: {fileID: 6141461638996012466}
   m_Layer: 17
   m_Name: Generator
   m_TagString: Untagged
@@ -102,6 +103,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _biosphereFx: {fileID: 956399190823260924}
   _material: {fileID: 2100000, guid: 6e724765d8a9e93439d73a3a1ab1ab5f, type: 2}
+  _meshRenderer: {fileID: 4170420924233128894}
   _putdownBatteryPoint: {fileID: 5115382081865006712}
   _pickUpDisplayPoint: {fileID: 7910100805881613397}
   _rotateTarget: {fileID: 765908178026920793}
@@ -112,6 +114,19 @@ MonoBehaviour:
   - {fileID: 4953064071580471246}
   - {fileID: 172064701168986691}
   - {fileID: 4588072440265935526}
+--- !u!114 &6141461638996012466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3749212015426599933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a463dd3e263943f182156a21f3e397a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UniqueId: 
 --- !u!1 &6573231892378630173
 GameObject:
   m_ObjectHideFlags: 0
@@ -423,6 +438,11 @@ Transform:
 --- !u!4 &1991475290012281295 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8123175531458274404, guid: ca2ea489dcb4d454bbd8f865037f2a0a, type: 3}
+  m_PrefabInstance: {fileID: 7717046750800858539}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &4170420924233128894 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5978592955619137045, guid: ca2ea489dcb4d454bbd8f865037f2a0a, type: 3}
   m_PrefabInstance: {fileID: 7717046750800858539}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &4588072440265935526 stripped

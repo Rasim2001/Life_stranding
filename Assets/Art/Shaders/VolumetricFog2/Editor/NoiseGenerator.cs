@@ -95,7 +95,7 @@ namespace VolumetricFogAndMist2 {
             EditorGUILayout.LabelField("Texture Asset", GUILayout.Width(120));
             textureAsset = (Texture2D)EditorGUILayout.ObjectField(textureAsset, typeof(Texture2D), false);
             if (textureAsset != null) {
-                if (GUILayout.Button("Release", GUILayout.Width(100))) {
+                if (GUILayout.Button("HideCursor", GUILayout.Width(100))) {
                     textureAsset = null;
                     requestRebuild = true;
                 }

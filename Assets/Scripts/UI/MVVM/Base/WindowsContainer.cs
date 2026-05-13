@@ -27,6 +27,8 @@ namespace UI.MVVM.Base
 
         public void ClosePopup(WindowViewModel popupViewModel)
         {
+            Debug.Log($"ClosePopup : {popupViewModel.GetType()}");
+
             IWindowBinder binder = _openedPopupBinders[popupViewModel];
 
             binder?.Close();

@@ -79,8 +79,12 @@ namespace WaterSystem
         }
 
 
-        private void AllTaskCompleted() =>
+        private void AllTaskCompleted()
+        {
+            Debug.Log("AllTaskCompleted");
+
             _isStartingMove = true;
+        }
 
 
         private void Update()

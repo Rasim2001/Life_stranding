@@ -33,13 +33,17 @@ namespace Common
         private IGeneratorLaunchTrackerService _generatorLaunchTrackerService;
         private Sequence _sequenceMove;
         private MarkerUniqueId _markerUniqueId;
+        private Material _materialInstance;
+
 
         [Inject]
         public void Construct(IGeneratorLaunchTrackerService generatorLaunchTrackerService) =>
             _generatorLaunchTrackerService = generatorLaunchTrackerService;
 
-        private void Awake() =>
+        private void Awake()
+        {
             _markerUniqueId = GetComponent<MarkerUniqueId>();
+        }
 
         private void Start()
         {

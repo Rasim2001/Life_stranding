@@ -6,7 +6,9 @@ using Infastructure.Services.SlowTime;
 using Infastructure.States;
 using UI.Curtain;
 using UI.MVVM.Base;
+using UI.MVVM.View.Root;
 using UI.MVVM.View.SettingsPopup;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -26,12 +28,14 @@ namespace UI.MVVM.View.PausePopup
         private IStateMachine _stateMachine;
         private ICurtainRoot _curtainRoot;
         private ISlowTimeRunner _slowTimeRunner;
+        private UIGameplayRootViewModel _gameplayRootViewModel;
 
         [Inject]
         public void Construct(IPauseService pauseService, IPauseWindowService pauseWindowService,
             IRestartService restartService, IAbilityService abilityService, IStateMachine stateMachine,
-            ICurtainRoot curtainRoot, ISlowTimeRunner slowTimeRunner)
+            ICurtainRoot curtainRoot, ISlowTimeRunner slowTimeRunner, UIGameplayRootViewModel gameplayRootViewModel)
         {
+            _gameplayRootViewModel = gameplayRootViewModel;
             _slowTimeRunner = slowTimeRunner;
             _curtainRoot = curtainRoot;
             _stateMachine = stateMachine;
@@ -81,13 +85,19 @@ namespace UI.MVVM.View.PausePopup
         private void Restart()
         {
             _curtainRoot.Show();
+
+            _gameplayRootViewModel.Clear();
             _restartService.Restart(_abilityService.GetAllExploredAbilities());
 
             _stateMachine.Enter<LoadProgressState>();
         }
 
-        private void GoToMenu() =>
+        private void GoToMenu()
+        {
+            _gameplayRootViewModel.Clear();
+
             _stateMachine.Enter<ExitGameLoopState>();
+        }
 
         private void Exit() =>
             Application.Quit();

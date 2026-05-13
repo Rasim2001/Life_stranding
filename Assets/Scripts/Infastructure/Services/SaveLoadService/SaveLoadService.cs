@@ -55,6 +55,9 @@ namespace Infastructure.Services.SaveLoadService
             return JsonUtility.FromJson<PlayerProgress>(json) ?? new PlayerProgress();
         }
 
+        public bool HasProgress() =>
+            File.Exists(SavePath);
+
         public void ClearProgress() =>
             File.Delete(SavePath);
     }

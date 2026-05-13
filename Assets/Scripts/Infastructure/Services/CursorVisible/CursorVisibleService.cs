@@ -1,4 +1,5 @@
 using System;
+using Common.Lock;
 using UnityEngine;
 
 namespace Infastructure.Services.CursorVisible
@@ -7,16 +8,20 @@ namespace Infastructure.Services.CursorVisible
     {
         public event Action OnHideCursorHappened;
 
-        public void ShowCursor()
+        private readonly LockHandler _lockHandler = new LockHandler();
+
+        public void ShowCursor(object owner)
         {
-            Cursor.visible = true;
+            _lockHandler.Acquire(owner, () => Cursor.visible = true);
         }
 
-        public void HideCursor()
+        public void HideCursor(object owner)
         {
-            OnHideCursorHappened?.Invoke();
-
-            Cursor.visible = false;
+            _lockHandler.Release(owner, onAction: () =>
+            {
+                Cursor.visible = false;
+                OnHideCursorHappened?.Invoke();
+            });
         }
 
         public void Initialize() =>

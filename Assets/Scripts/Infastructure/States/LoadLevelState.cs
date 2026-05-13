@@ -47,13 +47,6 @@ namespace Infastructure.States
         {
         }
 
-        private async UniTask HideCurtainAsync()
-        {
-            await UniTask.Delay(TimeSpan.FromSeconds(1));
-
-            _curtainRoot.Hide();
-        }
-
 
         public class Factory : PlaceholderFactory<IStateMachine, LoadLevelState>
         {

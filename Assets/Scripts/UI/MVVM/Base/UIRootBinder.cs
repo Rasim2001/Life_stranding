@@ -12,6 +12,8 @@ namespace UI.MVVM.Base
 
         public void Bind(UIRootViewModel viewModel)
         {
+            Debug.Log("UIRootBinder.Bind");
+
             _subscriptions.Add(viewModel.OpenedScreen.Subscribe(newScreenViewModel =>
                 _windowsContainer.OpenScreen(newScreenViewModel)));
 
@@ -31,7 +33,11 @@ namespace UI.MVVM.Base
         {
         }
 
-        private void OnDestroy() =>
+        private void OnDestroy()
+        {
             _subscriptions.Dispose();
+
+            Debug.Log("UIRootBinder.Destroy");
+        }
     }
 }

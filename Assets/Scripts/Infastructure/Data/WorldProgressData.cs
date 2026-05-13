@@ -9,6 +9,8 @@ namespace Infastructure.Data
         public WaterData WaterData = new();
         public FlowerData FlowerData = new();
         public SpiderData SpiderData = new();
+        public CutsceneData CutsceneData = new();
+
         public List<CheckpointData> CheckpointDatas = new();
         public List<BatteryProductData> BatteryProductDatas = new();
         public List<GeneratorData> GeneratorDatas = new();

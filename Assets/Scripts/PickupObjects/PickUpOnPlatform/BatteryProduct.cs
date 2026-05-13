@@ -32,10 +32,8 @@ namespace PickupObjects.PickUpOnPlatform
             base.Awake();
 
             _markerUniqueId = GetComponent<MarkerUniqueId>();
-        }
-
-        private void Start() =>
             _xRayMarker = GetComponent<XRayMarker>();
+        }
 
         public void LoadProgress(PlayerProgress progress)
         {
@@ -45,6 +43,13 @@ namespace PickupObjects.PickUpOnPlatform
 
             if (batteryProductData == null)
                 return;
+
+            if (batteryProductData.IsOnPlatform)
+            {
+                PlatformObjectsService.Add(this);
+
+                return;
+            }
 
             if (batteryProductData.IsPuttingDown)
             {
@@ -67,12 +72,16 @@ namespace PickupObjects.PickUpOnPlatform
                 list.Add(new BatteryProductData(
                     transform.position.AsVectorData(),
                     transform.localEulerAngles.AsVectorData(),
-                    _markerUniqueId.UniqueId, IsPuttingDown));
+                    _markerUniqueId.UniqueId,
+                    IsPuttingDown,
+                    IsOnPlatform));
             }
             else
             {
                 existing.Position = transform.position.AsVectorData();
                 existing.Rotation = transform.localEulerAngles.AsVectorData();
+                existing.IsPuttingDown = IsPuttingDown;
+                existing.IsOnPlatform = IsOnPlatform;
             }
         }
 

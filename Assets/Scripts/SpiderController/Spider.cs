@@ -213,10 +213,10 @@ namespace SpiderController
             _platformSelector = _diFactory.Create<PlatformSelector>(_stateMachineData);
             _platformSelector.Initialize();
 
-            _checkpointPickup = _diFactory.Create<CheckpointPickup>(_checkpointChecker, flower, _spiderUI);
+            _checkpointPickup = _diFactory.Create<CheckpointPickup>(_stateContext, flower);
             _checkpointPickup.Initialize();
 
-            _generatorPickup = _diFactory.Create<GeneratorPickup>(_generatorChecker);
+            _generatorPickup = _diFactory.Create<GeneratorPickup>(_stateContext);
             _generatorPickup.Initialize();
 
             _biosphereProductPickup = _diFactory.Create<BiosphereProductPickup>(_biosphereChecker, flower);

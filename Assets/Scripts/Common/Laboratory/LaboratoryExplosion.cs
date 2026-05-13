@@ -1,14 +1,19 @@
+using System;
 using System.Collections;
+using Dreamteck.Splines;
 using Infastructure.CutScenes;
+using Infastructure.Data;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CutScene;
+using Infastructure.Services.ProgressWatchers;
+using Infastructure.Services.SaveLoadService;
 using Unity.Cinemachine;
 using UnityEngine;
 using Zenject;
 
 namespace Common.Laboratory
 {
-    public class LaboratoryExplosion : MonoBehaviour
+    public class LaboratoryExplosion : MonoBehaviour, ISavedProgressReader
     {
         private static readonly int ExplosionTriggerHash = Animator.StringToHash("ExplosionTrigger");
 
@@ -20,6 +25,29 @@ namespace Common.Laboratory
 
         private float _blendTime;
         private Coroutine _coroutine;
+        private IProgressWatchersService _progressWatchersService;
+
+        [Inject]
+        public void Construct(ICutSceneService cutSceneService, ICameraProviderService providerService,
+            IProgressWatchersService progressWatchersService)
+        {
+            _progressWatchersService = progressWatchersService;
+            _providerService = providerService;
+            _cutSceneService = cutSceneService;
+        }
+
+        private void Awake() =>
+            _progressWatchersService.RegisterWatchers(gameObject);
+
+        public void LoadProgress(PlayerProgress progress)
+        {
+            if (!progress.WorldProgressData.CutsceneData.FlowerWasPicked)
+                return;
+
+            _animator.gameObject.SetActive(false);
+            _finishedDebris.gameObject.SetActive(true);
+        }
+
 
         private void Start()
         {
@@ -33,14 +61,8 @@ namespace Common.Laboratory
             if (_coroutine != null)
                 StopCoroutine(_coroutine);
 
+            _progressWatchersService.Release(this);
             _cutSceneService.OnCutsceneActiveChanged -= CutSceneStarted;
-        }
-
-        [Inject]
-        public void Construct(ICutSceneService cutSceneService, ICameraProviderService providerService)
-        {
-            _providerService = providerService;
-            _cutSceneService = cutSceneService;
         }
 
         private void CutSceneStarted(bool isStarted)

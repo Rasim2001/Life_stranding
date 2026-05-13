@@ -9,8 +9,7 @@ namespace SpiderController.TriggerChecker
     public class ProductCheckerBase : MonoBehaviour
     {
         [SerializeField] private ObserverTrigger _observerTrigger;
-
-        public Action<Collider> OnRemoveHappened;
+        public event Action<Collider> OnRemoveHappened;
 
         public List<Collider> Results = new List<Collider>();
 
@@ -24,6 +23,16 @@ namespace SpiderController.TriggerChecker
         {
             _observerTrigger.OnTriggerEnterHappened -= TriggerEnter;
             _observerTrigger.OnTriggerExitHappened -= TriggerExit;
+        }
+
+        public void ForceRemove(Collider col)
+        {
+            if (Results.Contains(col))
+            {
+                Results.Remove(col);
+
+                OnRemoveHappened?.Invoke(col);
+            }
         }
 
         protected virtual bool Accept(Collider col) => false;

@@ -2973,7 +2973,7 @@ namespace HighlightPlus
                 cbHighlight.DrawMesh(quadMesh, quadOutlineMatrix, fxMatComposeOutline, 0, 0);
             }
 
-            // Release render textures
+            // HideCursor render textures
             if (renderSmoothGlow)
             {
                 for (int k = 0; k < mipGlowBuffers.Length; k++)

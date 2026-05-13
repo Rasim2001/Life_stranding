@@ -10,5 +10,6 @@ namespace Infastructure.Services.SaveLoadService
         void SetNewProgress();
         void InitLoadingProgress();
         void SetContinueProgress();
+        bool HasProgress();
     }
 }

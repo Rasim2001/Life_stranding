@@ -20,6 +20,8 @@ namespace Common
         {
             _cozyWeather = GetComponent<CozyWeather>();
 
+            _cozyWeather.timeModule.perennialProfile.pauseTime = true;
+
             _cozyWeather.timeModule.currentTime.hours = 5;
             _cozyWeather.timeModule.currentTime.minutes = 45;
 

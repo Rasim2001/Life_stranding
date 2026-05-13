@@ -4,6 +4,7 @@ using Common;
 using HighlightPlus;
 using HUD;
 using Infastructure.Data;
+using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.QTE;
 using Infastructure.Services.SaveLoadService;
 using Infastructure.Services.SlowTime;
@@ -65,7 +66,7 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
 
             if (progress.WorldProgressData.FlowerData.IsOnPlatform)
             {
-                //StopSimulatePhysics();
+                PlatformObjectsService.Add(this);
                 return;
             }
 

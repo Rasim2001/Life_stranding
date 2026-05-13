@@ -19,6 +19,13 @@ namespace UI.MVVM.Base
 
         public void Dispose()
         {
+            Debug.Log("CloaseAllPopupsDispose");
+
+            Clear();
+        }
+
+        public void Clear()
+        {
             CloseAllPopups();
 
             _openedScreen.Value?.Dispose();

@@ -1,4 +1,5 @@
-﻿using Infastructure.Services.CursorVisible;
+﻿using System;
+using Infastructure.Services.CursorVisible;
 using UnityEngine;
 using Zenject;
 
@@ -16,7 +17,7 @@ namespace UI.MVVM.Base
 
         public void Bind(WindowViewModel viewModel)
         {
-            _cursorVisibleService.ShowCursor();
+            _cursorVisibleService.ShowCursor(this);
 
             ViewModel = (T)viewModel;
 
@@ -25,7 +26,7 @@ namespace UI.MVVM.Base
 
         public virtual void Close()
         {
-            _cursorVisibleService.HideCursor();
+            _cursorVisibleService.HideCursor(this);
 
             Destroy(gameObject);
         }
