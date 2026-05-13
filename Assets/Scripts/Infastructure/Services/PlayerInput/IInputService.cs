@@ -37,5 +37,6 @@ namespace Infastructure.Services.PlayerInput
         event Action OnJoystickDisableHappend;
         void LockInput();
         void UnlockInput();
+        bool IsLocked();
     }
 }

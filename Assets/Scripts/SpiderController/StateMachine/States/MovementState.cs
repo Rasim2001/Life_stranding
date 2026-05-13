@@ -1,6 +1,7 @@
 using Infastructure.Services.Ability;
 using Infastructure.Services.Magnet;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.QTE;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.Spider;
 using SpiderController.SpiderMove;
@@ -30,6 +31,7 @@ namespace SpiderController.StateMachine.States
         protected Transform CameraTransform => ServiceContext.CameraProviderService.CameraTransform;
         protected Rigidbody Rigidbody => StateContext.Rigidbody;
         protected SpiderUI SpiderUI => StateContext.SpiderUI;
+        private ILastChanceQTEService LastChanceQTEService => ServiceContext.LastChanceQteService;
 
         private readonly Vector3[] _legPositions;
         private readonly float _legMoveDeadzone = 0.04f;
@@ -71,7 +73,7 @@ namespace SpiderController.StateMachine.States
 
         public virtual void Update()
         {
-            if (Input.GetKeyDown(KeyCode.R))
+            if (Input.GetKeyDown(KeyCode.R) && ! LastChanceQTEService.IsRunning)
                 StateMachine.SwitchState<RewindState>();
 
             TryMoveLegs();

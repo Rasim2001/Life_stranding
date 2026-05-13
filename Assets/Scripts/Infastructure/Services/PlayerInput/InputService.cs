@@ -147,6 +147,9 @@ namespace Infastructure.Services.PlayerInput
         public void UnlockInput() =>
             SetInputSource(new PlayerInputSource());
 
+        public bool IsLocked() =>
+            _inputSource is LockInputSource;
+
         public void Initialize()
         {
             _windowService.OnWindowOpened += WindowOpenedUI;

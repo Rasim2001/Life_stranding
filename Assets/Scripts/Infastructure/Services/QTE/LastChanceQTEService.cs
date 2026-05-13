@@ -27,6 +27,7 @@ namespace Infastructure.Services.QTE
         private readonly IWindowService _windowService;
 
         public event Action OnSaveHappened;
+        public bool IsRunning => _isRunning;
 
         private LastChanceStaticData LastChanceStaticData => _staticDataService.LastChanceStaticData;
 
@@ -79,6 +80,9 @@ namespace Infastructure.Services.QTE
 
         public void StartQTE()
         {
+            if (_inputService.IsLocked())
+                return;
+
             if (_allAttempts <= 0)
             {
                 _lastChanceBarUI.ShowHologram();

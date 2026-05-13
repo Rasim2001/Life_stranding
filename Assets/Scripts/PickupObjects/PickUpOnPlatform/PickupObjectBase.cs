@@ -62,6 +62,11 @@ namespace PickupObjects.PickUpOnPlatform
             StartRotation = Quaternion.Euler(productData.StartRotationEuler);
         }
 
+        public virtual void OnBlinkZoneStateChanged(bool isInside)
+        {
+            
+        }
+
         public virtual PickupObjectSnapshot Capture()
         {
             return new PickupObjectSnapshot
