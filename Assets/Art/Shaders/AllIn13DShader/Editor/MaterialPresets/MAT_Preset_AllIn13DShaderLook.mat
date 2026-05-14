@@ -9,16 +9,21 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: MAT_Preset_AllIn13DShaderLook
   m_Shader: {fileID: 4800000, guid: 0dde7f0097aeb2541aea684ca0ad0e3c, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ALBEDOVERTEXCOLORMODE_REPLACE
   - _ALPHA_CUTOFF_ON
   - _CAST_SHADOWS_ON
   - _COLORRAMPLIGHTINGSTAGE_BEFORELIGHTING
+  - _FADEUVSET_UV1
   - _GREYSCALESTAGE_BEFORELIGHTING
   - _HEIGHTGRADIENTPOSITIONSPACE_LOCAL
   - _LIGHTMODEL_FAKEGI
   - _MATCAPBLENDMODE_MULTIPLY
   - _OUTLINETYPE_NONE
+  - _RECEIVEDSHADOWSTYPE_CLASSIC
+  - _RECEIVE_SHADOWS_ON
   - _REFLECTIONS_CLASSIC
   - _RIMLIGHTINGSTAGE_BEFORELIGHTINGLAST
   - _RIM_LIGHTING_ON
@@ -27,6 +32,7 @@ Material:
   - _TEXTUREBLENDINGMODE_RGB
   - _TEXTUREBLENDINGSOURCE_VERTEXCOLOR
   - _TRIPLANARNORMALSPACE_WORLD
+  - _USE_WIND_VERTICAL_MASK
   m_InvalidKeywords:
   - _GLITCHWORLDSPACE_ON
   - _HOLOGRAM_ALPHA
@@ -39,6 +45,7 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -102,6 +109,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: cf3a2315564d4de4eb8601b697dea358, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MetallicMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _NormalMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -132,6 +143,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _TripalanarTopTex:
         m_Texture: {fileID: 2800000, guid: a26b9f1a12d33184ab5e89d304e441ad, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TriplanarNoiseTex:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TriplanarTopNormalMap:
@@ -174,6 +189,7 @@ Material:
     - _BlendingMaskSmoothnessG: 0.4
     - _BlendingMaskSmoothnessWhite: 0.4
     - _Brightness: 0
+    - _BrightnessLM: 0
     - _CastShadowsOn: 1
     - _ColorMask: 15
     - _ColorRampBlend: 1
@@ -184,7 +200,9 @@ Material:
     - _ColorRampTiling: 1
     - _Contrast: 1
     - _ContrastBrightnessOn: 0
+    - _ContrastLM: 1
     - _CullingMode: 2
+    - _CustomAmbientLightOn: 0
     - _CustomShadowColorOn: 0
     - _DepthColoringOn: 0
     - _DepthGlowColorIntensity: 25
@@ -194,6 +212,8 @@ Material:
     - _DistortAmount: 0.3
     - _DistortTexXSpeed: 2
     - _DistortTexYSpeed: 2
+    - _DitherOn: 0
+    - _DitherScale: 1
     - _EmissionEnabled: 0
     - _EmissionSelfGlow: 1
     - _ExtrudeBlend: 0.243
@@ -201,9 +221,13 @@ Material:
     - _FadeAmount: 0
     - _FadeBurnOn: 0
     - _FadeBurnWidth: 0.01
+    - _FadeByCamDistanceOn: 0
     - _FadeOn: 0
     - _FadePower: 1
     - _FadeTransition: 0.2
+    - _FadeUVSet: 0
+    - _FlatNormalsBlend: 1
+    - _FlatNormalsEnabled: 0
     - _FogOn: 0
     - _GeneralAlpha: 1
     - _Glitch: 0
@@ -214,6 +238,7 @@ Material:
     - _GreyScaleStage: 0
     - _Greyscale: 0
     - _GreyscaleBlend: 1
+    - _GreyscaleBlending: 1
     - _GreyscaleLuminosity: 0
     - _HalfLambertWrap: 1
     - _HandDrawn: 0
@@ -244,20 +269,25 @@ Material:
     - _HologramScrollSpeed: 2
     - _HologramSpeed: 0
     - _HueBrightness: 1
+    - _HueBrightnessLM: 1
     - _HueSaturation: 1
+    - _HueSaturationLM: 1
     - _HueShift: 0
     - _HueShiftEnabled: 0
+    - _HueShiftLM: 0
     - _InflateBlend: 1
     - _IntersectionFadeFactor: 1
     - _IntersectionFadeOn: 0
     - _IntersectionGlowOn: 0
     - _LightModel: 5
+    - _LightmapColorCorrection: 0
     - _LineSize: 0
     - _Matcap: 0
     - _MatcapBlend: 1
     - _MatcapBlendMode: 0
     - _MatcapIntensity: 1
     - _MaxCameraDistance: 1000
+    - _MaxDistanceToFade: 100
     - _MaxExtrude: 2
     - _MaxFadeDistance: 250
     - _MaxGradientHeight: 0.75
@@ -265,11 +295,14 @@ Material:
     - _MaxInflate: 0.2
     - _MaxRim: 1
     - _Metallic: 0
+    - _MetallicMapOn: 0
+    - _MinDistanceToFade: 0
     - _MinExtrude: 0
     - _MinGradientHeight: 0
     - _MinHologramAlpha: 0
     - _MinInflate: 0
     - _MinRim: 0.58
+    - _NearFade: 0
     - _NormalInfluence: 0.5
     - _NormalMapEnabled: 0
     - _NormalStrength: 1
@@ -284,6 +317,8 @@ Material:
     - _PosterizeGamma: 0.75
     - _PosterizeNumColors: 8
     - _RecalculateNormals: 0
+    - _ReceiveShadows: 1
+    - _ReceivedShadowsType: 0
     - _Reflections: 1
     - _ReflectionsAtten: 0.025
     - _RenderPreset: 1
@@ -302,6 +337,7 @@ Material:
     - _ScrollTextureX: 1
     - _ScrollTextureY: 1
     - _ShadingModel: 0
+    - _ShadowCutoff: 0.2
     - _ShakeBlend: 1
     - _ShakeSpeedMult: 1
     - _Shininess: 12.8
@@ -312,6 +348,7 @@ Material:
     - _SpecularToonCutoff: 0.35
     - _SpecularToonSmoothness: 0
     - _SpherizeNormals: 0
+    - _StencilRef: 1
     - _StochasticSampling: 0
     - _StochasticScale: 3.464
     - _StochasticSkew: 0.57735026
@@ -326,15 +363,20 @@ Material:
     - _ToonSmoothness: 0
     - _TopNormalStrength: 1
     - _TriplanarMappingOn: 0
+    - _TriplanarNoiseTransitionOn: 0
     - _TriplanarNormalSpace: 1
     - _TriplanarSharpness: 15
+    - _TriplanarTransitionPower: 0.75
     - _UVDistortion: 0
     - _UseCustomTime: 0
+    - _UseVerticalMask: 1
     - _VertexColor: 0
     - _VertexColorBlending: 1
     - _VertexColorBlendingMode: 0
     - _VertexColorMode: 0
     - _VertexDistortionAmount: 0
+    - _VertexDistortionNoiseSpeedX: 4
+    - _VertexDistortionNoiseSpeedY: 4
     - _VertexDistortionOn: 0
     - _VertexExtrude: 0
     - _VertexExtrudeNoiseXSpeed: 4
@@ -351,11 +393,16 @@ Material:
     - _WaveUVOn: 0
     - _WaveX: 0
     - _WaveY: 0.5
+    - _WindAttenuation: 1
+    - _WindOn: 0
+    - _WindVerticalMaskMaxY: 1
+    - _WindVerticalMaskMinY: -1
     - _ZTestMode: 4
     - _ZWrite: 1
     m_Colors:
     - _AOColor: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _CustomAmbientColor: {r: 0.65, g: 0.65, b: 0.65, a: 1}
     - _DepthGlowColor: {r: 1, g: 0.9869999, b: 0.6, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _FadeBurnColor: {r: 1, g: 1, b: 0, a: 1}
@@ -368,6 +415,7 @@ Material:
     - _HitColor: {r: 1, g: 1, b: 1, a: 1}
     - _HologramColor: {r: 1.25, g: 2.8, b: 6.8, a: 1}
     - _HologramLineDirection: {r: 0, g: 1, b: 0, a: 0}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
     - _RimOffset: {r: 0, g: 0.3, b: 0, a: 0}
     - _SSSColor: {r: 1, g: 1, b: 1, a: 1}
@@ -375,3 +423,4 @@ Material:
     - _ShakeSpeed: {r: 41, g: 49, b: 45, a: 0}
     - _VertexDistortionNoiseSpeed: {r: 4, g: 4, b: 0, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
