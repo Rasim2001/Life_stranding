@@ -1,4 +1,5 @@
 ﻿using Infastructure.Common;
+using Infastructure.StaticData.Cheats;
 using Infastructure.StaticData.Cutscenes;
 using Infastructure.StaticData.GlobalWater;
 using Infastructure.StaticData.GravityGun;
@@ -31,8 +32,8 @@ namespace Infastructure.StaticData.StaticDataService
         public WindowsLocalizationStaticData WindowsLocalizationStaticData { get; private set; }
         public LastChanceStaticData LastChanceStaticData { get; private set; }
         public CutScenesStaticData CutScenesStaticData { get; private set; }
-
         public GravityGunStaticData GravityGunStaticData { get; private set; }
+        public CheatsStaticData CheatsStaticData { get; private set; }
 
         public void LoadStaticData()
         {
@@ -53,6 +54,7 @@ namespace Infastructure.StaticData.StaticDataService
             LastChanceStaticData = Resources.Load<LastChanceStaticData>(AssetsPath.LastChanceStaticDataPath);
             CutScenesStaticData = Resources.Load<CutScenesStaticData>(AssetsPath.CutSceneStaticDataPath);
             GravityGunStaticData = Resources.Load<GravityGunStaticData>(AssetsPath.GravityGunStaticDataPath);
+            CheatsStaticData = Resources.Load<CheatsStaticData>(AssetsPath.CheatsStaticDataPath);
         }
     }
 }

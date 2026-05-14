@@ -1,4 +1,5 @@
-﻿using Infastructure.StaticData.Cutscenes;
+﻿using Infastructure.StaticData.Cheats;
+using Infastructure.StaticData.Cutscenes;
 using Infastructure.StaticData.GlobalWater;
 using Infastructure.StaticData.GravityGun;
 using Infastructure.StaticData.HUD;
@@ -31,5 +32,6 @@ namespace Infastructure.StaticData.StaticDataService
         LastChanceStaticData LastChanceStaticData { get; }
         CutScenesStaticData CutScenesStaticData { get; }
         GravityGunStaticData GravityGunStaticData { get; }
+        CheatsStaticData CheatsStaticData { get; }
     }
 }

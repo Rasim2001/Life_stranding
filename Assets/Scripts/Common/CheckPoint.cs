@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Common.Biosphere;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -42,6 +43,8 @@ namespace Common
         private IWindowService _windowService;
         private ISaveLoadService _saveLoadService;
         private MarkerUniqueId _markerUniqueId;
+
+        private CancellationTokenSource _cts = new CancellationTokenSource();
 
         private bool _wasPicked;
 
@@ -163,16 +166,14 @@ namespace Common
             await DOTween.Sequence()
                 .Append(startRotateGlassTween)
                 .Join(redHealIndicatorTween)
-                .AsyncWaitForCompletion()
-                .AsUniTask();
+                .ToUniTask(cancellationToken: _cts.Token);
 
             flower.ResetFlowerVariant();
             Tween endRotateGlassTween = RotateGlass(0);
 
             await DOTween.Sequence()
                 .Append(endRotateGlassTween)
-                .AsyncWaitForCompletion()
-                .AsUniTask();
+                .ToUniTask(cancellationToken: _cts.Token);
 
             _isPutdownInProgress = false;
             IsReady = true;
@@ -184,8 +185,7 @@ namespace Common
 
             await DOTween.Sequence()
                 .Append(hideHealIndicators)
-                .AsyncWaitForCompletion()
-                .AsUniTask();
+                .ToUniTask(cancellationToken: _cts.Token);
 
             IsReady = false;
         }
@@ -241,6 +241,10 @@ namespace Common
             _antennaSequence?.Kill();
             _rotateGlassTween?.Kill();
             _rotateBodyTween?.Kill();
+            _healIndicatorsSequence?.Kill();
+
+            _cts.Cancel();
+            _cts.Dispose();
         }
     }
 }

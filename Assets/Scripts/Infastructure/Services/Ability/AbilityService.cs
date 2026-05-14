@@ -4,6 +4,8 @@ using Infastructure.Data;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.ProgressWatchers;
 using Infastructure.Services.SaveLoadService;
+using Infastructure.StaticData.Cheats;
+using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
 using UnityEngine;
 using Zenject;
@@ -17,21 +19,19 @@ namespace Infastructure.Services.Ability
         private readonly ICutSceneService _cutSceneService;
         private readonly IProgressWatchersService _progressWatchersService;
         private List<ProductType> _pickedProducts = new List<ProductType>();
+        private readonly IStaticDataService _staticDataService;
+        private CheatsStaticData Cheats => _staticDataService.CheatsStaticData;
 
-        private bool _isCheating;
-
-        public AbilityService(ICutSceneService cutSceneService, IProgressWatchersService progressWatchersService)
+        public AbilityService(ICutSceneService cutSceneService, IProgressWatchersService progressWatchersService,
+            IStaticDataService staticDataService)
         {
+            _staticDataService = staticDataService;
             _cutSceneService = cutSceneService;
             _progressWatchersService = progressWatchersService;
         }
 
-        public void Initialize()
-        {
+        public void Initialize() =>
             _progressWatchersService.RegisterWatcher(this);
-
-            _isCheating = true;
-        }
 
         public void LoadProgress(PlayerProgress progress) =>
             _pickedProducts = new List<ProductType>(progress.AbilityData.PickedProducts);
@@ -49,7 +49,7 @@ namespace Infastructure.Services.Ability
         }
 
         public bool IsExploredAbility(ProductType pickedProduct) =>
-            _isCheating || _cutSceneService.IsActive || _pickedProducts.Contains(pickedProduct);
+            Cheats.ProductsPopupEnabled || _cutSceneService.IsActive || _pickedProducts.Contains(pickedProduct);
 
         public List<ProductType> GetAllExploredAbilities() =>
             _pickedProducts;
