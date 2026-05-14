@@ -30,7 +30,7 @@ namespace Infastructure.States
 
         public void Enter()
         {
-            //_curtainRoot.Show();
+            _curtainRoot.Show();
             _sceneLoader.Load(_staticDataService.GameStaticData.LoadScene, OnLoaded);
         }
 

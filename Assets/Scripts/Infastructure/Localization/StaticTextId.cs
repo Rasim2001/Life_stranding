@@ -38,7 +38,7 @@ namespace Infastructure.Localization
         MoveBackward_PausePopup = 43,
         MoveLeft_PausePopup = 44,
         MoveRight_PausePopup = 45,
-        ZoomInOut_PausePopup = 46,
+        ThrowObject_PausePopup = 46,
         Teleport_PausePopup = 47,
         GravityGun_PausePopup = 48,
         Rewind_PausePopup = 49,
