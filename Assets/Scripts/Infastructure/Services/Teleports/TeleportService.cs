@@ -61,6 +61,12 @@ namespace Infastructure.Services.Teleports
 
             _spiderCamera.SnapToTarget();
             _spiderCamera.AlignToSpider();
+
+            _teleportPools.ReturnObjectToPool(_slotA);
+            _teleportPools.ReturnObjectToPool(_slotB);
+
+            _slotA = null;
+            _slotB = null;
         }
 
 

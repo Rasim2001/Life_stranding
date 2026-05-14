@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Infastructure.Services.Ability;
 using Infastructure.Services.CameraProvider;
@@ -11,6 +12,8 @@ namespace SpiderController.StateMachine.States.Ground
 {
     public class RecoveryState : MovementState
     {
+        private CancellationTokenSource _cts;
+
         protected RecoveryState(
             ISpiderStateMachine stateMachine,
             SpiderServiceContext serviceContext,
@@ -24,13 +27,25 @@ namespace SpiderController.StateMachine.States.Ground
         {
             base.Enter();
 
+            _cts = new CancellationTokenSource();
+
             MoveToLastPositionAsync().Forget();
+        }
+
+
+        public override void Exit()
+        {
+            base.Exit();
+
+            _cts?.Cancel();
+            _cts?.Dispose();
+            _cts = null;
         }
 
 
         private async UniTask MoveToLastPositionAsync()
         {
-            await UniTask.Delay(TimeSpan.FromSeconds(3));
+            await UniTask.Delay(TimeSpan.FromSeconds(3), cancellationToken: _cts.Token);
 
             if (IsNotMoveableLayer() == false)
             {
@@ -42,13 +57,10 @@ namespace SpiderController.StateMachine.States.Ground
                 return;
             }
 
-            /*Spider.Rigidbody.linearVelocity = Vector3.zero;
-            Spider.Rigidbody.angularVelocity = Vector3.zero;*/
-
             Transform.position = Data.LastValidGroundPosition;
             Transform.rotation = Data.LastValidGroundRotation;
 
-            await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
+            await UniTask.Delay(TimeSpan.FromSeconds(0.5f), cancellationToken: _cts.Token);
 
             StateMachine.SwitchState<IdlingState>();
         }

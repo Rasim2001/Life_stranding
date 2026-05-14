@@ -4,6 +4,8 @@ using System.Linq;
 using Common.Biosphere;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using Infastructure.Data;
 using Infastructure.Services.GeneratorLaunchTracker;
 using Infastructure.Services.SaveLoadService;
@@ -34,6 +36,7 @@ namespace Common
         private Sequence _sequenceMove;
         private MarkerUniqueId _markerUniqueId;
         private Material _materialInstance;
+        private Tween _rotateTween;
 
 
         [Inject]
@@ -91,8 +94,8 @@ namespace Common
 
             _sequenceMove.OnComplete(() =>
             {
-                _rotateTarget?.DOKill();
-                _rotateTarget.DOLocalRotate(_rotationSpeed, 2, RotateMode.LocalAxisAdd)
+                _rotateTween?.Kill();
+                _rotateTween = _rotateTarget.DOLocalRotate(_rotationSpeed, 2, RotateMode.LocalAxisAdd)
                     .SetEase(Ease.Linear)
                     .SetLoops(-1, LoopType.Incremental);
             });
@@ -115,15 +118,18 @@ namespace Common
 
             _sequenceMove.OnComplete(() =>
             {
-                _rotateTarget?.DOKill();
-                _rotateTarget.DOLocalRotate(_rotationSpeed, 2, RotateMode.LocalAxisAdd)
+                _rotateTween?.Kill();
+                _rotateTween = _rotateTarget.DOLocalRotate(_rotationSpeed, 2, RotateMode.LocalAxisAdd)
                     .SetEase(Ease.Linear)
                     .SetLoops(-1, LoopType.Incremental);
             });
         }
 
 
-        private void OnDestroy() =>
+        private void OnDestroy()
+        {
             _sequenceMove?.Kill();
+            _rotateTween?.Kill();
+        }
     }
 }

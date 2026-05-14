@@ -28,6 +28,7 @@ namespace Common
         public Quaternion FlowerPutdownRotation => _flowerPutdownPoint.rotation;
         public bool IsReady { get; private set; }
 
+        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private Sequence _antennaSequence;
         private Sequence _healIndicatorsSequence;
 
@@ -44,7 +45,6 @@ namespace Common
         private ISaveLoadService _saveLoadService;
         private MarkerUniqueId _markerUniqueId;
 
-        private CancellationTokenSource _cts = new CancellationTokenSource();
 
         private bool _wasPicked;
 
@@ -82,7 +82,7 @@ namespace Common
 
             CheckpointData existing = list.FirstOrDefault(x => x.UniqueId == _markerUniqueId.UniqueId);
 
-            if (existing != null && existing.WasPicked)
+            if (existing != null)
                 _biosphereFx.ShowFx(1);
 
             if (existing == null || !existing.IsReady)
