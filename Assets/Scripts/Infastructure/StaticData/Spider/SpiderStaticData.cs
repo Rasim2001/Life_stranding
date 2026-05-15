@@ -59,6 +59,7 @@ namespace Infastructure.StaticData.Spider
         public float EnergySpendFastRunningSpeed;
         public float EnergySpendJerkingSpeed;
         public float EnergySpendFreezingFlowerSpeed;
+        public float EnergyAimingSpeed;
 
         [Header("Health")]
         public float MaxHealth;

@@ -1,6 +1,5 @@
+using Common.Lock;
 using Infastructure.Services.CutScene;
-using Infastructure.StaticData.Spider;
-using Infastructure.StaticData.StaticDataService;
 using SpiderController.UI;
 using UnityEngine;
 
@@ -13,6 +12,10 @@ namespace SpiderController.StateMachine
         private StateMachineData Data => _stateContext.Data;
         private EnergyBarUI EnergyBar => _stateContext.SpiderUI.EnergyBar;
 
+        private readonly LockHandler _lockHandler = new LockHandler();
+
+        private bool _isLocked;
+
         public EnergySystem(
             SpiderStateContext stateContext,
             ICutSceneService cutSceneService)
@@ -20,6 +23,12 @@ namespace SpiderController.StateMachine
             _stateContext = stateContext;
             _cutSceneService = cutSceneService;
         }
+
+        public void LockRestore(object owner) =>
+            _lockHandler.Acquire(owner, () => _isLocked = true);
+
+        public void UnlockRestore(object owner) =>
+            _lockHandler.Release(owner, () => _isLocked = false);
 
         public void SpendEnergy(float speed)
         {
@@ -37,6 +46,9 @@ namespace SpiderController.StateMachine
 
         public void RestoreEnergy(float speed)
         {
+            if (_isLocked)
+                return;
+
             if (Data.CurrentEnergyFillAmount < 1)
             {
                 Data.CurrentEnergyFillAmount += Time.deltaTime * speed /
