@@ -81,7 +81,13 @@ namespace AllIn13DShader
 			if (GUILayout.Button("Refresh the Material Inspector Properties Configuration"))
 			{
 				ShadersCreatorTool.BuildShaderFiles();
-				PropertiesConfigCreator.CreateConfig();
+				PropertiesConfigCollection propertiesConfigCollection = PropertiesConfigCreator.CreateConfig();
+
+				EffectsProfileCollection effectsProfileCollection = EffectsProfileCollection.CreateAsset(propertiesConfigCollection);
+				if (AssetDatabase.IsValidFolder(Constants.DEMO_SHADERS_BAKED_FOLDER_PATH))
+				{
+					effectsProfileCollection.CheckBakedShadersFolder(Constants.DEMO_SHADERS_BAKED_FOLDER_PATH, propertiesConfigCollection.propertiesConfig);
+				}
 			}
 
 			EditorGUILayout.LabelField("The asset uses auto generated cached data to display the properties of the Material inspector\nYou should never need this button", commonStyles.wordWrappedStyle);

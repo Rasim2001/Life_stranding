@@ -142,6 +142,10 @@
 	#define REQUIRE_SCENE_DEPTH
 #endif
 
+#if defined(REQUIRE_SCENE_DEPTH) || defined(LOD_FADE_CROSSFADE)
+	#define REQUIRE_SCREEN_POS
+#endif
+
 #if defined(_SCREEN_SPACE_UV_ON) || defined(REQUIRE_SCENE_DEPTH) || defined(_FADE_BY_CAM_DISTANCE_ON)
 	#define REQUIRE_CAM_DISTANCE
 #endif

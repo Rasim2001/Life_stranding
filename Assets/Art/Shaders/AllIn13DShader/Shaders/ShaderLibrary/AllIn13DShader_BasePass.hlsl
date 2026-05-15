@@ -55,9 +55,14 @@ FragmentData BasicVertex(VertexData v)
 	VIEWDIR_WS(o) = GetViewDirWS(POSITION_WS(o));
 	
 	float4 projPos = 0;
-#ifdef REQUIRE_SCENE_DEPTH
+	
+	
+#if defined(REQUIRE_SCREEN_POS)
 	o.projPos = ComputeScreenPos(o.pos);
-	o.projPos.z = ComputeEyeDepth(POSITION_WS(o));
+	
+	#if defined(REQUIRE_SCENE_DEPTH)
+		o.projPos.z = ComputeEyeDepth(POSITION_WS(o));
+	#endif
 	
 	projPos = o.projPos;
 #endif
@@ -119,7 +124,10 @@ float4 BasicFragment(
 	UNITY_SETUP_INSTANCE_ID(i);
 	UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
 
-
+	#if defined(LOD_FADE_CROSSFADE)
+		ALLIN1_APPLY_CROSSFADE(i)
+	#endif
+	
 	AllIn1DecalData decalData;
 	INIT_DECAL_DATA(decalData);
 

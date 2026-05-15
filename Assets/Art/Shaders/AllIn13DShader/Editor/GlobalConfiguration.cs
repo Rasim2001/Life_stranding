@@ -578,6 +578,11 @@ namespace AllIn13DShader
 			{
 				SaveInstanceAsAsset();
 			}
+			else
+			{
+				string parentFolder = GetParentConfigFolderPath();
+				_instance.Init(parentFolder);
+			}
 
 			if (rootFolderChanged)
 			{

@@ -86,6 +86,10 @@
 	#ifdef ALLIN1_DECALS_SUPPORT
 		#pragma multi_compile_fragment _ _DBUFFER_MRT1 _DBUFFER_MRT2 _DBUFFER_MRT3
 	#endif
+	
+	#ifdef ALLIN1_LODCROSSFADE_SUPPORT
+		#pragma multi_compile _ LOD_FADE_CROSSFADE
+	#endif
 
 #elif defined(SHADOW_CASTER_PASS)
 	#pragma multi_compile_fwdadd_fullshadows
@@ -136,7 +140,6 @@
 	#endif
 	
 #endif
-
 
 
 #endif //ALLIN13DSHADER_FEATURESURP

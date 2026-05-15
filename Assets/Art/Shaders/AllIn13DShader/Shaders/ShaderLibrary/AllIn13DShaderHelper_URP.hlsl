@@ -160,14 +160,14 @@ AllIn1LightData GetMainLightData(float3 vertexWS, EffectsData effectsData, AllIn
 {
 	AllIn1LightData lightData;
 	
-#ifdef _LIGHTMODEL_NONE
+#if defined(_LIGHTMODEL_NONE)
 	lightData.lightColor = float3(1.0, 1.0, 1.0);
 	lightData.lightDir = float3(0.0, 1.0, 0.0);
 	lightData.distanceAttenuation = 1.0;
 	lightData.shadowColor = 1.0;
 	lightData.realtimeShadow = 1.0;
 	lightData.layerMask = 1;
-#elif _LIGHTMODEL_FASTLIGHTING
+#elif defined(_LIGHTMODEL_FASTLIGHTING)
 	lightData.lightColor = global_lightColor;
 	lightData.lightDir = global_lightDirection;
 	lightData.distanceAttenuation = 1.0;
@@ -624,5 +624,6 @@ float3 ShadeSH(float4 normalWS)
 
 #define OBJECT_TO_CLIP_SPACE(v) TransformObjectToHClip(v.vertex.xyz)
 #define OBJECT_TO_CLIP_SPACE_FLOAT4(pos) TransformObjectToHClip(pos.xyz)
+#define ALLIN1_APPLY_CROSSFADE(input) LODFadeCrossFade(input.pos);
 
 #endif

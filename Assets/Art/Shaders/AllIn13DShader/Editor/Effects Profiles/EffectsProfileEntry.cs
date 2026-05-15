@@ -200,6 +200,26 @@ namespace AllIn13DShader
 			}
 		}
 
+		public void DisableSubEntry(EffectProperty effectProperty)
+		{
+			if (effectProperty.IsEnumProperty())
+			{
+				SubkeywordEntryEnum entryEnum = FindEntryEnumByPropertyName(effectProperty.propertyName);
+				if (entryEnum != null)
+				{
+					entryEnum.kwIndexEnabled = 0;
+				}
+			}
+			else if (effectProperty.IsToggleProperty())
+			{
+				SubkeywordEntryToggle entryToggle = FindEntryToggleByKeyword(effectProperty.fullKeywordNames[0]);
+				if (entryToggle != null)
+				{
+					entryToggle.isEnabled = false;
+				}
+			}
+		}
+
 		public SubkeywordEntryEnum FindEntryEnumByPropertyName(string propertyName)
 		{
 			SubkeywordEntryEnum res = null;
@@ -209,6 +229,22 @@ namespace AllIn13DShader
 				if (subkeywordEntriesEnum[i].propertyName == propertyName)
 				{
 					res = subkeywordEntriesEnum[i];
+					break;
+				}
+			}
+
+			return res;
+		}
+
+		public SubkeywordEntryToggle FindEntryToggleByKeyword(string keyword)
+		{
+			SubkeywordEntryToggle res = null;
+
+			for (int i = 0; i < subkeywordEntriesToggle.Length; i++)
+			{
+				if (subkeywordEntriesToggle[i].keyword == keyword)
+				{
+					res = subkeywordEntriesToggle[i];
 					break;
 				}
 			}
