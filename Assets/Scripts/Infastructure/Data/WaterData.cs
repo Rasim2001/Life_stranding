@@ -6,5 +6,6 @@ namespace Infastructure.Data
     public class WaterData
     {
         public Vector3Data WaterPosition;
+        public bool IsStartingMove;
     }
 }

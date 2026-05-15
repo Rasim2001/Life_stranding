@@ -6,6 +6,7 @@ using Infastructure.Services.SaveLoadService;
 using Infastructure.StaticData.Cheats;
 using Infastructure.StaticData.StaticDataService;
 using UI;
+using UnityEngine;
 
 namespace Infastructure.Services.Tasks
 {
@@ -41,7 +42,7 @@ namespace Infastructure.Services.Tasks
             if (_taskIds.Contains(taskId))
                 return;
 
-            if (taskId == TaskId.LastTask)
+            if (taskId == TaskId.LastTask) 
                 AllTasksCompleted?.Invoke();
 
             _taskIds.Add(taskId);
