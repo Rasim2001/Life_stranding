@@ -4,15 +4,14 @@ namespace AllIn13DShader
 {
 	public static class Constants
 	{
-		public static string VERSION = "2.62";
+		public static string VERSION = "2.74";
 		
 		public const string EFFECT_ATTRIBUTE_PREFIX = "Effect(";
 		public const string EFFECT_PROPERTY_ATTRIBUTE_PREFIX = "EffectProperty(";
 		//public const string HEADER_PREFIX = "Header(";
 		public const string SINGLE_PROPERTY_ATTRIBUTE = "SingleProperty";
 		public const string ADVANCED_PROPERTY_ATTRIBUTE = "AdvancedProperty";
-
-
+		
 		public const string SHADER_ROOT = "AllIn13DShader";
 
 		public static string[] SHADERS_NAMES = new string[]
@@ -58,7 +57,8 @@ namespace AllIn13DShader
 		//public static string SHADERS_PROPERTIES_FOLDER_PATH = /*"Assets/AllIn13DShader/Editor"*/Path.Combine(GlobalConfiguration.instance.RootPluginPath, "Editor");
 		public static string TEMPLATES_FOLDER = Path.Combine(GlobalConfiguration.instance.RootPluginPath, "Editor/Templates");
 		public const string STANDARD_EXAMPLES_MATERIALS_LOCAL_PATH = "Demo/Materials/StandardExamples";
-		
+		public static string DEMO_SHADERS_BAKED_FOLDER_PATH = Path.Combine(GlobalConfiguration.instance.RootPluginPath, "Demo/Baked Shaders Demo/Shaders");
+
 		/* Shader Passes Paths */
 		public const string MAIN_PASS_PATH			= "Shaders/ShaderLibrary/AllIn13DShader_BasePass.hlsl";
 		public const string LIGHT_ADD_PASS_PATH		= "Shaders/ShaderLibrary/AllIn13DShaderLightAddPass.hlsl";

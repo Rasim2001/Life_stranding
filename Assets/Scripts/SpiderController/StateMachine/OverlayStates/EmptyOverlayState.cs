@@ -28,6 +28,9 @@ namespace SpiderController.StateMachine.OverlayStates
 
             if (_inputService.TeleportPressed)
                 _stateMachine.SwitchState<TeleportOverlayState>();
+
+            if (_inputService.CenterMousePressed)
+                _stateMachine.SwitchState<AimingOverlayState>();
         }
 
         public void Update()

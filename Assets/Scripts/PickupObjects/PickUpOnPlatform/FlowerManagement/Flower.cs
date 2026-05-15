@@ -4,6 +4,7 @@ using Common;
 using HighlightPlus;
 using HUD;
 using Infastructure.Data;
+using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.QTE;
 using Infastructure.Services.SaveLoadService;
 using Infastructure.Services.SlowTime;
@@ -65,7 +66,7 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
 
             if (progress.WorldProgressData.FlowerData.IsOnPlatform)
             {
-                //StopSimulatePhysics();
+                PlatformObjectsService.Add(this);
                 return;
             }
 
@@ -88,21 +89,20 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             progress.WorldProgressData.FlowerData.IsOnPlatform = IsOnPlatform;
         }
 
-
-        private void Update()
-        {
-            if (!IsOnPlatform)
-                return;
-
-            // TODO: PlatformSelector.IsInsideOfBlinkPlace — нужно вынести
-            // в PlatformObjectsService или передать через событие
-        }
-
         private void OnDestroy()
         {
             StopOutlineCoroutine();
             _flowerSelector.Clear();
         }
+
+        public override void OnBlinkZoneStateChanged(bool isInside)
+        {
+            if (isInside)
+                StopOutlineCoroutine();
+            else
+                StartOutlineCoroutine();
+        }
+
 
         public override void ThrowObject()
         {
@@ -111,6 +111,8 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             _flowerPointIndicator.ShowTargetPoint();
             OnDroppedFromPlatform?.Invoke();
             _xRayService.Add(_xRayMarker);
+
+            StopOutlineCoroutine();
         }
 
         public override void ApplyFinalSnapshot(PickupObjectSnapshot snapshot)
@@ -137,6 +139,13 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             _isTriggered = false;
             _flowerPointIndicator.HideTargetPoint();
             _xRayService.Remove(_xRayMarker);
+        }
+
+        public override void DetachFromPlatform()
+        {
+            base.DetachFromPlatform();
+
+            StopOutlineCoroutine();
         }
 
         public override void GetChanceAttachToPlatform()
@@ -177,6 +186,8 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             transform.rotation = checkPoint.FlowerPutdownRotation;
 
             Rigidbody.isKinematic = true;
+
+            StopOutlineCoroutine();
         }
 
         public void PickUpAfterPutdown()
@@ -196,7 +207,17 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
             {
                 StopCoroutine(_outlineCoroutine);
                 _outlineCoroutine = null;
+
+                _outlineEffect.SetHighlighted(false);
             }
+        }
+
+        private void StartOutlineCoroutine()
+        {
+            if (_outlineCoroutine != null)
+                return;
+
+            _outlineCoroutine = StartCoroutine(OutlineCoroutineAnimation());
         }
 
         private IEnumerator OutlineCoroutineAnimation()

@@ -172,6 +172,11 @@ namespace AllIn13DShader
 		{
 			string shaderVariantsFolderPath = ShaderVariantCreator.GetShaderVariantsFolderPath();
 			CheckBakedShadersFolder(shaderVariantsFolderPath, propertiesConfig);
+
+			if (AssetDatabase.IsValidFolder(Constants.DEMO_SHADERS_BAKED_FOLDER_PATH))
+			{
+				CheckBakedShadersFolder(Constants.DEMO_SHADERS_BAKED_FOLDER_PATH, propertiesConfig);
+			}
 		}
 
 		public void CheckRemovedShader(string removedPath)

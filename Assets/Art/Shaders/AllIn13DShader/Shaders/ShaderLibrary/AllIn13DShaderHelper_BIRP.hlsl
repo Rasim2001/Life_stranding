@@ -134,9 +134,10 @@ float GetShadowAttenuation(EffectsData effectsData, AllIn1GI gi)
 	#if !defined(FORWARD_ADD_PASS)
 		attenuation = FadeShadows(effectsData.vertexWS, attenuation, gi);
 	#endif
+	
+	res = attenuation;
 #endif
 
-	res = attenuation;
 	return res;
 }
 
@@ -437,5 +438,8 @@ float3 ShadeSH(float4 normalWS)
 
 #define OBJECT_TO_CLIP_SPACE(v) UnityObjectToClipPos(v.vertex)
 #define OBJECT_TO_CLIP_SPACE_FLOAT4(pos) UnityObjectToClipPos(pos)
+#define ALLIN1_APPLY_CROSSFADE(input) \
+	float2 __vpos = i.projPos.xy / i.projPos.w * _ScreenParams.xy; \
+	UNITY_APPLY_DITHER_CROSSFADE(__vpos);
 
 #endif

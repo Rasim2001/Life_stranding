@@ -46,6 +46,22 @@ namespace Infastructure.Services.PlatformObjects
             _platformSelector.SetExcludeLayerMask();
         }
 
+        public void AddOrAttach(PickupObjectBase obj)
+        {
+            if (_objects.Contains(obj))
+            {
+                obj.AttachToPlatform(PlatformTransform);
+
+                return;
+            }
+
+            _objects.Add(obj);
+            AddWeight(obj);
+
+            obj.AttachToPlatform(PlatformTransform);
+            _platformSelector.SetExcludeLayerMask();
+        }
+
         public void AddAfterRewind(PickupObjectBase obj)
         {
             if (_objects.Contains(obj))
@@ -112,8 +128,10 @@ namespace Infastructure.Services.PlatformObjects
                 PickupObjectBase obj = _objects[i];
 
                 if (obj.IsOnPlatform)
+                {
                     obj.transform.localRotation =
                         Quaternion.Euler(obj.StartRotation.eulerAngles.x, 0, 0);
+                }
 
                 if (obj.IsFreezingOnPlatform || obj.IsPuttingDown)
                     continue;
@@ -129,7 +147,12 @@ namespace Infastructure.Services.PlatformObjects
                 bool isOnPlatform = _platformSelector.IsOnPlatform(obj.Collider);
 
                 if (isOnPlatform)
+                {
+                    bool isInBlinkZone = _platformSelector.IsInsideOfBlinkPlace(obj.Collider);
+                    obj.OnBlinkZoneStateChanged(isInBlinkZone);
+
                     SimulateRotation(obj);
+                }
                 else
                 {
                     obj.GetChanceAttachToPlatform();

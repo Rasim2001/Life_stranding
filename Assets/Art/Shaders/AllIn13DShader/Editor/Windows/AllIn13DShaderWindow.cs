@@ -68,8 +68,8 @@ namespace AllIn13DShader
 				textureCreatorTabDrawer,
 				overrideMaterialsTabDrawer,
 				effectsProfileTabDrawer,
-				otherTabDrawer,
-				urpSettingsDrawer
+				urpSettingsDrawer,
+				otherTabDrawer
 			};
 
 #else

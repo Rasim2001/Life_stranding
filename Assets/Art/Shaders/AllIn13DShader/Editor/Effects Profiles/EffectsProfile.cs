@@ -232,12 +232,13 @@ namespace AllIn13DShader
 						}
 						else if (effectProperty.IsToggleProperty())
 						{
-							effectProfileEntry.subkeywordEntriesToggle[0].isEnabled = true;
+							SubkeywordEntryToggle entryToggle = effectProfileEntry.FindEntryToggleByKeyword(effectProperty.fullKeywordNames[0]);
+							entryToggle.isEnabled = true;
 						}
 					}
 					else
 					{
-						effectProfileEntry.DisableSubEntries();
+						effectProfileEntry.DisableSubEntry(effectProperty);
 					}
 				}
 			}
@@ -272,12 +273,13 @@ namespace AllIn13DShader
 						}
 						else if (effectProperty.IsToggleProperty())
 						{
-							effectProfileEntry.subkeywordEntriesToggle[0].isEnabled = true;
+							SubkeywordEntryToggle entryToggle = effectProfileEntry.FindEntryToggleByKeyword(effectProperty.fullKeywordNames[0]);
+							entryToggle.isEnabled = true;
 						}
 					}
 					else
 					{
-						effectProfileEntry.DisableSubEntries();
+						effectProfileEntry.DisableSubEntry(effectProperty);
 					}
 				}
 			}

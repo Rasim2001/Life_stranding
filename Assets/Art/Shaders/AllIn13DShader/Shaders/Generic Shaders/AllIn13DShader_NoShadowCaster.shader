@@ -407,6 +407,9 @@ Shader "AllIn13DShader/AllIn13DShader_NoShadowCaster"
 			#include_with_pragmas "../ShaderLibrary/AllIn13DShader_FeaturesURP.hlsl"
 
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+			#if defined(LOD_FADE_CROSSFADE)
+				#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/LODCrossFade.hlsl"
+			#endif
 
 			#include_with_pragmas  "../ShaderLibrary/AllIn13DShader_Features.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl" 
@@ -563,6 +566,7 @@ Shader "AllIn13DShader/AllIn13DShader_NoShadowCaster"
 			#pragma multi_compile_fog
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ DOTS_INSTANCING_ON
+			#pragma multi_compile _ LOD_FADE_CROSSFADE
 
 			#define BIRP_PASS
 			#define BUILTIN_MAIN_PASS

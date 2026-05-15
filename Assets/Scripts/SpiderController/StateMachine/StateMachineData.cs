@@ -1,4 +1,5 @@
 using System;
+using R3;
 using UnityEngine;
 
 namespace SpiderController.StateMachine
@@ -30,26 +31,25 @@ namespace SpiderController.StateMachine
         public Vector3 ExplosionAngularVector;
         public Vector3 LastValidGroundPosition;
         public Quaternion LastValidGroundRotation;
-        public bool IsInAimingState
+
+        public bool IsGravityGunState;
+        public bool IsTeleportState;
+
+        public bool IsAimingState
         {
-            get => _isInAimingState;
+            get => _isAimingState;
             set
             {
                 bool newValue = value;
 
-                if (newValue != _isInAimingState)
+                if (newValue != _isAimingState)
                 {
-                    _isInAimingState = value;
+                    _isAimingState = value;
 
                     AimingStateChanged?.Invoke();
                 }
             }
         }
-
-        public bool IsGravityGunState;
-        public bool IsTeleportState;
-
-        public float RotationAmount;
 
         public float DistanceFromGround = 0.5f;
         public float Speed
@@ -94,7 +94,7 @@ namespace SpiderController.StateMachine
         private float _speed;
         private float _totalWeight;
         private bool _IsFallingDownWithoutEnergyState;
-        private bool _isInAimingState;
+        private bool _isAimingState;
 
         public void Clear()
         {

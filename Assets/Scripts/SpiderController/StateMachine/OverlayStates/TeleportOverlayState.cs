@@ -67,7 +67,7 @@ namespace SpiderController.StateMachine.OverlayStates
             {
                 Vector3 minFallbackPosition = ray.origin + ray.direction * MinRayDistance;
                 _teleportService.SpawnNewTeleport(minFallbackPosition);
-
+                _stateMachine.SwitchState<EmptyOverlayState>();
                 return;
             }
 
@@ -79,7 +79,6 @@ namespace SpiderController.StateMachine.OverlayStates
             Vector3 fallbackPosition = hit.point - offset;
 
             _teleportService.SpawnNewTeleport(fallbackPosition);
-
             _stateMachine.SwitchState<EmptyOverlayState>();
         }
 

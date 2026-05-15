@@ -20,6 +20,8 @@ namespace Common
         {
             _cozyWeather = GetComponent<CozyWeather>();
 
+            _cozyWeather.timeModule.perennialProfile.pauseTime = true;
+
             _cozyWeather.timeModule.currentTime.hours = 5;
             _cozyWeather.timeModule.currentTime.minutes = 45;
 
@@ -31,10 +33,10 @@ namespace Common
 
         private void ChangeWeather()
         {
-            _cozyWeather.timeModule.currentTime.hours = 7;
-            _cozyWeather.timeModule.currentTime.minutes = 40;
+            _cozyWeather.timeModule.currentTime.hours = 10;
+            _cozyWeather.timeModule.currentTime.minutes = 30;
 
-            _cozyWeather.timeModule.perennialProfile.pauseTime = false;
+            //_cozyWeather.timeModule.perennialProfile.pauseTime = false;
         }
     }
 }

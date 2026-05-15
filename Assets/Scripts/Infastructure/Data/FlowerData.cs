@@ -9,5 +9,6 @@ namespace Infastructure.Data
         public Vector3Data Rotation;
         public bool IsPuttingDown;
         public bool IsOnPlatform;
+        
     }
 }

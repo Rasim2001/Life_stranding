@@ -129,7 +129,7 @@ namespace GameDevBuddies
             context.ExecuteCommandBuffer(cmd);
             cmd.Clear();
 
-            // Release command buffer back to the pool so that it can be reused.
+            // HideCursor command buffer back to the pool so that it can be reused.
             CommandBufferPool.Release(cmd);
         }
 

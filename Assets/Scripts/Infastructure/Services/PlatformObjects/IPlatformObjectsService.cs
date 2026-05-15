@@ -22,5 +22,6 @@ namespace Infastructure.Services.PlatformObjects
         void FixedUpdate();
         void ThrowAll();
         void AddAfterRewind(PickupObjectBase obj);
+        void AddOrAttach(PickupObjectBase obj);
     }
 }

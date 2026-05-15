@@ -8,6 +8,7 @@ using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
@@ -22,6 +23,13 @@ namespace SpiderController.PickUp
 {
     public class FlowerPickup
     {
+        private FlowerChecker FlowerChecker => _stateContext.FlowerChecker;
+        private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
+        private SpiderUI SpiderUI => _stateContext.SpiderUI;
+        private HealthBarUI HealthBar => SpiderUI.HealthBar;
+        private SpiderHealth SpiderHealth => SpiderUI.SpiderHealth;
+        private bool WasPicked => _progressService.PlayerProgress.WorldProgressData.CutsceneData.FlowerWasPicked;
+
         private readonly IInputService _inputService;
         private readonly IPickupDisplayer _pickupDisplayer;
         private readonly IPlatformObjectsService _platformObjectsService;
@@ -29,18 +37,12 @@ namespace SpiderController.PickUp
         private readonly IDefeatWindowService _defeatWindowService;
         private readonly ICutSceneService _cutSceneService;
         private readonly IStaticDataService _staticDataService;
+        private readonly IPersistentProgressService _progressService;
         private readonly SpiderStateContext _stateContext;
 
         private readonly Flower _flower;
-        private FlowerChecker _flowerChecker => _stateContext.FlowerChecker;
-        private SpiderStaticData _spiderStaticData => _staticDataService.SpiderStaticData;
-        private SpiderUI _spiderUI => _stateContext.SpiderUI;
-        private HealthBarUI HealthBar => _spiderUI.HealthBar;
-        private SpiderHealth SpiderHealth => _spiderUI.SpiderHealth;
-
-        private bool _isFirstTime = true;
-
         private CancellationTokenSource _lifetimeCts;
+
 
         public FlowerPickup(
             SpiderStateContext stateContext,
@@ -51,7 +53,8 @@ namespace SpiderController.PickUp
             IWindowService windowService,
             IDefeatWindowService defeatWindowService,
             ICutSceneService cutSceneService,
-            IStaticDataService staticDataService)
+            IStaticDataService staticDataService,
+            IPersistentProgressService progressService)
         {
             _stateContext = stateContext;
             _inputService = inputService;
@@ -61,6 +64,7 @@ namespace SpiderController.PickUp
             _defeatWindowService = defeatWindowService;
             _cutSceneService = cutSceneService;
             _staticDataService = staticDataService;
+            _progressService = progressService;
 
             _flower = flower;
         }
@@ -79,8 +83,6 @@ namespace SpiderController.PickUp
 
         public void Destroy()
         {
-            _isFirstTime = false;
-
             _flower.OnGroundTriggered -= GroundTriggered;
             _flower.OnDroppedFromPlatform -= DropFlowerHappened;
 
@@ -95,7 +97,7 @@ namespace SpiderController.PickUp
 
             if (canDisplay && _inputService.PickupPressed && _platformObjectsService.IsEmpty() && !IsDeath())
             {
-                if (_isFirstTime)
+                if (!WasPicked)
                     PickupFlow().Forget();
                 else
                 {
@@ -117,7 +119,7 @@ namespace SpiderController.PickUp
 
 
         private bool CanDisplay() =>
-            _flowerChecker.Results.Count > 0 && _flowerChecker.Results.Any(IsFlowerReadyToPickup);
+            FlowerChecker.Results.Count > 0 && FlowerChecker.Results.Any(IsFlowerReadyToPickup);
 
         private bool IsFlowerReadyToPickup(Collider col)
         {
@@ -138,11 +140,11 @@ namespace SpiderController.PickUp
         }
 
         private void GroundTriggered() =>
-            SpiderHealth.TakeDamage(_spiderStaticData.DamageAmount);
+            SpiderHealth.TakeDamage(SpiderStaticData.DamageAmount);
 
         private async UniTask PickupFlow()
         {
-            _isFirstTime = false;
+            _progressService.PlayerProgress.WorldProgressData.CutsceneData.FlowerWasPicked = true;
 
             CancellationToken token = _lifetimeCts.Token;
 

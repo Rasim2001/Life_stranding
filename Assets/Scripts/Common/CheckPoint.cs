@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Common.Biosphere;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -27,6 +28,7 @@ namespace Common
         public Quaternion FlowerPutdownRotation => _flowerPutdownPoint.rotation;
         public bool IsReady { get; private set; }
 
+        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private Sequence _antennaSequence;
         private Sequence _healIndicatorsSequence;
 
@@ -42,6 +44,9 @@ namespace Common
         private IWindowService _windowService;
         private ISaveLoadService _saveLoadService;
         private MarkerUniqueId _markerUniqueId;
+
+
+        private bool _wasPicked;
 
         [Inject]
         public void Construct(IWindowService windowService, ISaveLoadService saveLoadService)
@@ -97,9 +102,12 @@ namespace Common
             bool isReadyForSave = _isPutdownInProgress || IsReady;
 
             if (existing == null)
-                list.Add(new CheckpointData(isReadyForSave, _markerUniqueId.UniqueId));
+                list.Add(new CheckpointData(isReadyForSave, _markerUniqueId.UniqueId, _wasPicked));
             else
+            {
                 existing.IsReady = isReadyForSave;
+                existing.WasPicked = _wasPicked;
+            }
         }
 
         private void OnDestroy()
@@ -109,8 +117,13 @@ namespace Common
             Clear();
         }
 
-        public void StartFlowerPutdown(Flower flower) =>
+        public void StartFlowerPutdown(Flower flower)
+        {
+            if (!_wasPicked)
+                _wasPicked = true;
+
             StartFlowerPutdownAsync(flower).Forget();
+        }
 
         public void StartFlowerPickup() =>
             StartFlowerPickupAsync().Forget();
@@ -153,16 +166,14 @@ namespace Common
             await DOTween.Sequence()
                 .Append(startRotateGlassTween)
                 .Join(redHealIndicatorTween)
-                .AsyncWaitForCompletion()
-                .AsUniTask();
+                .ToUniTask(cancellationToken: _cts.Token);
 
             flower.ResetFlowerVariant();
             Tween endRotateGlassTween = RotateGlass(0);
 
             await DOTween.Sequence()
                 .Append(endRotateGlassTween)
-                .AsyncWaitForCompletion()
-                .AsUniTask();
+                .ToUniTask(cancellationToken: _cts.Token);
 
             _isPutdownInProgress = false;
             IsReady = true;
@@ -174,8 +185,7 @@ namespace Common
 
             await DOTween.Sequence()
                 .Append(hideHealIndicators)
-                .AsyncWaitForCompletion()
-                .AsUniTask();
+                .ToUniTask(cancellationToken: _cts.Token);
 
             IsReady = false;
         }
@@ -231,6 +241,10 @@ namespace Common
             _antennaSequence?.Kill();
             _rotateGlassTween?.Kill();
             _rotateBodyTween?.Kill();
+            _healIndicatorsSequence?.Kill();
+
+            _cts.Cancel();
+            _cts.Dispose();
         }
     }
 }

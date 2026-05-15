@@ -265,7 +265,7 @@ struct FragmentData
 	T_SPACE_PROPERTIES(9, 10, 11)
 #endif
 
-#ifdef REQUIRE_SCENE_DEPTH
+#if defined(REQUIRE_SCENE_DEPTH) || defined(LOD_FADE_CROSSFADE)
 	float4 projPos : TEXCOORD12;
 #endif
 	

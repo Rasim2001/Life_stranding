@@ -4,6 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Infastructure.Services.PickupRewindRegistry;
 using Infastructure.Services.PlatformObjects;
+using Infastructure.Services.PlayerInput;
 using PickupObjects.PickUpOnPlatform;
 using PickupObjects.Rewind;
 using SpiderController.Platform;
@@ -41,8 +42,7 @@ namespace SpiderController.StateMachine.States.Rewind
 
         public override void Enter()
         {
-            LockInput();
-
+            InputService.LockInput();
             PickupRewindRegistry.PauseRecording();
 
             foreach (IPickupRewindable obj in PickupRewindRegistry.All)
@@ -71,10 +71,10 @@ namespace SpiderController.StateMachine.States.Rewind
             PickupRewindRegistry.ResumeRecording();
             BodyOrientation.Unfreeze();
 
-            UnlockInput();
-
             _recorder.Clear();
             PickupRewindRegistry.ClearAll();
+
+            InputService.UnlockInput();
         }
 
         public override void HandleInput()
@@ -88,12 +88,6 @@ namespace SpiderController.StateMachine.States.Rewind
         public override void FixedUpdate()
         {
         }
-
-        private void LockInput() =>
-            ServiceContext.CutSceneService.IsActive = true;
-
-        private void UnlockInput() =>
-            ServiceContext.CutSceneService.IsActive = false;
 
 
         private async UniTask RunRewindAsync(CancellationToken token)

@@ -14,7 +14,7 @@ namespace Infastructure.CutScenes.Custom.Receivers
         [SerializeField] private Transform _lastTarget;
 
         private IInputService _inputService;
-        private CutSceneInputSource _cutSceneInputSource;
+        private LockInputSource _lockInputSource;
 
         private Spider _spider;
         private Transform _moveTarget;
@@ -31,7 +31,7 @@ namespace Infastructure.CutScenes.Custom.Receivers
 
         private void Awake()
         {
-            _cutSceneInputSource = _inputService.GetInputSource<CutSceneInputSource>();
+            _lockInputSource = _inputService.GetInputSource<LockInputSource>();
 
             _cutSceneService.OnSkipHappened += SkipCutScene;
         }
@@ -76,7 +76,7 @@ namespace Infastructure.CutScenes.Custom.Receivers
                 _moveTarget = null;
                 _lookingTarget = null;
 
-                _cutSceneInputSource.InputVector = Vector3.zero;
+                _lockInputSource.InputVector = Vector3.zero;
             }
         }
 
@@ -96,7 +96,7 @@ namespace Infastructure.CutScenes.Custom.Receivers
         {
             if (Vector3.Distance(_moveTarget.position, _spider.transform.position) < 1)
             {
-                _cutSceneInputSource.InputVector = Vector3.zero;
+                _lockInputSource.InputVector = Vector3.zero;
                 _moveTarget = null;
                 return;
             }
@@ -104,7 +104,7 @@ namespace Infastructure.CutScenes.Custom.Receivers
             Vector3 worldDirection = (_moveTarget.position - _spider.transform.position).normalized;
 
             Vector3 localDirection = _spider.transform.InverseTransformDirection(worldDirection);
-            _cutSceneInputSource.InputVector = new Vector3(localDirection.x, 0f, Mathf.Abs(localDirection.z));
+            _lockInputSource.InputVector = new Vector3(localDirection.x, 0f, Mathf.Abs(localDirection.z));
         }
 
         private void LookAtTarget()

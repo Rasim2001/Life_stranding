@@ -30,7 +30,7 @@ namespace Infastructure.States
 
         public void Enter()
         {
-            //_curtainRoot.Show();
+            _curtainRoot.Show();
             _sceneLoader.Load(_staticDataService.GameStaticData.LoadScene, OnLoaded);
         }
 
@@ -45,13 +45,6 @@ namespace Infastructure.States
 
         public void Exit()
         {
-        }
-
-        private async UniTask HideCurtainAsync()
-        {
-            await UniTask.Delay(TimeSpan.FromSeconds(1));
-
-            _curtainRoot.Hide();
         }
 
 

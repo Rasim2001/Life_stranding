@@ -50,6 +50,8 @@ namespace UI.MVVM.View.StartSplashScreen
             _continueGameBtn.onClick.AddListener(ContinueGame);
             _settingsPopupBtn.onClick.AddListener(OpenSettingsPopup);
             _exitBtn.onClick.AddListener(Exit);
+
+            _continueGameBtn.interactable = _saveLoadService.HasProgress();
         }
 
         private void OnDestroy()

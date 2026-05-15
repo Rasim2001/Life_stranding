@@ -115,7 +115,7 @@ namespace SpiderController.PickUp
                 BatteryProduct batteryProduct = batteryProducts[i].GetComponent<BatteryProduct>();
                 batteryProduct.SetCustomOffsetPosition(offset);
 
-                _platformObjectsService.Add(batteryProduct);
+                _platformObjectsService.AddOrAttach(batteryProduct);
                 _pickupDisplayer.Hide(batteryProduct.transform);
             }
         }

@@ -7,6 +7,7 @@ using Infastructure.Services.Pause;
 using Infastructure.Services.PickupRewindRegistry;
 using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.PlayerInput;
+using Infastructure.Services.QTE;
 using Infastructure.Services.Window;
 using Infastructure.StaticData.StaticDataService;
 
@@ -26,6 +27,7 @@ namespace SpiderController
         public IMagnetFreezingService MagnetFreezingService { get; set; }
         public IPlatformObjectsService PlatformObjectsService { get; set; }
         public IPickupRewindRegistryService PickupRewindRegistryService { get; }
+        public ILastChanceQTEService LastChanceQteService { get; }
 
 
         public SpiderServiceContext(
@@ -40,7 +42,8 @@ namespace SpiderController
             ICutSceneService cutSceneService,
             IMagnetFreezingService magnetFreezingService,
             IPlatformObjectsService platformObjectsService,
-            IPickupRewindRegistryService pickupRewindRegistryService)
+            IPickupRewindRegistryService pickupRewindRegistryService,
+            ILastChanceQTEService lastChanceQteService)
         {
             SpiderCamera = spiderCamera;
             InputService = inputService;
@@ -54,6 +57,7 @@ namespace SpiderController
             MagnetFreezingService = magnetFreezingService;
             PlatformObjectsService = platformObjectsService;
             PickupRewindRegistryService = pickupRewindRegistryService;
+            LastChanceQteService = lastChanceQteService;
         }
     }
 }

@@ -7,8 +7,8 @@ using Infastructure.Services.PlatformObjects;
 using Infastructure.Services.Window;
 using PickupObjects;
 using SpiderController.Scanner;
+using SpiderController.StateMachine.OverlayStates.Aiming;
 using SpiderController.StateMachine.States.Airborn;
-using SpiderController.StateMachine.States.Ground.Aiming;
 using SpiderController.TriggerChecker;
 using SpiderController.UI;
 
@@ -69,35 +69,27 @@ namespace SpiderController.StateMachine.States.Ground
                 return;
 
 
-            if (InputService.CenterMousePressed)
+            /*if (InputService.CenterMousePressed)
             {
                 if (IsInputZero())
-                    StateMachine.SwitchState<AimIdlingState>();
+                    StateMachine.SwitchState<AimIdlingOverlayState>();
                 else
-                    StateMachine.SwitchState<AimRunningState>();
-            }
+                    StateMachine.SwitchState<AimRunningOverlayState>();
+            }*/
 
             if (GroundChecker.IsTouchesWithLegs == false)
-            {
-                Data.IsInAimingState = false;
-
                 StateMachine.SwitchState<FallingWithControlState>();
-            }
 
 
             if (InputService.JumpPressed && Data.CurrentEnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling &&
                 AbilityService.IsExploredAbility(ProductType.JumpSkillProduct))
             {
-                Data.IsInAimingState = false;
-
                 StateMachine.SwitchState<JumpingState>();
             }
 
             if (InputService.JerkPressed && Data.CurrentEnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling &&
                 AbilityService.IsExploredAbility(ProductType.JerkSkillProduct))
             {
-                Data.IsInAimingState = false;
-
                 StateMachine.SwitchState<JerkState>();
             }
         }

@@ -16,15 +16,18 @@ namespace SpiderController.PickUp
 {
     public class CheckpointPickup
     {
+        private CheckpointChecker СheckpointChecker => _stateContext.CheckpointChecker;
+        private FlowerChecker FlowerChecker => _stateContext.FlowerChecker;
+        private SpiderUI SpiderUI => _stateContext.SpiderUI;
+
         private readonly IInputService _inputService;
         private readonly IPickupDisplayer _pickupDisplayer;
         private readonly IWindowService _windowService;
         private readonly IPlatformObjectsService _platformObjectsService;
         private readonly IHintReceiverService _hintReceiverService;
 
-        private readonly CheckpointChecker _checkpointChecker;
+        private readonly SpiderStateContext _stateContext;
         private readonly Flower _flower;
-        private readonly SpiderUI _spiderUI;
 
         public CheckpointPickup(
             IHintReceiverService hintReceiverService,
@@ -32,25 +35,23 @@ namespace SpiderController.PickUp
             IPickupDisplayer pickupDisplayer,
             IWindowService windowService,
             IPlatformObjectsService platformObjectsService,
-            CheckpointChecker checkpointChecker,
-            Flower flower,
-            SpiderUI spiderUI)
+            SpiderStateContext stateContext,
+            Flower flower)
         {
             _hintReceiverService = hintReceiverService;
             _flower = flower;
-            _spiderUI = spiderUI;
             _inputService = inputService;
             _pickupDisplayer = pickupDisplayer;
             _windowService = windowService;
             _platformObjectsService = platformObjectsService;
-            _checkpointChecker = checkpointChecker;
+            _stateContext = stateContext;
         }
 
         public void Initialize() =>
-            _checkpointChecker.OnRemoveHappened += Hide;
+            СheckpointChecker.OnRemoveHappened += Hide;
 
         public void Destroy() =>
-            _checkpointChecker.OnRemoveHappened -= Hide;
+            СheckpointChecker.OnRemoveHappened -= Hide;
 
         public void Update()
         {
@@ -58,7 +59,7 @@ namespace SpiderController.PickUp
             {
                 if (!_flower.IsOnPlatform && (_flower.IsPuttingDown == false || !_platformObjectsService.IsEmpty()))
                 {
-                    Collider checkPointCollider = _checkpointChecker.Results.FirstOrDefault();
+                    Collider checkPointCollider = СheckpointChecker.Results.FirstOrDefault();
 
                     if (checkPointCollider != null)
                         _hintReceiverService.OnCheckpointHint?.Invoke();
@@ -75,7 +76,7 @@ namespace SpiderController.PickUp
 
         private void TryShow()
         {
-            foreach (Collider collider in _checkpointChecker.Results)
+            foreach (Collider collider in СheckpointChecker.Results)
             {
                 if (collider.TryGetComponent(out CheckPoint checkPoint) &&
                     (_flower.IsPuttingDown && checkPoint.IsReady ||
@@ -89,7 +90,7 @@ namespace SpiderController.PickUp
 
         private void Putdown()
         {
-            Collider checkPointCollider = _checkpointChecker.Results.FirstOrDefault();
+            Collider checkPointCollider = СheckpointChecker.Results.FirstOrDefault();
 
             if (checkPointCollider == null)
                 return;
@@ -98,6 +99,8 @@ namespace SpiderController.PickUp
             if (checkPoint.IsReady)
                 return;
 
+            FlowerChecker.ForceRemove(_flower.Collider);
+
             checkPoint.StartFlowerPutdown(_flower);
 
             _windowService.OpenTaskPopup(TaskId.GeneratorTask);
@@ -105,13 +108,13 @@ namespace SpiderController.PickUp
             _flower.Putdown(checkPoint);
             _platformObjectsService.Remove(_flower);
 
-            _spiderUI.HealthBar.PlayFadeHologramEffect();
+            SpiderUI.HealthBar.PlayFadeHologramEffect();
             _pickupDisplayer.Hide(checkPointCollider.transform);
         }
 
         private void PickUp()
         {
-            Collider checkPointCollider = _checkpointChecker.Results.FirstOrDefault();
+            Collider checkPointCollider = СheckpointChecker.Results.FirstOrDefault();
 
             if (checkPointCollider == null)
                 return;
@@ -120,7 +123,7 @@ namespace SpiderController.PickUp
             if (!checkPoint.IsReady)
                 return;
 
-            _spiderUI.SpiderHealth.Reset();
+            SpiderUI.SpiderHealth.Reset();
             checkPoint.StartFlowerPickup();
 
             _flower.PickUpAfterPutdown();

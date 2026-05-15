@@ -17,7 +17,10 @@ namespace UI.MVVM.Base
 
         private readonly Dictionary<WindowViewModel, IDisposable> _popupSubscriptions = new();
 
-        public void Dispose()
+        public void Dispose() => 
+            Clear();
+
+        public void Clear()
         {
             CloseAllPopups();
 

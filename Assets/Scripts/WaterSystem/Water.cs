@@ -65,7 +65,11 @@ namespace WaterSystem
         public void LoadProgress(PlayerProgress progress)
         {
             if (progress.WorldProgressData.WaterData.WaterPosition != null)
+            {
                 transform.position = progress.WorldProgressData.WaterData.WaterPosition.AsUnityVector();
+
+                _isStartingMove = true;
+            }
         }
 
         public void UpdateProgress(PlayerProgress progress) =>
@@ -79,8 +83,12 @@ namespace WaterSystem
         }
 
 
-        private void AllTaskCompleted() =>
+        private void AllTaskCompleted()
+        {
+            Debug.Log("AllTaskCompleted");
+
             _isStartingMove = true;
+        }
 
 
         private void Update()

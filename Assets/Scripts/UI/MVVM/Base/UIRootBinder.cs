@@ -31,7 +31,9 @@ namespace UI.MVVM.Base
         {
         }
 
-        private void OnDestroy() =>
+        private void OnDestroy()
+        {
             _subscriptions.Dispose();
+        }
     }
 }

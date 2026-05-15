@@ -25,7 +25,7 @@ _RenderPreset("Render Preset", Float) = 1
 [EffectProperty(COLOR_RAMP)]_ColorRampScrollSpeed("Scroll Speed", Float) = 0.0
 
 //Lighting
-[Effect(EffectID# LIGHTMODEL, GroupID# Lighting)][KeywordEnum(None, Classic, Toon, ToonRamp, HalfLambert, FakeGI, FastLighting)] _LightModel ("Light Model", Float) = 1
+[Effect(EffectID# LIGHTMODEL, GroupID# Lighting, ExtraPasses# (FORWARD_ADD))][KeywordEnum(None, Classic, Toon, ToonRamp, HalfLambert, FakeGI, FastLighting)] _LightModel ("Light Model", Float) = 1
 [EffectProperty(LIGHTMODEL, TOON)]_ToonCutoff("Toon Cutoff", Range(0, 1)) = 0.5
 [EffectProperty(LIGHTMODEL, TOON)]_ToonSmoothness("Toon Smoothness", Range(0, 1)) = 0.5
 [EffectProperty(LIGHTMODEL, TOONRAMP)][AllIn13DShaderGradientDrawer]_ToonRamp("Toon Ramp", 2D) = "white" {}
@@ -39,15 +39,6 @@ _RenderPreset("Render Preset", Float) = 1
 [EffectProperty(ParentEffect# SHADINGMODEL, Keywords(_SHADINGMODEL_PBR), AllowReset# True)][Toggle(_METALLIC_MAP_ON)]_MetallicMapOn("Use Metallic(R) / Smoothness(A) Map?", Float) = 0.0
 [EffectProperty(ParentEffect# SHADINGMODEL, KeywordsOp# AND, Keywords(_SHADINGMODEL_PBR, _METALLIC_MAP_ON), AllowReset# True)]_MetallicMap("Metallic Map", 2D) = "white" {}
 
-
-/*
-[EffectProperty(FADE)][Toggle(_FADE_BURN_ON)]_FadeBurnOn("Use Fade Burn Color?", Float) = 0.0
-[EffectProperty(ParentEffect# FADE, Keywords(_FADE_BURN_ON), AllowReset# True)][HDR]_FadeBurnColor("Fade Burn Color", Color) = (1,1,0,1) 
-[EffectProperty(ParentEffect# FADE, Keywords(_FADE_BURN_ON), AllowReset# True)]_FadeBurnWidth("Fade Burn Width", Range(0, 0.2)) = 0.01
-[EffectProperty(ParentEffect# TEXTURE_BLENDING, Keywords(_TEXTUREBLENDINGSOURCE_TEXTURE), AllowReset# True)]_TexBlendingMask("Texture Blending Mask", 2D) = "white" {}
-[EffectProperty(ParentEffect# TEXTURE_BLENDING, Keywords(_TEXTUREBLENDINGSOURCE_TEXTURE), AllowReset# True)]_BlendingMaskCutoffG("Cutoff (G)", Range(0, 1)) = 0.1
-*/
-
 //Specular
 [Effect(EffectID# SPECULARMODEL, GroupID# Lighting, DependentOn# LIGHTMODEL)][KeywordEnum(None, Classic, Toon, Anisotropic, AnisotropicToon)]_SpecularModel ("Specular Model", Float) = 0
 [EffectProperty(SPECULARMODEL, CLASSIC, TOON, ANISOTROPIC, ANISOTROPICTOON)]_SpecularAtten("Specular Attenuation", Range(0, 1)) = 0.5
@@ -57,17 +48,20 @@ _RenderPreset("Render Preset", Float) = 1
 [EffectProperty(SPECULARMODEL, TOON, ANISOTROPICTOON)]_SpecularToonSmoothness("Specular Toon Smoothness", Range(0, 1)) = 0.0
 [EffectProperty(SPECULARMODEL, CLASSIC, TOON, ANISOTROPIC, ANISOTROPICTOON)]_SpecularMap("Specular Map", 2D) = "white" {}
 [EffectProperty(SPECULARMODEL, ANISOTROPIC, ANISOTROPICTOON)]_Anisotropy("Anisotropy", Range(-1, 1)) = 0.45
-
+	
 //Reflections 
 [Effect(EffectID# REFLECTIONS, GroupID# Lighting, DependentOn# LIGHTMODEL)][KeywordEnum(None, Classic, Toon)]_Reflections("Reflections", Float) = 0.0
 [EffectProperty(REFLECTIONS, TOON)]_ToonFactor("Toon Factor", Range(0, 1)) = 0
 [EffectProperty(REFLECTIONS, CLASSIC, TOON)]_ReflectionsAtten("Attenuation", Range(0, 1)) = 0.5
 
-
 //Normal Map
 [Effect(EffectID# NORMAL_MAP, GroupID# Lighting, DependentOn# LIGHTMODEL, CustomDrawer# NORMAL_MAP_EFFECT_DRAWER)][Toggle(_NORMAL_MAP_ON)]_NormalMapEnabled("Normal Map", Float) = 0
 [NoScaleOffset][EffectProperty(NORMAL_MAP)]_NormalMap("Normal Map", 2D) = "bump" {}
 [EffectProperty(NORMAL_MAP)]_NormalStrength("Normal Strength", Range(0.0, 10.0)) = 1.0
+
+//Flat Normals
+[Effect(EffectID# FLAT_NORMALS, GroupID# Lighting, DependentOn# LIGHTMODEL)][Toggle(_FLAT_NORMALS_ON)]_FlatNormalsEnabled("Flat Normals", Float) = 0
+[EffectProperty(FLAT_NORMALS)]_FlatNormalsBlend("Blending", Range(0, 1)) = 1.0
 
 //Custom Shadow Color
 [Effect(EffectID# CUSTOM_SHADOW_COLOR, GroupID# Lighting)][Toggle(_CUSTOM_SHADOW_COLOR_ON)]_CustomShadowColorOn("Custom Shadow Color", Float) = 0
@@ -148,7 +142,7 @@ _RenderPreset("Render Preset", Float) = 1
 [EffectProperty(GREYSCALE)][KeywordEnum(BeforeLighting, AfterLighting)] _GreyScaleStage("Stage", Float) = 0
 [EffectProperty(GREYSCALE)] _GreyscaleLuminosity("Luminosity", Range(-1, 1)) = 0 
 [EffectProperty(GREYSCALE)] _GreyscaleTintColor("Greyscale Tint", Color) = (1.0, 1.0, 1.0, 1.0)
-[EffectProperty(GREYSCALE)] _GreyscaleBlend("Blend", Range(0, 1)) = 1
+[EffectProperty(GREYSCALE)] _GreyscaleBlending("Blending", Range(0, 1)) = 1
 
 //Posterize
 [Effect(EffectID# POSTERIZE, GroupID# ColorEffects)][Toggle(_POSTERIZE_ON)]_Posterize("Posterize", Float) = 0
@@ -184,7 +178,9 @@ _RenderPreset("Render Preset", Float) = 1
 [Effect(EffectID# VERTEX_DISTORTION, GroupID# MeshEffects)][Toggle(_VERTEX_DISTORTION_ON)]_VertexDistortionOn("Vertex Distortion", Float) = 0
 [EffectProperty(VERTEX_DISTORTION)]_VertexDistortionNoiseTex("Noise Tex", 2D) = "white" {}
 [EffectProperty(VERTEX_DISTORTION)]_VertexDistortionAmount("Distortion Amount", Range(0, 2)) = 0
-[EffectProperty(VERTEX_DISTORTION)][Vector2]_VertexDistortionNoiseSpeed("Scroll Speed", Vector) = (4.0, 4.0, 0, 0)
+[EffectProperty(VERTEX_DISTORTION)]_VertexDistortionNoiseSpeedX("Scroll Speed X", Range(-10, 10)) = 4.0
+[EffectProperty(VERTEX_DISTORTION)]_VertexDistortionNoiseSpeedY("Scroll Speed Y", Range(-10, 10)) = 4.0
+
 
 //Voxelize
 [Effect(EffectID# VOXELIZE, GroupID# MeshEffects)][Toggle(_VOXELIZE_ON)] _Voxelize("Voxelize", Float) = 0
@@ -220,7 +216,7 @@ _RenderPreset("Render Preset", Float) = 1
 [EffectProperty(EMISSION)]_EmissionSelfGlow("Emission Self Glow", Range(0, 20)) = 1
 [EffectProperty(EMISSION)][HDR]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 [EffectProperty(EMISSION)]_EmissionMap("Emission Map", 2D) = "white" {}
-
+    
 //Hologram
 [Effect(EffectID# HOLOGRAM, GroupID# ColorEffects)][Toggle(_HOLOGRAM_ON)] _Hologram("Hologram", Float) = 0
 [EffectProperty(HOLOGRAM)][HDR]_HologramColor("Hologram Color", Color) = (1.25,2.8,6.8,1)
@@ -285,7 +281,10 @@ _RenderPreset("Render Preset", Float) = 1
 [NoScaleOffset][EffectProperty(TRIPLANAR_MAPPING)]_TriplanarTopNormalMap("Top Normal Map", 2D) = "bump" {}
 [EffectProperty(TRIPLANAR_MAPPING)]_TopNormalStrength("Top Normal Map Strength", Range(0.0, 10.0)) = 1.0
 [EffectProperty(TRIPLANAR_MAPPING)]_FaceDownCutoff("Face Down Cutoff", Range(-1, 1)) = 0.25
-[EffectProperty(TRIPLANAR_MAPPING)]_TriplanarSharpness("Sharpness", Range(1, 64)) = 15.0
+[EffectProperty(TRIPLANAR_MAPPING)]_TriplanarSharpness("Sharpness", Range(1, 200)) = 15.0
+[EffectProperty(TRIPLANAR_MAPPING)][Toggle(_TRIPLANAR_NOISE_TRANSITION_ON)]_TriplanarNoiseTransitionOn("Noise Transition", Float) = 0
+[EffectProperty(ParentEffect# TRIPLANAR_MAPPING, Keywords(_TRIPLANAR_NOISE_TRANSITION_ON), AllowReset# True)] _TriplanarNoiseTex("Noise Tex", 2D) = "white" {}
+[EffectProperty(ParentEffect# TRIPLANAR_MAPPING, Keywords(_TRIPLANAR_NOISE_TRANSITION_ON), AllowReset# True)] _TriplanarTransitionPower("Transition Power", Range(0, 1.0)) = 0.75
 
 //Texture Blending
 [Effect(EffectID# TEXTURE_BLENDING, GroupID# ColorEffects, CustomDrawer# TEXTURE_BLENDING_EFFECT_DRAWER)][Toggle(_TEXTURE_BLENDING_ON)]_TextureBlending ("Texture Blending", Float) = 0
@@ -325,6 +324,7 @@ _RenderPreset("Render Preset", Float) = 1
 //Fade
 [Effect(EffectID# FADE, GroupID# AlphaEffects)][Toggle(_FADE_ON)]_FadeOn("Fade", Float) = 0
 [EffectProperty(FADE)]_FadeTex("Fade Tex", 2D) = "white" {}
+[EffectProperty(FADE)][KeywordEnum(UV1, UV2, WORLD_SPACE)]_FadeUVSet("UV Set", Float) = 0
 [EffectProperty(FADE)]_FadeAmount("Fade Amount", Range(0, 1)) = 0.0
 [EffectProperty(FADE)]_FadePower("Fade Power", Range(0.25, 4.0)) = 1.0
 [EffectProperty(FADE)]_FadeTransition("Fade Transition", Range(0, 0.4)) = 0.2
@@ -350,7 +350,7 @@ _RenderPreset("Render Preset", Float) = 1
 [EffectProperty(DITHER)]_DitherScale("Scale", Range(0.01, 2)) = 1
 
 //
-[Effect(EffectID# OUTLINETYPE, GroupID# OtherEffects)][KeywordEnum(None, Simple, Constant, FadeWithDistance)]_OutlineType("Outline Type", Float) = 0 
+[Effect(EffectID# OUTLINETYPE, GroupID# OtherEffects, ExtraPasses# (OUTLINE))][KeywordEnum(None, Simple, Constant, FadeWithDistance)]_OutlineType("Outline Type", Float) = 0 
 
 //
 [PerRendererData]_TimingSeed("Timing Seed", Float) = 0

@@ -5,6 +5,7 @@ using Infastructure.Services.StartGame;
 using Infastructure.Services.Window;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Zenject.SpaceFighter;
 
 namespace Infastructure.Services.PlayerInput
 {
@@ -29,7 +30,9 @@ namespace Infastructure.Services.PlayerInput
         private bool _isConnected;
         private IStartGameReceiver _startGameReceiver;
 
-        public InputService(IWindowService windowService, IStartGameReceiver startGameReceiver,
+        public InputService(
+            IWindowService windowService,
+            IStartGameReceiver startGameReceiver,
             ICutSceneService cutSceneService)
         {
             _startGameReceiver = startGameReceiver;
@@ -138,14 +141,22 @@ namespace Infastructure.Services.PlayerInput
 
         public bool PickupPressed => _inputSource.PickupPressed || (_joystickInputSource?.PickupPressed ?? false);
 
+        public void LockInput() =>
+            SetInputSource(new LockInputSource());
+
+        public void UnlockInput() =>
+            SetInputSource(new PlayerInputSource());
+
+        public bool IsLocked() =>
+            _inputSource is LockInputSource;
+
         public void Initialize()
         {
             _windowService.OnWindowOpened += WindowOpenedUI;
             _startGameReceiver.OnStartGameHappened += SetPlayerInputSource;
             _cutSceneService.OnCutsceneActiveChanged += CutSceneActiveChanged;
 
-
-            _inputSource = new CutSceneInputSource();
+            _inputSource = new LockInputSource();
             _inputSource.Enable();
 
             InputSystem.onDeviceChange += DeviceChanged;
@@ -182,7 +193,7 @@ namespace Infastructure.Services.PlayerInput
         private void CutSceneActiveChanged(bool isActive)
         {
             if (isActive)
-                SetInputSource(new CutSceneInputSource());
+                SetInputSource(new LockInputSource());
             else
                 SetInputSource(new PlayerInputSource());
         }

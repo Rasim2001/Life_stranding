@@ -96,13 +96,13 @@ namespace Infastructure.States
             _inputService.Initialize();
             _timerService.Initialize();
             _stableWorldUp.Initialize();
-
-            _progressWatchersService.Clear();
         }
 
 
         public void Dispose()
         {
+            _progressWatchersService.Clear();
+
             _startGameReceiver.OnStartGameHappened -= InitGameWorld;
 
             _abilityService.Dispose();

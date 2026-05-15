@@ -6,15 +6,36 @@ namespace AllIn13DShader
 	public class ShadowsConfigurator : MonoBehaviour
 	{
 		public Color shadowColor = Color.black;
+		public bool updateEveryFrame = false;
 
 		private readonly int shadowColorPropID = Shader.PropertyToID("global_shadowColor");
 
-#if UNITY_EDITOR
-		public void Update()
+		private void OnEnable()
 		{
 			SetupShadowColor();
 		}
+
+		public void Update()
+		{
+#if UNITY_EDITOR
+			UpdateEditor();
+#else
+			UpdateRuntime();
 #endif
+		}
+
+		private void UpdateEditor()
+		{
+			SetupShadowColor();
+		}
+
+		private void UpdateRuntime()
+		{
+			if (updateEveryFrame)
+			{
+				SetupShadowColor();
+			}
+		}
 
 		public void SetupShadowColor()
 		{

@@ -26,6 +26,9 @@ namespace PickupObjects.PickUpOnPlatform.FlowerManagement
 
         public void Reset()
         {
+            if (_currentVariant == null)
+                return;
+
             _currentIndex = 0;
 
             _currentVariant.gameObject.SetActive(false);

@@ -8,5 +8,6 @@ namespace Infastructure.Services.QTE
         void StartQTE();
         void Initialize(LastChanceRootUI lastChanceRootUI, LastChanceBarUI lastChanceBarUI);
         event Action OnSaveHappened;
+        bool IsRunning { get; }
     }
 }

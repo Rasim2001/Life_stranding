@@ -6,6 +6,7 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.Services.PlayerInput.InputSourceRealization;
 using Infastructure.Services.Registries.SpiderRegistry;
 using Infastructure.Services.Window;
+using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
 using SpiderController;
 using SpiderController.StateMachine;
@@ -118,17 +119,17 @@ namespace Cameras.SpiderCameras
 
         public void AlignToSpider()
         {
-            Vector3 worldUp  = _stableWorldUp.StableWorldUpTransform.up;
-            Vector3 forward  = Vector3.ProjectOnPlane(Spider.transform.forward, worldUp).normalized;
+            Vector3 worldUp = _stableWorldUp.StableWorldUpTransform.up;
+            Vector3 forward = Vector3.ProjectOnPlane(Spider.transform.forward, worldUp).normalized;
 
             if (forward.sqrMagnitude < 0.001f)
                 forward = Vector3.ProjectOnPlane(Spider.transform.right, worldUp).normalized;
 
             _orbitStartRotation = Quaternion.LookRotation(forward, worldUp);
-            _pivot.rotation     = _orbitStartRotation;
-            _xRotation          = 0f;
+            _pivot.rotation = _orbitStartRotation;
+            _xRotation = 0f;
         }
-        
+
         private void CameraCalculateHandle()
         {
             if (!_centerMouseHolding)
@@ -189,7 +190,7 @@ namespace Cameras.SpiderCameras
 
         private void CalculateMoveCamera()
         {
-            var data = _staticDataService.SpiderStaticData;
+            SpiderStaticData data = _staticDataService.SpiderStaticData;
 
             _xRotation += _inputService.MouseXAxis * data.MouseRotationSpeedX;
             _yRotation -= _inputService.MouseYAxis * data.MouseRotationSpeedY * Time.deltaTime;
@@ -208,7 +209,7 @@ namespace Cameras.SpiderCameras
 
         private void HandleMouse()
         {
-            if (Spider == null || Data.IsGravityGunState || Data.IsTeleportState)
+            if (Spider == null || Data.IsGravityGunState)
                 return;
 
             if (_inputService.CenterMousePressed)

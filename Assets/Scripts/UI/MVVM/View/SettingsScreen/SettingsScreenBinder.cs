@@ -23,7 +23,7 @@ namespace UI.MVVM.View.SettingsScreen
             _openSplashScreenBtn.onClick.AddListener(OpenSplashScreen);
         }
 
-        private void OnDestroy() =>
+        protected void OnDestroy() => 
             _openSplashScreenBtn.onClick.RemoveListener(OpenSplashScreen);
 
         private void OpenSplashScreen() =>
