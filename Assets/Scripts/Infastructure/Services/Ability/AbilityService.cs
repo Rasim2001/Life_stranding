@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Infastructure.Common;
 using Infastructure.Data;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.ProgressWatchers;
@@ -7,8 +8,6 @@ using Infastructure.Services.SaveLoadService;
 using Infastructure.StaticData.Cheats;
 using Infastructure.StaticData.StaticDataService;
 using PickupObjects;
-using UnityEngine;
-using Zenject;
 
 namespace Infastructure.Services.Ability
 {
@@ -20,12 +19,14 @@ namespace Infastructure.Services.Ability
         private readonly IProgressWatchersService _progressWatchersService;
         private List<ProductType> _pickedProducts = new List<ProductType>();
         private readonly IStaticDataService _staticDataService;
+        private readonly ISceneLoader _sceneLoader;
         private CheatsStaticData Cheats => _staticDataService.CheatsStaticData;
 
         public AbilityService(ICutSceneService cutSceneService, IProgressWatchersService progressWatchersService,
-            IStaticDataService staticDataService)
+            IStaticDataService staticDataService, ISceneLoader sceneLoader)
         {
             _staticDataService = staticDataService;
+            _sceneLoader = sceneLoader;
             _cutSceneService = cutSceneService;
             _progressWatchersService = progressWatchersService;
         }
@@ -48,8 +49,13 @@ namespace Infastructure.Services.Ability
             }
         }
 
-        public bool IsExploredAbility(ProductType pickedProduct) =>
-            Cheats.ProductsPopupEnabled || _cutSceneService.IsActive || _pickedProducts.Contains(pickedProduct);
+        public bool IsExploredAbility(ProductType pickedProduct)
+        {
+            return !_sceneLoader.IsTutorialScene() ||
+                   Cheats.ProductsPopupEnabled ||
+                   _cutSceneService.IsActive ||
+                   _pickedProducts.Contains(pickedProduct);
+        }
 
         public List<ProductType> GetAllExploredAbilities() =>
             _pickedProducts;

@@ -12,6 +12,7 @@ namespace Infastructure.StaticData
         [FoldoutGroup("AdditiveScenes")] public string[] AdditiveScenes;
 
         public string LoadScene;
+        public string TutorialSceneName;
 
         public Dictionary<string, GameData> GameDatas = new Dictionary<string, GameData>();
     }

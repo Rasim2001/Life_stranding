@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Infastructure.Common;
 using Infastructure.Data;
 using Infastructure.Services.ProgressWatchers;
 using Infastructure.Services.SaveLoadService;
@@ -16,14 +17,17 @@ namespace Infastructure.Services.Tasks
 
         private readonly IProgressWatchersService _progressWatchersService;
         private readonly IStaticDataService _staticDataService;
+        private readonly ISceneLoader _sceneLoader;
         private CheatsStaticData Cheats => _staticDataService.CheatsStaticData;
 
         private List<TaskId> _taskIds = new List<TaskId>();
 
-        public TasksService(IProgressWatchersService progressWatchersService, IStaticDataService staticDataService)
+        public TasksService(IProgressWatchersService progressWatchersService, IStaticDataService staticDataService,
+            ISceneLoader sceneLoader)
         {
             _progressWatchersService = progressWatchersService;
             _staticDataService = staticDataService;
+            _sceneLoader = sceneLoader;
         }
 
         public void Initialize()
@@ -42,7 +46,7 @@ namespace Infastructure.Services.Tasks
             if (_taskIds.Contains(taskId))
                 return;
 
-            if (taskId == TaskId.LastTask) 
+            if (taskId == TaskId.LastTask)
                 AllTasksCompleted?.Invoke();
 
             _taskIds.Add(taskId);
@@ -50,7 +54,9 @@ namespace Infastructure.Services.Tasks
 
         public bool IsWasOpened(TaskId taskId)
         {
-            return _taskIds.Contains(taskId) || Cheats.TasksPopupEnabled;
+            return !_sceneLoader.IsTutorialScene() ||
+                   _taskIds.Contains(taskId) ||
+                   Cheats.TasksPopupEnabled;
         }
 
         public void Dispose()
