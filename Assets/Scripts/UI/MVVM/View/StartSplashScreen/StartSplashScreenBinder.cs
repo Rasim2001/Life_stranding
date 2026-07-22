@@ -69,6 +69,7 @@ namespace UI.MVVM.View.StartSplashScreen
 
         private void NewGame()
         {
+            _saveLoadService.ClearProgress();
             _saveLoadService.SetNewProgress();
 
             InitGame();

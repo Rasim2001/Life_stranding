@@ -116,6 +116,8 @@ namespace Infastructure.States
 
         private void InitGameWorld()
         {
+            
+            
             InitCheckPoints();
             InitGenerators();
 

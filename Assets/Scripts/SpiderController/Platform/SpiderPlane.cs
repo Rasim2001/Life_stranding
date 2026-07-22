@@ -29,6 +29,7 @@ namespace SpiderController.Platform
         private PressedMouseButtonIndicatorUI PressedMouseButtonIndicatorUI => _stateContext.SpiderUI.PlaneIndicatorUI;
         private Transform RotationPlaneTransform => _stateContext.RotationPlaneTransform;
         private SpiderStaticData SpiderStaticData => _staticDataService.SpiderStaticData;
+        private Vector3 Center => new Vector2((float)Screen.width / 2, (float)Screen.height / 2);
 
         private Vector2 _mouseInput;
         private Vector2 _initialMousePosition;
@@ -41,8 +42,9 @@ namespace SpiderController.Platform
         private float _waitTimeJoystick;
         private Transform _cameraTransform;
 
-        private float _returnTimer;
+
         private float _lastPositionX;
+        private bool _justWarped;
 
         public SpiderPlane(
             SpiderStateContext stateContext,
@@ -151,11 +153,10 @@ namespace SpiderController.Platform
         {
             PressedMouseButtonIndicatorUI.Show();
             _isMouseHold = true;
-            _returnTimer = 0;
+            _justWarped = true;
 
-            Vector2 center = new Vector2((float)Screen.width / 2, (float)Screen.height / 2);
-            Mouse.current.WarpCursorPosition(center);
-            _initialMousePosition = center;
+            Mouse.current.WarpCursorPosition(Center);
+            _initialMousePosition = Center;
 
             _waitTimeJoystick = 0;
         }
@@ -171,8 +172,6 @@ namespace SpiderController.Platform
             if (!isTrue)
                 return;
 
-            _returnTimer = 0;
-
             int randomSign = Random.value < 0.5f ? -1 : 1;
 
             float randomAngleX = Random.Range(30, 40f) * randomSign;
@@ -184,6 +183,13 @@ namespace SpiderController.Platform
 
         private void HandleMousePosition()
         {
+            if (_justWarped)
+            {
+                _justWarped = false;
+                return;
+            }
+
+
             Vector2 mousePos = Input.mousePosition;
             Vector2 screenSize = new Vector2(Screen.width, Screen.height);
 

@@ -65,15 +65,16 @@ namespace WaterSystem
         public void LoadProgress(PlayerProgress progress)
         {
             if (progress.WorldProgressData.WaterData.WaterPosition != null)
-            {
                 transform.position = progress.WorldProgressData.WaterData.WaterPosition.AsUnityVector();
 
-                _isStartingMove = true;
-            }
+            _isStartingMove = progress.WorldProgressData.WaterData.IsStartingMove;
         }
 
-        public void UpdateProgress(PlayerProgress progress) =>
+        public void UpdateProgress(PlayerProgress progress)
+        {
             progress.WorldProgressData.WaterData.WaterPosition = transform.position.AsVectorData();
+            progress.WorldProgressData.WaterData.IsStartingMove = _isStartingMove;
+        }
 
         private void OnDestroy()
         {
@@ -83,12 +84,8 @@ namespace WaterSystem
         }
 
 
-        private void AllTaskCompleted()
-        {
-            Debug.Log("AllTaskCompleted");
-
+        private void AllTaskCompleted() => 
             _isStartingMove = true;
-        }
 
 
         private void Update()

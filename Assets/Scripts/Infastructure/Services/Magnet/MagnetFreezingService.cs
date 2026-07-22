@@ -8,6 +8,7 @@ using Infastructure.Services.StartGame;
 using PickupObjects;
 using PickupObjects.PickUpOnPlatform;
 using SpiderController.StateMachine;
+using UnityEngine;
 using Zenject;
 
 namespace Infastructure.Services.Magnet

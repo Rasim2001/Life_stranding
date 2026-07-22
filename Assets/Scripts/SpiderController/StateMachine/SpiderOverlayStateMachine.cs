@@ -12,14 +12,15 @@ namespace SpiderController.StateMachine
 
         private ISpiderState _currentState;
 
-        public SpiderOverlayStateMachine(IDiFactory diFactory, SpiderStateContext stateContext)
+        public SpiderOverlayStateMachine(IDiFactory diFactory, SpiderStateContext stateContext, SpiderServiceContext serviceContext,
+            EnergySystem energySystem)
         {
             _states = new List<ISpiderState>()
             {
                 diFactory.Create<EmptyOverlayState>(this),
                 diFactory.Create<GravityGunOverlayState>(this, stateContext),
                 diFactory.Create<TeleportOverlayState>(this, stateContext),
-                diFactory.Create<AimingOverlayState>(this, stateContext)
+                diFactory.Create<AimingOverlayState>(this, stateContext, serviceContext, energySystem)
             };
 
             _currentState = _states[0];

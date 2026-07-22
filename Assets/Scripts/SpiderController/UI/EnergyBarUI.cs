@@ -1,3 +1,4 @@
+using Common.Lock;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,9 +13,13 @@ namespace SpiderController.UI
         [SerializeField] private RectTransform _darkGlowRectTransform;
 
         private readonly float _stepWidth = 0.2f;
+        private readonly LockHandler _lockHandler = new LockHandler();
+
 
         private HologramEffect _hologramEffect;
         private Image[] _segmentsOwn;
+
+        private bool _isLocked;
 
         protected override void Awake()
         {
@@ -33,11 +38,39 @@ namespace SpiderController.UI
             ShowHologram();
         }
 
-        public void PlayFadeHologramEffect() =>
-            _hologramEffect.Play();
+        public void PlayFadeHologramEffect()
+        {
+            if (_isLocked)
+                return;
 
-        public void ShowHologram() =>
+            _hologramEffect.Play();
+        }
+
+        public void ShowHologram()
+        {
+            if (_isLocked)
+                return;
+
             _hologramEffect.Stop();
+        }
+
+        public void ShowHologram(object owner)
+        {
+            _lockHandler.Acquire(owner, () =>
+            {
+                _isLocked = true;
+                _hologramEffect.Stop();
+            });
+        }
+
+        public void PlayFadeHologramEffect(object owner)
+        {
+            _lockHandler.Release(owner, () =>
+            {
+                _hologramEffect.Play();
+                _isLocked = false;
+            });
+        }
 
         protected override void UpdateFirstSegmentColorReduced()
         {

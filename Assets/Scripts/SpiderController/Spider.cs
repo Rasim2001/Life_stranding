@@ -235,7 +235,7 @@ namespace SpiderController
                     _rewindRecorder,
                     _platformSelector);
 
-            _overlayStateMachine = _diFactory.Create<SpiderOverlayStateMachine>(_stateContext);
+            _overlayStateMachine = _diFactory.Create<SpiderOverlayStateMachine>(_stateContext, serviceContext, energySystem);
 
             _magnetFreezingService.Initialize(_stateMachineData);
             _platformObjectsService.Initialize(_stateContext, _platformSelector);
