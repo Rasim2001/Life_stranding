@@ -15,9 +15,6 @@ namespace SpiderController.UI
         private readonly float _stepWidth = 0.2f;
         private readonly LockHandler _lockHandler = new LockHandler();
 
-
-        private LockHandler _lockHandler = new LockHandler();
-
         private HologramEffect _hologramEffect;
         private Image[] _segmentsOwn;
 

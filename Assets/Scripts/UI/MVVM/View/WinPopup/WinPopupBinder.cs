@@ -47,8 +47,10 @@ namespace UI.MVVM.View.WinPopup
             _timerText.text = _timerService.GetTravelledTime();
         }
 
-        protected void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+
             _containerRotateTween?.Kill();
             _pauseService.StopPause(gameObject.name);
         }
