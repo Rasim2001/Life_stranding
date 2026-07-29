@@ -65,6 +65,7 @@ namespace Editor
             public int ApproxObjectCount;
             public string ConfigRole;
             public string UtilityReason;
+            public bool IsTutorialScene;
         }
 
         [MenuItem("SpiderRig/Scenes")]
@@ -133,6 +134,9 @@ namespace Editor
                         row.ConfigRole = "Main";
                     else if (gameData.AdditiveScenes != null && gameData.AdditiveScenes.Contains(row.Name))
                         row.ConfigRole = "Additive";
+
+                    row.IsTutorialScene = !string.IsNullOrEmpty(gameData.TutorialSceneName) &&
+                        string.Equals(gameData.TutorialSceneName, row.Name, StringComparison.Ordinal);
                 }
 
                 _scenePathByName[row.Name] = path;
@@ -197,6 +201,27 @@ namespace Editor
 
             Undo.RecordObject(_gameData, "Set LoadScene");
             _gameData.LoadScene = row.Name;
+            EditorUtility.SetDirty(_gameData);
+            AssetDatabase.SaveAssets();
+
+            Refresh();
+        }
+
+        private void SetAsTutorial(SceneRow row)
+        {
+            if (_gameData == null)
+                return;
+
+            if (row.UtilityReason != null)
+            {
+                EditorUtility.DisplayDialog("Utility scene",
+                    $"«{row.Name}» is a utility scene, not a level: {row.UtilityReason}",
+                    "Got it");
+                return;
+            }
+
+            Undo.RecordObject(_gameData, "Set TutorialSceneName");
+            _gameData.TutorialSceneName = row.Name;
             EditorUtility.SetDirty(_gameData);
             AssetDatabase.SaveAssets();
 
@@ -328,6 +353,46 @@ namespace Editor
 
         private static void ResetPlayModeStartScene() =>
             EditorSceneManager.playModeStartScene = null;
+
+        // Read-only sanity check over the currently SAVED config (not the open scene, not
+        // unsaved edits). Doesn't write anything. Catches drift from manual .asset editing
+        // that bypasses this tool's guards, and blind spots the tool doesn't otherwise
+        // surface (e.g. TutorialSceneName).
+        private void ValidateConfiguration()
+        {
+            if (_gameData == null)
+            {
+                EditorUtility.DisplayDialog("Validate Configuration", "GameData.asset not found.", "OK");
+                return;
+            }
+
+            SceneRow mainRow = _rows.FirstOrDefault(r => string.Equals(r.Name, _gameData.LoadScene, StringComparison.Ordinal));
+            string[] additive = _gameData.AdditiveScenes ?? Array.Empty<string>();
+
+            var checks = new List<(string Label, bool Passed)>
+            {
+                ("LoadScene is set and exists among scanned scenes", !string.IsNullOrEmpty(_gameData.LoadScene) && mainRow != null),
+                ("LoadScene has SceneContext", mainRow != null && mainRow.HasSceneContext),
+                ("LoadScene is enabled in Build Settings", mainRow != null && mainRow.BuildSettingsState == "enabled"),
+                ("LoadScene has a GameDatas entry", mainRow != null && mainRow.HasGameDataEntry),
+                ("LoadScene does not overlap AdditiveScenes", !additive.Contains(_gameData.LoadScene)),
+                ("Every AdditiveScenes entry exists as a real scene file", additive.All(name => _scenePathByName.ContainsKey(name))),
+                ("TutorialSceneName is empty or points to an existing scene",
+                    string.IsNullOrEmpty(_gameData.TutorialSceneName) || _scenePathByName.ContainsKey(_gameData.TutorialSceneName)),
+                ("No utility scene (Bootstrap/ExitGameLoop) is set as Main or Additive",
+                    !UtilitySceneReasons.ContainsKey(_gameData.LoadScene ?? "") &&
+                    !additive.Any(name => UtilitySceneReasons.ContainsKey(name))),
+            };
+
+            foreach ((string label, bool passed) in checks)
+            {
+                if (!passed)
+                    Debug.LogWarning($"[ProjectScenesWindow] Validation failed: {label}");
+            }
+
+            string report = string.Join("\n", checks.Select(c => (c.Passed ? "✓ " : "✗ ") + c.Label));
+            EditorUtility.DisplayDialog("Validate Configuration", report, "OK");
+        }
 
         private static int CountGameDataPoints(GameData gd)
         {
@@ -467,6 +532,11 @@ namespace Editor
                 "Clear playModeStartScene so normal Unity Play behavior (start from the currently open scene) is restored.",
                 140, ResetPlayModeStartScene);
 
+            DrawActionButton("Validate Configuration", "read-only check",
+                "Run a checklist against the currently saved GameData.asset (Main/Additive/Tutorial consistency, " +
+                "Build Settings, GameDatas entries, utility-scene misuse). Doesn't write anything.",
+                140, ValidateConfiguration);
+
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.Space(4);
@@ -500,8 +570,8 @@ namespace Editor
             GUILayout.Label("GameDatas", EditorStyles.boldLabel, GUILayout.Width(140));
             GUILayout.Label("Build Settings", EditorStyles.boldLabel, GUILayout.Width(90));
             GUILayout.Label("Objects", EditorStyles.boldLabel, GUILayout.Width(70));
-            GUILayout.Label("Config Role", EditorStyles.boldLabel, GUILayout.Width(80));
-            GUILayout.Label("Actions", EditorStyles.boldLabel, GUILayout.Width(240));
+            GUILayout.Label("Config Role", EditorStyles.boldLabel, GUILayout.Width(120));
+            GUILayout.Label("Actions", EditorStyles.boldLabel, GUILayout.Width(300));
             EditorGUILayout.EndHorizontal();
         }
 
@@ -527,14 +597,15 @@ namespace Editor
 
             GUILayout.Label(row.BuildSettingsState, GUILayout.Width(90));
             GUILayout.Label(row.ApproxObjectCount.ToString(), GUILayout.Width(70));
-            GUILayout.Label(row.ConfigRole, GUILayout.Width(80));
+            string configRoleDisplay = row.IsTutorialScene ? $"{row.ConfigRole}, Tutorial" : row.ConfigRole;
+            GUILayout.Label(configRoleDisplay, GUILayout.Width(120));
 
-            EditorGUILayout.BeginHorizontal(GUILayout.Width(240));
+            EditorGUILayout.BeginHorizontal(GUILayout.Width(300));
 
             if (row.UtilityReason != null)
             {
                 using (new EditorGUI.DisabledScope(true))
-                    GUILayout.Label(new GUIContent("Utility Scene", row.UtilityReason), GUILayout.Width(240));
+                    GUILayout.Label(new GUIContent("Utility Scene", row.UtilityReason), GUILayout.Width(300));
             }
             else
             {
@@ -557,6 +628,11 @@ namespace Editor
                     else
                         AddToAdditive(row);
                 }
+
+                var tutorialContent = new GUIContent("Set as Tutorial",
+                    "Set GameStaticData.TutorialSceneName to this scene. Used by SceneLoader to detect the tutorial scene at runtime.");
+                if (GUILayout.Button(tutorialContent, GUILayout.Width(90)))
+                    SetAsTutorial(row);
             }
 
             EditorGUILayout.EndHorizontal();
