@@ -1,5 +1,4 @@
 using Infastructure.Common.StableWorlUpManagement;
-using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CursorVisible;
 using Infastructure.Services.Defeat;
 using Infastructure.Services.PlayerInput;
@@ -24,7 +23,6 @@ namespace Cameras.SpiderCameras
         private readonly IDefeatWindowService _defeatWindowService;
         private readonly IWindowService _windowService;
         private readonly ICursorVisibleService _cursorVisibleService;
-        private readonly ICameraProviderService _cameraProviderService;
         private readonly ISpiderRegistryService _spiderRegistryService;
         private readonly ISpiderCamera _spiderCamera;
         private readonly Transform _pivot;
@@ -47,7 +45,16 @@ namespace Cameras.SpiderCameras
         private Quaternion _orbitStartRotation;
         private Quaternion _orbitStartRotationAiming;
 
-        private readonly float _maxRotationY = 3.0f;
+        // Pitch never touches the pivot's rotation: CinemachineThirdPersonFollow strips pitch out
+        // of the follow target (GetHeading projects onto the world-up plane) and only honours it
+        // through VerticalArmLength, which is 0 here. So the vertical orbit is built as a shoulder
+        // offset instead — see CameraPitchMath.ShoulderArc. A happy side effect is that
+        // RealignOrbitToWorldUp can keep rebuilding the pivot freely without erasing the angle.
+        private float _pitch;
+        private float _appliedPitch;
+
+        private float _shoulderX;
+        private float _shoulderRadius;
 
         public SpiderCameraOrbit(
             IInputService inputService,
@@ -56,7 +63,6 @@ namespace Cameras.SpiderCameras
             IDefeatWindowService defeatWindowService,
             IWindowService windowService,
             ICursorVisibleService cursorVisibleService,
-            ICameraProviderService cameraProviderService,
             ISpiderRegistryService spiderRegistryService,
             ISpiderCamera spiderCamera,
             Transform pivot)
@@ -67,7 +73,6 @@ namespace Cameras.SpiderCameras
             _defeatWindowService = defeatWindowService;
             _windowService = windowService;
             _cursorVisibleService = cursorVisibleService;
-            _cameraProviderService = cameraProviderService;
             _spiderRegistryService = spiderRegistryService;
             _spiderCamera = spiderCamera;
             _pivot = pivot;
@@ -78,7 +83,15 @@ namespace Cameras.SpiderCameras
         {
             StartInput();
 
+            Vector3 authoredShoulder = _spiderCamera.ShoulderOffset;
+            _shoulderX = authoredShoulder.x;
+            _shoulderRadius = Mathf.Abs(authoredShoulder.z);
+
             _defaultShoulderY = _spiderCamera.ShoulderOffset.y;
+
+            // Seed the climb height with the authored value, otherwise it starts at 0 and the
+            // camera visibly sinks for the first half second while the lerp catches up.
+            _yRotation = _defaultShoulderY;
             _cameraRotationSpeed = _staticDataService.SpiderStaticData.CameraRotationSpeed;
 
             _windowService.OnWindowOpened += ReleaseInput;
@@ -110,11 +123,41 @@ namespace Cameras.SpiderCameras
                     RotateCamera();
             }
 
-            float upAngle = Vector3.Angle(_pivot.up, _cameraProviderService.CameraTransform.up);
-            if (upAngle > MaxUpDriftAngle)
-                RealignOrbitToWorldUp();
+            // Measured against world up, not the live camera's up. The camera tilts down to keep
+            // the spider framed as the pitch arc lifts it, so its up drifts by roughly the pitch
+            // angle — comparing against it made this fire every frame past ~30° of pitch, and the
+            // realign it triggers zeroes _xRotation, which is what killed yaw input at height.
+            // Drift from world up is what this check actually cares about, and it's pitch-independent.
+            if (_stableWorldUp.StableWorldUpTransform != null)
+            {
+                float upAngle = Vector3.Angle(_pivot.up, _stableWorldUp.StableWorldUpTransform.up);
+                if (upAngle > MaxUpDriftAngle)
+                    RealignOrbitToWorldUp();
+            }
 
             HandleMouse();
+        }
+
+        /// <summary>
+        /// Single writer for ShoulderOffset: the climb compensation supplies the base height,
+        /// the player's pitch swings the camera around the spider on top of it. Composing them in
+        /// one place is what keeps the two from fighting over the same value.
+        /// </summary>
+        private void ApplyShoulderOffset()
+        {
+            SpiderStaticData data = _staticDataService.SpiderStaticData;
+
+            _appliedPitch = Mathf.Lerp(_appliedPitch, _pitch, _cameraRotationSpeed * Time.deltaTime);
+
+            // Both inputs are smoothed state (_yRotation by ClimbMoveCamera, _appliedPitch above),
+            // so this reads nothing back from ShoulderOffset. That matters: ShoulderOffset is now a
+            // computed value containing the arc, and lerping towards it from itself compounds the
+            // arc every frame — which sends the camera into orbit within a second.
+            _spiderCamera.ShoulderOffset = CameraPitchMath.ShoulderArc(
+                _shoulderX, _yRotation, _shoulderRadius, _appliedPitch);
+
+            _spiderCamera.FramingVerticalOffset = CameraPitchMath.FramingScreenOffset(
+                _appliedPitch, data.MaxPitchDownAngle, data.PitchScreenOffset);
         }
 
         public void AlignToSpider()
@@ -136,14 +179,17 @@ namespace Cameras.SpiderCameras
             {
                 if (_isMouseRotating)
                     CalculateMoveCamera();
-                else
-                    ClimbMoveCamera();
             }
             else
             {
                 _xRotationAiming += _inputService.MouseXAxis * _staticDataService.SpiderStaticData.MouseRotationSpeedX;
-                ClimbMoveCamera();
             }
+
+            // Climb compensation now runs every frame rather than only when the player isn't
+            // rotating. It used to share ShoulderOffset.y with the mouse, so the two had to take
+            // turns; the mouse drives the pitch angle now, leaving the height to the climb alone.
+            ClimbMoveCamera();
+            ApplyShoulderOffset();
         }
 
         private void RotateCamera()
@@ -168,24 +214,24 @@ namespace Cameras.SpiderCameras
                 Time.deltaTime * _cameraRotationSpeed);
         }
 
+        // Unchanged behaviour, minus the write: it still computes the same climb target height into
+        // _yRotation, but ApplyShoulderOffset is now the only thing that touches ShoulderOffset.
         private void ClimbMoveCamera()
         {
-            float spiderPitch = Mathf.Abs(Mathf.DeltaAngle(0f, Spider.transform.eulerAngles.z));
-            float targetY = spiderPitch > 0f
-                ? Mathf.Lerp(_defaultShoulderY, 5f, Mathf.Clamp01(Mathf.InverseLerp(0f, 45f, spiderPitch)))
-                : _defaultShoulderY;
+            // Tilt is the angle between the spider's own up and world up, not the Z euler component.
+            // A euler component only captures the tilt when the spider happens to be facing a
+            // particular way — climb on a slope entered heading along world X lands in the X
+            // component instead and read as zero. That's why the raise appeared on stairs and some
+            // slopes and silently did nothing on others: it depended on heading, not on steepness.
+            SpiderStaticData data = _staticDataService.SpiderStaticData;
+
+            float spiderTilt = Vector3.Angle(Spider.transform.up, Vector3.up);
+            float targetY = Mathf.Lerp(
+                _defaultShoulderY,
+                data.ClimbShoulderMaxY,
+                Mathf.Clamp01(Mathf.InverseLerp(0f, data.ClimbTiltMaxAngle, spiderTilt)));
 
             _yRotation = Mathf.Lerp(_yRotation, targetY, _cameraRotationSpeed * Time.deltaTime);
-
-            float yLerp = Mathf.Lerp(
-                _spiderCamera.ShoulderOffset.y,
-                _yRotation,
-                _cameraRotationSpeed * Time.deltaTime);
-
-            _spiderCamera.ShoulderOffset = new Vector3(
-                _spiderCamera.ShoulderOffset.x,
-                yLerp,
-                _spiderCamera.ShoulderOffset.z);
         }
 
         private void CalculateMoveCamera()
@@ -193,18 +239,12 @@ namespace Cameras.SpiderCameras
             SpiderStaticData data = _staticDataService.SpiderStaticData;
 
             _xRotation += _inputService.MouseXAxis * data.MouseRotationSpeedX;
-            _yRotation -= _inputService.MouseYAxis * data.MouseRotationSpeedY * Time.deltaTime;
-            _yRotation = Mathf.Clamp(_yRotation, 0f, _maxRotationY);
 
-            float yLerp = Mathf.Lerp(
-                _spiderCamera.ShoulderOffset.y,
-                _yRotation,
-                _cameraRotationSpeed * Time.deltaTime);
-
-            _spiderCamera.ShoulderOffset = new Vector3(
-                _spiderCamera.ShoulderOffset.x,
-                yLerp,
-                _spiderCamera.ShoulderOffset.z);
+            // Same sign as before (mouse forward → look up): this used to slide the shoulder
+            // offset between 0 and 3 units, now it feeds a pitch angle in degrees that
+            // ApplyShoulderOffset turns into an arc.
+            _pitch -= _inputService.MouseYAxis * data.PitchSensitivity;
+            _pitch = CameraPitchMath.ClampPitch(_pitch, data.MaxPitchDownAngle, data.MaxPitchUpAngle);
         }
 
         private void HandleMouse()
@@ -247,8 +287,14 @@ namespace Cameras.SpiderCameras
             _pivot.rotation = Quaternion.Slerp(_pivot.rotation, aligned, Time.deltaTime * 5f);
 
             _xRotation = 0f;
-            _yRotation = _spiderCamera.ShoulderOffset.y;
             _orbitStartRotation = aligned;
+
+            // _yRotation is no longer resynced from ShoulderOffset.y here: that value now carries
+            // the pitch arc, so feeding it back into the climb height would compound it on every
+            // realign. ClimbMoveCamera converges _yRotation on its own each frame anyway.
+
+            // _pitch is deliberately untouched: this fires exactly on slopes and walls, and the
+            // ticket requires the player's angle to survive that rather than snap back to 0.
         }
 
         private void ReleaseInput() =>

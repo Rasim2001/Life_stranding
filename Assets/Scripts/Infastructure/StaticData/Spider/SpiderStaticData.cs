@@ -31,9 +31,25 @@ namespace Infastructure.StaticData.Spider
         public float SmoothTime = 0.3f;
         public float CameraRotationSpeed = 6f;
         public float MouseRotationSpeedX = 6;
-        public float MouseRotationSpeedY = 400f;
         public float ScrollSensitivity = 15f;
         public float WorldUpSmoothRotation = 2;
+
+        [Header("CameraPitch")]
+        public float MaxPitchDownAngle = 55f;
+        public float MaxPitchUpAngle = 45f;
+        // Degrees per unit of mouse delta. Not multiplied by deltaTime — mouse input is already a
+        // per-frame delta, so scaling it by frame time would make sensitivity framerate-dependent
+        // (matches how MouseRotationSpeedX is used).
+        public float PitchSensitivity = 3f;
+        public float PitchScreenOffset = -0.2f;
+
+        [Header("CameraClimb")]
+        // Автоподъём камеры, когда паук перестаёт быть горизонтальным. Наклон, при котором подъём
+        // достигает максимума: чем больше значение, тем позднее набирается эффект на пологих склонах.
+        public float ClimbTiltMaxAngle = 70f;
+        // Высота плеча при максимальном наклоне. Базовая высота берётся из префаба (сейчас 2),
+        // так что разница между ними и есть весь ход подъёма.
+        public float ClimbShoulderMaxY = 3.5f;
 
         [Header("CameraShake")]
         public float MinShakeDistance = 5;

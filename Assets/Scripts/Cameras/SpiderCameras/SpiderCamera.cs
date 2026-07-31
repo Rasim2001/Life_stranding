@@ -37,6 +37,21 @@ namespace Cameras.SpiderCameras
             set => _thirdPersonFollow.CameraDistance = value;
         }
 
+        private float _authoredScreenPositionY;
+
+        public float FramingVerticalOffset
+        {
+            get => _rotationComposer.Composition.ScreenPosition.y - _authoredScreenPositionY;
+            set
+            {
+                var composition = _rotationComposer.Composition;
+                Vector2 screenPosition = composition.ScreenPosition;
+                screenPosition.y = _authoredScreenPositionY + value;
+                composition.ScreenPosition = screenPosition;
+                _rotationComposer.Composition = composition;
+            }
+        }
+
         private MMF_CinemachineImpulse Impulse =>
             _cameraShake.GetFeedbackOfType<MMF_CinemachineImpulse>();
 
@@ -58,6 +73,8 @@ namespace Cameras.SpiderCameras
 
         public void Initialize()
         {
+            _authoredScreenPositionY = _rotationComposer.Composition.ScreenPosition.y;
+
             _follower = _diFactory.Create<SpiderCameraFollower>(_pivot);
             _fov = _diFactory.Create<SpiderCameraFov>(this);
             _distance = _diFactory.Create<SpiderCameraDistance>(this);
