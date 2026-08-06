@@ -38,7 +38,10 @@ namespace Cameras.SpiderCameras
         private bool _isMouseRotating;
         private bool _centerMouseHolding;
 
-        private float _yRotation;
+        // Lift of the orbit's centre above the spider — 0 at rest, raised only by the climb
+        // compensation. Distinct from the shoulder height: that lived at the authored offset and
+        // fed the arc's centre directly, which is the bug this ticket fixes.
+        private float _climbLift;
         private float _xRotation;
         private float _xRotationAiming;
 
@@ -54,7 +57,8 @@ namespace Cameras.SpiderCameras
         private float _appliedPitch;
 
         private float _shoulderX;
-        private float _shoulderRadius;
+        private float _orbitRadius;
+        private float _neutralPitch;
 
         public SpiderCameraOrbit(
             IInputService inputService,
@@ -85,13 +89,16 @@ namespace Cameras.SpiderCameras
 
             Vector3 authoredShoulder = _spiderCamera.ShoulderOffset;
             _shoulderX = authoredShoulder.x;
-            _shoulderRadius = Mathf.Abs(authoredShoulder.z);
+            _defaultShoulderY = authoredShoulder.y;
 
-            _defaultShoulderY = _spiderCamera.ShoulderOffset.y;
+            // Orbit is centred on the spider itself, not on the authored shoulder position —
+            // radius and neutral angle are derived from the authored offset so that zero pitch
+            // reproduces it exactly. See CameraPitchMath.ShoulderArc.
+            _orbitRadius = CameraPitchMath.OrbitRadius(authoredShoulder.y, authoredShoulder.z);
+            _neutralPitch = CameraPitchMath.NeutralOrbitAngle(authoredShoulder.y, authoredShoulder.z);
 
-            // Seed the climb height with the authored value, otherwise it starts at 0 and the
-            // camera visibly sinks for the first half second while the lerp catches up.
-            _yRotation = _defaultShoulderY;
+            _spiderCamera.AimHeight = _staticDataService.SpiderStaticData.CameraAimHeight;
+
             _cameraRotationSpeed = _staticDataService.SpiderStaticData.CameraRotationSpeed;
 
             _windowService.OnWindowOpened += ReleaseInput;
@@ -149,15 +156,15 @@ namespace Cameras.SpiderCameras
 
             _appliedPitch = Mathf.Lerp(_appliedPitch, _pitch, _cameraRotationSpeed * Time.deltaTime);
 
-            // Both inputs are smoothed state (_yRotation by ClimbMoveCamera, _appliedPitch above),
+            // Both inputs are smoothed state (_climbLift by ClimbMoveCamera, _appliedPitch above),
             // so this reads nothing back from ShoulderOffset. That matters: ShoulderOffset is now a
             // computed value containing the arc, and lerping towards it from itself compounds the
             // arc every frame — which sends the camera into orbit within a second.
             _spiderCamera.ShoulderOffset = CameraPitchMath.ShoulderArc(
-                _shoulderX, _yRotation, _shoulderRadius, _appliedPitch);
+                _shoulderX, _climbLift, _orbitRadius, _neutralPitch + _appliedPitch);
 
             _spiderCamera.FramingVerticalOffset = CameraPitchMath.FramingScreenOffset(
-                _appliedPitch, data.MaxPitchDownAngle, data.PitchScreenOffset);
+                _appliedPitch, data.MaxPitchDownAngle - _neutralPitch, data.PitchScreenOffset);
         }
 
         public void AlignToSpider()
@@ -215,7 +222,10 @@ namespace Cameras.SpiderCameras
         }
 
         // Unchanged behaviour, minus the write: it still computes the same climb target height into
-        // _yRotation, but ApplyShoulderOffset is now the only thing that touches ShoulderOffset.
+        // _climbLift, but ApplyShoulderOffset is now the only thing that touches ShoulderOffset.
+        // Target is expressed as lift above the orbit centre (0 at rest) rather than an absolute
+        // shoulder height, so the ClimbShoulderMaxY setting keeps producing the same amount of
+        // travel (ClimbShoulderMaxY - _defaultShoulderY) it always did.
         private void ClimbMoveCamera()
         {
             // Tilt is the angle between the spider's own up and world up, not the Z euler component.
@@ -226,12 +236,12 @@ namespace Cameras.SpiderCameras
             SpiderStaticData data = _staticDataService.SpiderStaticData;
 
             float spiderTilt = Vector3.Angle(Spider.transform.up, Vector3.up);
-            float targetY = Mathf.Lerp(
-                _defaultShoulderY,
-                data.ClimbShoulderMaxY,
+            float targetLift = Mathf.Lerp(
+                0f,
+                data.ClimbShoulderMaxY - _defaultShoulderY,
                 Mathf.Clamp01(Mathf.InverseLerp(0f, data.ClimbTiltMaxAngle, spiderTilt)));
 
-            _yRotation = Mathf.Lerp(_yRotation, targetY, _cameraRotationSpeed * Time.deltaTime);
+            _climbLift = Mathf.Lerp(_climbLift, targetLift, _cameraRotationSpeed * Time.deltaTime);
         }
 
         private void CalculateMoveCamera()
@@ -244,7 +254,7 @@ namespace Cameras.SpiderCameras
             // offset between 0 and 3 units, now it feeds a pitch angle in degrees that
             // ApplyShoulderOffset turns into an arc.
             _pitch -= _inputService.MouseYAxis * data.PitchSensitivity;
-            _pitch = CameraPitchMath.ClampPitch(_pitch, data.MaxPitchDownAngle, data.MaxPitchUpAngle);
+            _pitch = CameraPitchMath.ClampPitch(_pitch, _neutralPitch, data.MaxPitchDownAngle, data.MaxPitchUpAngle);
         }
 
         private void HandleMouse()
@@ -289,9 +299,9 @@ namespace Cameras.SpiderCameras
             _xRotation = 0f;
             _orbitStartRotation = aligned;
 
-            // _yRotation is no longer resynced from ShoulderOffset.y here: that value now carries
-            // the pitch arc, so feeding it back into the climb height would compound it on every
-            // realign. ClimbMoveCamera converges _yRotation on its own each frame anyway.
+            // _climbLift is no longer resynced from ShoulderOffset.y here: that value now carries
+            // the pitch arc, so feeding it back into the climb lift would compound it on every
+            // realign. ClimbMoveCamera converges _climbLift on its own each frame anyway.
 
             // _pitch is deliberately untouched: this fires exactly on slopes and walls, and the
             // ticket requires the player's angle to survive that rather than snap back to 0.

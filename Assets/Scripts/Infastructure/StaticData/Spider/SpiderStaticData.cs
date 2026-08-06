@@ -35,13 +35,20 @@ namespace Infastructure.StaticData.Spider
         public float WorldUpSmoothRotation = 2;
 
         [Header("CameraPitch")]
-        public float MaxPitchDownAngle = 55f;
-        public float MaxPitchUpAngle = 45f;
+        // Absolute angles from the horizontal behind the spider, not deltas from neutral — 90
+        // would put the camera straight overhead. The authored shoulder offset sits at ~33.7°,
+        // so that's where the player's pitch starts from within this range.
+        public float MaxPitchDownAngle = 80f;
+        public float MaxPitchUpAngle = 20f;
         // Degrees per unit of mouse delta. Not multiplied by deltaTime — mouse input is already a
         // per-frame delta, so scaling it by frame time would make sensitivity framerate-dependent
         // (matches how MouseRotationSpeedX is used).
         public float PitchSensitivity = 3f;
-        public float PitchScreenOffset = -0.2f;
+        public float PitchScreenOffset = 0f;
+        // Height above the spider the camera aims at, along the spider's own up. Puts the cargo
+        // in frame instead of the spider's own origin. Guess for the first pass — tune in the
+        // inspector.
+        public float CameraAimHeight = 1f;
 
         [Header("CameraClimb")]
         // Автоподъём камеры, когда паук перестаёт быть горизонтальным. Наклон, при котором подъём

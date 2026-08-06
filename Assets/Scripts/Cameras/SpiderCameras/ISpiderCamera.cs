@@ -15,6 +15,13 @@ namespace Cameras.SpiderCameras
         /// </summary>
         float FramingVerticalOffset { get; set; }
 
+        /// <summary>
+        /// Height above the spider that the camera aims at, along the spider's own up (so it
+        /// stays "above the spider" on slopes and walls, not offset along world Y). Lets the
+        /// composition put the cargo in frame instead of centring on the spider's own origin.
+        /// </summary>
+        float AimHeight { get; set; }
+
         void Initialize();
         void ShakeCamera(float distanceFalling);
         void SnapToTarget();

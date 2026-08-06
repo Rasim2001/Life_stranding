@@ -52,6 +52,17 @@ namespace Cameras.SpiderCameras
             }
         }
 
+        public float AimHeight
+        {
+            get => _rotationComposer.TargetOffset.y;
+            set
+            {
+                Vector3 targetOffset = _rotationComposer.TargetOffset;
+                targetOffset.y = value;
+                _rotationComposer.TargetOffset = targetOffset;
+            }
+        }
+
         private MMF_CinemachineImpulse Impulse =>
             _cameraShake.GetFeedbackOfType<MMF_CinemachineImpulse>();
 
