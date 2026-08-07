@@ -97,12 +97,16 @@ MonoBehaviour:
   CameraRotationSpeed: 10
   MouseRotationSpeedX: 3
   ScrollSensitivity: 15
-  WorldUpSmoothRotation: 2
+  WorldUpSmoothRotation: 1.8
   MaxPitchDownAngle: 80
   MaxPitchUpAngle: 0
   PitchSensitivity: 3
   PitchScreenOffset: 0
   CameraAimHeight: 0
+  HorizonFollowEnterAngle: 55
+  HorizonFollowDwellTime: 0.15
+  HorizonSettleAngle: 3
+  HorizonSettleTime: 0.25
   ClimbTiltMaxAngle: 70
   ClimbShoulderMaxY: 2
   MinShakeDistance: 5

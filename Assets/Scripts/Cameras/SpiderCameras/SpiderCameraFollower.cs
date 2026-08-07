@@ -65,7 +65,11 @@ namespace Cameras.SpiderCameras
                 Time.fixedDeltaTime);
         }
 
+        // IsTouchesWithLegs is the same grounded signal the state machine transitions on, so the
+        // horizon commits on exactly the surfaces the spider is considered to be standing on.
         private void WorldUpRotate() =>
-            _stableWorldUp.Rotate(Spider.transform.rotation);
+            _stableWorldUp.Rotate(
+                Spider.transform.rotation,
+                Spider.StateContext.GroundChecker.IsTouchesWithLegs);
     }
 }

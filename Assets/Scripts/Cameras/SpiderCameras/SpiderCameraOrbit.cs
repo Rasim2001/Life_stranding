@@ -15,8 +15,6 @@ namespace Cameras.SpiderCameras
 {
     public class SpiderCameraOrbit
     {
-        private const float MaxUpDriftAngle = 30f;
-
         private readonly IInputService _inputService;
         private readonly IStaticDataService _staticDataService;
         private readonly IStableWorldUp _stableWorldUp;
@@ -48,11 +46,14 @@ namespace Cameras.SpiderCameras
         private Quaternion _orbitStartRotation;
         private Quaternion _orbitStartRotationAiming;
 
+        // World up as of the last frame, so CarryOrbitStartWithWorldUp can tell how far it turned
+        // this frame and carry the orbit's yaw reference by exactly that much.
+        private Vector3 _lastWorldUp;
+
         // Pitch never touches the pivot's rotation: CinemachineThirdPersonFollow strips pitch out
         // of the follow target (GetHeading projects onto the world-up plane) and only honours it
         // through VerticalArmLength, which is 0 here. So the vertical orbit is built as a shoulder
-        // offset instead — see CameraPitchMath.ShoulderArc. A happy side effect is that
-        // RealignOrbitToWorldUp can keep rebuilding the pivot freely without erasing the angle.
+        // offset instead — see CameraPitchMath.ShoulderArc.
         private float _pitch;
         private float _appliedPitch;
 
@@ -120,6 +121,8 @@ namespace Cameras.SpiderCameras
             if (Spider == null || _defeatWindowService.IsDefeated)
                 return;
 
+            CarryOrbitStartWithWorldUp();
+
             CameraCalculateHandle();
 
             if (_isMouseRotating)
@@ -130,19 +133,32 @@ namespace Cameras.SpiderCameras
                     RotateCamera();
             }
 
-            // Measured against world up, not the live camera's up. The camera tilts down to keep
-            // the spider framed as the pitch arc lifts it, so its up drifts by roughly the pitch
-            // angle — comparing against it made this fire every frame past ~30° of pitch, and the
-            // realign it triggers zeroes _xRotation, which is what killed yaw input at height.
-            // Drift from world up is what this check actually cares about, and it's pitch-independent.
-            if (_stableWorldUp.StableWorldUpTransform != null)
-            {
-                float upAngle = Vector3.Angle(_pivot.up, _stableWorldUp.StableWorldUpTransform.up);
-                if (upAngle > MaxUpDriftAngle)
-                    RealignOrbitToWorldUp();
-            }
-
             HandleMouse();
+        }
+
+        /// <summary>
+        /// StableWorldUp now holds the camera horizon steady through small tilts (a rock, a step)
+        /// and only turns it on a sustained wall/ceiling transition — see StableWorldUp.Rotate.
+        /// When it does turn, the orbit's yaw reference has to turn with it, or the player's
+        /// accumulated _xRotation would suddenly be measured against a different plane, which is
+        /// exactly the "camera snaps to face the wrong way" bug this replaces. Carrying both stored
+        /// rotations by the same incremental delta keeps the player's relative look direction —
+        /// same shoulder, same side of the spider — through the whole transition, with no
+        /// projection to degenerate at 90°.
+        /// </summary>
+        private void CarryOrbitStartWithWorldUp()
+        {
+            if (_stableWorldUp.StableWorldUpTransform == null)
+                return;
+
+            Vector3 currentWorldUp = _stableWorldUp.StableWorldUpTransform.up;
+            if (currentWorldUp == _lastWorldUp)
+                return;
+
+            Quaternion delta = Quaternion.FromToRotation(_lastWorldUp, currentWorldUp);
+            _orbitStartRotation = delta * _orbitStartRotation;
+            _orbitStartRotationAiming = delta * _orbitStartRotationAiming;
+            _lastWorldUp = currentWorldUp;
         }
 
         /// <summary>
@@ -178,6 +194,7 @@ namespace Cameras.SpiderCameras
             _orbitStartRotation = Quaternion.LookRotation(forward, worldUp);
             _pivot.rotation = _orbitStartRotation;
             _xRotation = 0f;
+            _lastWorldUp = worldUp;
         }
 
         private void CameraCalculateHandle()
@@ -282,31 +299,6 @@ namespace Cameras.SpiderCameras
                 StartInput();
         }
 
-        private void RealignOrbitToWorldUp()
-        {
-            Vector3 worldUp = _stableWorldUp.StableWorldUpTransform.up;
-
-            Vector3 forward = Vector3.ProjectOnPlane(_pivot.forward, worldUp);
-            if (forward.sqrMagnitude < Mathf.Epsilon)
-                forward = Vector3.Cross(worldUp, _pivot.right);
-
-            forward.Normalize();
-
-            Quaternion aligned = Quaternion.LookRotation(forward, worldUp);
-
-            _pivot.rotation = Quaternion.Slerp(_pivot.rotation, aligned, Time.deltaTime * 5f);
-
-            _xRotation = 0f;
-            _orbitStartRotation = aligned;
-
-            // _climbLift is no longer resynced from ShoulderOffset.y here: that value now carries
-            // the pitch arc, so feeding it back into the climb lift would compound it on every
-            // realign. ClimbMoveCamera converges _climbLift on its own each frame anyway.
-
-            // _pitch is deliberately untouched: this fires exactly on slopes and walls, and the
-            // ticket requires the player's angle to survive that rather than snap back to 0.
-        }
-
         private void ReleaseInput() =>
             _isMouseRotating = false;
 
@@ -327,6 +319,7 @@ namespace Cameras.SpiderCameras
 
             _orbitStartRotation = Quaternion.LookRotation(forward, worldUp);
             _pivot.rotation = _orbitStartRotation;
+            _lastWorldUp = worldUp;
         }
 
         private void JoystickEnabled(IInputSource obj) =>

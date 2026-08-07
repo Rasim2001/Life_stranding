@@ -1,4 +1,5 @@
 using Cameras.SpiderCameras;
+using Infastructure.Common.StableWorlUpManagement;
 using Infastructure.Services.Ability;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CutScene;
@@ -29,6 +30,12 @@ namespace SpiderController
         public IPickupRewindRegistryService PickupRewindRegistryService { get; }
         public ILastChanceQTEService LastChanceQteService { get; }
 
+        /// <summary>
+        /// The frame movement is expressed in. Needed because the camera's forward alone points
+        /// wherever the player has pitched it, including steeply downward.
+        /// </summary>
+        public IStableWorldUp StableWorldUp { get; }
+
 
         public SpiderServiceContext(
             ISpiderCamera spiderCamera,
@@ -43,8 +50,10 @@ namespace SpiderController
             IMagnetFreezingService magnetFreezingService,
             IPlatformObjectsService platformObjectsService,
             IPickupRewindRegistryService pickupRewindRegistryService,
-            ILastChanceQTEService lastChanceQteService)
+            ILastChanceQTEService lastChanceQteService,
+            IStableWorldUp stableWorldUp)
         {
+            StableWorldUp = stableWorldUp;
             SpiderCamera = spiderCamera;
             InputService = inputService;
             StaticDataService = staticDataService;

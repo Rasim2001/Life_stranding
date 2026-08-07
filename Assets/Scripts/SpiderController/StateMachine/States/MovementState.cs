@@ -148,7 +148,14 @@ namespace SpiderController.StateMachine.States
 
         private void MoveBodySpider()
         {
-            Vector3 worldUp = CameraTransform.up;
+            // Flattened against the stable horizon, not against the camera's own up. A transform's
+            // forward and up are orthogonal by construction, so projecting one onto the plane of
+            // the other returned the input untouched — measured, the projection moved the vector
+            // by 0.0000 degrees at every pitch. Movement therefore inherited the camera's full
+            // downward tilt: at the 80 degree pitch limit only cos(80) = 17% of the speed went
+            // forward and the remaining 98% was driven straight into the floor, which is why the
+            // spider crawled whenever the camera was raised.
+            Vector3 worldUp = ServiceContext.StableWorldUp.StableWorldUpTransform.up;
             Vector3 camForward = Vector3.ProjectOnPlane(CameraTransform.forward, worldUp).normalized;
             Vector3 camRight = Vector3.ProjectOnPlane(CameraTransform.right, worldUp).normalized;
 
