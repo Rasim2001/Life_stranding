@@ -45,10 +45,54 @@ namespace Infastructure.StaticData.Spider
         // (matches how MouseRotationSpeedX is used).
         public float PitchSensitivity = 3f;
         public float PitchScreenOffset = 0f;
+        // Absolute orbit angle where the fourth anchor (Steep) sits for all three interpolated
+        // params below — between Middle and the upper limit (MaxPitchDownAngle), same frame as that
+        // limit. Own anchor because one point for the whole upper half couldn't frame both a ~45°
+        // overhead look and the near-vertical 84° one distinctly — needed a knee, not just a slope.
+        // Clamped internally to stay at or above Middle and at or below Top, so a bad value shortens
+        // a segment instead of inverting the spline.
+        public float CameraSteepAngle = 45f;
+
         // Height above the spider the camera aims at, along the spider's own up. Puts the cargo
-        // in frame instead of the spider's own origin. Guess for the first pass — tune in the
-        // inspector.
-        public float CameraAimHeight = 1f;
+        // in frame instead of the spider's own origin. Interpolated across the orbit through four
+        // anchors: Bottom at the lower orbit limit (looking up), Middle at the neutral angle
+        // (standard third-person — this is the one the zero-pitch invariant protects), Steep at
+        // CameraSteepAngle, Top at the upper orbit limit (looking down).
+        // See CameraPitchMath.InterpolateByAngle.
+        public float CameraAimHeightBottom = 0f;
+        public float CameraAimHeightMiddle = 0f;
+        public float CameraAimHeightSteep = 0f;
+        public float CameraAimHeightTop = 0f;
+        // How far ahead of the spider the camera aims, same four orbit anchors. The complement of
+        // the heights above, because the two axes trade places as the camera swings: at the lower
+        // limit up is perpendicular to the view and forward lies along it, at 84° it is the other
+        // way round. Measured share of the frame for a value of 0.85 — height: 0.168 bottom /
+        // 0.023 top, forward: 0.000 bottom / 0.163 top. So Top is the one that frames the
+        // overhead shot and Bottom there does nothing.
+        public float CameraAimForwardBottom = 0f;
+        public float CameraAimForwardMiddle = 0f;
+        public float CameraAimForwardSteep = 0f;
+        public float CameraAimForwardTop = 0f;
+        // Zoom: multiplies the orbit radius the artist authored in the prefab (currently 3.606),
+        // so 1 = exactly as authored, below 1 = closer, above 1 = further. A scale rather than an
+        // absolute distance so the neutral anchor at 1 still reproduces the authored ShoulderOffset
+        // and re-authoring the prefab does not invalidate these numbers.
+        // Trade-off worth knowing: constant radius was the whole point of the orbit rework — it is
+        // what stopped the spider shrinking when the camera swung overhead. Moving these away from
+        // each other brings that size change back, deliberately.
+        // Note it also rescales the framing: the aim offsets above shift the frame by
+        // atan(offset / distance), so a smaller radius makes the same aim value bite harder.
+        public float CameraOrbitRadiusScaleBottom = 1f;
+        public float CameraOrbitRadiusScaleMiddle = 1f;
+        public float CameraOrbitRadiusScaleSteep = 1f;
+        public float CameraOrbitRadiusScaleTop = 1f;
+        // Shifts the middle anchor itself, in degrees off the pose authored in the prefab's
+        // ShoulderOffset — negative lowers the camera, positive raises it. Lives here rather than in
+        // the prefab because the prefab value is read once at Initialize and cannot be dialled in
+        // during play, and because moving it there would also move the base radius the scales above
+        // multiply. 0 reproduces the authored pose exactly, so the zero-regression invariant holds.
+        // Height at the middle = radius * sin(authoredAngle + this).
+        public float CameraNeutralAngleOffset = 0f;
 
         [Header("CameraHorizon")]
         // Горизонт камеры следует за верхом паука только на устойчивом крупном наклоне — стена,

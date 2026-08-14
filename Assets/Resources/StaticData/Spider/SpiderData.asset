@@ -93,16 +93,29 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  SmoothTime: 0.1
+  SmoothTime: 0.05
   CameraRotationSpeed: 10
-  MouseRotationSpeedX: 3
+  MouseRotationSpeedX: 4.71
   ScrollSensitivity: 15
   WorldUpSmoothRotation: 1.8
-  MaxPitchDownAngle: 80
-  MaxPitchUpAngle: 0
+  MaxPitchDownAngle: 90
+  MaxPitchUpAngle: -0.1
   PitchSensitivity: 3
   PitchScreenOffset: 0
-  CameraAimHeight: 0
+  CameraSteepAngle: 45
+  CameraAimHeightBottom: 2.38
+  CameraAimHeightMiddle: 1.8
+  CameraAimHeightSteep: 1
+  CameraAimHeightTop: 0
+  CameraAimForwardBottom: -0.3
+  CameraAimForwardMiddle: 1
+  CameraAimForwardSteep: 1.8
+  CameraAimForwardTop: 0.93
+  CameraOrbitRadiusScaleBottom: 0.55
+  CameraOrbitRadiusScaleMiddle: 1.1
+  CameraOrbitRadiusScaleSteep: 1.1
+  CameraOrbitRadiusScaleTop: 1.1
+  CameraNeutralAngleOffset: -13.99
   HorizonFollowEnterAngle: 55
   HorizonFollowDwellTime: 0.15
   HorizonSettleAngle: 3

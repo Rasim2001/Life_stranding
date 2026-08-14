@@ -28,6 +28,15 @@ namespace Cameras.SpiderCameras
         private Spider Spider => _spiderRegistryService.Spider;
         private StateMachineData Data => _spiderRegistryService.Spider.StateMachineData;
 
+        /// <summary>
+        /// The middle anchor of the orbit: the pose authored in the prefab's ShoulderOffset, shifted
+        /// by config. Everything that reasons about the neutral angle must go through here — the arc
+        /// and the pitch clamp both do, because using the raw authored angle for one and the shifted
+        /// one for the other moves the reachable range instead of the pose.
+        /// </summary>
+        private float NeutralPitch =>
+            _neutralPitch + _staticDataService.SpiderStaticData.CameraNeutralAngleOffset;
+
         private JoystickInputSource _joystickInputSource;
 
         private float _cameraRotationSpeed;
@@ -97,8 +106,6 @@ namespace Cameras.SpiderCameras
             // reproduces it exactly. See CameraPitchMath.ShoulderArc.
             _orbitRadius = CameraPitchMath.OrbitRadius(authoredShoulder.y, authoredShoulder.z);
             _neutralPitch = CameraPitchMath.NeutralOrbitAngle(authoredShoulder.y, authoredShoulder.z);
-
-            _spiderCamera.AimHeight = _staticDataService.SpiderStaticData.CameraAimHeight;
 
             _cameraRotationSpeed = _staticDataService.SpiderStaticData.CameraRotationSpeed;
 
@@ -172,19 +179,65 @@ namespace Cameras.SpiderCameras
 
             _appliedPitch = Mathf.Lerp(_appliedPitch, _pitch, _cameraRotationSpeed * Time.deltaTime);
 
+            float neutral = NeutralPitch;
+            float orbitAngle = neutral + _appliedPitch;
+
+            // Bottom/top of the reachable range in the same absolute-angle frame InterpolateByAngle
+            // now works in — orbitAngle already lives there, so no travel conversion needed for the
+            // three params below. downTravel is kept only for FramingScreenOffset, which still
+            // measures from zero pitch, not from an absolute angle.
+            float bottomAngle = -data.MaxPitchUpAngle;
+            float topAngle = data.MaxPitchDownAngle;
+            float downTravel = data.MaxPitchDownAngle - neutral;
+
+            // Scale, not an absolute distance: 1 keeps the radius the artist authored in the prefab,
+            // so the middle anchor at 1 still reproduces the authored offset exactly and the whole
+            // thing survives someone re-authoring ShoulderOffset. Note this deliberately gives up
+            // the constant-radius guarantee ticket 05 introduced — the spider's on-screen size will
+            // change across the pitch range again, which is the point of having a zoom at all.
+            float radiusScale = CameraPitchMath.InterpolateByAngle(
+                orbitAngle,
+                bottomAngle, data.CameraOrbitRadiusScaleBottom,
+                neutral, data.CameraOrbitRadiusScaleMiddle,
+                data.CameraSteepAngle, data.CameraOrbitRadiusScaleSteep,
+                topAngle, data.CameraOrbitRadiusScaleTop);
+
             // Both inputs are smoothed state (_climbLift by ClimbMoveCamera, _appliedPitch above),
             // so this reads nothing back from ShoulderOffset. That matters: ShoulderOffset is now a
             // computed value containing the arc, and lerping towards it from itself compounds the
             // arc every frame — which sends the camera into orbit within a second.
             _spiderCamera.ShoulderOffset = CameraPitchMath.ShoulderArc(
-                _shoulderX, _climbLift, _orbitRadius, _neutralPitch + _appliedPitch);
+                _shoulderX, _climbLift, _orbitRadius * radiusScale, orbitAngle);
 
             _spiderCamera.FramingVerticalOffset = CameraPitchMath.FramingScreenOffset(
-                _appliedPitch, data.MaxPitchDownAngle - _neutralPitch, data.PitchScreenOffset);
+                _appliedPitch, downTravel, data.PitchScreenOffset);
+
+            // Read every frame like the framing offset above, not just once in Initialize — so it
+            // can be tuned live in Play Mode instead of requiring a restart per value.
+            //
+            // Two axes rather than one because they trade places across the orbit: up is
+            // perpendicular to the view down low and along it up high, forward the reverse. Height
+            // alone left the overhead shot with no framing at all.
+            _spiderCamera.AimHeight = CameraPitchMath.InterpolateByAngle(
+                orbitAngle,
+                bottomAngle, data.CameraAimHeightBottom,
+                neutral, data.CameraAimHeightMiddle,
+                data.CameraSteepAngle, data.CameraAimHeightSteep,
+                topAngle, data.CameraAimHeightTop);
+
+            _spiderCamera.AimForward = CameraPitchMath.InterpolateByAngle(
+                orbitAngle,
+                bottomAngle, data.CameraAimForwardBottom,
+                neutral, data.CameraAimForwardMiddle,
+                data.CameraSteepAngle, data.CameraAimForwardSteep,
+                topAngle, data.CameraAimForwardTop);
         }
 
         public void AlignToSpider()
         {
+            if (_stableWorldUp.StableWorldUpTransform == null)
+                return;
+
             Vector3 worldUp = _stableWorldUp.StableWorldUpTransform.up;
             Vector3 forward = Vector3.ProjectOnPlane(Spider.transform.forward, worldUp).normalized;
 
@@ -271,7 +324,7 @@ namespace Cameras.SpiderCameras
             // offset between 0 and 3 units, now it feeds a pitch angle in degrees that
             // ApplyShoulderOffset turns into an arc.
             _pitch -= _inputService.MouseYAxis * data.PitchSensitivity;
-            _pitch = CameraPitchMath.ClampPitch(_pitch, _neutralPitch, data.MaxPitchDownAngle, data.MaxPitchUpAngle);
+            _pitch = CameraPitchMath.ClampPitch(_pitch, NeutralPitch, data.MaxPitchDownAngle, data.MaxPitchUpAngle);
         }
 
         private void HandleMouse()
