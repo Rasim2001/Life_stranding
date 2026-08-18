@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: MAT_Weather_Sky
+  m_Shader: {fileID: 4800000, guid: eda7aad2e83aa6246ae19ec6bea37ff7, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _CirrusCoverage: 0.4
+    - _CirrusOpacity: 0.45
+    - _CirrusScale: 5
+    - _CirrusSpeed: 0.12
+    - _CloudCoverage: 0.5
+    - _CloudHighlightFalloff: 8
+    - _CloudRollBias: 0.15
+    - _CloudScale: 3
+    - _CloudSoftness: 0.18
+    - _GradientExponent: 0.43
+    - _NightFactor: 0
+    - _ShadowDensity: 3
+    - _ShadowSampleDistance: 0.35
+    - _StarDensity: 0.0052
+    - _StormScale: 2.5
+    - _StormThreshold: 0.6
+    - _WindSpeed: 0.05
+    m_Colors:
+    - _CirrusColor: {r: 1, g: 1, b: 1, a: 1}
+    - _CloudColor: {r: 1, g: 1, b: 1, a: 1}
+    - _CloudHighlightColor: {r: 1, g: 0.9, b: 0.75, a: 1}
+    - _CloudShadowColor: {r: 0.55, g: 0.6, b: 0.7, a: 1}
+    - _HorizonColor: {r: 0.54999995, g: 0.72, b: 0.85, a: 1}
+    - _NightTint: {r: 0.12, g: 0.14, b: 0.28, a: 1}
+    - _StormColor: {r: 0.62, g: 0.64, b: 0.7, a: 1}
+    - _StormShadowColor: {r: 0.22, g: 0.24, b: 0.3, a: 1}
+    - _ZenithColor: {r: 0.19999996, g: 0.41999996, b: 0.75, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

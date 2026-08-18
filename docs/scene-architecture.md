@@ -596,16 +596,15 @@ Seg_05_Bridges.unity
 
 | Элемент | Где живёт | Статус в проекте |
 |---|---|---|
-| солнце (направленный свет) | **сцена** `World_Common` | scene-bound |
+| солнце, луна, небо, погода | префаб `WeatherRig` в сцене | `Prefabs/WeatherSystem/PF_Actor_Weather_Rig` + `WeatherService` (Zenject-сервис, `SceneInstaller._weatherRig`); заменил Cozy Weather Sphere |
+| skybox, ambient | ведёт `WeatherService` по высоте паука и времени суток | не статика Lighting-настроек сцены, пишется каждый кадр |
 | глобальный Volume | **сцена** `World_Common` | scene-bound; `SceneInstaller._volume` |
-| skybox, ambient | **настройки Lighting сцены** | не объект вовсе |
 | профили Volume | статик-дата | `VolumeProfilesStaticData` — уже есть |
 | параметры воды | статик-дата | `WaterStaticData` — уже есть |
 | вода, водопады | префабы из `Resources` | `GlobalWaterPath`, `WaterFallsPath` |
-| погода | префаб | `Prefabs/Common/Cozy Weather Sphere` + `CozyWeatherChanger` |
 | звук окружения | звуковой слой | не существует (9.8) |
 
-Пять позиций из восьми уже живут не в сцене — монолита по построению не выходит,
+Пять позиций из семи уже живут не в сцене — монолита по построению не выходит,
 `World_Common` остаётся тонким.
 
 **Отклонён `WorldEnvironmentDefinition`** — прямое нарушение правила 6.1 «конфиг не хранит

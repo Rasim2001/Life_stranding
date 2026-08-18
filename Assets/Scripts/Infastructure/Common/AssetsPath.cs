@@ -28,7 +28,6 @@ namespace Infastructure.Common
         public const string StartGameCutSceneTimelinePath = "Prefabs/Timeline/StartGameTimeline";
         public const string TerrainScanPath = "Prefabs/TerrainScan/[Terrain_Scan]";
         public const string BridgePath = "Prefabs/Common/Bridge";
-        public const string CozyWeather = "Prefabs/Common/Cozy Weather Sphere";
 
         public const string SpiderDataPath = "StaticData/Spider/SpiderData";
         public const string HudDataPath = "StaticData/HUD/HudData";
@@ -40,6 +39,7 @@ namespace Infastructure.Common
         public const string StickersStaticDataPath = "StaticData/Stickers/StickersData";
         public const string TasksStaticDataPath = "StaticData/UI/TasksPopupData";
         public const string WaterStaticDataPath = "StaticData/GlobalWater/WaterData";
+        public const string WeatherStaticDataPath = "StaticData/WeatherSystem/WeatherData";
         public const string WindowsLocalizationStaticDataPath = "StaticData/UI/WindowStaticLocalizationData";
         public const string LastChanceStaticDataPath = "StaticData/QTE/LastChanceData";
         public const string CutSceneStaticDataPath = "StaticData/CutScenes/CutScenesData";

@@ -34,6 +34,7 @@ using Infastructure.States;
 using UI.MVVM.View.Root;
 using UnityEngine;
 using UnityEngine.Rendering;
+using WeatherSystem;
 using Zenject;
 
 namespace Infastructure.CompositionRoot
@@ -41,6 +42,7 @@ namespace Infastructure.CompositionRoot
     public class SceneInstaller : MonoInstaller
     {
         [SerializeField] private Volume _volume;
+        [SerializeField] private WeatherRig _weatherRig;
 
         public override void InstallBindings()
         {
@@ -54,6 +56,10 @@ namespace Infastructure.CompositionRoot
             BindVolume();
 
             BindVolumeService();
+
+            BindWeatherRig();
+
+            BindWeatherService();
 
             BindBuildLevelState();
 
@@ -186,6 +192,16 @@ namespace Infastructure.CompositionRoot
 
         private void BindVolume() =>
             Container.Bind<Volume>().FromInstance(_volume).AsSingle();
+
+        private void BindWeatherRig() =>
+            Container.Bind<WeatherRig>().FromInstance(_weatherRig).AsSingle();
+
+        // NonLazy — у сервиса нет потребителей, инжектирующих IWeatherService (пока никто
+        // не читает NormalizedAltitude/TimeOfDay01 напрямую). Без этого Zenject никогда бы
+        // его не сконструировал: сам он не MonoBehaviour, не Tickable по факту существования,
+        // а лениво создаётся только по явному запросу — точно так же, как BuildLevelState.
+        private void BindWeatherService() =>
+            Container.BindInterfacesAndSelfTo<WeatherService>().AsSingle().NonLazy();
 
         private void BindLastChanceQTEService() =>
             Container.BindInterfacesAndSelfTo<LastChanceQTEService>().AsSingle();
