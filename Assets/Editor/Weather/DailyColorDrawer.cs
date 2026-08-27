@@ -21,10 +21,13 @@ namespace SpiderRig.Editor.Weather
             SerializedProperty mode = property.FindPropertyRelative("_mode");
             var modeEnum = (DailyColor.Mode)mode.enumValueIndex;
 
-            EditorGUI.BeginProperty(position, label, property);
-
             Rect labelRect = new Rect(position.x, position.y, EditorGUIUtility.labelWidth, position.height);
+
+            // Скоуп подписи закрываем ДО отрисовки значения и относится он только к ней —
+            // копирование/вставка тут работает с DailyColor целиком (режим + значение).
+            label = EditorGUI.BeginProperty(labelRect, label, property);
             EditorGUI.LabelField(labelRect, label);
+            EditorGUI.EndProperty();
 
             float rest = position.x + EditorGUIUtility.labelWidth;
             Rect modeRect = new Rect(rest, position.y, ModeWidth, position.height);
@@ -35,8 +38,17 @@ namespace SpiderRig.Editor.Weather
 
             SerializedProperty value = property.FindPropertyRelative(
                 modeEnum == DailyColor.Mode.Constant ? "_constant" : "_gradient");
-            EditorGUI.PropertyField(valueRect, value, GUIContent.none);
 
+            // Собственный скоуп над значением обязателен — без него контекстное меню либо
+            // не появляется вовсе (Gradient сам себе меню не создаёт, в отличие от Color),
+            // либо, если скоуп есть только у внешнего DailyColor, "Вставить" достаётся ЕМУ:
+            // для Unity DailyColor — Generic-свойство, из буфера принимает только формат
+            // GenericPropertyJSON, а обычное Gradient-поле (в т.ч. у Cozy) кладёт туда
+            // GradientWrapperJSON. Форматы разные — пункт гаснет. Явный скоуп здесь
+            // привязывает меню к самому "value", так что формат совпадает с тем, что
+            // реально скопировано. См. .scratch/daily-drawers-gradient-paste/spec.md.
+            EditorGUI.BeginProperty(valueRect, GUIContent.none, value);
+            EditorGUI.PropertyField(valueRect, value, GUIContent.none);
             EditorGUI.EndProperty();
         }
     }

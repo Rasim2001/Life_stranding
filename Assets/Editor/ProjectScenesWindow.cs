@@ -68,7 +68,7 @@ namespace Editor
             public bool IsTutorialScene;
         }
 
-        [MenuItem("SpiderRig/Scenes")]
+        [MenuItem("GD Tools/Scenes")]
         public static void Open()
         {
             var window = GetWindow<ProjectScenesWindow>("Project Scenes");

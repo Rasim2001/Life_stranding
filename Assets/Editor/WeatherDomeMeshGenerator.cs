@@ -26,7 +26,7 @@ namespace SpiderRig.Editor.Weather
         [Range(0.05f, 1f)] private float _yFlatten = 1f;
         private string _assetName = "MSH_Weather_DomeSky";
 
-        [MenuItem("SpiderRig/Weather/Generate Dome Mesh...")]
+        [MenuItem("GD Tools/Weather/Generate Dome Mesh...")]
         private static void Open() => GetWindow<WeatherDomeMeshGenerator>("Weather Dome Mesh");
 
         private void OnGUI()

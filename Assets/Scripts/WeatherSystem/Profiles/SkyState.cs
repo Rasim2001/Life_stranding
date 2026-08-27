@@ -12,30 +12,37 @@ namespace WeatherSystem.Profiles
         public float GradientExponent;
 
         public Color CloudColor;
+        public Color CloudSkyLitColor;
         public Color CloudShadowColor;
         public Color CloudHighlightColor;
+        public Color CloudMoonColor;
         public float CloudCoverage;
         public float CloudScale;
         public float CloudSoftness;
         public float WindSpeed;
         public float CloudRollBias;
         public float CloudHighlightFalloff;
+        public float CloudMoonHighlightFalloff;
         public float CloudDetailScale;
         public float CloudDetailAmount;
+        public float CloudCohesion;
         public float ShadowSampleDistance;
         public float ShadowDensity;
         public float CloudThickness;
         public float BorderEffect;
         public float BorderHeight;
+        public Color CloudBorderColor;
+        public float SkyLitSpread;
+        public float SkyLitSoftness;
 
-        public Color StormColor;
-        public Color StormShadowColor;
+        public Color StormTint;
+        public float StormCoverage;
         public float StormScale;
         public float StormThreshold;
         public Vector3 StormDirection;
         public float StormFrontFalloff;
 
-        public Color CirrusColor;
+        public Color CirrusTint;
         public float CirrusCoverage;
         public float CirrusOpacity;
         public float CirrusScale;
@@ -58,13 +65,23 @@ namespace WeatherSystem.Profiles
         public float MoonFlareFalloff;
         public float MoonFlareIntensity;
 
-        public float StarDensity;
-        public Color NightTint;
+        public Color StarColor;
+        public float Latitude;
 
-        public Color SkyFogColor;
         public float SkyFogAmount;
         public float SkyFogHeight;
         public float SkyFogGlowSquish;
+
+        // Туман на мировой геометрии — рампа и плотность свои, цвет дальнего стопа общий
+        // с дымкой купола (SkyFogAmount/Height/GlowSquish выше) и с подмесом в облака,
+        // см. SkyBandProfile.
+        public Color FogNearColor;
+        public Color FogMidColor;
+        public Color FogFarColor;
+        public float FogMidPosition;
+        public float FogFarPosition;
+        public float FogVisibilityDistance;
+        public float CloudsFogAmount;
 
         public Color FilterColor;
         public float FilterSaturation;

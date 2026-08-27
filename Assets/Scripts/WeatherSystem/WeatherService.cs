@@ -1,8 +1,6 @@
 using System;
-using Infastructure.Services.Registries.SpiderRegistry;
+using Infastructure.Services.CameraProvider;
 using Infastructure.Services.StartGame;
-using Infastructure.StaticData.StaticDataService;
-using Infastructure.StaticData.WeatherSystem;
 using UnityEngine;
 using UnityEngine.Rendering;
 using WeatherSystem.Profiles;
@@ -10,8 +8,12 @@ using Zenject;
 
 namespace WeatherSystem
 {
-    // Небо/солнце/окружающий свет как функция высоты паука и времени суток. Zenject-биндинг,
+    // Небо/солнце/окружающий свет как функция высоты камеры и времени суток. Zenject-биндинг,
     // не статичный singleton — тот же паттерн, что VolumeService вокруг Volume.
+    //
+    // Данные приезжают с рига (WeatherRig.Bands), а не из статических данных проекта:
+    // погода — свойство сцены, а не глобальная константа игры. Полосы задают вертикальный
+    // профиль уровня, пресет на каждой — состояние небесных объектов.
     //
     // Дуга солнца/луны — поворот одного пивота, формула в WeatherTime.PivotEuler (общая
     // с Edit Mode превью). Солнце и луна — его дети, разведённые на 180°, поэтому одна
@@ -23,12 +25,9 @@ namespace WeatherSystem
     // (см. WeatherTime.cs — почему именно так, а не 0=восход, как было раньше).
     public class WeatherService : IWeatherService, IInitializable, ITickable, IDisposable
     {
-        private const float TwilightWidth = 0.05f;
-
-        private readonly ISpiderRegistryService _spiderRegistryService;
         private readonly IStartGameReceiver _startGameReceiver;
+        private readonly ICameraProviderService _cameraProviderService;
         private readonly WeatherRig _rig;
-        private readonly WeatherStaticData _staticData;
 
         private Material _originalSkybox;
         private Material _skyboxInstance;
@@ -45,19 +44,16 @@ namespace WeatherSystem
         private Material _originalMoonMaterial;
         private Material _moonMaterialInstance;
 
-        public float NormalizedAltitude { get; private set; }
         public float TimeOfDay01 { get; private set; }
 
         public WeatherService(
-            ISpiderRegistryService spiderRegistryService,
             IStartGameReceiver startGameReceiver,
-            WeatherRig rig,
-            IStaticDataService staticDataService)
+            ICameraProviderService cameraProviderService,
+            WeatherRig rig)
         {
-            _spiderRegistryService = spiderRegistryService;
             _startGameReceiver = startGameReceiver;
+            _cameraProviderService = cameraProviderService;
             _rig = rig;
-            _staticData = staticDataService.WeatherStaticData;
 
             TimeOfDay01 = _rig.StartingTimeOfDay01;
         }
@@ -127,6 +123,11 @@ namespace WeatherSystem
         {
             _startGameReceiver.OnStartGameHappened -= ResetToStartingTime;
 
+            // Глобалы тумана переживают выгрузку сцены, а фича тумана зарегистрирована
+            // в рендерере глобально — без сброса следующая сцена без WeatherRig (меню,
+            // загрузочный экран) получила бы туман предыдущего уровня.
+            WeatherFogApplier.ResetGlobals();
+
             if (_skyboxInstance != null)
             {
                 RenderSettings.skybox = _originalSkybox;
@@ -171,40 +172,67 @@ namespace WeatherSystem
             if (_rig.TimeOfDayRunning)
                 TimeOfDay01 = Mathf.Repeat(TimeOfDay01 + Time.deltaTime / _rig.DayLengthSeconds, 1f);
 
-            // До первого спавна паука полосы неба резолвятся от нижней границы рига —
-            // тот же фолбэк, что и раньше был неявно в NormalizedAltitude = 0.
-            float worldY = _rig.AltitudeMinY;
-            if (_spiderRegistryService.Spider != null)
-            {
-                worldY = _spiderRegistryService.Spider.transform.position.y;
-                NormalizedAltitude = Mathf.InverseLerp(_rig.AltitudeMinY, _rig.AltitudeMaxY, worldY);
-            }
+            // Позиция камеры читается один раз на кадр: её потребителей теперь трое —
+            // выбор полосы, альфа облачного слоя и глобалы тумана.
+            Vector3? cameraPositionWS = GetCameraPositionWS();
+
+            // Высота — от камеры, а не от паука (спек weather-presets-and-zones, решение 11):
+            // погоду видит камера. Купола и плоский облачный слой и так следят за Camera.main
+            // сами, расходилось только состояние — плоскость стояла у камеры, а гасилась
+            // по высоте робота.
+            //
+            // Пока камеры нет (до BuildLevelState), берём низ мира — начало первой полосы.
+            // Прежний фолбэк опирался на пороги высоты рига, но они удалены: при явных
+            // границах полос это была вторая, несогласованная разметка высоты.
+            float worldY = cameraPositionWS.HasValue
+                ? cameraPositionWS.Value.y
+                : BottomOfWorld(_rig.Bands);
 
             // Порядок важен: сперва поворачиваем дугу, и только потом читаем с неё
             // фактическую высоту светил — иначе замер отстаёт от поворота на кадр.
             RotateSunMoonPivot();
 
             float sunElevation = GetSunElevation();
-            float nightFactor = SmoothStep01(TwilightWidth, -TwilightWidth, sunElevation);
 
             // Один расчёт SkyState на кадр — небо, плоский облачный слой, ambient,
             // солнце и луна читают из него, а не пересчитывают блендинг каждый по-своему.
-            SkyState sky = SkyBandBlender.Evaluate(_staticData.Bands, worldY, TimeOfDay01);
+            // Свёртка складывает обе оси: полосы рига по высоте и зоны влияния по месту.
+            // Пустой список полос она переваривает штатно и отдаёт default(SkyState),
+            // тот же путь, что и полоса без пресета (см. комментарий в WeatherFogApplier).
+            SkyState sky = WeatherComposer.Compose(
+                _rig.Bands, worldY, TimeOfDay01, cameraPositionWS, Time.deltaTime);
 
-            ApplySky(sky, nightFactor);
+            ApplySky(sky);
             ApplyAmbient(sky);
             ApplySun(sky, sunElevation);
             ApplyMoon(sky);
-            ApplyCloudLayer(sky);
+            ApplyCloudLayer(sky, cameraPositionWS);
+            WeatherFogApplier.ApplyGlobals(sky, cameraPositionWS);
         }
 
-        private void ApplyCloudLayer(SkyState sky)
+        // Низ мира — начало первой полосы. Полосы отсортированы по возрастанию StartY
+        // (контракт SkyBand), поэтому первая и есть самая нижняя.
+        private static float BottomOfWorld(SkyBand[] bands) =>
+            bands != null && bands.Length > 0 ? bands[0].StartY : 0f;
+
+        // null, пока камера не назначена: ICameraProviderService заполняется в BuildLevelState,
+        // и до этого момента честнее не трогать глобал вовсе, чем выдать нуль за настоящую
+        // позицию — на нуле туман на воде считался бы от начала координат.
+        private Vector3? GetCameraPositionWS() =>
+            _cameraProviderService.Camera != null
+                ? _cameraProviderService.CameraTransform.position
+                : (Vector3?)null;
+
+        // Высота камеры, а не паука: сам CloudLayer уже подтягивает свою XZ-позицию и размер
+        // под Camera.main, и гасить его по чужой высоте означало бы, что плоскость стоит
+        // у камеры, но исчезает по роботу. Смысл фейда — не показать плоскость с ребра,
+        // а с ребра её видит именно камера.
+        private void ApplyCloudLayer(SkyState sky, Vector3? cameraPositionWS)
         {
-            if (_cloudMaterialInstance == null || _rig.CloudLayer == null || _spiderRegistryService.Spider == null)
+            if (_cloudMaterialInstance == null || _rig.CloudLayer == null || !cameraPositionWS.HasValue)
                 return;
 
-            float spiderY = _spiderRegistryService.Spider.transform.position.y;
-            float distance = Mathf.Abs(spiderY - _rig.CloudLayer.BandCenterY);
+            float distance = Mathf.Abs(cameraPositionWS.Value.y - _rig.CloudLayer.BandCenterY);
             float alpha = 1f - Mathf.Clamp01(distance / _rig.CloudLayer.FadeDistance);
             _cloudMaterialInstance.SetFloat(WeatherShaderIds.Alpha, alpha);
 
@@ -235,6 +263,10 @@ namespace WeatherSystem
 
             if (_rig.MoonLight != null)
                 Shader.SetGlobalVector(WeatherShaderIds.MoonDirectionGlobal, -_rig.MoonLight.transform.forward);
+
+            // Для вращения звёздной сферы (SHD_Weather_DomeSky) — сутки как угол поворота.
+            // См. .scratch/sky-night-and-star-dome/spec.md, решение #10.
+            Shader.SetGlobalFloat(WeatherShaderIds.TimeOfDay01Global, TimeOfDay01);
         }
 
         // Один вызов бьёт по всем трём материалам (старый skybox + оба купола) —
@@ -242,22 +274,22 @@ namespace WeatherSystem
         // молча ничего не делает (задокументированное поведение Unity, не ошибка).
         // Поэтому не нужно разбирать, что из ~35 свойств относится к Sky, а что к Clouds:
         // каждый материал сам берёт то, что у него объявлено в CBUFFER, и игнорирует остальное.
-        private void ApplySky(SkyState sky, float nightFactor)
+        private void ApplySky(SkyState sky)
         {
-            ApplySkyToMaterial(RenderSettings.skybox, sky, nightFactor);
-            ApplySkyToMaterial(_skyDomeMaterialInstance, sky, nightFactor);
-            ApplySkyToMaterial(_cloudsDomeMaterialInstance, sky, nightFactor);
+            ApplySkyToMaterial(RenderSettings.skybox, sky);
+            ApplySkyToMaterial(_skyDomeMaterialInstance, sky);
+            ApplySkyToMaterial(_cloudsDomeMaterialInstance, sky);
         }
 
         // Список свойств живёт в WeatherSkyApplier — общий с Edit Mode превью
         // (Assets/Editor/Weather/WeatherPreviewDriver.cs), чтобы оба пути не могли
         // разойтись между собой при добавлении нового свойства шейдера.
-        private static void ApplySkyToMaterial(Material mat, SkyState sky, float nightFactor)
+        private static void ApplySkyToMaterial(Material mat, SkyState sky)
         {
             if (mat == null)
                 return;
 
-            WeatherSkyApplier.Apply(new MaterialSink(mat), sky, nightFactor);
+            WeatherSkyApplier.Apply(new MaterialSink(mat), sky);
         }
 
         // ambientMode принудительно, не полагаясь на разметку сцены — сцены на легаси

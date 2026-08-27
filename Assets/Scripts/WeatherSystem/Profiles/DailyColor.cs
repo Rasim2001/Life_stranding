@@ -12,8 +12,8 @@ namespace WeatherSystem.Profiles
         public enum Mode { Constant, Gradient }
 
         [SerializeField] private Mode _mode = Mode.Constant;
-        [SerializeField] private Color _constant = Color.white;
-        [SerializeField] private Gradient _gradient = new Gradient();
+        [ColorUsage(true, true)] [SerializeField] private Color _constant = Color.white;
+        [GradientUsage(true)] [SerializeField] private Gradient _gradient = new Gradient();
 
         public Color Evaluate(float timeOfDay01) =>
             _mode == Mode.Constant ? _constant : _gradient.Evaluate(timeOfDay01);

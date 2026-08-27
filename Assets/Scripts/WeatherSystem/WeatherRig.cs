@@ -1,4 +1,5 @@
 using UnityEngine;
+using WeatherSystem.Profiles;
 
 namespace WeatherSystem
 {
@@ -9,6 +10,20 @@ namespace WeatherSystem
     // обе дуги разом, без отдельной орбитальной механики.
     public class WeatherRig : MonoBehaviour
     {
+        // Вертикальный профиль погоды этого уровня: сколько полос, где границы, насколько резок
+        // переход и какой пресет звучит на каждой. Это и есть глобальная погода сцены —
+        // отдельной сущности «глобальный пресет» нет (спек, решения 5 и 6).
+        //
+        // Полосы свои у каждой сцены: у каждого уровня своя геометрия, и правка в одной сцене
+        // не должна трогать другую. Массив на префабе — дефолт для сцен, которые его не
+        // переопределяли; рассчитывать на доставку ПОЗДНИХ правок префаба в уже настроенные
+        // сцены нельзя (решение 6a), но стартовое значение он даёт, и без него песочницы
+        // получили бы пустой список и чёрное небо.
+        //
+        // Массив обязан быть отсортирован по возрастанию StartY — контракт в SkyBand.cs.
+        [Header("Weather — altitude bands")]
+        [SerializeField] private SkyBand[] _bands;
+
         [SerializeField] private Light _sunLight;
         [SerializeField] private Light _moonLight;
         [SerializeField] private Transform _sunMoonPivot;
@@ -22,10 +37,6 @@ namespace WeatherSystem
         [SerializeField] private WeatherDome _cloudsDome;
         [SerializeField] private WeatherMoon _moon;
 
-        [Header("Altitude thresholds — world Y, tuned per scene")]
-        [SerializeField] private float _altitudeMinY;
-        [SerializeField] private float _altitudeMaxY = 100f;
-
         // 0 — полночь, 0.25 — восход, 0.5 — полдень, 0.75 — закат (как у Cozy —
         // MeridiemTime.cs, буквально часы/24; см. WeatherTime.cs, почему мигрировали
         // со старой шкалы, где 0 было восходом). День занимает 0.25..0.75.
@@ -37,6 +48,7 @@ namespace WeatherSystem
         [Tooltip("Длина игровых суток в секундах реального времени. Для проверки дуги в песочнице ставится маленькой.")]
         [SerializeField] private float _dayLengthSeconds = 600f;
 
+        public SkyBand[] Bands => _bands;
         public Light SunLight => _sunLight;
         public Light MoonLight => _moonLight;
         public Transform SunMoonPivot => _sunMoonPivot;
@@ -44,8 +56,6 @@ namespace WeatherSystem
         public WeatherDome SkyDome => _skyDome;
         public WeatherDome CloudsDome => _cloudsDome;
         public WeatherMoon Moon => _moon;
-        public float AltitudeMinY => _altitudeMinY;
-        public float AltitudeMaxY => _altitudeMaxY;
         public float StartingTimeOfDay01 => _startingTimeOfDay01;
         public bool TimeOfDayRunning => _timeOfDayRunning;
         public float DayLengthSeconds => _dayLengthSeconds;

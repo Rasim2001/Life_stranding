@@ -4,7 +4,6 @@ namespace WeatherSystem
     // подключается к ним, а не встраивается в эту систему заново.
     public interface IWeatherService
     {
-        float NormalizedAltitude { get; }
         float TimeOfDay01 { get; }
     }
 }

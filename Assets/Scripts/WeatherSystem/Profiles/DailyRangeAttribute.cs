@@ -14,6 +14,11 @@ namespace WeatherSystem.Profiles
     {
         public readonly float Min;
         public readonly float Max;
+        // Слайдер в Constant-режиме линеен по ln(value), не по value — для диапазонов на
+        // порядки шире одного (напр. дальность видимости тумана 5..2000 м), где линейная
+        // шкала утопила бы весь низ диапазона в первых пикселях. Curve-режим не затронут —
+        // AnimationCurve остаётся в сырых единицах, см. DailyFloatDrawer.
+        public bool Logarithmic;
 
         public DailyRangeAttribute(float min, float max)
         {

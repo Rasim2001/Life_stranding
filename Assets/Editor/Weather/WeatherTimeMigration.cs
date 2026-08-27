@@ -29,11 +29,11 @@ namespace SpiderRig.Editor.Weather
         // из execute_code) нужно в обход этого метода — иначе таймаут на стороне
         // вызывающего кода и последующий повторный вызов способны запустить миграцию
         // повторно поверх уже сдвинутых данных.
-        [MenuItem("SpiderRig/Weather/Migrate Time Convention (one-shot)")]
+        [MenuItem("GD Tools/Weather/Migrate Time Convention (one-shot)")]
         private static void Run()
         {
             if (!EditorUtility.DisplayDialog("Migrate Time Convention",
-                    "Сдвигает все суточные градиенты/кривые в SkyBandProfile на +0.25 " +
+                    "Сдвигает все суточные градиенты/кривые в WeatherPreset на +0.25 " +
                     "(0=восход → 0=полночь), проставляет AmbientMultiplier=1 на существующих " +
                     "профилях и правит _startingTimeOfDay01 в PF_Actor_Weather_Rig.prefab.\n\n" +
                     "Запускать один раз. Продолжить?",
@@ -51,10 +51,10 @@ namespace SpiderRig.Editor.Weather
             var report = new StringBuilder();
             float maxDelta = 0f;
 
-            foreach (string guid in AssetDatabase.FindAssets("t:SkyBandProfile"))
+            foreach (string guid in AssetDatabase.FindAssets("t:WeatherPreset"))
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
-                var profile = AssetDatabase.LoadAssetAtPath<SkyBandProfile>(path);
+                var profile = AssetDatabase.LoadAssetAtPath<WeatherPreset>(path);
                 maxDelta = Mathf.Max(maxDelta, MigrateProfile(profile, report));
             }
 
@@ -68,7 +68,7 @@ namespace SpiderRig.Editor.Weather
             return full;
         }
 
-        private static float MigrateProfile(SkyBandProfile profile, StringBuilder report)
+        private static float MigrateProfile(WeatherPreset profile, StringBuilder report)
         {
             var so = new SerializedObject(profile);
             SerializedProperty it = so.GetIterator();

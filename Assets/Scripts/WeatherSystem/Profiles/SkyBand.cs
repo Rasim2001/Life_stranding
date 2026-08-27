@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace WeatherSystem.Profiles
 {
-    // Одна высотная полоса в WeatherStaticData.Bands. Массив полос обязан быть
+    // Одна высотная полоса в WeatherRig.Bands. Массив полос обязан быть
     // отсортирован по возрастанию StartY — SkyBandBlender сканирует их линейным проходом.
     //
     // [StartY, EndY] — плоскость: профиль звучит в чистом виде, без подмеса соседнего.
@@ -16,6 +16,6 @@ namespace WeatherSystem.Profiles
         public float StartY;
         public float EndY;
         public float BlendUpwards;
-        public SkyBandProfile Profile;
+        public WeatherPreset Preset;
     }
 }

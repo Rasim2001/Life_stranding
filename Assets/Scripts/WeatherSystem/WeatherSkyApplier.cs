@@ -38,41 +38,52 @@ namespace WeatherSystem
     // и зовёт методы напрямую, без диспетчеризации через интерфейс.
     public static class WeatherSkyApplier
     {
-        public static void Apply<TSink>(TSink sink, SkyState sky, float nightFactor)
+        // nightFactor больше не параметр — ночь теперь часть градиента (см.
+        // .scratch/sky-night-and-star-dome/spec.md, решение #1-2), а не отдельный
+        // множитель, вычисляемый вызывающей стороной от высоты солнца.
+        public static void Apply<TSink>(TSink sink, SkyState sky)
             where TSink : struct, IWeatherPropertySink
         {
             sink.SetColor(WeatherShaderIds.ZenithColor, sky.ZenithColor);
             sink.SetColor(WeatherShaderIds.HorizonColor, sky.HorizonColor);
             sink.SetFloat(WeatherShaderIds.GradientExponent, sky.GradientExponent);
-            sink.SetFloat(WeatherShaderIds.NightFactor, nightFactor);
-            sink.SetColor(WeatherShaderIds.NightTint, sky.NightTint);
-            sink.SetFloat(WeatherShaderIds.StarDensity, sky.StarDensity);
+            sink.SetColor(WeatherShaderIds.StarColor, sky.StarColor);
+            sink.SetFloat(WeatherShaderIds.Latitude, sky.Latitude);
 
             sink.SetColor(WeatherShaderIds.CloudColor, sky.CloudColor);
+            // Полный Color, не .rgb — альфа несёт силу направленного подмеса
+            // (см. .scratch/cloud-skylit-base-color/spec.md, решение #2-3).
+            sink.SetColor(WeatherShaderIds.CloudSkyLitColor, sky.CloudSkyLitColor);
             sink.SetColor(WeatherShaderIds.CloudShadowColor, sky.CloudShadowColor);
             sink.SetColor(WeatherShaderIds.CloudHighlightColor, sky.CloudHighlightColor);
+            sink.SetColor(WeatherShaderIds.CloudMoonColor, sky.CloudMoonColor);
             sink.SetFloat(WeatherShaderIds.CloudCoverage, sky.CloudCoverage);
             sink.SetFloat(WeatherShaderIds.CloudScale, sky.CloudScale);
             sink.SetFloat(WeatherShaderIds.CloudSoftness, sky.CloudSoftness);
             sink.SetFloat(WeatherShaderIds.WindSpeed, sky.WindSpeed);
             sink.SetFloat(WeatherShaderIds.CloudRollBias, sky.CloudRollBias);
             sink.SetFloat(WeatherShaderIds.CloudHighlightFalloff, sky.CloudHighlightFalloff);
+            sink.SetFloat(WeatherShaderIds.CloudMoonHighlightFalloff, sky.CloudMoonHighlightFalloff);
             sink.SetFloat(WeatherShaderIds.CloudDetailScale, sky.CloudDetailScale);
             sink.SetFloat(WeatherShaderIds.CloudDetailAmount, sky.CloudDetailAmount);
+            sink.SetFloat(WeatherShaderIds.CloudCohesion, sky.CloudCohesion);
             sink.SetFloat(WeatherShaderIds.ShadowSampleDistance, sky.ShadowSampleDistance);
             sink.SetFloat(WeatherShaderIds.ShadowDensity, sky.ShadowDensity);
             sink.SetFloat(WeatherShaderIds.CloudThickness, sky.CloudThickness);
             sink.SetFloat(WeatherShaderIds.BorderEffect, sky.BorderEffect);
             sink.SetFloat(WeatherShaderIds.BorderHeight, sky.BorderHeight);
+            sink.SetColor(WeatherShaderIds.CloudBorderColor, sky.CloudBorderColor);
+            sink.SetFloat(WeatherShaderIds.SkyLitSpread, sky.SkyLitSpread);
+            sink.SetFloat(WeatherShaderIds.SkyLitSoftness, sky.SkyLitSoftness);
 
-            sink.SetColor(WeatherShaderIds.StormColor, sky.StormColor);
-            sink.SetColor(WeatherShaderIds.StormShadowColor, sky.StormShadowColor);
+            sink.SetColor(WeatherShaderIds.StormTint, sky.StormTint);
+            sink.SetFloat(WeatherShaderIds.StormCoverage, sky.StormCoverage);
             sink.SetFloat(WeatherShaderIds.StormScale, sky.StormScale);
             sink.SetFloat(WeatherShaderIds.StormThreshold, sky.StormThreshold);
             sink.SetVector(WeatherShaderIds.StormDirection, sky.StormDirection);
             sink.SetFloat(WeatherShaderIds.StormFrontFalloff, sky.StormFrontFalloff);
 
-            sink.SetColor(WeatherShaderIds.CirrusColor, sky.CirrusColor);
+            sink.SetColor(WeatherShaderIds.CirrusTint, sky.CirrusTint);
             sink.SetFloat(WeatherShaderIds.CirrusCoverage, sky.CirrusCoverage);
             sink.SetFloat(WeatherShaderIds.CirrusOpacity, sky.CirrusOpacity);
             sink.SetFloat(WeatherShaderIds.CirrusScale, sky.CirrusScale);
@@ -89,10 +100,10 @@ namespace WeatherSystem
             sink.SetFloat(WeatherShaderIds.MoonFlareFalloff, sky.MoonFlareFalloff);
             sink.SetFloat(WeatherShaderIds.MoonFlareIntensity, sky.MoonFlareIntensity);
 
-            sink.SetColor(WeatherShaderIds.SkyFogColor, sky.SkyFogColor);
             sink.SetFloat(WeatherShaderIds.SkyFogAmount, sky.SkyFogAmount);
             sink.SetFloat(WeatherShaderIds.SkyFogHeight, sky.SkyFogHeight);
             sink.SetFloat(WeatherShaderIds.SkyFogGlowSquish, sky.SkyFogGlowSquish);
+            sink.SetFloat(WeatherShaderIds.CloudsFogAmount, sky.CloudsFogAmount);
 
             sink.SetColor(WeatherShaderIds.FilterColor, sky.FilterColor);
             sink.SetFloat(WeatherShaderIds.FilterSaturation, sky.FilterSaturation);

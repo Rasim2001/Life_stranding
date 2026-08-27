@@ -31,11 +31,14 @@ Shader "SpiderRig/Weather/DomeSky"
         _GradientExponent ("Gradient Exponent", Range(0.1, 8)) = 1.5
 
         [Header(Night)]
-        // 0 — день, 1 — ночь. Ведётся WeatherService из elevation солнца (по времени суток).
-        _NightFactor ("Night Factor", Range(0, 1)) = 0
-        _NightTint ("Night Tint", Color) = (0.12, 0.14, 0.28, 1)
-        // Порог хэш-шума на звёзды: больше значение — больше звёзд.
-        _StarDensity ("Star Density", Range(0, 0.05)) = 0.006
+        // Ночь больше не отдельный множитель — она тёмный конец _ZenithColor/_HorizonColor,
+        // как у Cozy. См. .scratch/sky-night-and-star-dome/spec.md, решение #1.
+        // Звёзды — текстура звёздной карты на вращающейся сфере, не процедурный шум;
+        // яркость ведётся тем же суточным градиентом, что и небо (решение #6).
+        [NoScaleOffset] _StarDomeTexture ("Star Dome", CUBE) = "black" {}
+        _StarColor ("Star Color", Color) = (1, 1, 1, 1)
+        // Наклон звёздной сферы. См. решение #11 — авторская величина, не константа в коде.
+        _Latitude ("Latitude", Range(-90, 90)) = 0
 
         [Header(Sun)]
         _SunColor ("Sun Disk Color", Color) = (1, 0.97, 0.88, 1)
@@ -51,8 +54,9 @@ Shader "SpiderRig/Weather/DomeSky"
 
         [Header(Horizon fog)]
         // Небо у горизонта втапливается в цвет тумана, иначе на открытой воде виден
-        // шов между наземным туманом и небом.
-        _SkyFogColor ("Sky Fog Color", Color) = (0.78, 0.82, 0.86, 1)
+        // шов между наземным туманом и небом. Цвет больше не свойство материала —
+        // приходит глобалом _SR_FogFarColor (тот же дальний стоп, что у тумана на
+        // геометрии), см. .scratch/fog-generation-and-layers/spec.md, решение #13.
         _SkyFogAmount ("Sky Fog Amount", Range(0, 1)) = 0.45
         _SkyFogHeight ("Sky Fog Height", Range(0.01, 1)) = 0.18
         // Сплющивает вертикаль при расчёте зарева на тумане — закатное пятно
@@ -94,6 +98,9 @@ Shader "SpiderRig/Weather/DomeSky"
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "WeatherNoise.hlsl"
+            // Ради одного _SR_FogFarColor: объявления глобалов тумана живут там же, где его
+            // математика (тикет 04), чтобы не разъезжались по типу и по имени между шейдерами.
+            #include "WeatherFog.hlsl"
 
             struct Attributes
             {
@@ -108,18 +115,25 @@ Shader "SpiderRig/Weather/DomeSky"
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
-            // Глобалы из WeatherService.RotateSunMoonPivot() — направления К светилам,
-            // не свойства материала: нужны не только небу, но и облакам, позже туману и воде.
+            // Глобалы из WeatherService.RotateSunMoonPivot() — направления К светилам
+            // и время суток, не свойства материала: нужны не только небу, но и облакам,
+            // позже туману и воде.
             half3 _SR_SunDirection;
             half3 _SR_MoonDirection;
+            half _SR_TimeOfDay01;
+
+            // Дальний стоп тумана (_SR_FogFarColor) — тот же цвет, в который втапливается
+            // горизонтная дымка купола. Объявлен в WeatherFog.hlsl выше, не здесь: глобал,
+            // общий с fullscreen-пассом, водой и стеклом, и второе объявление рядом с общим
+            // означало бы redefinition при любой попытке подключить сюда его математику.
+            samplerCUBE _StarDomeTexture;
 
             CBUFFER_START(UnityPerMaterial)
                 half4 _ZenithColor;
                 half4 _HorizonColor;
                 half _GradientExponent;
-                half _NightFactor;
-                half4 _NightTint;
-                half _StarDensity;
+                half4 _StarColor;
+                half _Latitude;
 
                 half4 _SunColor;
                 half _SunSize;
@@ -131,7 +145,6 @@ Shader "SpiderRig/Weather/DomeSky"
                 half _MoonFlareFalloff;
                 half _MoonFlareIntensity;
 
-                half4 _SkyFogColor;
                 half _SkyFogAmount;
                 half _SkyFogHeight;
                 half _SkyFogGlowSquish;
@@ -140,6 +153,33 @@ Shader "SpiderRig/Weather/DomeSky"
                 half _FilterSaturation;
                 half _FilterValue;
             CBUFFER_END
+
+            // --- Звёздная сфера -----------------------------------------------------------
+            // Купол не вращается (см. комментарий вверху файла), поэтому крутим не геометрию,
+            // а направление выборки перед сэмплом кубмапы — два поворота, как у Cozy, но без
+            // их годовой доли (тут нет понятия года, см. .scratch/sky-night-and-star-dome/
+            // spec.md, решение #10). Долгота — оборот за сутки вокруг мировой вертикали;
+            // широта — постоянный наклон оси, задаёт, как высоко ходит полюс над горизонтом.
+            half3 RotateY(half3 v, half angle)
+            {
+                half s = sin(angle);
+                half c = cos(angle);
+                return half3(v.x * c + v.z * s, v.y, -v.x * s + v.z * c);
+            }
+
+            half3 RotateX(half3 v, half angle)
+            {
+                half s = sin(angle);
+                half c = cos(angle);
+                return half3(v.x, v.y * c - v.z * s, v.y * s + v.z * c);
+            }
+
+            half3 StarDir(half3 dir)
+            {
+                half spin = _SR_TimeOfDay01 * 6.28318530718h;
+                half3 spun = RotateY(dir, spin);
+                return RotateX(spun, radians(_Latitude));
+            }
 
             // --- Светила -----------------------------------------------------------------
             // Диск: порог по dot через smoothstep, а не тернарник — тернарник у Cozy
@@ -179,7 +219,7 @@ Shader "SpiderRig/Weather/DomeSky"
                 half3 squished = normalize(half3(dir.x, dir.y * _SkyFogGlowSquish, dir.z));
                 half glow = pow(saturate(dot(squished, _SR_SunDirection) * 0.5h + 0.5h), 6.0h);
 
-                half3 fogColor = lerp(_SkyFogColor.rgb, _SunHaloColor.rgb, glow * 0.6h);
+                half3 fogColor = lerp(_SR_FogFarColor.rgb, _SunHaloColor.rgb, glow * 0.6h);
                 return lerp(color, fogColor, saturate(fogT));
             }
 
@@ -203,13 +243,16 @@ Shader "SpiderRig/Weather/DomeSky"
                 half3 dir = normalize(IN.dirOS);
                 half upness = pow(saturate(dir.y), _GradientExponent);
 
-                half3 dayColor = lerp(_HorizonColor.rgb, _ZenithColor.rgb, upness);
-                half3 skyColor = lerp(dayColor, dayColor * _NightTint.rgb, _NightFactor);
+                // Ночь больше не отдельный множитель — просто тёмный конец градиента,
+                // как у Cozy (см. решение #1). Что нарисовано в ключах на нужное время
+                // суток, то и видно, без домножения сверху.
+                half3 skyColor = lerp(_HorizonColor.rgb, _ZenithColor.rgb, upness);
 
-                // Звёзды только в верхней полусфере и только когда действительно ночь —
-                // не полагаемся на то, что density-порог сам уйдёт в 0, гасим множителем явно.
-                half star = Stars(dir, _StarDensity) * _NightFactor * saturate(dir.y);
-                skyColor += star.xxx;
+                // Звёзды — только в верхней полусфере (та же причина, что раньше: под
+                // куполом нет смысла их рисовать). Яркость целиком из _StarColor — его
+                // суточный градиент сам гасит их днём, отдельного гейта по ночи не нужно.
+                half3 starColor = texCUBE(_StarDomeTexture, StarDir(dir)).rgb * _StarColor.rgb;
+                skyColor += starColor * saturate(dir.y);
 
                 skyColor += SunHalo(dir);
                 skyColor += SunDisk(dir);

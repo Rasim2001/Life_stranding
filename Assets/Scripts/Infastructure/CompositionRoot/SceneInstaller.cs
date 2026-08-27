@@ -197,7 +197,7 @@ namespace Infastructure.CompositionRoot
             Container.Bind<WeatherRig>().FromInstance(_weatherRig).AsSingle();
 
         // NonLazy — у сервиса нет потребителей, инжектирующих IWeatherService (пока никто
-        // не читает NormalizedAltitude/TimeOfDay01 напрямую). Без этого Zenject никогда бы
+        // не читает TimeOfDay01 напрямую). Без этого Zenject никогда бы
         // его не сконструировал: сам он не MonoBehaviour, не Tickable по факту существования,
         // а лениво создаётся только по явному запросу — точно так же, как BuildLevelState.
         private void BindWeatherService() =>

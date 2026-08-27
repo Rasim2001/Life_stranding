@@ -93,13 +93,6 @@ half Hash13(half3 p)
     return frac((p.x + p.y) * p.z);
 }
 
-half Stars(half3 dir, half density)
-{
-    half3 cell = floor(dir * 400.0h);
-    half h = Hash13(cell);
-    return step(1.0h - density, h);
-}
-
 half ValueNoise3D(float3 p)
 {
     float3 i = floor(p);

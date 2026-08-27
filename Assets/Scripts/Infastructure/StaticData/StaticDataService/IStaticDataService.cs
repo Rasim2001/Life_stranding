@@ -10,7 +10,6 @@ using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.Stikers;
 using Infastructure.StaticData.Task;
 using Infastructure.StaticData.VolumeProfiles;
-using Infastructure.StaticData.WeatherSystem;
 using Infastructure.StaticData.Windows;
 using Infastructure.StaticData.XRay;
 
@@ -29,7 +28,6 @@ namespace Infastructure.StaticData.StaticDataService
         StickersStaticData StickersStaticData { get; }
         TasksStaticData TasksStaticData { get; }
         WaterStaticData WaterStaticData { get; }
-        WeatherStaticData WeatherStaticData { get; }
         WindowsLocalizationStaticData WindowsLocalizationStaticData { get; }
         LastChanceStaticData LastChanceStaticData { get; }
         CutScenesStaticData CutScenesStaticData { get; }

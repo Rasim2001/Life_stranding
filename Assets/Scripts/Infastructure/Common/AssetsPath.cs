@@ -39,7 +39,6 @@ namespace Infastructure.Common
         public const string StickersStaticDataPath = "StaticData/Stickers/StickersData";
         public const string TasksStaticDataPath = "StaticData/UI/TasksPopupData";
         public const string WaterStaticDataPath = "StaticData/GlobalWater/WaterData";
-        public const string WeatherStaticDataPath = "StaticData/WeatherSystem/WeatherData";
         public const string WindowsLocalizationStaticDataPath = "StaticData/UI/WindowStaticLocalizationData";
         public const string LastChanceStaticDataPath = "StaticData/QTE/LastChanceData";
         public const string CutSceneStaticDataPath = "StaticData/CutScenes/CutScenesData";

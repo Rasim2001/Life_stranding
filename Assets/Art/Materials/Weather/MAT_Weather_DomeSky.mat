@@ -22,19 +22,22 @@ Material:
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs: []
+    m_TexEnvs:
+    - _StarDomeTexture:
+        m_Texture: {fileID: 8900000, guid: e68ddda153a64584b8f00e3c09990d8c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _FilterSaturation: 0
     - _FilterValue: 0
     - _GradientExponent: 1.96
+    - _Latitude: 0
     - _MoonFlareFalloff: 0.5
     - _MoonFlareIntensity: 0.93
-    - _NightFactor: 0
     - _SkyFogAmount: 1
     - _SkyFogGlowSquish: 2.78
     - _SkyFogHeight: 0.212
-    - _StarDensity: 0.0047
     - _SunHaloFalloff: 0.25
     - _SunHaloIntensity: 0.6
     - _SunSize: 1.19
@@ -42,8 +45,8 @@ Material:
     - _FilterColor: {r: 1, g: 1, b: 1, a: 1}
     - _HorizonColor: {r: 0.55, g: 0.72, b: 0.85, a: 1}
     - _MoonFlareColor: {r: 0.55, g: 0.66, b: 1, a: 1}
-    - _NightTint: {r: 0.12, g: 0.14, b: 0.28, a: 1}
     - _SkyFogColor: {r: 0.78, g: 0.82, b: 0.86, a: 1}
+    - _StarColor: {r: 1, g: 1, b: 1, a: 1}
     - _SunColor: {r: 1, g: 0.97, b: 0.88, a: 1}
     - _SunHaloColor: {r: 1, g: 0.72, b: 0.42, a: 1}
     - _ZenithColor: {r: 0.2, g: 0.42, b: 0.75, a: 1}

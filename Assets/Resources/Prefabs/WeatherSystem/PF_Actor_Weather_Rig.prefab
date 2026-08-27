@@ -420,6 +420,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bec02086dc2e3a43a896d2c90776a0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WeatherSystem.WeatherRig
+  _bands:
+  - StartY: 0
+    EndY: 100100
+    BlendUpwards: 0
+    Preset: {fileID: 11400000, guid: a0fc44f822047d049b37323d006ff16f, type: 2}
   _sunLight: {fileID: 9064363662116806332}
   _moonLight: {fileID: 1536564114862877}
   _sunMoonPivot: {fileID: 7948983444500103440}
@@ -427,8 +432,6 @@ MonoBehaviour:
   _skyDome: {fileID: 6840428235648114210}
   _cloudsDome: {fileID: 1433005408106587843}
   _moon: {fileID: 6652819438172005904}
-  _altitudeMinY: 0
-  _altitudeMaxY: 100
   _startingTimeOfDay01: 0.036000013
   _timeOfDayRunning: 0
   _dayLengthSeconds: 600

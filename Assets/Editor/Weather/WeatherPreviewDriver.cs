@@ -1,4 +1,4 @@
-using Infastructure.StaticData.WeatherSystem;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 using WeatherSystem;
@@ -21,8 +21,6 @@ namespace SpiderRig.Editor.Weather
     // см. её комментарий.
     public class WeatherPreviewDriver
     {
-        private const float TwilightWidth = 0.05f;
-
         private readonly MaterialPropertyBlock _skyBlock = new MaterialPropertyBlock();
         private readonly MaterialPropertyBlock _cloudsBlock = new MaterialPropertyBlock();
         private readonly MaterialPropertyBlock _moonBlock = new MaterialPropertyBlock();
@@ -42,6 +40,10 @@ namespace SpiderRig.Editor.Weather
         private bool _snapMoonEnabled;
         private Vector3 _snapPivotEuler;
 
+        // Авторская высота облачного слоя. NaN — «снимка нет», тогда откат позиции просто
+        // оставит префабное значение.
+        private float _snapCloudLayerY = float.NaN;
+
         public bool IsRunning => _running;
         public WeatherRig Rig => _rig;
 
@@ -60,33 +62,159 @@ namespace SpiderRig.Editor.Weather
             if (!_running)
                 return;
 
+            // Риг мог быть уничтожен вместе с выгруженной сценой. Восстанавливать по снимку
+            // тогда нельзя: RenderSettings.ambient* глобальны, и мы записали бы значения
+            // прежней сцены в текущую. Блоки и глобалы тумана снять всё равно надо.
+            if (_rig == null)
+            {
+                WeatherFogApplier.ResetGlobals();
+                _running = false;
+                return;
+            }
+
             RestoreSnapshot();
 
             ClearBlock(_rig.SkyDome);
             ClearBlock(_rig.CloudsDome);
             ClearBlock(_rig.Moon);
 
+            // Туман идёт глобалами, а не MaterialPropertyBlock'ом — снятием блока он не
+            // убирается. Без явного сброса Scene view остался бы затуманенным после Stop,
+            // хотя весь смысл этого класса в том, чтобы превью не оставляло следов.
+            WeatherFogApplier.ResetGlobals();
+
             _running = false;
             _rig = null;
         }
 
-        public void Apply(WeatherStaticData staticData, float worldY, float timeOfDay01)
+        // Откат авторских значений перед записью сцены на диск. Погода — производное состояние,
+        // и в .unity ей делать нечего: замер показал, что при сохранении туда попадают и
+        // RenderSettings.ambient*, и intensity/color света, и поворот пивота — все три разом.
+        // Драйвер не останавливается: следующий Apply вернёт картинку, зритель ничего не заметит.
+        public void RestoreSceneValues()
         {
-            if (!_running || _rig == null || staticData == null)
+            if (!_running || _rig == null)
+                return;
+
+            RestoreSnapshot();
+            RevertDerivedPrefabOverrides();
+        }
+
+        // Снять привязку, ничего не восстанавливая. Нужно при загрузке новой сцены: снимок
+        // относится к прежней, и «восстановление» им означало бы записать чужие значения
+        // в свежую сцену — а следующий Start() снял бы снимок уже с этой порчи. Измерено:
+        // именно так авторский ambient подменялся ведомым.
+        public void Abandon()
+        {
+            if (!_running)
+                return;
+
+            if (_rig != null)
+            {
+                ClearBlock(_rig.SkyDome);
+                ClearBlock(_rig.CloudsDome);
+                ClearBlock(_rig.Moon);
+            }
+
+            WeatherFogApplier.ResetGlobals();
+
+            _running = false;
+            _rig = null;
+        }
+
+        // Второй слой отката, без которого сохранение всё равно течёт.
+        //
+        // Ключевой факт, проверенный опытом: **вернуть префабное значение недостаточно**.
+        // Unity ведёт список модификаций инстанса по факту записи, а не сравнением значений,
+        // поэтому после присваивания «того же самого» в .unity всё равно уезжает запись
+        // оверрайда — просто со значением, равным префабному. Удалять надо саму запись.
+        //
+        // Затереть чей-то осмысленный оверрайд мы этим не можем: все перечисленные свойства
+        // компоненты перезаписывают каждый апдейт (WeatherDome, WeatherMoon и CloudLayer
+        // помечены [ExecuteAlways] и двигают себя сами), значит оверрайд там по построению
+        // производный. Единственное исключение — высота облачного слоя, она авторская,
+        // и её возвращаем отдельно после отката.
+        private void RevertDerivedPrefabOverrides()
+        {
+            RevertTransformOverrides(_rig.SkyDome != null ? _rig.SkyDome.transform : null);
+            RevertTransformOverrides(_rig.CloudsDome != null ? _rig.CloudsDome.transform : null);
+            RevertTransformOverrides(_rig.Moon != null ? _rig.Moon.transform : null);
+            RevertTransformOverrides(_rig.CloudLayer != null ? _rig.CloudLayer.transform : null);
+            RevertTransformOverrides(_rig.SunMoonPivot);
+
+            RevertLightOverrides(_rig.SunLight);
+            RevertLightOverrides(_rig.MoonLight);
+
+            RestoreAuthoredCloudLayerHeight();
+        }
+
+        // Высота облачного слоя задаётся размещением в сцене — это авторский per-scene
+        // оверрайд, ровно как пороги высоты на риге (см. комментарий в CloudLayer).
+        // Откат позиции сносит её вместе с производными X/Z, поэтому возвращаем её обратно.
+        private void RestoreAuthoredCloudLayerHeight()
+        {
+            if (_rig.CloudLayer == null || float.IsNaN(_snapCloudLayerY))
+                return;
+
+            Transform layer = _rig.CloudLayer.transform;
+            if (Mathf.Approximately(layer.localPosition.y, _snapCloudLayerY))
+                return;
+
+            Vector3 position = layer.localPosition;
+            position.y = _snapCloudLayerY;
+            layer.localPosition = position;
+        }
+
+        private static void RevertTransformOverrides(Transform target)
+        {
+            RevertOverride(target, "m_LocalPosition");
+            RevertOverride(target, "m_LocalRotation");
+            RevertOverride(target, "m_LocalScale");
+        }
+
+        private static void RevertLightOverrides(Light target)
+        {
+            RevertOverride(target, "m_Enabled");
+            RevertOverride(target, "m_Intensity");
+            RevertOverride(target, "m_Color");
+        }
+
+        private static void RevertOverride(Object target, string propertyPath)
+        {
+            if (target == null || !PrefabUtility.IsPartOfPrefabInstance(target))
+                return;
+
+            var serialized = new SerializedObject(target);
+            SerializedProperty property = serialized.FindProperty(propertyPath);
+            if (property == null || !property.prefabOverride)
+                return;
+
+            PrefabUtility.RevertPropertyOverride(property, InteractionMode.AutomatedAction);
+        }
+
+        // Готовое состояние параметром, а не пресет: как его собрать — из полос рига по высоте
+        // или из одного пресета плоско, когда открыто окно, — решает вызывающий. Драйвер
+        // только применяет, как и WeatherService в рантайме.
+        public void Apply(SkyState sky, float timeOfDay01)
+        {
+            if (!_running || _rig == null)
                 return;
 
             RotateSunMoonPivot(timeOfDay01);
 
             float sunElevation = GetSunElevation();
-            float nightFactor = SmoothStep01(TwilightWidth, -TwilightWidth, sunElevation);
 
-            SkyState sky = SkyBandBlender.Evaluate(staticData.Bands, worldY, timeOfDay01);
-
-            ApplyToDome(_rig.SkyDome, _skyBlock, sky, nightFactor);
-            ApplyToDome(_rig.CloudsDome, _cloudsBlock, sky, nightFactor);
+            ApplyToDome(_rig.SkyDome, _skyBlock, sky);
+            ApplyToDome(_rig.CloudsDome, _cloudsBlock, sky);
             ApplyAmbient(sky);
             ApplySun(sky, sunElevation);
             ApplyMoon(sky);
+            // Обязателен: без него fullscreen-пасс тумана не видит изменений панели,
+            // и Edit Mode превью тумана невозможно в принципе (спек, Verification).
+            // Позиция камеры — камера Scene view: в Edit Mode ICameraProviderService пуст
+            // (он заполняется в BuildLevelState, то есть только в Play Mode), а без неё
+            // туман на воде считался бы от начала координат и не реагировал на облёт сцены.
+            WeatherFogApplier.ApplyGlobals(sky, GetSceneViewCameraPositionWS());
         }
 
         private void TakeSnapshot()
@@ -112,6 +240,10 @@ namespace SpiderRig.Editor.Weather
 
             if (_rig.SunMoonPivot != null)
                 _snapPivotEuler = _rig.SunMoonPivot.localEulerAngles;
+
+            _snapCloudLayerY = _rig.CloudLayer != null
+                ? _rig.CloudLayer.transform.localPosition.y
+                : float.NaN;
         }
 
         private void RestoreSnapshot()
@@ -151,18 +283,30 @@ namespace SpiderRig.Editor.Weather
 
             if (_rig.MoonLight != null)
                 Shader.SetGlobalVector(WeatherShaderIds.MoonDirectionGlobal, -_rig.MoonLight.transform.forward);
+
+            Shader.SetGlobalFloat(WeatherShaderIds.TimeOfDay01Global, timeOfDay01);
+        }
+
+        // null, если ни одного Scene view не открыто — тогда глобал не трогаем, как и
+        // WeatherService при незаполненной камере.
+        private static Vector3? GetSceneViewCameraPositionWS()
+        {
+            SceneView view = SceneView.lastActiveSceneView;
+            return view != null && view.camera != null
+                ? view.camera.transform.position
+                : (Vector3?)null;
         }
 
         // Тот же расчёт, что в WeatherService.GetSunElevation().
         private float GetSunElevation() =>
             _rig.SunLight != null ? -_rig.SunLight.transform.forward.y : 0f;
 
-        private static void ApplyToDome(WeatherDome dome, MaterialPropertyBlock block, SkyState sky, float nightFactor)
+        private static void ApplyToDome(WeatherDome dome, MaterialPropertyBlock block, SkyState sky)
         {
             if (dome == null || dome.Renderer == null)
                 return;
 
-            WeatherSkyApplier.Apply(new BlockSink(block), sky, nightFactor);
+            WeatherSkyApplier.Apply(new BlockSink(block), sky);
             dome.Renderer.SetPropertyBlock(block);
         }
 

@@ -37,12 +37,29 @@ Shader "SpiderRig/Weather/DomeClouds"
         // силуэт гладкий и аморфный — с ним рваный край "цветной капусты".
         _CloudDetailScale ("Detail Scale", Range(0.1, 10)) = 1
         _CloudDetailAmount ("Detail Amount", Range(0, 2)) = 1
+        // 0 — нарезка Voronoi на отдельные комки как раньше, 1 — слитная масса без неё.
+        // См. .scratch/cloud-color-architecture/spec.md, Constraints and Decisions #13.
+        _CloudCohesion ("Cloud Cohesion", Range(0, 1)) = 0.5
 
-        [Header(Cumulus)]
-        _CloudColor ("Cumulus Lit Color", Color) = (1, 1, 1, 1)
-        _CloudShadowColor ("Cumulus Shadow Color", Color) = (0.55, 0.6, 0.7, 1)
-        _CloudHighlightColor ("Cumulus Sun Highlight", Color) = (1, 0.95, 0.85, 1)
+        [Header(Clouds shared color)]
+        // Общая палитра на все ярусы: Storm/Cirrus красятся этим же цветом, домноженным
+        // на свой тинт (_StormTint/_CirrusTint) — см. спек, решения #1-3.
+        _CloudColor ("Cloud Lit Color", Color) = (1, 1, 1, 1)
+        // Небесная (скайлайт) сторона базы, противоположная солнцу — реальный источник
+        // другой, чем у солнечной стороны (рассеянный свет неба, не прямой). Альфа = сила
+        // подмеса, не отдельный слайдер. См. .scratch/cloud-skylit-base-color/spec.md.
+        _CloudSkyLitColor ("Cloud Sky-Lit Color", Color) = (0.5, 0.65, 0.85, 0.5)
+        // Порог/ширина направленной маски по sunDot. 0 — небесная сторона нигде не
+        // проступает, 0.5 — ровно полусфера, 1 — весь купол.
+        _SkyLitSpread ("Sky-Lit Spread", Range(0, 1)) = 0.5
+        _SkyLitSoftness ("Sky-Lit Softness", Range(0.01, 1)) = 0.15
+        _CloudShadowColor ("Cloud Shadow Color", Color) = (0.55, 0.6, 0.7, 1)
+        _CloudHighlightColor ("Cloud Sun Highlight", Color) = (1, 0.95, 0.85, 1)
         _CloudHighlightFalloff ("Sun Highlight Falloff", Range(1, 64)) = 8
+        _CloudMoonColor ("Cloud Moon Highlight", Color) = (0.55, 0.65, 0.85, 1)
+        // 22.9 — число Cozy (cloudMoonHighlightFalloff), уже её луна физически слабее
+        // солнца и требует более узкого ободка. См. спек, решение #11.
+        _CloudMoonHighlightFalloff ("Moon Highlight Falloff", Range(1, 64)) = 22.9
         // Самозатенение: вторая выборка плотности со смещением к солнцу.
         _ShadowSampleDistance ("Self Shadow Distance", Range(0.01, 1)) = 0.25
         _ShadowDensity ("Self Shadow Density", Range(0, 8)) = 2.5
@@ -50,8 +67,14 @@ Shader "SpiderRig/Weather/DomeClouds"
         _CloudThickness ("Cloud Thickness", Range(0, 1)) = 0.5
 
         [Header(Storm)]
-        _StormColor ("Storm Lit Color", Color) = (0.62, 0.64, 0.70, 1)
-        _StormShadowColor ("Storm Shadow Color", Color) = (0.22, 0.24, 0.30, 1)
+        // Тинт-множитель поверх общего _CloudColor/_CloudShadowColor, не свой цвет —
+        // спек, решение #5: пользователю достаточно "темнее и синее".
+        _StormTint ("Storm Tint", Color) = (0.65, 0.68, 0.78, 1)
+        // Независимый выключатель, не связан с _CloudCoverage — см.
+        // .scratch/cloud-horizon-light-and-storm/spec.md, решение #8-11. 0 = грозы нет
+        // никогда, дефолт 0 намеренно (не середина диапазона): воспроизводит поведение
+        // "гроза сейчас не рисуется" точно, не приблизительно.
+        _StormCoverage ("Storm Coverage", Range(0, 1)) = 0
         _StormScale ("Storm Scale", Range(0.1, 10)) = 1.3
         // Ниже какого покрытия грозовых нет вовсе; выше — набирают до единицы.
         _StormThreshold ("Storm Threshold", Range(0, 1)) = 0.55
@@ -64,14 +87,34 @@ Shader "SpiderRig/Weather/DomeClouds"
         // Радиальный член: облака у горизонта ловят свет иначе, чем над головой.
         _BorderEffect ("Border Effect", Range(0, 1)) = 0.35
         _BorderHeight ("Border Height", Range(0.2, 6)) = 2
+        // Цвет полосы света у горизонта — один, не направленный. Направленность (тёплое
+        // у солнца / холодное от него) переехала в _CloudSkyLitColor выше — держать её
+        // ещё и здесь означало бы делать один эффект дважды. См.
+        // .scratch/cloud-skylit-base-color/spec.md, решения #9-10.
+        _CloudBorderColor ("Border Color", Color) = (0.55, 0.7, 0.9, 1)
 
         [Header(Cirrus)]
-        _CirrusColor ("Cirrus Color", Color) = (1, 1, 1, 1)
+        // Тинт-множитель поверх общего _CloudColor — замена Cozy'шного "High Altitude
+        // Cloud Color" (у них тоже множитель поверх базы, не свой цвет).
+        _CirrusTint ("Cirrus Tint", Color) = (1, 1, 1, 1)
         // Независимая ручка: перистые бывают и на чистом небе, к _CloudCoverage не привязаны.
         _CirrusCoverage ("Cirrus Coverage", Range(0, 1)) = 0.35
         _CirrusScale ("Cirrus Scale", Range(0.1, 10)) = 3
         _CirrusSpeed ("Cirrus Wind Speed", Range(0, 1)) = 0.12
         _CirrusOpacity ("Cirrus Opacity", Range(0, 1)) = 0.55
+
+        [Header(Fog)]
+        // Насколько облака тонут в цвете дальнего стопа тумана — своя ручка, форма
+        // подмеса (по высоте) общая с горизонтной дымкой купола неба, см. .scratch/
+        // fog-generation-and-layers/spec.md, решение #14.
+        _CloudsFogAmount ("Clouds Fog Amount", Range(0, 1)) = 0
+        // То же свойство, что у SHD_Weather_DomeSky: WeatherSkyApplier рассылает набор
+        // на оба купольных материала, поэтому отдельного поля профиля не нужно — нужна
+        // именно ОДНА высота на оба купола, иначе форма подмеса разъедется и на стыке
+        // появится шов. Объявлено здесь, а не только в CBUFFER: без записи в Properties
+        // у материала нет такого свойства (HasProperty=false), Material.SetFloat пишет
+        // мимо, шейдер читает 0 — и весь подмес молча выключается делением на ноль.
+        _SkyFogHeight ("Sky Fog Height", Range(0.01, 1)) = 0.18
 
         [Header(Weather filter)]
         // Та же тройка свойств, что в SHD_Weather_DomeSky — обе ведёт WeatherService
@@ -107,6 +150,9 @@ Shader "SpiderRig/Weather/DomeClouds"
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "WeatherNoise.hlsl"
+            // Ради одного _SR_FogFarColor: объявления глобалов тумана живут там же, где его
+            // математика (тикет 04), чтобы не разъезжались по типу и по имени между шейдерами.
+            #include "WeatherFog.hlsl"
 
             struct Attributes
             {
@@ -121,9 +167,13 @@ Shader "SpiderRig/Weather/DomeClouds"
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
-            // Глобал из WeatherService.RotateSunMoonPivot() — направление К солнцу.
+            // Глобалы из WeatherService.RotateSunMoonPivot() — направления К светилам.
             half3 _SR_SunDirection;
+            half3 _SR_MoonDirection;
 
+            // Дальний стоп тумана (_SR_FogFarColor) — тот же цвет, в который втапливается
+            // горизонтная дымка купола неба. Объявлен в WeatherFog.hlsl выше, не здесь:
+            // глобал общий с fullscreen-пассом, водой и стеклом.
             CBUFFER_START(UnityPerMaterial)
                 half _CloudCoverage;
                 half _CloudScale;
@@ -132,17 +182,23 @@ Shader "SpiderRig/Weather/DomeClouds"
                 half _CloudRollBias;
                 half _CloudDetailScale;
                 half _CloudDetailAmount;
+                half _CloudCohesion;
 
                 half4 _CloudColor;
+                half4 _CloudSkyLitColor;
+                half _SkyLitSpread;
+                half _SkyLitSoftness;
                 half4 _CloudShadowColor;
                 half4 _CloudHighlightColor;
                 half _CloudHighlightFalloff;
+                half4 _CloudMoonColor;
+                half _CloudMoonHighlightFalloff;
                 half _ShadowSampleDistance;
                 half _ShadowDensity;
                 half _CloudThickness;
 
-                half4 _StormColor;
-                half4 _StormShadowColor;
+                half4 _StormTint;
+                half _StormCoverage;
                 half _StormScale;
                 half _StormThreshold;
                 half4 _StormDirection;
@@ -150,12 +206,18 @@ Shader "SpiderRig/Weather/DomeClouds"
 
                 half _BorderEffect;
                 half _BorderHeight;
+                half4 _CloudBorderColor;
 
-                half4 _CirrusColor;
+                half4 _CirrusTint;
                 half _CirrusCoverage;
                 half _CirrusScale;
                 half _CirrusSpeed;
                 half _CirrusOpacity;
+
+                // WeatherSkyApplier шлёт то же свойство, что и купол неба — не новое поле
+                // профиля, а форма подмеса тумана (общая высотная кривая), см. решение #14.
+                half _SkyFogHeight;
+                half _CloudsFogAmount;
 
                 half4 _FilterColor;
                 half _FilterSaturation;
@@ -207,8 +269,21 @@ Shader "SpiderRig/Weather/DomeClouds"
                 half baseNoise = saturate((SR_snoise(pBase) * 0.5h + 0.5h - 0.10h) / 0.80h);
 
                 half voroA = saturate(Voronoi3D(pBase * kVoroDetailFreq));
-                thickness = saturate(Voronoi3D(pBase * kVoroThickFreq));
-                half shape = min(baseNoise, 1.0h - voroA);
+                // Сплочённость: 0 — нарезка Вороного режет базовый шум на отдельные комки
+                // (как раньше), 1 — базовый шум идёт как есть, одной слитной массой.
+                half shape = lerp(min(baseNoise, 1.0h - voroA), baseNoise, _CloudCohesion);
+
+                // Толща — Voronoi F1 (расстояние до ближайшего центра ячейки), инвертированный
+                // и перенормированный по замеру (20k выборок в execute_code: p01≈0.0088,
+                // p99≈0.4371 — сырой диапазон почти весь ниже 0.44, saturate() в старой версии
+                // был no-op). Без инверсии толща была максимальна на ГРАНИЦАХ ячеек и минимальна
+                // в центрах — физически неверно (тёмные сердцевины со светлым контуром вместо
+                // плотного тёмного ядра с тонким светящимся краем) и давало жёсткую соту прямо
+                // в подсветке. Домножено на shape, а не размазано по всему куполу — приём Cozy:
+                // их толща тоже гейтится маской размещения, не голым Voronoi по всему небу
+                // (CloudThicknessDetails = VoroDetails.y * saturate(Placement - 0.26)).
+                half thicknessCore = 1.0h - saturate((Voronoi3D(pBase * kVoroThickFreq) - 0.01h) / 0.44h);
+                thickness = thicknessCore * shape;
 
                 half detailFreq = kVoroThickFreq * 2.4h * _CloudDetailScale;
                 half detail = 1.0h - DetailVoronoiFBM(pBase * detailFreq);
@@ -316,24 +391,59 @@ Shader "SpiderRig/Weather/DomeClouds"
                 if (horizonFade <= 0.0h)
                     return half4(0.0h, 0.0h, 0.0h, 0.0h);
 
-                // 0 в зените, 1 у горизонта. У горизонта поднимаем эффективное покрытие,
-                // поэтому фронт непогоды приходит оттуда и накатывает к зениту, а не
-                // проступает по всему небу разом (приём из Cozy Luxury).
+                // 0 в зените, 1 у горизонта — использует Border effect ниже (радиальный
+                // вклад в подсветку, своя, более пологая форма через _BorderHeight).
                 half horizonDist = saturate(1.0h - dir.y);
-                half coverage = saturate(_CloudCoverage + horizonDist * _CloudRollBias);
 
-                half sunDot = saturate(dot(dir, _SR_SunDirection));
-                half highlight = pow(sunDot * 0.5h + 0.5h, _CloudHighlightFalloff);
+                // Перспектива плоского облачного пласта, не погодный фронт: у горизонта
+                // луч идёт вдоль пласта на порядки дольше, чем в зените, и пересекает
+                // много облаков подряд — отсюда закон секанса, а не линейная прибавка.
+                // См. .scratch/cloud-color-architecture/spec.md, Constraints and Decisions #17.
+                // На 30° над горизонтом вклад равен ровно _CloudRollBias; в зените — нулевой;
+                // нижняя отсечка 0.05 согласована с horizonFade выше.
+                half slab = saturate(_CloudRollBias * (1.0h / max(dir.y, 0.05h) - 1.0h));
+                half coverage = saturate(_CloudCoverage + slab);
+
+                // Ремап на полном диапазоне [-1,1] -> [0,1] ДО отсечения — иначе всё
+                // полушарие напротив солнца схлопывается в dot=0 и получает постоянную
+                // полку pow(0.5, falloff) вместо честного нуля (см. спек, Further Notes).
+                half sunDot = dot(dir, _SR_SunDirection);
+                half highlight = pow(saturate(sunDot * 0.5h + 0.5h), _CloudHighlightFalloff);
+
+                // Лунный ободок — зеркало солнечного, своя ширина и свой цвет. Гасится
+                // днём только градиентом _CloudMoonColor (см. спек, решение #6), здесь
+                // никакого дополнительного гейта по времени суток нет.
+                half moonDot = dot(dir, _SR_MoonDirection);
+                half moonHighlight = pow(saturate(moonDot * 0.5h + 0.5h), _CloudMoonHighlightFalloff);
+
+                // Направленная база: облака со стороны солнца освещены прямым светом,
+                // с противоположной — рассеянным скайлайтом. Два разных источника, а не
+                // один цвет с наложенной поверх маской (см. спек, решение #1). Порог задан
+                // охватом (_SkyLitSpread), ширина перехода — размытием; альфа небесного
+                // цвета — сила эффекта, читается здесь впервые в этом шейдере (до сих пор
+                // все цвета брались только как .rgb). Общая для всех трёх ярусов — считается
+                // один раз и подставляется вместо _CloudColor.rgb ниже.
+                half antiSun = 1.0h - saturate(sunDot * 0.5h + 0.5h);
+                half skyLitMask = smoothstep(1.0h - _SkyLitSpread - _SkyLitSoftness,
+                    1.0h - _SkyLitSpread + _SkyLitSoftness, antiSun) * _CloudSkyLitColor.a;
+                half3 baseColor = lerp(_CloudColor.rgb, _CloudSkyLitColor.rgb, skyLitMask);
 
                 half3 color = half3(0.0h, 0.0h, 0.0h);
                 half alpha = 0.0h;
 
                 // --- Перистые: самый высокий ярус — рисуются первыми (дальше всех).
                 half cirrus = CirrusDensity(dir);
-                half cirrusCov = saturate(_CirrusCoverage + horizonDist * _CloudRollBias);
+                half cirrusCov = saturate(_CirrusCoverage + slab);
                 half cirrusRel = CloudRel(cirrus, cirrusCov);
                 half cirrusMask = smoothstep(0.0h, _CloudSoftness, cirrusRel) * _CirrusOpacity;
-                CompositeOver(color, alpha, _CirrusColor.rgb * lerp(1.0h, 1.15h, highlight), cirrusMask);
+                // Вдвое более широкий лепесток, чем у кучевых, и общий цвет подсветки —
+                // приём Cozy (SunThroughClouds), без их аддитивного механизма и без
+                // новых полей. Физика: лёд даёт сильное прямое рассеяние на большой угол.
+                // См. спек, решение #19.
+                half cirrusHighlight = pow(saturate(sunDot * 0.5h + 0.5h), _CloudHighlightFalloff * 0.5h);
+                half3 cirrusColor = baseColor * _CirrusTint.rgb;
+                cirrusColor = lerp(cirrusColor, _CloudHighlightColor.rgb, cirrusHighlight * 0.5h);
+                CompositeOver(color, alpha, cirrusColor, cirrusMask);
 
                 // --- Кучевые: основной ярус с объёмом.
                 half thickness;
@@ -345,27 +455,59 @@ Shader "SpiderRig/Weather/DomeClouds"
                 // иначе это лишний Simplex + два 27-тапных Voronoi на пиксель зря.
                 half transmittance = (cumulusMask > 0.001h) ? CloudTransmittance(dir, coverage) : 1.0h;
 
-                half3 cumulusColor = lerp(_CloudShadowColor.rgb, _CloudColor.rgb, transmittance);
+                half3 cumulusColor = lerp(_CloudShadowColor.rgb, baseColor, transmittance);
                 // Подсветка солнцем поверх затенки, а не вместо: освещённая сторона
                 // теплеет, теневая остаётся холодной. Толща гасит ободок — на плотном
                 // куске света не видно, он весь рассеялся внутри.
-                cumulusColor = lerp(cumulusColor, _CloudHighlightColor.rgb,
-                    highlight * transmittance * (1.0h - thickness));
+                //
+                // Гашение взвешено по _CloudThickness, а не применяется в полную силу
+                // всегда. thickness — это Voronoi на частоте x5 от силуэта, у F1 на
+                // границах ячеек излом, и при полном весе он рисовал жёсткую соту прямо
+                // в подсветку — видимую тем сильнее, чем ярче HDR-цвет и чем ближе
+                // _ShadowDensity к нулю (там transmittance=1 и член выходит на максимум).
+                // Ручка _CloudThickness по своему описанию и так отвечает за "гасит на
+                // них ободок" — она просто не была сюда подключена. При _CloudThickness=1
+                // поведение прежнее, при 0 модуляции нет вовсе.
+                half rimThickness = 1.0h - thickness * _CloudThickness;
+                // Сложение, не смешение: чёрный в градиенте подсветки должен быть НЕЙТРАЛЕН
+                // (нулевой вклад), а не командой "затемни". У lerp чёрный — полноценная
+                // цель смешения, и лунный градиент с чёрными участками по дневному времени
+                // (см. решение #6 предыдущего спека — гасится только своим градиентом)
+                // активно красил облака в чёрный вместо "не подсвечивать". Безопасно теперь,
+                // когда в проекте есть ACES tonemapping — раньше сложение с HDR-пиками
+                // выжигало канал в белый без него. См. .scratch/cloud-horizon-light-and-storm/
+                // spec.md, Open Questions ("судьба аддитивной подсветки") — вопрос закрыт.
+                cumulusColor += _CloudHighlightColor.rgb * (highlight * transmittance * rimThickness);
+                cumulusColor += _CloudMoonColor.rgb * (moonHighlight * transmittance * rimThickness);
                 // Толща темнит УЖЕ ЗАТЕНЁННЫЙ цвет, а не константу от освещённого —
                 // иначе в тени подмешивался бы чужой оттенок вместо простого затемнения.
                 cumulusColor = lerp(cumulusColor, cumulusColor * 0.566h, thickness * _CloudThickness);
 
                 // Борта: радиальный вклад в перенос света, сильнее у горизонта и только
                 // там, где есть плотность. Даёт глубину — облака над головой и у горизонта
-                // освещены по-разному. Явно зажат, чтобы не выбивать в пересвет.
+                // освещены по-разному. Радиальная форма и потолок 0.5 не меняются.
+                //
+                // Один цвет, не направленный. Раньше border был двухцветным (тёплый к
+                // солнцу / холодный от него), но с появлением направленной базы выше
+                // (baseColor/_CloudSkyLitColor) это дублировало один и тот же эффект дважды
+                // на одной и той же оси sunDot — border вернулся к тому, чем задумывался.
+                // См. .scratch/cloud-skylit-base-color/spec.md, решения #9-10.
                 half border = min(pow(horizonDist, _BorderHeight) * _BorderEffect * cumulusRel, 0.5h);
-                cumulusColor += border.xxx * _CloudHighlightColor.rgb;
+                cumulusColor = lerp(cumulusColor, _CloudBorderColor.rgb, border);
 
                 CompositeOver(color, alpha, cumulusColor, cumulusMask);
 
                 // --- Грозовые: нижний ярус, поверх остальных. Ступенчатое окно —
                 // до _StormThreshold их нет вовсе, выше набирают до сплошной пелены.
-                half stormGate = saturate((coverage - _StormThreshold) / max(1.0h - _StormThreshold, 0.01h));
+                //
+                // Покрытие грозы независимо от кучевых (_CloudCoverage больше не читается
+                // здесь) — выключатель: _StormCoverage=0 обязан гасить грозу целиком, при
+                // любой высоте над горизонтом. Поэтому прибавка от перспективы пласта (slab)
+                // применена МНОЖИТЕЛЬНО, не слагаемым, как у перистых — слагаемая форма дала
+                // бы ненулевое покрытие вблизи горизонта даже при _StormCoverage=0, и
+                // выключатель бы не работал. См. спек, решения #8-11.
+                half stormCov = saturate(_StormCoverage * (1.0h + slab));
+                half stormGate = saturate((stormCov - _StormThreshold) / max(1.0h - _StormThreshold, 0.01h));
 
                 // Фронт направленный: гроза с одной стороны неба, а не ровным слоем.
                 half stormFront = saturate(dot(dir, normalize(_StormDirection.xyz)) * 0.5h + 0.5h);
@@ -378,9 +520,20 @@ Shader "SpiderRig/Weather/DomeClouds"
                     half stormMask = smoothstep(0.0h, _CloudSoftness, stormRel);
 
                     half stormTrans = StormTransmittance(dir, stormGate);
-                    half3 stormColor = lerp(_StormShadowColor.rgb, _StormColor.rgb, stormTrans);
+                    // Собственных цветов у грозы больше нет — общая пара свет/тень,
+                    // помноженная на тинт (спек, решение #5: "темнее и синее" через тинт).
+                    half3 stormColor = lerp(_CloudShadowColor.rgb, baseColor, stormTrans) * _StormTint.rgb;
                     CompositeOver(color, alpha, stormColor, stormMask);
                 }
+
+                // Подмес в цвет дальнего стопа тумана — та же форма по высоте, что у
+                // горизонтной дымки купола неба (ApplyHorizonFog в SHD_Weather_DomeSky),
+                // чтобы шва между куполами не возникало. Своя ручка силы (_CloudsFogAmount),
+                // общая высота (_SkyFogHeight). Блендим только color, не alpha — прозрачность
+                // облака отвечает за то, есть ли облако вообще, а не за то, видно ли его.
+                half cloudsFogT = 1.0h - saturate(dir.y / _SkyFogHeight);
+                cloudsFogT = cloudsFogT * cloudsFogT * _CloudsFogAmount;
+                color = lerp(color, _SR_FogFarColor.rgb, saturate(cloudsFogT));
 
                 color = SR_ApplyWeatherFilter(color, _FilterColor, _FilterSaturation, _FilterValue);
 
