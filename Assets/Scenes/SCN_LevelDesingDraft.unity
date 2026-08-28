@@ -20,22 +20,22 @@ RenderSettings:
   m_FogDensity: 0.019
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.61086905, g: 0.7974919, b: 0.8809812, a: 1}
-  m_AmbientEquatorColor: {r: 0.55269104, g: 0.8284546, b: 0.8809812, a: 1}
-  m_AmbientGroundColor: {r: 0.26252824, g: 0.39351594, b: 0.41846606, a: 0.475}
+  m_AmbientSkyColor: {r: 0.7064792, g: 0.92231137, b: 1.018868, a: 1}
+  m_AmbientEquatorColor: {r: 0.63919544, g: 0.9581202, b: 1.018868, a: 1}
+  m_AmbientGroundColor: {r: 0.41547704, g: 0.62277806, b: 0.6622641, a: 0.65}
   m_AmbientIntensity: 1
   m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 9ada1c4a37b940947ba390f93e85b301, type: 2}
+  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
   m_HaloStrength: 0.487
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
   m_HaloTexture: {fileID: 0}
   m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
-  m_DefaultReflectionMode: 1
+  m_DefaultReflectionMode: 0
   m_DefaultReflectionResolution: 128
   m_ReflectionBounces: 1
-  m_ReflectionIntensity: 0
+  m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1453089636}
   m_UseRadianceAmbientProbe: 0
@@ -43,7 +43,7 @@ RenderSettings:
 LightmapSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 13
-  m_BakeOnSceneLoad: 1
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -93,7 +93,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: c337c965d7793724cb0f0c22c2c4523c, type: 2}
+  m_LightingDataAsset: {fileID: 0}
   m_LightingSettings: {fileID: 4890085278179872738, guid: c2984068ed808944a8e84f1c576fcda2, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -2178,7 +2178,7 @@ MonoBehaviour:
   priority: 0
   blendDistance: 0
   weight: 1
-  sharedProfile: {fileID: 11400000, guid: b5d33d7fa0c2d2d49a7de58f4de51af1, type: 2}
+  sharedProfile: {fileID: 11400000, guid: 2d8688e32c59e0b41aa1d6e2c33f1b9b, type: 2}
 --- !u!1 &426358700 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5107961599309044978, guid: 5ed26bbb3c0a0bb4e8bf618fa9095f3e, type: 3}
@@ -10649,6 +10649,18 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 6070083049082218433, guid: bc4a7a5e7985d0646a6ae62492fcabf9, type: 3}
+      propertyPath: m_ReceiveGI
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6070083049082218433, guid: bc4a7a5e7985d0646a6ae62492fcabf9, type: 3}
+      propertyPath: m_ImportantGI
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6070083049082218433, guid: bc4a7a5e7985d0646a6ae62492fcabf9, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12853,7 +12865,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
       propertyPath: _startingTimeOfDay01
-      value: 0.315
+      value: 0.325
       objectReference: {fileID: 0}
     - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
       propertyPath: _bands.Array.data[0].EndY
@@ -12866,11 +12878,11 @@ PrefabInstance:
     - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
       propertyPath: _bands.Array.data[0].Preset
       value: 
-      objectReference: {fileID: 11400000, guid: a0fc44f822047d049b37323d006ff16f, type: 2}
+      objectReference: {fileID: 11400000, guid: b5a5fd3cb1265a945ae2fd5ae47fec00, type: 2}
     - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
       propertyPath: _bands.Array.data[1].Preset
       value: 
-      objectReference: {fileID: 11400000, guid: a0fc44f822047d049b37323d006ff16f, type: 2}
+      objectReference: {fileID: 11400000, guid: b5a5fd3cb1265a945ae2fd5ae47fec00, type: 2}
     - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
       propertyPath: _bands.Array.data[1].StartY
       value: 200

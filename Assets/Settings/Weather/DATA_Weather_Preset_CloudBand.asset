@@ -537,17 +537,17 @@ MonoBehaviour:
   CirrusSpeed: 0.12
   AmbientSkyColor:
     _mode: 1
-    _constant: {r: 0.5, g: 0.6, b: 0.7, a: 1}
+    _constant: {r: 1, g: 1, b: 1, a: 1}
     _gradient:
       serializedVersion: 2
-      key0: {r: 0.3243384, g: 0.44787437, b: 0.495517, a: 1}
+      key0: {r: 0.14117646, g: 0.21568628, b: 0.19743471, a: 1}
       key1: {r: 0.5188679, g: 0.2716714, b: 0.34818456, a: 1}
       key2: {r: 0.5188679, g: 0.369571, b: 0.4591492, a: 0}
       key3: {r: 0.47098613, g: 0.61487424, b: 0.6792453, a: 0}
       key4: {r: 0.47098613, g: 0.61487424, b: 0.6792453, a: 0}
       key5: {r: 0.7169812, g: 0.46375015, b: 0.31452474, a: 0}
       key6: {r: 0.16820931, g: 0.19269691, b: 0.33962262, a: 0}
-      key7: {r: 0.3254902, g: 0.44705883, b: 0.49411765, a: 0}
+      key7: {r: 0.14117648, g: 0.21568628, b: 0.19743471, a: 0}
       ctime0: 11372
       ctime1: 14456
       ctime2: 16962
@@ -565,12 +565,12 @@ MonoBehaviour:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_ColorSpace: 0
+      m_ColorSpace: -1
       m_NumColorKeys: 8
       m_NumAlphaKeys: 2
   AmbientEquatorColor:
     _mode: 1
-    _constant: {r: 1, g: 0, b: 0.022154808, a: 1}
+    _constant: {r: 0.6830188, g: 0.6830188, b: 0.6830188, a: 1}
     _gradient:
       serializedVersion: 2
       key0: {r: 0.07355821, g: 0.16414715, b: 0.1792453, a: 1}
@@ -583,7 +583,7 @@ MonoBehaviour:
       key7: {r: 0, g: 0, b: 0, a: 0}
       ctime0: 11758
       ctime1: 15035
-      ctime2: 20046
+      ctime2: 20180
       ctime3: 48091
       ctime4: 51079
       ctime5: 54645
@@ -601,10 +601,10 @@ MonoBehaviour:
       m_ColorSpace: -1
       m_NumColorKeys: 6
       m_NumAlphaKeys: 2
-  AmbientGroundReflectance: 0.475
+  AmbientGroundReflectance: 0.65
   AmbientMultiplier:
     _mode: 0
-    _constant: 1.297
+    _constant: 1.5
     _curve:
       serializedVersion: 2
       m_Curve:
@@ -631,7 +631,7 @@ MonoBehaviour:
       m_RotationOrder: 4
   SunIntensity:
     _mode: 0
-    _constant: 1.21
+    _constant: 2
     _curve:
       serializedVersion: 2
       m_Curve:
@@ -658,7 +658,7 @@ MonoBehaviour:
       m_RotationOrder: 4
   SunColor:
     _mode: 1
-    _constant: {r: 0.97, g: 0.97, b: 1, a: 1}
+    _constant: {r: 1.94, g: 1.94, b: 2, a: 1}
     _gradient:
       serializedVersion: 2
       key0: {r: 0, g: 0, b: 0, a: 1}
@@ -673,10 +673,10 @@ MonoBehaviour:
       ctime1: 14264
       ctime2: 16962
       ctime3: 19468
-      ctime4: 43947
+      ctime4: 43939
       ctime5: 47802
       ctime6: 51850
-      ctime7: 51850
+      ctime7: 0
       atime0: 0
       atime1: 65535
       atime2: 0
@@ -753,7 +753,7 @@ MonoBehaviour:
       m_RotationOrder: 4
   MoonIntensity:
     _mode: 0
-    _constant: 0.658
+    _constant: 2
     _curve:
       serializedVersion: 2
       m_Curve:
@@ -927,7 +927,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  SkyFogHeight: 0.171
+  SkyFogHeight: 0.102
   SkyFogGlowSquish: 6
   FogNearColor:
     _mode: 1
@@ -1032,7 +1032,7 @@ MonoBehaviour:
   FogFarPosition: 4
   FogVisibilityDistance:
     _mode: 0
-    _constant: 140.36722
+    _constant: 152.29927
     _curve:
       serializedVersion: 2
       m_Curve:
