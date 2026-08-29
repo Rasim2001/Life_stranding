@@ -48,6 +48,22 @@ namespace WeatherSystem
         [Tooltip("Длина игровых суток в секундах реального времени. Для проверки дуги в песочнице ставится маленькой.")]
         [SerializeField] private float _dayLengthSeconds = 600f;
 
+        // Пивот несёт статическую ориентацию дуги (где горизонт), лампы едут по ней от времени —
+        // раскладка Cozy (CozyWeather.cs:908-909), см. WeatherTime.ArcPivotEuler/CelestialEuler.
+        // Дефолты Azimuth=-30, Tilt=30 воспроизводят точку восхода (150°) и высоту (60°) дуги,
+        // авторенные до введения этих ручек.
+        [Header("Небесная механика")]
+        [Tooltip("Азимут восхода = 180 + Azimuth.")]
+        [SerializeField, Range(-180f, 180f)] private float _arcAzimuth = -30f;
+        [Tooltip("Макс. высота дуги = 90 - Tilt.")]
+        [SerializeField, Range(0f, 80f)] private float _arcTilt = 30f;
+        [Tooltip("Отставание луны по той же траектории, что и солнце.")]
+        [SerializeField, Range(90f, 180f)] private float _moonOffsetDegrees = 180f;
+        [Tooltip("Полуширина полосы фейда солнце↔луна по высоте = длина сумерек.")]
+        [SerializeField, Range(0f, 0.3f)] private float _horizonFadeBand = 0.07f;
+        [SerializeField] private LightShadows _sunShadowType = LightShadows.Soft;
+        [SerializeField] private LightShadows _moonShadowType = LightShadows.Soft;
+
         public SkyBand[] Bands => _bands;
         public Light SunLight => _sunLight;
         public Light MoonLight => _moonLight;
@@ -59,5 +75,41 @@ namespace WeatherSystem
         public float StartingTimeOfDay01 => _startingTimeOfDay01;
         public bool TimeOfDayRunning => _timeOfDayRunning;
         public float DayLengthSeconds => _dayLengthSeconds;
+
+        public float ArcAzimuth => _arcAzimuth;
+        public float ArcTilt => _arcTilt;
+        public float MoonOffsetDegrees => _moonOffsetDegrees;
+        public float HorizonFadeBand => _horizonFadeBand;
+        public LightShadows SunShadowType => _sunShadowType;
+        public LightShadows MoonShadowType => _moonShadowType;
+
+        // Инвалидирует кэш Edit Mode превью на любую правку сериализованных полей рига —
+        // и через панель Weather Control, и через дефолтный инспектор напрямую. Оба пути
+        // идут через один и тот же слой сериализации/undo, поэтому один хук в риге
+        // закрывает оба сразу, без списка "интересных" полей в WeatherEditorDriver.
+        // Эмпирически подтверждено (план, срез 4, п.1): OnValidate срабатывает и на
+        // SerializedObject.ApplyModifiedProperties(), не только на правку руками в инспекторе.
+        //
+        // Вызов через рефлексию, а не прямая ссылка на тип: WeatherRig.cs компилируется
+        // в рантайм-сборку (Assembly-CSharp), WeatherEditorDriver — в Editor-сборку
+        // (Assembly-CSharp-Editor); рантайм-сборка не может ссылаться на Editor-сборку
+        // напрямую даже под #if UNITY_EDITOR — это ограничение порядка компиляции, не
+        // видимости кода, компилятор отказывает с CS0103.
+#if UNITY_EDITOR
+        private static System.Reflection.MethodInfo _invalidateMethod;
+
+        private void OnValidate()
+        {
+            if (_invalidateMethod == null)
+            {
+                System.Type driverType = System.Type.GetType(
+                    "SpiderRig.Editor.Weather.WeatherEditorDriver, Assembly-CSharp-Editor");
+                _invalidateMethod = driverType?.GetMethod(
+                    "Invalidate", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+            }
+
+            _invalidateMethod?.Invoke(null, null);
+        }
+#endif
     }
 }

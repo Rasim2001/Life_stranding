@@ -145,6 +145,10 @@ namespace WeatherSystem.Profiles
         // на DATA_Weather_SkyBand_Above уже стоит 1.6, поэтому потолок НЕ 0..1 (срезал бы
         // 37% света у самой верхней полосы) — 8 соответствует практике URP directional light.
         [DailyRange(0f, 8f)] public DailyFloat SunIntensity;
+        // Диапазон 0..1 — тот же, что был у [Range(0f,1f)] на риговом поле, которое это
+        // заменяет (см. WeatherRig.cs, срез 3 плана celestial-handover-and-arc-controls):
+        // сила тени, как и SunIntensity, это суточная кривая, а не статика сцены.
+        [DailyRange(0f, 1f)] public DailyFloat SunShadowStrength;
         public DailyColor SunColor;
         [Range(0.5f, 8f)] public float SunSize = 1.3f;
         public DailyColor SunHaloColor;
@@ -154,6 +158,7 @@ namespace WeatherSystem.Profiles
         [Header("Moon")]
         // Границы не из шейдера — Light.intensity. Авторский максимум сейчас 0.22, 2 — запас.
         [DailyRange(0f, 2f)] public DailyFloat MoonIntensity;
+        [DailyRange(0f, 1f)] public DailyFloat MoonShadowStrength;
         public DailyColor MoonColor;
         [Range(0f, 1f)] public float MoonFlareFalloff = 0.5f;
         [DailyRange(0f, 3f)] public DailyFloat MoonFlareIntensity;

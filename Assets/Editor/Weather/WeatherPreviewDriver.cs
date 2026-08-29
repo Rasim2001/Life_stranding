@@ -29,6 +29,7 @@ namespace SpiderRig.Editor.Weather
         private bool _running;
 
         private AmbientMode _snapAmbientMode;
+        private Light _snapRenderSettingsSun;
         private Color _snapAmbientSky;
         private Color _snapAmbientEquator;
         private Color _snapAmbientGround;
@@ -142,6 +143,12 @@ namespace SpiderRig.Editor.Weather
             RevertTransformOverrides(_rig.CloudLayer != null ? _rig.CloudLayer.transform : null);
             RevertTransformOverrides(_rig.SunMoonPivot);
 
+            // С среза 2 повороты ламп сами стали производными (время едет на них, не на
+            // пивоте) — без отката сюда потёк бы новый оверрайд на каждый кадр превью,
+            // ровно как у купольных трансформов выше.
+            RevertTransformOverrides(_rig.SunLight != null ? _rig.SunLight.transform : null);
+            RevertTransformOverrides(_rig.MoonLight != null ? _rig.MoonLight.transform : null);
+
             RevertLightOverrides(_rig.SunLight);
             RevertLightOverrides(_rig.MoonLight);
 
@@ -177,6 +184,10 @@ namespace SpiderRig.Editor.Weather
             RevertOverride(target, "m_Enabled");
             RevertOverride(target, "m_Intensity");
             RevertOverride(target, "m_Color");
+            // Путь именно такой — m_ShadowStrength не существует, проверено перебором
+            // SerializedObject на живой лампе. Валидные: m_Shadows.m_Type, m_Shadows.m_Strength.
+            RevertOverride(target, "m_Shadows.m_Strength");
+            RevertOverride(target, "m_Shadows.m_Type");
         }
 
         private static void RevertOverride(Object target, string propertyPath)
@@ -220,6 +231,7 @@ namespace SpiderRig.Editor.Weather
         private void TakeSnapshot()
         {
             _snapAmbientMode = RenderSettings.ambientMode;
+            _snapRenderSettingsSun = RenderSettings.sun;
             _snapAmbientSky = RenderSettings.ambientSkyColor;
             _snapAmbientEquator = RenderSettings.ambientEquatorColor;
             _snapAmbientGround = RenderSettings.ambientGroundColor;
@@ -249,6 +261,7 @@ namespace SpiderRig.Editor.Weather
         private void RestoreSnapshot()
         {
             RenderSettings.ambientMode = _snapAmbientMode;
+            RenderSettings.sun = _snapRenderSettingsSun;
             RenderSettings.ambientSkyColor = _snapAmbientSky;
             RenderSettings.ambientEquatorColor = _snapAmbientEquator;
             RenderSettings.ambientGroundColor = _snapAmbientGround;
@@ -271,18 +284,24 @@ namespace SpiderRig.Editor.Weather
                 _rig.SunMoonPivot.localEulerAngles = _snapPivotEuler;
         }
 
-        // Тот же порядок, что в WeatherService.RotateSunMoonPivot() — формула пивота
-        // общая (WeatherTime.PivotEuler), чтобы превью и рантайм не могли разойтись.
+        // Тот же порядок, что в WeatherService.RotateSunMoonPivot() — формулы общие
+        // (WeatherTime.ArcPivotEuler/CelestialEuler), чтобы превью и рантайм не могли разойтись.
         private void RotateSunMoonPivot(float timeOfDay01)
         {
             if (_rig.SunMoonPivot != null)
-                _rig.SunMoonPivot.localEulerAngles = WeatherTime.PivotEuler(timeOfDay01);
+                _rig.SunMoonPivot.localEulerAngles = WeatherTime.ArcPivotEuler(_rig.ArcAzimuth, _rig.ArcTilt);
 
             if (_rig.SunLight != null)
+            {
+                _rig.SunLight.transform.localEulerAngles = WeatherTime.CelestialEuler(timeOfDay01, 0f);
                 Shader.SetGlobalVector(WeatherShaderIds.SunDirectionGlobal, -_rig.SunLight.transform.forward);
+            }
 
             if (_rig.MoonLight != null)
+            {
+                _rig.MoonLight.transform.localEulerAngles = WeatherTime.CelestialEuler(timeOfDay01, _rig.MoonOffsetDegrees);
                 Shader.SetGlobalVector(WeatherShaderIds.MoonDirectionGlobal, -_rig.MoonLight.transform.forward);
+            }
 
             Shader.SetGlobalFloat(WeatherShaderIds.TimeOfDay01Global, timeOfDay01);
         }
@@ -325,18 +344,9 @@ namespace SpiderRig.Editor.Weather
         private static Color MultiplyRgb(Color c, float m) =>
             new Color(c.r * m, c.g * m, c.b * m, c.a);
 
-        private void ApplySun(SkyState sky, float sunElevation)
-        {
-            if (_rig.SunLight == null)
-                return;
-
-            _rig.SunLight.enabled = sunElevation > 0f;
-            if (!_rig.SunLight.enabled)
-                return;
-
-            _rig.SunLight.intensity = sky.SunIntensity;
-            _rig.SunLight.color = sky.SunColor;
-        }
+        private void ApplySun(SkyState sky, float sunElevation) =>
+            WeatherCelestialApplier.ApplySun(
+                _rig.SunLight, sky, sunElevation, _rig.HorizonFadeBand, _rig.SunShadowType);
 
         private void ApplyMoon(SkyState sky)
         {
@@ -344,13 +354,8 @@ namespace SpiderRig.Editor.Weather
                 return;
 
             float moonElevation = -_rig.MoonLight.transform.forward.y;
-            _rig.MoonLight.enabled = moonElevation > 0f;
-
-            if (_rig.MoonLight.enabled)
-            {
-                _rig.MoonLight.intensity = sky.MoonIntensity;
-                _rig.MoonLight.color = sky.MoonColor;
-            }
+            WeatherCelestialApplier.ApplyMoon(
+                _rig.MoonLight, sky, moonElevation, _rig.HorizonFadeBand, _rig.MoonShadowType);
 
             ApplyMoonDisk(sky, moonElevation);
         }

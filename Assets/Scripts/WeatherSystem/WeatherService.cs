@@ -62,6 +62,13 @@ namespace WeatherSystem
         {
             _startGameReceiver.OnStartGameHappened += ResetToStartingTime;
 
+            // MoonIntensity (2.0) выше SunIntensity (1.5) — без явного Sun Source ночью солнце
+            // выключено, и URP взял бы луну как main light сам (проверено по исходнику,
+            // UniversalRenderPipeline.GetBrightestDirectionalLightIndex), но днём при обеих
+            // лампах в кадре главным светом молча стала бы луна. Cozy кладёт сюда только
+            // солнце, той же одной строкой (CozyWeather.cs:947).
+            RenderSettings.sun = _rig.SunLight;
+
             // Работаем по рантайм-копии скайбокс-материала, а не по самому ассету.
             // RenderSettings.skybox в редакторе указывает на общий ассет, и запись в него
             // каждый кадр помечает его грязным: авторские значения молча затираются тем,
@@ -252,17 +259,25 @@ namespace WeatherSystem
 
         private void RotateSunMoonPivot()
         {
+            // Пивот несёт статическую ориентацию дуги сцены, лампы едут по ней от времени —
+            // см. WeatherTime.cs про то, почему раскладка развязана именно так.
             if (_rig.SunMoonPivot != null)
-                _rig.SunMoonPivot.localEulerAngles = WeatherTime.PivotEuler(TimeOfDay01);
+                _rig.SunMoonPivot.localEulerAngles = WeatherTime.ArcPivotEuler(_rig.ArcAzimuth, _rig.ArcTilt);
 
             // Глобал, не свойство материала: направление на солнце понадобится не только
             // небу, позже туману и воде. -forward, а не forward: свет "смотрит" от солнца
             // к земле, а нам нужно направление К солнцу — тот же приём, что в GetSunElevation().
             if (_rig.SunLight != null)
+            {
+                _rig.SunLight.transform.localEulerAngles = WeatherTime.CelestialEuler(TimeOfDay01, 0f);
                 Shader.SetGlobalVector(WeatherShaderIds.SunDirectionGlobal, -_rig.SunLight.transform.forward);
+            }
 
             if (_rig.MoonLight != null)
+            {
+                _rig.MoonLight.transform.localEulerAngles = WeatherTime.CelestialEuler(TimeOfDay01, _rig.MoonOffsetDegrees);
                 Shader.SetGlobalVector(WeatherShaderIds.MoonDirectionGlobal, -_rig.MoonLight.transform.forward);
+            }
 
             // Для вращения звёздной сферы (SHD_Weather_DomeSky) — сутки как угол поворота.
             // См. .scratch/sky-night-and-star-dome/spec.md, решение #10.
@@ -313,20 +328,9 @@ namespace WeatherSystem
         private static Color MultiplyRgb(Color c, float m) =>
             new Color(c.r * m, c.g * m, c.b * m, c.a);
 
-        private void ApplySun(SkyState sky, float sunElevation)
-        {
-            if (_rig.SunLight == null)
-                return;
-
-            // Строго исключаем солнце, когда оно физически под горизонтом — а не только гасим яркость.
-            _rig.SunLight.enabled = sunElevation > 0f;
-
-            if (!_rig.SunLight.enabled)
-                return;
-
-            _rig.SunLight.intensity = sky.SunIntensity;
-            _rig.SunLight.color = sky.SunColor;
-        }
+        private void ApplySun(SkyState sky, float sunElevation) =>
+            WeatherCelestialApplier.ApplySun(
+                _rig.SunLight, sky, sunElevation, _rig.HorizonFadeBand, _rig.SunShadowType);
 
         private void ApplyMoon(SkyState sky)
         {
@@ -336,13 +340,8 @@ namespace WeatherSystem
             // Читаем высоту луны с её собственного трансформа, а не как -sunElevation:
             // так связка остаётся верной, даже если луну в риге перевесят иначе.
             float moonElevation = -_rig.MoonLight.transform.forward.y;
-            _rig.MoonLight.enabled = moonElevation > 0f;
-
-            if (_rig.MoonLight.enabled)
-            {
-                _rig.MoonLight.intensity = sky.MoonIntensity;
-                _rig.MoonLight.color = sky.MoonColor;
-            }
+            WeatherCelestialApplier.ApplyMoon(
+                _rig.MoonLight, sky, moonElevation, _rig.HorizonFadeBand, _rig.MoonShadowType);
 
             ApplyMoonDisk(sky, moonElevation);
         }

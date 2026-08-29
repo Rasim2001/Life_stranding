@@ -54,6 +54,7 @@ namespace WeatherSystem.Profiles
         public float AmbientMultiplier;
 
         public float SunIntensity;
+        public float SunShadowStrength;
         public Color SunColor;
         public float SunSize;
         public Color SunHaloColor;
@@ -61,6 +62,7 @@ namespace WeatherSystem.Profiles
         public float SunHaloIntensity;
 
         public float MoonIntensity;
+        public float MoonShadowStrength;
         public Color MoonColor;
         public float MoonFlareFalloff;
         public float MoonFlareIntensity;

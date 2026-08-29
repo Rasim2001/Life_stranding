@@ -134,6 +134,7 @@ namespace WeatherSystem.Profiles
                 AmbientMultiplier = profile.AmbientMultiplier.Evaluate(timeOfDay01),
 
                 SunIntensity = profile.SunIntensity.Evaluate(timeOfDay01),
+                SunShadowStrength = profile.SunShadowStrength.Evaluate(timeOfDay01),
                 SunColor = profile.SunColor.Evaluate(timeOfDay01),
                 SunSize = profile.SunSize,
                 SunHaloColor = profile.SunHaloColor.Evaluate(timeOfDay01),
@@ -141,6 +142,7 @@ namespace WeatherSystem.Profiles
                 SunHaloIntensity = profile.SunHaloIntensity.Evaluate(timeOfDay01),
 
                 MoonIntensity = profile.MoonIntensity.Evaluate(timeOfDay01),
+                MoonShadowStrength = profile.MoonShadowStrength.Evaluate(timeOfDay01),
                 MoonColor = profile.MoonColor.Evaluate(timeOfDay01),
                 MoonFlareFalloff = profile.MoonFlareFalloff,
                 MoonFlareIntensity = profile.MoonFlareIntensity.Evaluate(timeOfDay01),
@@ -217,6 +219,7 @@ namespace WeatherSystem.Profiles
             AmbientMultiplier = Mathf.Lerp(a.AmbientMultiplier, b.AmbientMultiplier, t),
 
             SunIntensity = Mathf.Lerp(a.SunIntensity, b.SunIntensity, t),
+            SunShadowStrength = Mathf.Lerp(a.SunShadowStrength, b.SunShadowStrength, t),
             SunColor = Color.Lerp(a.SunColor, b.SunColor, t),
             SunSize = Mathf.Lerp(a.SunSize, b.SunSize, t),
             SunHaloColor = Color.Lerp(a.SunHaloColor, b.SunHaloColor, t),
@@ -224,6 +227,7 @@ namespace WeatherSystem.Profiles
             SunHaloIntensity = Mathf.Lerp(a.SunHaloIntensity, b.SunHaloIntensity, t),
 
             MoonIntensity = Mathf.Lerp(a.MoonIntensity, b.MoonIntensity, t),
+            MoonShadowStrength = Mathf.Lerp(a.MoonShadowStrength, b.MoonShadowStrength, t),
             MoonColor = Color.Lerp(a.MoonColor, b.MoonColor, t),
             MoonFlareFalloff = Mathf.Lerp(a.MoonFlareFalloff, b.MoonFlareFalloff, t),
             MoonFlareIntensity = Mathf.Lerp(a.MoonFlareIntensity, b.MoonFlareIntensity, t),

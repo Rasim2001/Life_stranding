@@ -20,9 +20,9 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.7064792, g: 0.92231137, b: 1.018868, a: 1}
-  m_AmbientEquatorColor: {r: 0.63919544, g: 0.9581202, b: 1.018868, a: 1}
-  m_AmbientGroundColor: {r: 0.41547704, g: 0.62277806, b: 0.6622641, a: 0.65}
+  m_AmbientSkyColor: {r: 0.5602728, g: 0.730758, b: 0.8077835, a: 1}
+  m_AmbientEquatorColor: {r: 0.6029014, g: 0.85490197, b: 0.960636, a: 1}
+  m_AmbientGroundColor: {r: 0.3918859, g: 0.55568624, b: 0.6244134, a: 0.65}
   m_AmbientIntensity: 1
   m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.5924529, g: 0.5924529, b: 0.5924529, a: 1}
@@ -127,10 +127,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1536564114862877, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
-      propertyPath: m_Shadows.m_Type
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1623024195728048227, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -192,8 +188,40 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: _arcTilt
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: _arcAzimuth
+      value: -65
+      objectReference: {fileID: 0}
+    - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: _horizonFadeBand
+      value: 0.007
+      objectReference: {fileID: 0}
+    - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: _dayLengthSeconds
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: _timeOfDayRunning
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: _moonOffsetDegrees
+      value: 170
+      objectReference: {fileID: 0}
+    - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: _sunShadowStrength
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: _moonShadowStrength
+      value: 0.293
+      objectReference: {fileID: 0}
+    - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
       propertyPath: _startingTimeOfDay01
-      value: 0.4
+      value: 0.937
       objectReference: {fileID: 0}
     - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
       propertyPath: _bands.Array.data[0].Preset

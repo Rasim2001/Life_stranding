@@ -22,6 +22,7 @@ namespace SpiderRig.Editor.Weather
         [SerializeField] private float _worldY;
         [SerializeField] private bool _heightOverride;
         [SerializeField] private int _selectedRigIndex;
+        [SerializeField] private bool _celestialFoldout;
 
         // Пресет берётся с рига выбранной сцены, а не из фиксированного пути к ассету:
         // после тикета 03 источник погоды — поле WeatherRig.GlobalPreset, и панель обязана
@@ -343,6 +344,102 @@ namespace SpiderRig.Editor.Weather
             {
                 GUILayout.Label($"риг: {rigs[0].name} ({rigs[0].gameObject.scene.name})", EditorStyles.miniLabel);
             }
+
+            EditorGUILayout.Space(2);
+            DrawCelestialMechanicsSection();
+        }
+
+        // Правит сцену (риг), а не пресет — сознательно не пятая вкладка: вкладки
+        // Lighting/Fog/Clouds/Celestials подчиняются кнопкам «Сохранить / Отклонить» пресета,
+        // а эта секция их не касается. Механизм — тот же, что в DrawTimeOfDay(): свой
+        // SerializedObject(rig), ApplyModifiedProperties() → WeatherEditorDriver.Invalidate(),
+        // Undo и dirty-разметка сцены получаются автоматически.
+        private void DrawCelestialMechanicsSection()
+        {
+            WeatherRig rig = ResolveRig();
+            if (rig == null)
+                return;
+
+            _celestialFoldout = EditorGUILayout.Foldout(_celestialFoldout, "Небесная механика", true);
+            if (!_celestialFoldout)
+                return;
+
+            EditorGUI.indentLevel++;
+
+            var rigSO = new SerializedObject(rig);
+            DrawRigField(rigSO, "_arcAzimuth", "Azimuth");
+            DrawRigField(rigSO, "_arcTilt", "Tilt");
+            DrawRigField(rigSO, "_moonOffsetDegrees", "Moon Offset");
+            DrawRigField(rigSO, "_horizonFadeBand", "Horizon Fade Band");
+            DrawRigField(rigSO, "_sunShadowType", "Sun Shadow Type");
+            DrawRigField(rigSO, "_moonShadowType", "Moon Shadow Type");
+
+            if (rigSO.ApplyModifiedProperties())
+                WeatherEditorDriver.Invalidate();
+
+            // Справочная строка — чтобы последствия ручек читались без отдельных замеров.
+            // Восход = 180 + Azimuth, заход = Azimuth (нормализован в 0..360), макс. высота
+            // = 90 - Tilt — формулы из спека (.scratch/celestial-handover-and-arc-controls).
+            float sunrise = Mathf.Repeat(180f + rig.ArcAzimuth, 360f);
+            float sunset = Mathf.Repeat(rig.ArcAzimuth, 360f);
+            float maxHeight = 90f - rig.ArcTilt;
+            int overlapMinutes = EstimateOverlapGameMinutes(rig);
+
+            GUILayout.Label(
+                $"восход {sunrise:0}° · заход {sunset:0}° · макс. высота {maxHeight:0}° · "
+                + $"восход луны {sunrise:0}° · перекрытие ≈ {overlapMinutes} игр. мин.",
+                EditorStyles.miniLabel);
+
+            // Звёздный купол со светилами не связан (решение зафиксировано в спеке) — звёзды
+            // крутятся вокруг мировой вертикали по своей Latitude, светила — по дуге вокруг
+            // горизонтальной оси. Модели разные, подсказка — единственное, что их сближает.
+            EditorGUILayout.HelpBox(
+                "Latitude звёздного купола (вкладка Celestials пресета) со Tilt не связан "
+                + "автоматически — для согласованного наклона выставьте его вручную близко к Tilt.",
+                MessageType.None);
+
+            EditorGUI.indentLevel--;
+        }
+
+        private static void DrawRigField(SerializedObject rigSO, string propertyName, string label)
+        {
+            SerializedProperty prop = rigSO.FindProperty(propertyName);
+            if (prop != null)
+                EditorGUILayout.PropertyField(prop, new GUIContent(label));
+        }
+
+        // Численная оценка окна, где обе лампы одновременно выше порога включения —
+        // та же формула, что в WeatherCelestialApplier, но без записи в реальные трансформы
+        // (композиция кватернионов пивота и лампы, см. WeatherService.RotateSunMoonPivot).
+        // Приближение: не учитывает возможный поворот самого рига в мире — для справочной
+        // строки этого достаточно, замер точных чисел делается через MCP (план, п. 2.7).
+        private static int EstimateOverlapGameMinutes(WeatherRig rig)
+        {
+            Quaternion pivotRotation = Quaternion.Euler(WeatherTime.ArcPivotEuler(rig.ArcAzimuth, rig.ArcTilt));
+            float band = rig.HorizonFadeBand;
+            const int steps = 1440;
+            int count = 0;
+
+            for (int i = 0; i < steps; i++)
+            {
+                float t = i / (float)steps;
+                float sunElevation = Elevation(pivotRotation, t, 0f);
+                float moonElevation = Elevation(pivotRotation, t, rig.MoonOffsetDegrees);
+
+                bool sunOn = WeatherTime.HorizonWeight(sunElevation, band) > 0.001f;
+                bool moonOn = WeatherTime.HorizonWeight(moonElevation, band) > 0.001f;
+                if (sunOn && moonOn)
+                    count++;
+            }
+
+            return count;
+        }
+
+        private static float Elevation(Quaternion pivotRotation, float timeOfDay01, float offsetDegrees)
+        {
+            Quaternion local = Quaternion.Euler(WeatherTime.CelestialEuler(timeOfDay01, offsetDegrees));
+            Vector3 forward = pivotRotation * local * Vector3.forward;
+            return -forward.y;
         }
 
         // Время суток живёт на риге, а не в окне: иначе оно теряется при закрытии панели —
@@ -408,12 +505,12 @@ namespace SpiderRig.Editor.Weather
 
             EditorGUILayout.Space(6);
             EditorGUILayout.LabelField("Sun", EditorStyles.boldLabel);
-            DrawFields("SunIntensity", "SunColor");
+            DrawFields("SunIntensity", "SunColor", "SunShadowStrength");
             EditorGUILayout.HelpBox("SunColor красит и Sun Light, и диск/гало солнца в шейдере — общая ручка.", MessageType.None);
 
             EditorGUILayout.Space(6);
             EditorGUILayout.LabelField("Moon", EditorStyles.boldLabel);
-            DrawFields("MoonIntensity", "MoonColor");
+            DrawFields("MoonIntensity", "MoonColor", "MoonShadowStrength");
             EditorGUILayout.HelpBox("MoonColor красит и Moon Light, и диск/гало луны в шейдере — общая ручка.", MessageType.None);
         }
 
