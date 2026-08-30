@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Infastructure.Common;
 using Infastructure.Data;
+using Infastructure.Services.CurrentLevel;
 using Infastructure.Services.ProgressWatchers;
 using Infastructure.Services.SaveLoadService;
 using Infastructure.StaticData.Cheats;
@@ -17,17 +17,17 @@ namespace Infastructure.Services.Tasks
 
         private readonly IProgressWatchersService _progressWatchersService;
         private readonly IStaticDataService _staticDataService;
-        private readonly ISceneLoader _sceneLoader;
+        private readonly ICurrentLevelService _currentLevel;
         private CheatsStaticData Cheats => _staticDataService.CheatsStaticData;
 
         private List<TaskId> _taskIds = new List<TaskId>();
 
         public TasksService(IProgressWatchersService progressWatchersService, IStaticDataService staticDataService,
-            ISceneLoader sceneLoader)
+            ICurrentLevelService currentLevel)
         {
             _progressWatchersService = progressWatchersService;
             _staticDataService = staticDataService;
-            _sceneLoader = sceneLoader;
+            _currentLevel = currentLevel;
         }
 
         public void Initialize()
@@ -54,7 +54,7 @@ namespace Infastructure.Services.Tasks
 
         public bool IsWasOpened(TaskId taskId)
         {
-            return !_sceneLoader.IsTutorialScene() ||
+            return !_currentLevel.ShowsFirstEncounter ||
                    _taskIds.Contains(taskId) ||
                    Cheats.TasksPopupEnabled;
         }

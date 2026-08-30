@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections;
 using Cysharp.Threading.Tasks;
-using Google.Apis.Logging;
-using Infastructure.StaticData;
-using Infastructure.StaticData.StaticDataService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,19 +10,14 @@ namespace Infastructure.Common
     {
         void Load(string name, Action onLoaded = null);
         void LoadAllScenes(string[] scenes, Action onLoaded = null);
-        bool IsTutorialScene();
     }
 
     public class SceneLoader : ISceneLoader
     {
         private readonly ICoroutineRunner _coroutineRunner;
-        private readonly IStaticDataService _staticDataService;
 
-        private GameStaticData GameData => _staticDataService.GameStaticData;
-
-        public SceneLoader(ICoroutineRunner coroutineRunner, IStaticDataService staticDataService)
+        public SceneLoader(ICoroutineRunner coroutineRunner)
         {
-            _staticDataService = staticDataService;
             _coroutineRunner = coroutineRunner;
         }
 
@@ -34,9 +26,6 @@ namespace Infastructure.Common
 
         public void LoadAllScenes(string[] scenes, Action onLoaded = null) =>
             LoadAllSceneCoroutine(scenes, onLoaded).Forget();
-
-        public bool IsTutorialScene() =>
-            SceneManager.GetActiveScene().name == GameData.TutorialSceneName;
 
         private IEnumerator LoadScene(string nextScene, Action onLoaded = null)
         {

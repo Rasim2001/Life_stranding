@@ -2,9 +2,9 @@ using System;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Infastructure.Common;
 using Infastructure.Common.Pickup;
 using Infastructure.CutScenes;
+using Infastructure.Services.CurrentLevel;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Defeat;
 using Infastructure.Services.PlatformObjects;
@@ -39,7 +39,7 @@ namespace SpiderController.PickUp
         private readonly ICutSceneService _cutSceneService;
         private readonly IStaticDataService _staticDataService;
         private readonly IPersistentProgressService _progressService;
-        private readonly ISceneLoader _sceneLoader;
+        private readonly ICurrentLevelService _currentLevel;
         private readonly SpiderStateContext _stateContext;
 
         private readonly Flower _flower;
@@ -56,7 +56,7 @@ namespace SpiderController.PickUp
             IDefeatWindowService defeatWindowService,
             ICutSceneService cutSceneService,
             IStaticDataService staticDataService,
-            IPersistentProgressService progressService, ISceneLoader sceneLoader)
+            IPersistentProgressService progressService, ICurrentLevelService currentLevel)
         {
             _stateContext = stateContext;
             _inputService = inputService;
@@ -67,7 +67,7 @@ namespace SpiderController.PickUp
             _cutSceneService = cutSceneService;
             _staticDataService = staticDataService;
             _progressService = progressService;
-            _sceneLoader = sceneLoader;
+            _currentLevel = currentLevel;
 
             _flower = flower;
         }
@@ -100,7 +100,7 @@ namespace SpiderController.PickUp
 
             if (canDisplay && _inputService.PickupPressed && _platformObjectsService.IsEmpty() && !IsDeath())
             {
-                if (!WasPicked && _sceneLoader.IsTutorialScene())
+                if (!WasPicked && _currentLevel.ShowsFirstEncounter)
                     PickupFlow().Forget();
                 else
                 {

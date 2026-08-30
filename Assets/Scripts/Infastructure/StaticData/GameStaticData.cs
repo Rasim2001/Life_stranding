@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Infastructure.StaticData.World;
 using PickupObjects;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -9,10 +10,7 @@ namespace Infastructure.StaticData
     [CreateAssetMenu(fileName = "GameData", menuName = "StaticData/GameData")]
     public class GameStaticData : SerializedScriptableObject
     {
-        [FoldoutGroup("AdditiveScenes")] public string[] AdditiveScenes;
-
-        public string LoadScene;
-        public string TutorialSceneName;
+        public TowerCatalog TowerCatalog;
 
         public Dictionary<string, GameData> GameDatas = new Dictionary<string, GameData>();
     }

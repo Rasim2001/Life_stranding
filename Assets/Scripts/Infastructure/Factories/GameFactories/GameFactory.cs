@@ -7,6 +7,7 @@ using HUD;
 using Infastructure.Common;
 using Infastructure.Services.CameraProvider;
 using Infastructure.Services.CheckPoint;
+using Infastructure.Services.CurrentLevel;
 using Infastructure.Services.PickupRewindRegistry;
 using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.ProgressWatchers;
@@ -23,7 +24,6 @@ using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using PickupObjects.Skills;
 using SpiderController;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Zenject;
 
 
@@ -41,8 +41,20 @@ namespace Infastructure.Factories.GameFactories
         private readonly IFlowerRegistryService _flowerRegistryService;
         private readonly ISpiderRegistryService _spiderRegistryService;
         private readonly IPickupRewindRegistryService _pickupRewindRegistryService;
+        private readonly ICurrentLevelService _currentLevel;
 
-        private string ActiveSceneName => SceneManager.GetActiveScene().name;
+        private GameData LevelData
+        {
+            get
+            {
+                string key = _currentLevel.LevelDataKey;
+
+                if (!_staticDataService.GameStaticData.GameDatas.TryGetValue(key, out GameData data))
+                    throw new KeyNotFoundException($"GameDatas has no entry for LevelDataKey '{key}'.");
+
+                return data;
+            }
+        }
 
         public GameFactory(
             DiContainer diContainer,
@@ -54,7 +66,8 @@ namespace Infastructure.Factories.GameFactories
             IPersistentProgressService progressService,
             IFlowerRegistryService flowerRegistryService,
             ISpiderRegistryService spiderRegistryService,
-            IPickupRewindRegistryService pickupRewindRegistryService)
+            IPickupRewindRegistryService pickupRewindRegistryService,
+            ICurrentLevelService currentLevel)
         {
             _cameraProviderService = cameraProviderService;
             _progressWatchersService = progressWatchersService;
@@ -66,12 +79,13 @@ namespace Infastructure.Factories.GameFactories
             _staticDataService = staticDataService;
             _biospherePointService = biospherePointService;
             _xRayService = xRayService;
+            _currentLevel = currentLevel;
         }
 
         public Spider CreateSpider(Flower flower)
         {
             WorldData worldData =
-                _staticDataService.GameStaticData.GameDatas[ActiveSceneName].SpiderSpawnData;
+                LevelData.SpiderSpawnData;
             Spider spider = _diContainer.InstantiatePrefabResourceForComponent<Spider>(AssetsPath.SpiderPath,
                 worldData.WorldPosition, worldData.WorldRotation, null);
             spider.Initialize(flower);
@@ -111,7 +125,7 @@ namespace Infastructure.Factories.GameFactories
 
         public void CreateCheckPoints()
         {
-            List<WorldData> checkPoints = _staticDataService.GameStaticData.GameDatas[ActiveSceneName].CheckPoints;
+            List<WorldData> checkPoints = LevelData.CheckPoints;
 
             for (int i = 0; i < checkPoints.Count; i++)
             {
@@ -146,7 +160,7 @@ namespace Infastructure.Factories.GameFactories
             GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
 
             WorldData worldData =
-                _staticDataService.GameStaticData.GameDatas[ActiveSceneName].FlowerSpawnData;
+                LevelData.FlowerSpawnData;
 
             Flower flower = _diContainer.InstantiatePrefabForComponent<Flower>(prefab, worldData.WorldPosition,
                 worldData.WorldRotation, null);
@@ -173,7 +187,7 @@ namespace Infastructure.Factories.GameFactories
             ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
             GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
 
-            foreach (WorldData worldData in _staticDataService.GameStaticData.GameDatas[ActiveSceneName].BatteriesPoints)
+            foreach (WorldData worldData in LevelData.BatteriesPoints)
             {
                 BatteryProduct batteryProduct =
                     _diContainer.InstantiatePrefabForComponent<BatteryProduct>(prefab, worldData.WorldPosition,
@@ -204,7 +218,7 @@ namespace Infastructure.Factories.GameFactories
             ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
             GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
 
-            foreach (WorldData data in _staticDataService.GameStaticData.GameDatas[ActiveSceneName].EnergyPoints)
+            foreach (WorldData data in LevelData.EnergyPoints)
             {
                 bool exist =
                     _progressService.PlayerProgress.WorldProgressData.EnergyDatas.Any(x => x.UniqueId == data.UniqueId);
@@ -237,7 +251,7 @@ namespace Infastructure.Factories.GameFactories
             ProductsStaticData productsStaticData = _staticDataService.ProductsStaticData;
             GameObject prefab = productsStaticData.ProductsDictionary[productType].Prefab;
 
-            foreach (WorldData data in _staticDataService.GameStaticData.GameDatas[ActiveSceneName].ElephantPoints)
+            foreach (WorldData data in LevelData.ElephantPoints)
             {
                 ElephantProduct elephantProduct =
                     _diContainer.InstantiatePrefabForComponent<ElephantProduct>(prefab, data.WorldPosition,
@@ -254,7 +268,7 @@ namespace Infastructure.Factories.GameFactories
         public void CreateSkillProducts()
         {
             List<ProductSkillData> productSkillDatas =
-                _staticDataService.GameStaticData.GameDatas[ActiveSceneName].SkillsData;
+                LevelData.SkillsData;
 
             foreach (ProductSkillData skillData in productSkillDatas)
             {
@@ -286,7 +300,7 @@ namespace Infastructure.Factories.GameFactories
         public void CreateAllGenerators()
         {
             List<WorldData> generatorPoints =
-                _staticDataService.GameStaticData.GameDatas[ActiveSceneName].GeneratorPoints;
+                LevelData.GeneratorPoints;
 
             foreach (WorldData worldData in generatorPoints)
             {

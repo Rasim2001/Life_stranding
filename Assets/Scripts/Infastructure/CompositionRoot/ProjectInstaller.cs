@@ -3,6 +3,7 @@ using Infastructure.Common.Pickup;
 using Infastructure.Factories;
 using Infastructure.Factories.ProjectFactories;
 using Infastructure.Localization;
+using Infastructure.Services.CurrentLevel;
 using Infastructure.Services.CursorVisible;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Pause;
@@ -30,6 +31,8 @@ namespace Infastructure.CompositionRoot
             BindCoroutineRunner();
 
             BindSceneLoader();
+
+            BindCurrentLevelService();
 
             BindGameStateMachine();
 
@@ -124,6 +127,9 @@ namespace Infastructure.CompositionRoot
 
         private void BindSceneLoader() =>
             Container.BindInterfacesAndSelfTo<SceneLoader>().AsSingle();
+
+        private void BindCurrentLevelService() =>
+            Container.BindInterfacesAndSelfTo<CurrentLevelService>().AsSingle();
 
         private void BindGameStateMachine()
         {

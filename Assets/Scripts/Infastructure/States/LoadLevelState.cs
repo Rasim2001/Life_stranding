@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Infastructure.Common;
 using Infastructure.Services.Restart;
 using Infastructure.StaticData.StaticDataService;
+using Infastructure.StaticData.World;
 using UI.Curtain;
 using UnityEngine;
 using Zenject;
@@ -28,14 +30,38 @@ namespace Infastructure.States
             _restartService = restartService;
         }
 
+        private TowerCatalog Catalog
+        {
+            get
+            {
+                TowerCatalog catalog = _staticDataService.GameStaticData.TowerCatalog;
+
+                if (catalog == null)
+                    throw new InvalidOperationException("GameStaticData.TowerCatalog is not assigned.");
+
+                if (catalog.EntryScene == null || !catalog.EntryScene.IsValid)
+                    throw new InvalidOperationException("TowerCatalog.EntryScene is not set.");
+
+                return catalog;
+            }
+        }
+
         public void Enter()
         {
             _curtainRoot.Show();
-            _sceneLoader.Load(_staticDataService.GameStaticData.LoadScene, OnLoaded);
+            _sceneLoader.Load(Catalog.EntryScene.SceneName, OnLoaded);
         }
 
-        private void OnLoaded() =>
-            _sceneLoader.LoadAllScenes(_staticDataService.GameStaticData.AdditiveScenes, OnAdditiveSceneLoaded);
+        private void OnLoaded()
+        {
+            string[] segmentScenes = Catalog.Segments
+                .Where(segment => segment != null)
+                .SelectMany(segment => segment.SceneReferences)
+                .Select(sceneReference => sceneReference.SceneName)
+                .ToArray();
+
+            _sceneLoader.LoadAllScenes(segmentScenes, OnAdditiveSceneLoaded);
+        }
 
         private void OnAdditiveSceneLoaded()
         {

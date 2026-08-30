@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Infastructure.StaticData;
+using Infastructure.StaticData.World;
+using Editor.World;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -12,8 +14,11 @@ namespace Editor
     /// <summary>
     /// Overview of project scenes: where logic lives (SceneContext) vs pure content,
     /// how many markers, whether there's a GameDatas entry, Build Settings and config state.
-    /// Switching the main/additive scenes and launching Play from any scene.
+    /// Switching the entry/segment scenes and launching Play from any scene.
     /// Scene content is determined by text-parsing .unity (YAML), without opening scenes.
+    /// Configuration source is TowerCatalog (Assets/Scripts/Infastructure/StaticData/World) —
+    /// see .scratch/additive-scenes-vertical/spec.md. Tool behavior is meant to survive
+    /// config changes unchanged.
     /// </summary>
     public class ProjectScenesWindow : EditorWindow
     {
@@ -21,6 +26,7 @@ namespace Editor
         private const string BootstrapScenePath = "Assets/Scenes/Bootstrap.unity";
         private const string GameDataAssetPath = "Assets/Resources/StaticData/GameData/GameData.asset";
         private const string SceneContextScriptPath = "Assets/Plugins/Zenject/Source/Install/Contexts/SceneContext.cs";
+        private const string SegmentsFolderPath = "Assets/Settings/World/Segments";
 
         private static readonly (string Label, string ScriptPath)[] MarkerTypes =
         {
@@ -35,13 +41,13 @@ namespace Editor
         };
 
         // Scenes with a special role in the boot/exit-loop pipeline. Setting them as the
-        // main or an additive scene doesn't crash, but silently breaks the game (empty
+        // entry or a segment scene doesn't crash, but silently breaks the game (empty
         // level with no SceneInstaller bindings, or a broken defeat/pause/win exit flow).
         private static readonly Dictionary<string, string> UtilitySceneReasons = new Dictionary<string, string>
         {
             ["Bootstrap"] =
                 "Entry-point scene: bare SceneContext, no SceneInstaller. " +
-                "Setting it as Main/Additive produces an empty level — world/UI bindings never run.",
+                "Setting it as Entry/Segment produces an empty level — world/UI bindings never run.",
             ["ExitGameLoop"] =
                 "Transitional unload scene used internally by ExitGameLoopState " +
                 "(defeat/pause/win flow) — not a content scene.",
@@ -50,6 +56,8 @@ namespace Editor
         private readonly List<SceneRow> _rows = new List<SceneRow>();
         private readonly Dictionary<string, string> _scenePathByName = new Dictionary<string, string>();
         private GameStaticData _gameData;
+        private TowerCatalog _catalog;
+        private CatalogBuildScenes.Diff _buildDiff;
         private Vector2 _scroll;
         private string _lastRefreshInfo = "";
 
@@ -62,10 +70,11 @@ namespace Editor
             public bool HasGameDataEntry;
             public int GameDataPointsCount;
             public string BuildSettingsState;
+            public string BuildSettingsPlanned;
             public int ApproxObjectCount;
             public string ConfigRole;
             public string UtilityReason;
-            public bool IsTutorialScene;
+            public SegmentDefinition OwnerSegment;
         }
 
         [MenuItem("GD Tools/Scenes")]
@@ -87,6 +96,34 @@ namespace Editor
 
             _gameData = AssetDatabase.LoadAssetAtPath<GameStaticData>(GameDataAssetPath);
             GameStaticData gameData = _gameData;
+            _catalog = gameData != null ? gameData.TowerCatalog : null;
+            _buildDiff = CatalogBuildScenes.Compare(_catalog);
+
+            // path -> (role, owning segment; null for Entry)
+            var roleByPath = new Dictionary<string, (string Role, SegmentDefinition Owner)>();
+            if (_catalog != null)
+            {
+                string entryPath = CatalogBuildScenes.GetScenePath(_catalog.EntryScene);
+                if (!string.IsNullOrEmpty(entryPath))
+                    roleByPath[entryPath] = ("Entry", null);
+
+                foreach (SegmentDefinition segment in _catalog.Segments)
+                {
+                    if (segment == null)
+                        continue;
+
+                    string scenePath = CatalogBuildScenes.GetScenePath(segment.Scene);
+                    if (!string.IsNullOrEmpty(scenePath) && !roleByPath.ContainsKey(scenePath))
+                        roleByPath[scenePath] = ("Segment", segment);
+
+                    foreach (SceneReference additional in segment.AdditionalScenes)
+                    {
+                        string additionalPath = CatalogBuildScenes.GetScenePath(additional);
+                        if (!string.IsNullOrEmpty(additionalPath) && !roleByPath.ContainsKey(additionalPath))
+                            roleByPath[additionalPath] = ("Segment+", segment);
+                    }
+                }
+            }
 
             List<string> scenePaths = AssetDatabase.FindAssets("t:Scene")
                 .Select(AssetDatabase.GUIDToAssetPath)
@@ -117,26 +154,23 @@ namespace Editor
                         .ToArray(),
                     ApproxObjectCount = CountOccurrences(text, "\n--- !u!1 &"),
                     BuildSettingsState = GetBuildSettingsState(path),
+                    BuildSettingsPlanned = CatalogBuildScenes.DescribeRowState(path, _buildDiff),
                     ConfigRole = "—",
                 };
 
                 UtilitySceneReasons.TryGetValue(row.Name, out row.UtilityReason);
 
-                if (gameData != null)
+                if (gameData != null && gameData.GameDatas != null &&
+                    gameData.GameDatas.TryGetValue(row.Name, out GameData gd))
                 {
-                    if (gameData.GameDatas != null && gameData.GameDatas.TryGetValue(row.Name, out GameData gd))
-                    {
-                        row.HasGameDataEntry = true;
-                        row.GameDataPointsCount = CountGameDataPoints(gd);
-                    }
+                    row.HasGameDataEntry = true;
+                    row.GameDataPointsCount = CountGameDataPoints(gd);
+                }
 
-                    if (string.Equals(gameData.LoadScene, row.Name, StringComparison.Ordinal))
-                        row.ConfigRole = "Main";
-                    else if (gameData.AdditiveScenes != null && gameData.AdditiveScenes.Contains(row.Name))
-                        row.ConfigRole = "Additive";
-
-                    row.IsTutorialScene = !string.IsNullOrEmpty(gameData.TutorialSceneName) &&
-                        string.Equals(gameData.TutorialSceneName, row.Name, StringComparison.Ordinal);
+                if (roleByPath.TryGetValue(path, out (string Role, SegmentDefinition Owner) info))
+                {
+                    row.ConfigRole = info.Role;
+                    row.OwnerSegment = info.Owner;
                 }
 
                 _scenePathByName[row.Name] = path;
@@ -144,14 +178,14 @@ namespace Editor
             }
 
             // Group rows top to bottom: Utility scenes first (they're noise, not levels),
-            // then Logic scenes (candidate Main), then Content scenes (candidate Additive).
-            // Within a group: current Main first, then Additive, then Build Settings-enabled,
+            // then Logic scenes (candidate Entry), then Content scenes (candidate Segment).
+            // Within a group: current Entry first, then Segment, then Build Settings-enabled,
             // then alphabetical. Renaming scenes into real name-based groups is a separate
             // task (see docs/asset-organization-and-naming.md §6.6) — this is just a stopgap.
             List<SceneRow> sorted = _rows
                 .OrderBy(r => GetGroupIndex(r))
-                .ThenByDescending(r => r.ConfigRole == "Main")
-                .ThenByDescending(r => r.ConfigRole == "Additive")
+                .ThenByDescending(r => r.ConfigRole == "Entry")
+                .ThenByDescending(r => r.ConfigRole == "Segment" || r.ConfigRole == "Segment+")
                 .ThenByDescending(r => r.BuildSettingsState == "enabled")
                 .ThenBy(r => r.Name, StringComparer.OrdinalIgnoreCase)
                 .ToList();
@@ -163,8 +197,11 @@ namespace Editor
 
         private void SetAsMain(SceneRow row)
         {
-            if (_gameData == null)
+            if (_catalog == null)
+            {
+                EditorUtility.DisplayDialog("No TowerCatalog", "GameData.asset has no TowerCatalog assigned.", "Got it");
                 return;
+            }
 
             if (row.UtilityReason != null)
             {
@@ -176,62 +213,60 @@ namespace Editor
 
             if (!row.HasSceneContext)
             {
-                EditorUtility.DisplayDialog("Can't set as Main",
+                EditorUtility.DisplayDialog("Can't set as Entry",
                     $"Scene «{row.Name}» has no SceneContext — SceneInstaller and BuildLevelState won't run, the spider won't appear.",
                     "Got it");
                 return;
             }
 
-            if (_gameData.AdditiveScenes != null && _gameData.AdditiveScenes.Contains(row.Name))
+            if (row.ConfigRole == "Segment" || row.ConfigRole == "Segment+")
             {
-                EditorUtility.DisplayDialog("Can't set as Main",
-                    $"Scene «{row.Name}» is already in the Additive list — Unity would load a second copy of the geometry. Remove it from Additive first.",
+                EditorUtility.DisplayDialog("Can't set as Entry",
+                    $"Scene «{row.Name}» is already part of a segment — Unity would load a second copy of the geometry. Remove it from the segment first.",
                     "Got it");
                 return;
             }
 
-            if (!row.HasGameDataEntry)
+            bool hasLevelDataEntry = !string.IsNullOrEmpty(_catalog.LevelDataKey) &&
+                _gameData.GameDatas != null && _gameData.GameDatas.ContainsKey(_catalog.LevelDataKey);
+
+            if (!hasLevelDataEntry)
             {
                 bool proceed = EditorUtility.DisplayDialog("No GameDatas entry",
-                    $"Scene «{row.Name}» has no entry in GameDatas — the runtime will throw KeyNotFoundException in GameFactory. Set LoadScene anyway?",
+                    $"TowerCatalog.LevelDataKey «{_catalog.LevelDataKey}» has no entry in GameDatas — the runtime will throw KeyNotFoundException in GameFactory. Set as Entry anyway?",
                     "Set anyway", "Cancel");
                 if (!proceed)
                     return;
             }
 
-            Undo.RecordObject(_gameData, "Set LoadScene");
-            _gameData.LoadScene = row.Name;
-            EditorUtility.SetDirty(_gameData);
+            var sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(row.Path);
+
+            Undo.RecordObject(_catalog, "Set EntryScene");
+            _catalog.SetEntryScene(sceneAsset);
+            EditorUtility.SetDirty(_catalog);
             AssetDatabase.SaveAssets();
 
             Refresh();
         }
 
-        private void SetAsTutorial(SceneRow row)
+        private void SetShowsFirstEncounter(bool value)
         {
-            if (_gameData == null)
+            if (_catalog == null)
                 return;
 
-            if (row.UtilityReason != null)
-            {
-                EditorUtility.DisplayDialog("Utility scene",
-                    $"«{row.Name}» is a utility scene, not a level: {row.UtilityReason}",
-                    "Got it");
-                return;
-            }
-
-            Undo.RecordObject(_gameData, "Set TutorialSceneName");
-            _gameData.TutorialSceneName = row.Name;
-            EditorUtility.SetDirty(_gameData);
+            Undo.RecordObject(_catalog, "Set ShowsFirstEncounter");
+            _catalog.SetShowsFirstEncounter(value);
+            EditorUtility.SetDirty(_catalog);
             AssetDatabase.SaveAssets();
-
-            Refresh();
         }
 
         private void AddToAdditive(SceneRow row)
         {
-            if (_gameData == null)
+            if (_catalog == null)
+            {
+                EditorUtility.DisplayDialog("No TowerCatalog", "GameData.asset has no TowerCatalog assigned.", "Got it");
                 return;
+            }
 
             if (row.UtilityReason != null)
             {
@@ -241,23 +276,31 @@ namespace Editor
                 return;
             }
 
-            if (string.Equals(_gameData.LoadScene, row.Name, StringComparison.Ordinal))
+            if (row.ConfigRole == "Entry")
             {
-                EditorUtility.DisplayDialog("Can't add to Additive",
-                    $"Scene «{row.Name}» is already Main — Unity would load a second copy of the geometry.",
+                EditorUtility.DisplayDialog("Can't add as segment",
+                    $"Scene «{row.Name}» is already Entry — Unity would load a second copy of the geometry.",
                     "Got it");
                 return;
             }
 
-            List<string> list = (_gameData.AdditiveScenes ?? Array.Empty<string>()).ToList();
-            if (list.Contains(row.Name))
+            if (row.OwnerSegment != null)
                 return;
 
-            list.Add(row.Name);
+            if (!AssetDatabase.IsValidFolder(SegmentsFolderPath))
+                AssetDatabase.CreateFolder("Assets/Settings/World", "Segments");
 
-            Undo.RecordObject(_gameData, "Add to AdditiveScenes");
-            _gameData.AdditiveScenes = list.ToArray();
-            EditorUtility.SetDirty(_gameData);
+            var sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(row.Path);
+
+            var segment = ScriptableObject.CreateInstance<SegmentDefinition>();
+            segment.SetScene(sceneAsset);
+
+            string assetPath = AssetDatabase.GenerateUniqueAssetPath($"{SegmentsFolderPath}/DATA_Segment_{row.Name}.asset");
+            AssetDatabase.CreateAsset(segment, assetPath);
+
+            Undo.RecordObject(_catalog, "Add Segment to Catalog");
+            _catalog.AddSegment(segment);
+            EditorUtility.SetDirty(_catalog);
             AssetDatabase.SaveAssets();
 
             Refresh();
@@ -265,16 +308,12 @@ namespace Editor
 
         private void RemoveFromAdditive(SceneRow row)
         {
-            if (_gameData == null || _gameData.AdditiveScenes == null)
+            if (_catalog == null || row.OwnerSegment == null || row.ConfigRole != "Segment")
                 return;
 
-            List<string> list = _gameData.AdditiveScenes.ToList();
-            if (!list.Remove(row.Name))
-                return;
-
-            Undo.RecordObject(_gameData, "Remove from AdditiveScenes");
-            _gameData.AdditiveScenes = list.ToArray();
-            EditorUtility.SetDirty(_gameData);
+            Undo.RecordObject(_catalog, "Remove Segment from Catalog");
+            _catalog.RemoveSegment(row.OwnerSegment);
+            EditorUtility.SetDirty(_catalog);
             AssetDatabase.SaveAssets();
 
             Refresh();
@@ -282,13 +321,14 @@ namespace Editor
 
         private void OpenConfiguredSet()
         {
-            if (_gameData == null || string.IsNullOrEmpty(_gameData.LoadScene))
+            if (_catalog == null)
                 return;
 
-            if (!_scenePathByName.TryGetValue(_gameData.LoadScene, out string mainPath))
+            string entryPath = CatalogBuildScenes.GetScenePath(_catalog.EntryScene);
+            if (string.IsNullOrEmpty(entryPath) || !_scenePathByName.ContainsValue(entryPath))
             {
                 EditorUtility.DisplayDialog("Not found",
-                    $"Main scene file «{_gameData.LoadScene}» was not found among scanned scenes.",
+                    "Entry scene file was not found among scanned scenes.",
                     "OK");
                 return;
             }
@@ -296,12 +336,19 @@ namespace Editor
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
                 return;
 
-            EditorSceneManager.OpenScene(mainPath, OpenSceneMode.Single);
+            EditorSceneManager.OpenScene(entryPath, OpenSceneMode.Single);
 
-            foreach (string additiveName in _gameData.AdditiveScenes ?? Array.Empty<string>())
+            foreach (SegmentDefinition segment in _catalog.Segments)
             {
-                if (_scenePathByName.TryGetValue(additiveName, out string additivePath))
-                    EditorSceneManager.OpenScene(additivePath, OpenSceneMode.Additive);
+                if (segment == null)
+                    continue;
+
+                foreach (SceneReference sceneReference in segment.SceneReferences)
+                {
+                    string path = CatalogBuildScenes.GetScenePath(sceneReference);
+                    if (!string.IsNullOrEmpty(path))
+                        EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
+                }
             }
         }
 
@@ -330,7 +377,7 @@ namespace Editor
 
             SetAsMain(row);
 
-            if (_gameData == null || !string.Equals(_gameData.LoadScene, sceneName, StringComparison.Ordinal))
+            if (_catalog == null || !string.Equals(_catalog.EntryScene?.SceneName, sceneName, StringComparison.Ordinal))
                 return;
 
             Play();
@@ -357,7 +404,7 @@ namespace Editor
         // Read-only sanity check over the currently SAVED config (not the open scene, not
         // unsaved edits). Doesn't write anything. Catches drift from manual .asset editing
         // that bypasses this tool's guards, and blind spots the tool doesn't otherwise
-        // surface (e.g. TutorialSceneName).
+        // surface.
         private void ValidateConfiguration()
         {
             if (_gameData == null)
@@ -366,22 +413,45 @@ namespace Editor
                 return;
             }
 
-            SceneRow mainRow = _rows.FirstOrDefault(r => string.Equals(r.Name, _gameData.LoadScene, StringComparison.Ordinal));
-            string[] additive = _gameData.AdditiveScenes ?? Array.Empty<string>();
+            if (_catalog == null)
+            {
+                EditorUtility.DisplayDialog("Validate Configuration", "GameData.asset has no TowerCatalog assigned.", "OK");
+                return;
+            }
+
+            string entryPath = CatalogBuildScenes.GetScenePath(_catalog.EntryScene);
+            SceneRow entryRow = _rows.FirstOrDefault(r => r.Path == entryPath);
+
+            List<SegmentDefinition> segments = _catalog.Segments.ToList();
+            List<SceneReference> allSceneReferences = segments
+                .Where(s => s != null)
+                .SelectMany(s => s.SceneReferences)
+                .ToList();
 
             var checks = new List<(string Label, bool Passed)>
             {
-                ("LoadScene is set and exists among scanned scenes", !string.IsNullOrEmpty(_gameData.LoadScene) && mainRow != null),
-                ("LoadScene has SceneContext", mainRow != null && mainRow.HasSceneContext),
-                ("LoadScene is enabled in Build Settings", mainRow != null && mainRow.BuildSettingsState == "enabled"),
-                ("LoadScene has a GameDatas entry", mainRow != null && mainRow.HasGameDataEntry),
-                ("LoadScene does not overlap AdditiveScenes", !additive.Contains(_gameData.LoadScene)),
-                ("Every AdditiveScenes entry exists as a real scene file", additive.All(name => _scenePathByName.ContainsKey(name))),
-                ("TutorialSceneName is empty or points to an existing scene",
-                    string.IsNullOrEmpty(_gameData.TutorialSceneName) || _scenePathByName.ContainsKey(_gameData.TutorialSceneName)),
-                ("No utility scene (Bootstrap/ExitGameLoop) is set as Main or Additive",
-                    !UtilitySceneReasons.ContainsKey(_gameData.LoadScene ?? "") &&
-                    !additive.Any(name => UtilitySceneReasons.ContainsKey(name))),
+                ("EntryScene is set and exists among scanned scenes", entryRow != null),
+                ("EntryScene has SceneContext", entryRow != null && entryRow.HasSceneContext),
+                ("EntryScene is enabled in Build Settings", entryRow != null && entryRow.BuildSettingsState == "enabled"),
+                ("LevelDataKey is set and exists in GameDatas",
+                    !string.IsNullOrEmpty(_catalog.LevelDataKey) &&
+                    _gameData.GameDatas != null && _gameData.GameDatas.ContainsKey(_catalog.LevelDataKey)),
+                ("EntryScene does not overlap segment scenes",
+                    string.IsNullOrEmpty(entryPath) || allSceneReferences.All(r => CatalogBuildScenes.GetScenePath(r) != entryPath)),
+                ("Every segment scene reference is valid (SceneAsset assigned)",
+                    allSceneReferences.All(r => r != null && r.IsValid)),
+                ("No scene is referenced by two different segments",
+                    allSceneReferences.Where(r => r != null && r.IsValid).GroupBy(r => r.SceneName).All(g => g.Count() == 1)),
+                ("No SegmentDefinition is listed twice in the catalog", segments.Distinct().Count() == segments.Count),
+                ("No utility scene (Bootstrap/ExitGameLoop) is set as Entry or Segment",
+                    (entryRow == null || !UtilitySceneReasons.ContainsKey(entryRow.Name)) &&
+                    _rows.Where(r => r.ConfigRole == "Segment" || r.ConfigRole == "Segment+")
+                        .All(r => !UtilitySceneReasons.ContainsKey(r.Name))),
+                ("Build Settings matches the catalog", _buildDiff.InSync),
+                ("Bootstrap scene is first in Build Settings",
+                    EditorBuildSettings.scenes.Length > 0 &&
+                    EditorBuildSettings.scenes[0].path == CatalogBuildScenes.GetScenePath(_catalog.BootstrapScene) &&
+                    EditorBuildSettings.scenes[0].enabled),
             };
 
             foreach ((string label, bool passed) in checks)
@@ -435,14 +505,71 @@ namespace Editor
 
         private string GetConfiguredSetSummary()
         {
-            if (_gameData == null || string.IsNullOrEmpty(_gameData.LoadScene))
-                return "(LoadScene not set)";
+            if (_catalog == null || _catalog.EntryScene == null || !_catalog.EntryScene.IsValid)
+                return "(EntryScene not set)";
 
-            string additive = _gameData.AdditiveScenes != null && _gameData.AdditiveScenes.Length > 0
-                ? " + " + string.Join(" + ", _gameData.AdditiveScenes)
+            string segments = _catalog.Segments != null && _catalog.Segments.Count > 0
+                ? " + " + string.Join(" + ", _catalog.Segments.Where(s => s != null).Select(s => s.Scene?.SceneName ?? "?"))
                 : "";
 
-            return $"{_gameData.LoadScene}{additive}";
+            return $"{_catalog.EntryScene.SceneName}{segments}";
+        }
+
+        private string GetBuildDiffSummary()
+        {
+            if (_buildDiff.Blockers.Count > 0)
+                return $"blocked: {_buildDiff.Blockers[0]}";
+
+            if (_buildDiff.InSync)
+                return "in sync";
+
+            var parts = new List<string>();
+            if (_buildDiff.ToAdd.Count > 0)
+                parts.Add($"{_buildDiff.ToAdd.Count} add");
+            if (_buildDiff.ToEnable.Count > 0)
+                parts.Add($"{_buildDiff.ToEnable.Count} enable");
+            if (_buildDiff.ToDisable.Count > 0)
+                parts.Add($"{_buildDiff.ToDisable.Count} disable");
+            if (_buildDiff.ReorderNeeded)
+                parts.Add("reorder");
+
+            return "+" + string.Join(" · ", parts);
+        }
+
+        private void ApplyCatalogToBuildSettings()
+        {
+            if (_buildDiff.Blockers.Count > 0)
+            {
+                EditorUtility.DisplayDialog("Apply Catalog",
+                    "Can't apply — " + string.Join("; ", _buildDiff.Blockers), "OK");
+                return;
+            }
+
+            if (_buildDiff.InSync)
+            {
+                EditorUtility.DisplayDialog("Apply Catalog", "Build Settings already matches the catalog.", "OK");
+                return;
+            }
+
+            string Describe(string label, List<string> paths) =>
+                paths.Count == 0 ? null : $"{label}:\n" + string.Join("\n", paths.Select(p => "  " + p));
+
+            string message = string.Join("\n\n", new[]
+                {
+                    Describe("Add", _buildDiff.ToAdd),
+                    Describe("Enable", _buildDiff.ToEnable),
+                    Describe("Disable", _buildDiff.ToDisable),
+                    _buildDiff.ReorderNeeded ? "Reorder enabled scenes to match the catalog order." : null,
+                }.Where(s => s != null));
+
+            bool proceed = EditorUtility.DisplayDialog("Apply Catalog",
+                message + "\n\nEditorBuildSettings has no Undo — review before confirming.",
+                "Apply", "Cancel");
+            if (!proceed)
+                return;
+
+            CatalogBuildScenes.Apply(_catalog);
+            Refresh();
         }
 
         private static int GetGroupIndex(SceneRow row)
@@ -459,8 +586,8 @@ namespace Editor
                 return "Utility scenes";
 
             return group == 1
-                ? "Logic scenes (candidate Main)"
-                : "Content scenes (candidate Additive)";
+                ? "Logic scenes (candidate Entry)"
+                : "Content scenes (candidate Segment)";
         }
 
         private static GUIStyle _subLabelStyle;
@@ -514,16 +641,16 @@ namespace Editor
             using (new EditorGUI.DisabledScope(EditorApplication.isPlaying))
             {
                 DrawActionButton("Play", GetConfiguredSetSummary(),
-                    "Enter Play mode via Bootstrap, which then loads the scene set shown below (LoadScene + AdditiveScenes).",
+                    "Enter Play mode via Bootstrap, which then loads the scene set shown below (EntryScene + segment scenes).",
                     140, Play);
 
                 string activeSceneName = EditorSceneManager.GetActiveScene().name;
                 DrawActionButton("Play This Scene", activeSceneName,
-                    "Set the currently open scene as LoadScene (same validation as 'Set as Main'), then enter Play mode via Bootstrap.",
+                    "Set the currently open scene as EntryScene (same validation as 'Set as Entry'), then enter Play mode via Bootstrap.",
                     140, PlayThisScene);
 
                 DrawActionButton("Open Set", GetConfiguredSetSummary(),
-                    "Open the currently configured Main scene (Single) plus all Additive scenes in the editor, without entering Play mode.",
+                    "Open the currently configured Entry scene (Single) plus all segment scenes in the editor, without entering Play mode.",
                     140, OpenConfiguredSet);
             }
 
@@ -533,9 +660,23 @@ namespace Editor
                 140, ResetPlayModeStartScene);
 
             DrawActionButton("Validate Configuration", "read-only check",
-                "Run a checklist against the currently saved GameData.asset (Main/Additive/Tutorial consistency, " +
+                "Run a checklist against the currently saved GameData.asset / TowerCatalog (Entry/Segment consistency, " +
                 "Build Settings, GameDatas entries, utility-scene misuse). Doesn't write anything.",
                 140, ValidateConfiguration);
+
+            DrawActionButton("Apply Catalog", GetBuildDiffSummary(),
+                "Rewrite EditorBuildSettings.scenes to match the catalog: bootstrap first, then resident scenes, " +
+                "Entry, then segment scenes; anything else is disabled, not removed. No Undo for this operation — " +
+                "confirm the preview dialog before applying.",
+                140, ApplyCatalogToBuildSettings);
+
+            if (_catalog != null)
+            {
+                bool current = _catalog.ShowsFirstEncounter;
+                bool updated = EditorGUILayout.ToggleLeft("First-encounter popups", current, GUILayout.Width(160));
+                if (updated != current)
+                    SetShowsFirstEncounter(updated);
+            }
 
             EditorGUILayout.EndHorizontal();
 
@@ -595,10 +736,9 @@ namespace Editor
                 : "no";
             GUILayout.Label(gameDatas, GUILayout.Width(140));
 
-            GUILayout.Label(row.BuildSettingsState, GUILayout.Width(90));
+            GUILayout.Label(row.BuildSettingsPlanned, GUILayout.Width(90));
             GUILayout.Label(row.ApproxObjectCount.ToString(), GUILayout.Width(70));
-            string configRoleDisplay = row.IsTutorialScene ? $"{row.ConfigRole}, Tutorial" : row.ConfigRole;
-            GUILayout.Label(configRoleDisplay, GUILayout.Width(120));
+            GUILayout.Label(row.ConfigRole, GUILayout.Width(120));
 
             EditorGUILayout.BeginHorizontal(GUILayout.Width(300));
 
@@ -609,30 +749,32 @@ namespace Editor
             }
             else
             {
-                var setAsMainContent = new GUIContent("Set as Main",
-                    "Make this scene the LoadScene (replaces the current main scene). Refused if it has no SceneContext, " +
-                    "is already Additive, or (with confirmation) has no GameDatas entry.");
+                var setAsMainContent = new GUIContent("Set as Entry",
+                    "Make this scene the EntryScene (replaces the current entry scene). Refused if it has no SceneContext, " +
+                    "is already part of a segment, or (with confirmation) has no GameDatas entry.");
                 if (GUILayout.Button(setAsMainContent, GUILayout.Width(90)))
                     SetAsMain(row);
 
-                bool isAdditive = row.ConfigRole == "Additive";
+                bool isSegment = row.OwnerSegment != null;
+                bool isPrimarySegmentScene = row.ConfigRole == "Segment";
                 var additiveContent = new GUIContent(
-                    isAdditive ? "Remove Add." : "Add to Add.",
-                    isAdditive
-                        ? "Remove this scene from AdditiveScenes."
-                        : "Add this scene to AdditiveScenes, loaded alongside the Main scene. Refused if it's already Main.");
-                if (GUILayout.Button(additiveContent, GUILayout.Width(90)))
-                {
-                    if (isAdditive)
-                        RemoveFromAdditive(row);
-                    else
-                        AddToAdditive(row);
-                }
+                    isSegment ? "Remove Add." : "Add to Add.",
+                    isSegment
+                        ? (isPrimarySegmentScene
+                            ? "Remove this scene's segment from the catalog. The SegmentDefinition asset itself is kept, not deleted."
+                            : "This scene is an AdditionalScenes entry of a segment — removing single additional scenes isn't supported by this tool. Edit the SegmentDefinition asset directly.")
+                        : "Create a SegmentDefinition for this scene and add it to the catalog. Refused if it's already Entry.");
 
-                var tutorialContent = new GUIContent("Set as Tutorial",
-                    "Set GameStaticData.TutorialSceneName to this scene. Used by SceneLoader to detect the tutorial scene at runtime.");
-                if (GUILayout.Button(tutorialContent, GUILayout.Width(90)))
-                    SetAsTutorial(row);
+                using (new EditorGUI.DisabledScope(isSegment && !isPrimarySegmentScene))
+                {
+                    if (GUILayout.Button(additiveContent, GUILayout.Width(90)))
+                    {
+                        if (isSegment)
+                            RemoveFromAdditive(row);
+                        else
+                            AddToAdditive(row);
+                    }
+                }
             }
 
             EditorGUILayout.EndHorizontal();

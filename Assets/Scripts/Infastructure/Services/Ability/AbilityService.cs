@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Infastructure.Common;
 using Infastructure.Data;
+using Infastructure.Services.CurrentLevel;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.ProgressWatchers;
 using Infastructure.Services.SaveLoadService;
@@ -19,14 +19,14 @@ namespace Infastructure.Services.Ability
         private readonly IProgressWatchersService _progressWatchersService;
         private List<ProductType> _pickedProducts = new List<ProductType>();
         private readonly IStaticDataService _staticDataService;
-        private readonly ISceneLoader _sceneLoader;
+        private readonly ICurrentLevelService _currentLevel;
         private CheatsStaticData Cheats => _staticDataService.CheatsStaticData;
 
         public AbilityService(ICutSceneService cutSceneService, IProgressWatchersService progressWatchersService,
-            IStaticDataService staticDataService, ISceneLoader sceneLoader)
+            IStaticDataService staticDataService, ICurrentLevelService currentLevel)
         {
             _staticDataService = staticDataService;
-            _sceneLoader = sceneLoader;
+            _currentLevel = currentLevel;
             _cutSceneService = cutSceneService;
             _progressWatchersService = progressWatchersService;
         }
@@ -51,7 +51,7 @@ namespace Infastructure.Services.Ability
 
         public bool IsExploredAbility(ProductType pickedProduct)
         {
-            return !_sceneLoader.IsTutorialScene() ||
+            return !_currentLevel.ShowsFirstEncounter ||
                    Cheats.ProductsPopupEnabled ||
                    _cutSceneService.IsActive ||
                    _pickedProducts.Contains(pickedProduct);

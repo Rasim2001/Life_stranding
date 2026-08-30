@@ -3,9 +3,9 @@ using System.Linq;
 using System.Threading;
 using Common;
 using Cysharp.Threading.Tasks;
-using Infastructure.Common;
 using Infastructure.Common.Pickup;
 using Infastructure.CutScenes;
+using Infastructure.Services.CurrentLevel;
 using Infastructure.Services.CutScene;
 using Infastructure.Services.Hint;
 using Infastructure.Services.PlatformObjects;
@@ -30,7 +30,7 @@ namespace SpiderController.PickUp
         private readonly IWindowService _windowService;
         private readonly ICutSceneService _cutSceneService;
         private readonly IPersistentProgressService _progressService;
-        private readonly ISceneLoader _sceneLoader;
+        private readonly ICurrentLevelService _currentLevel;
         private readonly IHintReceiverService _hintReceiverService;
         private readonly SpiderStateContext _stateContext;
 
@@ -45,7 +45,7 @@ namespace SpiderController.PickUp
             IWindowService windowService,
             ICutSceneService cutSceneService,
             IPersistentProgressService progressService,
-            ISceneLoader sceneLoader,
+            ICurrentLevelService currentLevel,
             SpiderStateContext stateContext)
         {
             _hintReceiverService = hintReceiverService;
@@ -55,7 +55,7 @@ namespace SpiderController.PickUp
             _windowService = windowService;
             _cutSceneService = cutSceneService;
             _progressService = progressService;
-            _sceneLoader = sceneLoader;
+            _currentLevel = currentLevel;
             _stateContext = stateContext;
         }
 
@@ -85,7 +85,7 @@ namespace SpiderController.PickUp
 
                 if (generatorCollider != null)
                 {
-                    if (!WasPicked && _platformObjectsService.HasAny<BatteryProduct>() && _sceneLoader.IsTutorialScene())
+                    if (!WasPicked && _platformObjectsService.HasAny<BatteryProduct>() && _currentLevel.ShowsFirstEncounter)
                         StartGeneratorAsync(generatorCollider).Forget();
                     else if (_platformObjectsService.HasAny<BatteryProduct>())
                         StartGenerator(generatorCollider);

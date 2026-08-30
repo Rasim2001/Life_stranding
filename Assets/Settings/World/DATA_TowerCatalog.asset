@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34c56efd1de5e744d88672e7f3a2ac76, type: 3}
+  m_Name: DATA_TowerCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::Infastructure.StaticData.World.TowerCatalog
+  _bootstrapScene:
+    _sceneAsset: {fileID: 102900000, guid: 41089604a76c1b84892684a467cd1c85, type: 3}
+    _sceneName: Bootstrap
+  _residentScenes:
+  - _sceneAsset: {fileID: 102900000, guid: 7536fd04b1a067d448f52d2ca87be4b1, type: 3}
+    _sceneName: ExitGameLoop
+  _entryScene:
+    _sceneAsset: {fileID: 102900000, guid: 61050ebc4d75eca44a83ce8edfc5cc78, type: 3}
+    _sceneName: SCN_LevelDesingDraft
+  _segments:
+  - {fileID: 11400000, guid: f6c6e10044e2730478ed5660f09d05d4, type: 2}
+  _policy: 0
+  _levelDataKey: SCN_LevelDesingDraft
+  _showsFirstEncounter: 1
