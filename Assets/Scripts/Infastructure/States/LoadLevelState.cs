@@ -42,6 +42,9 @@ namespace Infastructure.States
                 if (catalog.EntryScene == null || !catalog.EntryScene.IsValid)
                     throw new InvalidOperationException("TowerCatalog.EntryScene is not set.");
 
+                if (catalog.AtmosphereScene == null || !catalog.AtmosphereScene.IsValid)
+                    throw new InvalidOperationException("TowerCatalog.AtmosphereScene is not set.");
+
                 return catalog;
             }
         }
@@ -49,18 +52,19 @@ namespace Infastructure.States
         public void Enter()
         {
             _curtainRoot.Show();
-            _sceneLoader.Load(Catalog.EntryScene.SceneName, OnLoaded);
+            _sceneLoader.Load(Catalog.AtmosphereScene.SceneName, OnAtmosphereLoaded);
         }
 
-        private void OnLoaded()
+        private void OnAtmosphereLoaded()
         {
-            string[] segmentScenes = Catalog.Segments
-                .Where(segment => segment != null)
-                .SelectMany(segment => segment.SceneReferences)
-                .Select(sceneReference => sceneReference.SceneName)
+            string[] scenes = new[] { Catalog.EntryScene.SceneName }
+                .Concat(Catalog.Segments
+                    .Where(segment => segment != null)
+                    .SelectMany(segment => segment.SceneReferences)
+                    .Select(sceneReference => sceneReference.SceneName))
                 .ToArray();
 
-            _sceneLoader.LoadAllScenes(segmentScenes, OnAdditiveSceneLoaded);
+            _sceneLoader.LoadAllScenes(scenes, OnAdditiveSceneLoaded);
         }
 
         private void OnAdditiveSceneLoaded()

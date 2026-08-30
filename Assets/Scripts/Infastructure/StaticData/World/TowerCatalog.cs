@@ -12,6 +12,7 @@ namespace Infastructure.StaticData.World
     {
         [SerializeField] private SceneReference _bootstrapScene;
         [SerializeField] private SceneReference[] _residentScenes = System.Array.Empty<SceneReference>();
+        [SerializeField] private SceneReference _atmosphereScene;
         [SerializeField] private SceneReference _entryScene;
         [SerializeField] private SegmentDefinition[] _segments = System.Array.Empty<SegmentDefinition>();
         [SerializeField] private LoadPolicy _policy = LoadPolicy.KeepAllLoaded;
@@ -24,7 +25,10 @@ namespace Infastructure.StaticData.World
         /// <summary>Резидентный слой и служебные сцены, грузимые по имени (например, ExitGameLoop).</summary>
         public IReadOnlyList<SceneReference> ResidentScenes => _residentScenes;
 
-        /// <summary>Грузится Single.</summary>
+        /// <summary>Сцена атмосферы (погодный риг, глобальный Volume). Грузится Single, становится активной.</summary>
+        public SceneReference AtmosphereScene => _atmosphereScene;
+
+        /// <summary>Грузится аддитивно поверх атмосферы.</summary>
         public SceneReference EntryScene => _entryScene;
 
         /// <summary>
@@ -49,6 +53,7 @@ namespace Infastructure.StaticData.World
             get
             {
                 yield return _bootstrapScene;
+                yield return _atmosphereScene;
                 yield return _entryScene;
 
                 if (_residentScenes == null)
@@ -65,6 +70,12 @@ namespace Infastructure.StaticData.World
         {
             _entryScene ??= new SceneReference();
             _entryScene.SetAsset(asset);
+        }
+
+        public void SetAtmosphereScene(UnityEditor.SceneAsset asset)
+        {
+            _atmosphereScene ??= new SceneReference();
+            _atmosphereScene.SetAsset(asset);
         }
 
         public void AddSegment(SegmentDefinition segment)

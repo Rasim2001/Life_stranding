@@ -50,6 +50,8 @@ namespace Editor.World
                 foreach (SceneReference reference in catalog.ResidentScenes)
                     AddPath(reference);
 
+            AddPath(catalog.AtmosphereScene);
+
             AddPath(catalog.EntryScene);
 
             foreach (SegmentDefinition segment in catalog.Segments)
@@ -81,6 +83,10 @@ namespace Editor.World
             string entryPath = GetScenePath(catalog.EntryScene);
             if (string.IsNullOrEmpty(entryPath))
                 blockers.Add("no entry scene");
+
+            string atmospherePath = GetScenePath(catalog.AtmosphereScene);
+            if (string.IsNullOrEmpty(atmospherePath))
+                blockers.Add("no atmosphere scene");
 
             if (blockers.Count > 0)
                 return new Diff(new List<string>(), new List<string>(), new List<string>(), false, blockers);

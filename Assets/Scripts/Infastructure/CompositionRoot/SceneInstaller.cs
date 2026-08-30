@@ -31,6 +31,7 @@ using Infastructure.Services.VolumeManagement;
 using Infastructure.Services.Window;
 using Infastructure.Services.XRay;
 using Infastructure.States;
+using Infastructure.World;
 using UI.MVVM.View.Root;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -41,8 +42,30 @@ namespace Infastructure.CompositionRoot
 {
     public class SceneInstaller : MonoInstaller
     {
-        [SerializeField] private Volume _volume;
-        [SerializeField] private WeatherRig _weatherRig;
+        private AtmosphereRoot _atmosphereRoot;
+
+        // Ссылки на Volume и WeatherRig не сериализуются: после разъезда сцен (тикет 04)
+        // они физически живут в World_Common, а не в сцене SceneInstaller.
+        private AtmosphereRoot AtmosphereRoot
+        {
+            get
+            {
+                if (_atmosphereRoot != null)
+                    return _atmosphereRoot;
+
+                _atmosphereRoot = FindObjectOfType<AtmosphereRoot>();
+
+                if (_atmosphereRoot == null)
+                    throw new System.InvalidOperationException(
+                        "AtmosphereRoot not found — сцена атмосферы не загружена, проверь TowerCatalog.AtmosphereScene.");
+
+                if (_atmosphereRoot.GlobalVolume == null || _atmosphereRoot.WeatherRig == null)
+                    throw new System.InvalidOperationException(
+                        "AtmosphereRoot found but its fields are not assigned (GlobalVolume/WeatherRig).");
+
+                return _atmosphereRoot;
+            }
+        }
 
         public override void InstallBindings()
         {
@@ -191,10 +214,10 @@ namespace Infastructure.CompositionRoot
             Container.BindInterfacesAndSelfTo<VolumeService>().AsSingle();
 
         private void BindVolume() =>
-            Container.Bind<Volume>().FromInstance(_volume).AsSingle();
+            Container.Bind<Volume>().FromInstance(AtmosphereRoot.GlobalVolume).AsSingle();
 
         private void BindWeatherRig() =>
-            Container.Bind<WeatherRig>().FromInstance(_weatherRig).AsSingle();
+            Container.Bind<WeatherRig>().FromInstance(AtmosphereRoot.WeatherRig).AsSingle();
 
         // NonLazy — у сервиса нет потребителей, инжектирующих IWeatherService (пока никто
         // не читает TimeOfDay01 напрямую). Без этого Zenject никогда бы

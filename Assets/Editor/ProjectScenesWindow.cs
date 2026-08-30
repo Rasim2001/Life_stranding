@@ -26,6 +26,7 @@ namespace Editor
         private const string BootstrapScenePath = "Assets/Scenes/Bootstrap.unity";
         private const string GameDataAssetPath = "Assets/Resources/StaticData/GameData/GameData.asset";
         private const string SceneContextScriptPath = "Assets/Plugins/Zenject/Source/Install/Contexts/SceneContext.cs";
+        private const string SegmentInjectorScriptPath = "Assets/Scripts/Infastructure/World/SegmentInjector.cs";
         private const string SegmentsFolderPath = "Assets/Settings/World/Segments";
 
         private static readonly (string Label, string ScriptPath)[] MarkerTypes =
@@ -66,6 +67,7 @@ namespace Editor
             public string Name;
             public string Path;
             public bool HasSceneContext;
+            public bool HasSegmentInjector;
             public int[] MarkerCounts;
             public bool HasGameDataEntry;
             public int GameDataPointsCount;
@@ -92,6 +94,7 @@ namespace Editor
             _scenePathByName.Clear();
 
             string sceneContextGuid = AssetDatabase.AssetPathToGUID(SceneContextScriptPath);
+            string segmentInjectorGuid = AssetDatabase.AssetPathToGUID(SegmentInjectorScriptPath);
             string[] markerGuids = MarkerTypes.Select(m => AssetDatabase.AssetPathToGUID(m.ScriptPath)).ToArray();
 
             _gameData = AssetDatabase.LoadAssetAtPath<GameStaticData>(GameDataAssetPath);
@@ -103,6 +106,10 @@ namespace Editor
             var roleByPath = new Dictionary<string, (string Role, SegmentDefinition Owner)>();
             if (_catalog != null)
             {
+                string atmospherePath = CatalogBuildScenes.GetScenePath(_catalog.AtmosphereScene);
+                if (!string.IsNullOrEmpty(atmospherePath))
+                    roleByPath[atmospherePath] = ("Atmosphere", null);
+
                 string entryPath = CatalogBuildScenes.GetScenePath(_catalog.EntryScene);
                 if (!string.IsNullOrEmpty(entryPath))
                     roleByPath[entryPath] = ("Entry", null);
@@ -149,6 +156,7 @@ namespace Editor
                     Name = Path.GetFileNameWithoutExtension(path),
                     Path = path,
                     HasSceneContext = !string.IsNullOrEmpty(sceneContextGuid) && text.Contains(sceneContextGuid),
+                    HasSegmentInjector = !string.IsNullOrEmpty(segmentInjectorGuid) && text.Contains(segmentInjectorGuid),
                     MarkerCounts = markerGuids
                         .Select(guid => string.IsNullOrEmpty(guid) ? 0 : CountOccurrences(text, guid))
                         .ToArray(),
@@ -227,6 +235,14 @@ namespace Editor
                 return;
             }
 
+            if (row.ConfigRole == "Atmosphere")
+            {
+                EditorUtility.DisplayDialog("Can't set as Entry",
+                    $"Scene «{row.Name}» is already Atmosphere — Unity would load it twice, Single and additively.",
+                    "Got it");
+                return;
+            }
+
             bool hasLevelDataEntry = !string.IsNullOrEmpty(_catalog.LevelDataKey) &&
                 _gameData.GameDatas != null && _gameData.GameDatas.ContainsKey(_catalog.LevelDataKey);
 
@@ -243,6 +259,40 @@ namespace Editor
 
             Undo.RecordObject(_catalog, "Set EntryScene");
             _catalog.SetEntryScene(sceneAsset);
+            EditorUtility.SetDirty(_catalog);
+            AssetDatabase.SaveAssets();
+
+            Refresh();
+        }
+
+        private void SetAsAtmosphere(SceneRow row)
+        {
+            if (_catalog == null)
+            {
+                EditorUtility.DisplayDialog("No TowerCatalog", "GameData.asset has no TowerCatalog assigned.", "Got it");
+                return;
+            }
+
+            if (row.UtilityReason != null)
+            {
+                EditorUtility.DisplayDialog("Utility scene",
+                    $"«{row.Name}» is a utility scene, not a level: {row.UtilityReason}",
+                    "Got it");
+                return;
+            }
+
+            if (row.ConfigRole == "Entry" || row.ConfigRole == "Segment" || row.ConfigRole == "Segment+")
+            {
+                EditorUtility.DisplayDialog("Can't set as Atmosphere",
+                    $"Scene «{row.Name}» is already {row.ConfigRole} — the same scene can't also be the atmosphere scene.",
+                    "Got it");
+                return;
+            }
+
+            var sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(row.Path);
+
+            Undo.RecordObject(_catalog, "Set AtmosphereScene");
+            _catalog.SetAtmosphereScene(sceneAsset);
             EditorUtility.SetDirty(_catalog);
             AssetDatabase.SaveAssets();
 
@@ -280,6 +330,14 @@ namespace Editor
             {
                 EditorUtility.DisplayDialog("Can't add as segment",
                     $"Scene «{row.Name}» is already Entry — Unity would load a second copy of the geometry.",
+                    "Got it");
+                return;
+            }
+
+            if (row.ConfigRole == "Atmosphere")
+            {
+                EditorUtility.DisplayDialog("Can't add as segment",
+                    $"Scene «{row.Name}» is already Atmosphere — Unity would load a second copy of the geometry.",
                     "Got it");
                 return;
             }
@@ -324,6 +382,15 @@ namespace Editor
             if (_catalog == null)
                 return;
 
+            string atmospherePath = CatalogBuildScenes.GetScenePath(_catalog.AtmosphereScene);
+            if (string.IsNullOrEmpty(atmospherePath) || !_scenePathByName.ContainsValue(atmospherePath))
+            {
+                EditorUtility.DisplayDialog("Not found",
+                    "Atmosphere scene file was not found among scanned scenes.",
+                    "OK");
+                return;
+            }
+
             string entryPath = CatalogBuildScenes.GetScenePath(_catalog.EntryScene);
             if (string.IsNullOrEmpty(entryPath) || !_scenePathByName.ContainsValue(entryPath))
             {
@@ -336,7 +403,8 @@ namespace Editor
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
                 return;
 
-            EditorSceneManager.OpenScene(entryPath, OpenSceneMode.Single);
+            EditorSceneManager.OpenScene(atmospherePath, OpenSceneMode.Single);
+            EditorSceneManager.OpenScene(entryPath, OpenSceneMode.Additive);
 
             foreach (SegmentDefinition segment in _catalog.Segments)
             {
@@ -422,6 +490,9 @@ namespace Editor
             string entryPath = CatalogBuildScenes.GetScenePath(_catalog.EntryScene);
             SceneRow entryRow = _rows.FirstOrDefault(r => r.Path == entryPath);
 
+            string atmospherePath = CatalogBuildScenes.GetScenePath(_catalog.AtmosphereScene);
+            SceneRow atmosphereRow = _rows.FirstOrDefault(r => r.Path == atmospherePath);
+
             List<SegmentDefinition> segments = _catalog.Segments.ToList();
             List<SceneReference> allSceneReferences = segments
                 .Where(s => s != null)
@@ -452,6 +523,15 @@ namespace Editor
                     EditorBuildSettings.scenes.Length > 0 &&
                     EditorBuildSettings.scenes[0].path == CatalogBuildScenes.GetScenePath(_catalog.BootstrapScene) &&
                     EditorBuildSettings.scenes[0].enabled),
+                ("AtmosphereScene is set and exists among scanned scenes", atmosphereRow != null),
+                ("AtmosphereScene has no SceneContext", atmosphereRow != null && !atmosphereRow.HasSceneContext),
+                ("AtmosphereScene does not overlap EntryScene or segment scenes",
+                    string.IsNullOrEmpty(atmospherePath) ||
+                    (atmospherePath != entryPath && allSceneReferences.All(r => CatalogBuildScenes.GetScenePath(r) != atmospherePath))),
+                ("AtmosphereScene is enabled in Build Settings", atmosphereRow != null && atmosphereRow.BuildSettingsState == "enabled"),
+                ("Every segment scene has a SegmentInjector",
+                    _rows.Where(r => r.ConfigRole == "Segment" || r.ConfigRole == "Segment+")
+                        .All(r => r.HasSegmentInjector)),
             };
 
             foreach ((string label, bool passed) in checks)
@@ -512,7 +592,11 @@ namespace Editor
                 ? " + " + string.Join(" + ", _catalog.Segments.Where(s => s != null).Select(s => s.Scene?.SceneName ?? "?"))
                 : "";
 
-            return $"{_catalog.EntryScene.SceneName}{segments}";
+            string atmosphere = _catalog.AtmosphereScene != null && _catalog.AtmosphereScene.IsValid
+                ? _catalog.AtmosphereScene.SceneName
+                : "(no atmosphere)";
+
+            return $"{atmosphere} → {_catalog.EntryScene.SceneName}{segments}";
         }
 
         private string GetBuildDiffSummary()
@@ -712,7 +796,7 @@ namespace Editor
             GUILayout.Label("Build Settings", EditorStyles.boldLabel, GUILayout.Width(90));
             GUILayout.Label("Objects", EditorStyles.boldLabel, GUILayout.Width(70));
             GUILayout.Label("Config Role", EditorStyles.boldLabel, GUILayout.Width(120));
-            GUILayout.Label("Actions", EditorStyles.boldLabel, GUILayout.Width(300));
+            GUILayout.Label("Actions", EditorStyles.boldLabel, GUILayout.Width(390));
             EditorGUILayout.EndHorizontal();
         }
 
@@ -740,12 +824,12 @@ namespace Editor
             GUILayout.Label(row.ApproxObjectCount.ToString(), GUILayout.Width(70));
             GUILayout.Label(row.ConfigRole, GUILayout.Width(120));
 
-            EditorGUILayout.BeginHorizontal(GUILayout.Width(300));
+            EditorGUILayout.BeginHorizontal(GUILayout.Width(390));
 
             if (row.UtilityReason != null)
             {
                 using (new EditorGUI.DisabledScope(true))
-                    GUILayout.Label(new GUIContent("Utility Scene", row.UtilityReason), GUILayout.Width(300));
+                    GUILayout.Label(new GUIContent("Utility Scene", row.UtilityReason), GUILayout.Width(390));
             }
             else
             {
@@ -754,6 +838,12 @@ namespace Editor
                     "is already part of a segment, or (with confirmation) has no GameDatas entry.");
                 if (GUILayout.Button(setAsMainContent, GUILayout.Width(90)))
                     SetAsMain(row);
+
+                var setAsAtmosphereContent = new GUIContent("Set as Atm.",
+                    "Make this scene the AtmosphereScene (replaces the current atmosphere scene). Refused if it's " +
+                    "already Entry or part of a segment.");
+                if (GUILayout.Button(setAsAtmosphereContent, GUILayout.Width(90)))
+                    SetAsAtmosphere(row);
 
                 bool isSegment = row.OwnerSegment != null;
                 bool isPrimarySegmentScene = row.ConfigRole == "Segment";
