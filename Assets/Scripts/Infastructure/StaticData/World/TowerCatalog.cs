@@ -18,6 +18,7 @@ namespace Infastructure.StaticData.World
         [SerializeField] private LoadPolicy _policy = LoadPolicy.KeepAllLoaded;
         [SerializeField] private string _levelDataKey;
         [SerializeField] private bool _showsFirstEncounter;
+        [SerializeField] private float _preloadLeadMeters = 30f;
 
         /// <summary>Сцена загрузчика, всегда индекс 0 в списке сборки.</summary>
         public SceneReference BootstrapScene => _bootstrapScene;
@@ -32,16 +33,27 @@ namespace Infastructure.StaticData.World
         public SceneReference EntryScene => _entryScene;
 
         /// <summary>
-        /// Отсортированное представление. Сегодня отдаёт список как есть — порядок
-        /// сегментов по высотной полосе не реализован (scene-architecture.md §7.6,
-        /// тикет 08 заменит тело этого свойства сортировкой по полосе).
-        /// Публичного доступа к сериализованному списку нет: переставить элементы
-        /// в инспекторе и повлиять на поведение нельзя.
+        /// Отсортированное по возрастанию <c>Baked.BottomY</c> представление (scene-architecture.md
+        /// §7.6). Сегменты без валидной запечённой полосы уходят в конец — их ловит
+        /// ProjectScenesWindow.ValidateConfiguration. Пустые слоты массива (null после resize в
+        /// инспекторе) отфильтрованы здесь — потребители вроде SegmentLoadingDirector полагаются
+        /// на то, что список не содержит null. Публичного доступа к сериализованному списку нет:
+        /// переставить элементы в инспекторе и повлиять на поведение нельзя.
         /// </summary>
-        public IReadOnlyList<SegmentDefinition> Segments => _segments;
+        public IReadOnlyList<SegmentDefinition> Segments =>
+            _segments
+                .Where(s => s != null)
+                .OrderBy(s => s.Baked != null && s.Baked.IsValid ? s.Baked.BottomY : float.MaxValue)
+                .ToList();
 
         /// <summary>Выгрузки нет по решению спека; второе значение появится только после замеров.</summary>
         public LoadPolicy Policy => _policy;
+
+        /// <summary>
+        /// Дистанция в метрах до нижней границы следующего этажа, на которой
+        /// SegmentLoadingDirector начинает его подгружать (тикет 08).
+        /// </summary>
+        public float PreloadLeadMeters => _preloadLeadMeters;
 
         public string LevelDataKey => _levelDataKey;
 

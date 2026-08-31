@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Infastructure.Common;
 using Infastructure.Services.Restart;
 using Infastructure.StaticData.StaticDataService;
 using Infastructure.StaticData.World;
+using Infastructure.World;
 using UI.Curtain;
 using UnityEngine;
 using Zenject;
@@ -19,15 +19,18 @@ namespace Infastructure.States
         private readonly IStaticDataService _staticDataService;
         private readonly ICurtainRoot _curtainRoot;
         private readonly IRestartService _restartService;
+        private readonly ISegmentLoadingDirector _segmentLoadingDirector;
 
         public LoadLevelState(IStateMachine stateMachine, ISceneLoader sceneLoader,
-            IStaticDataService staticDataService, ICurtainRoot curtainRoot, IRestartService restartService)
+            IStaticDataService staticDataService, ICurtainRoot curtainRoot, IRestartService restartService,
+            ISegmentLoadingDirector segmentLoadingDirector)
         {
             _stateMachine = stateMachine;
             _sceneLoader = sceneLoader;
             _staticDataService = staticDataService;
             _curtainRoot = curtainRoot;
             _restartService = restartService;
+            _segmentLoadingDirector = segmentLoadingDirector;
         }
 
         private TowerCatalog Catalog
@@ -55,20 +58,14 @@ namespace Infastructure.States
             _sceneLoader.Load(Catalog.AtmosphereScene.SceneName, OnAtmosphereLoaded);
         }
 
-        private void OnAtmosphereLoaded()
-        {
-            string[] scenes = new[] { Catalog.EntryScene.SceneName }
-                .Concat(Catalog.Segments
-                    .Where(segment => segment != null)
-                    .SelectMany(segment => segment.SceneReferences)
-                    .Select(sceneReference => sceneReference.SceneName))
-                .ToArray();
+        private void OnAtmosphereLoaded() =>
+            LoadEntryAndSegmentsAsync().Forget();
 
-            _sceneLoader.LoadAllScenes(scenes, OnAdditiveSceneLoaded);
-        }
-
-        private void OnAdditiveSceneLoaded()
+        private async UniTaskVoid LoadEntryAndSegmentsAsync()
         {
+            await _sceneLoader.LoadAdditiveAsync(Catalog.EntryScene.SceneName);
+            await _segmentLoadingDirector.LoadInitialAsync();
+
             _curtainRoot.Hide();
             _restartService.Clear();
         }

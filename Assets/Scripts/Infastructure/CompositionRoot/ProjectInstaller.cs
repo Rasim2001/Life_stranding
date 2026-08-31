@@ -16,6 +16,7 @@ using Infastructure.Services.StartGame;
 using Infastructure.Services.Window;
 using Infastructure.States;
 using Infastructure.StaticData.StaticDataService;
+using Infastructure.World;
 using UI;
 using UI.Curtain;
 using Zenject;
@@ -61,7 +62,12 @@ namespace Infastructure.CompositionRoot
             BindProgressWatchersService();
 
             BindStartGameReceiver();
+
+            BindSegmentLoadingDirector();
         }
+
+        private void BindSegmentLoadingDirector() =>
+            Container.BindInterfacesAndSelfTo<SegmentLoadingDirector>().AsSingle();
 
         private void BindStartGameReceiver() =>
             Container.BindInterfacesAndSelfTo<StartGameReceiver>().AsSingle();

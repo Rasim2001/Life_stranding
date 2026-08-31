@@ -12,6 +12,7 @@ using Infastructure.Services.StartGame;
 using Infastructure.Services.Tasks;
 using Infastructure.Services.Timer;
 using Infastructure.Services.Window;
+using Infastructure.World;
 using PickupObjects.PickUpOnPlatform.FlowerManagement;
 using SpiderController;
 using SpiderController.UI.Health;
@@ -36,6 +37,7 @@ namespace Infastructure.States
         private readonly ISaveLoadService _saveLoadService;
         private readonly ISpiderCamera _spiderCamera;
         private readonly IStableWorldUp _stableWorldUp;
+        private readonly ISegmentLoadingDirector _segmentLoadingDirector;
 
         public BuildLevelState(
             IGameFactory gameFactory,
@@ -51,9 +53,11 @@ namespace Infastructure.States
             IStartGameReceiver startGameReceiver,
             ISaveLoadService saveLoadService,
             ISpiderCamera spiderCamera,
-            IStableWorldUp stableWorldUp
+            IStableWorldUp stableWorldUp,
+            ISegmentLoadingDirector segmentLoadingDirector
         )
         {
+            _segmentLoadingDirector = segmentLoadingDirector;
             _cameraProviderService = cameraProviderService;
             _progressWatchersService = progressWatchersService;
             _tasksService = tasksService;
@@ -123,6 +127,7 @@ namespace Infastructure.States
 
             Flower flower = InitFlower();
             Spider spider = InitSpider(flower);
+            _segmentLoadingDirector.Track(spider.transform);
 
             InitHUD(flower, spider);
             InitTerrainScan(spider);

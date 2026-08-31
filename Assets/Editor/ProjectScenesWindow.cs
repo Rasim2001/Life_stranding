@@ -499,49 +499,100 @@ namespace Editor
                 .SelectMany(s => s.SceneReferences)
                 .ToList();
 
-            var checks = new List<(string Label, bool Passed)>
+            List<SegmentBakedData> orderedBands = SegmentBands.ReadBands(_catalog).Values
+                .Where(b => b != null && b.IsValid)
+                .OrderBy(b => b.BottomY)
+                .ToList();
+
+            bool hasNonAdjacentOverlap = false;
+            bool hasGap = false;
+            for (int i = 0; i < orderedBands.Count; i++)
             {
-                ("EntryScene is set and exists among scanned scenes", entryRow != null),
-                ("EntryScene has SceneContext", entryRow != null && entryRow.HasSceneContext),
-                ("EntryScene is enabled in Build Settings", entryRow != null && entryRow.BuildSettingsState == "enabled"),
+                for (int j = i + 1; j < orderedBands.Count; j++)
+                {
+                    bool overlaps = orderedBands[i].TopY > orderedBands[j].BottomY;
+                    if (overlaps && j != i + 1)
+                        hasNonAdjacentOverlap = true;
+                }
+
+                if (i + 1 < orderedBands.Count && orderedBands[i + 1].BottomY > orderedBands[i].TopY)
+                    hasGap = true;
+            }
+
+            var checks = new List<(string Label, bool Passed, bool IsWarning)>
+            {
+                ("EntryScene is set and exists among scanned scenes", entryRow != null, false),
+                ("EntryScene has SceneContext", entryRow != null && entryRow.HasSceneContext, false),
+                ("EntryScene is enabled in Build Settings", entryRow != null && entryRow.BuildSettingsState == "enabled", false),
                 ("LevelDataKey is set and exists in GameDatas",
                     !string.IsNullOrEmpty(_catalog.LevelDataKey) &&
-                    _gameData.GameDatas != null && _gameData.GameDatas.ContainsKey(_catalog.LevelDataKey)),
+                    _gameData.GameDatas != null && _gameData.GameDatas.ContainsKey(_catalog.LevelDataKey), false),
                 ("EntryScene does not overlap segment scenes",
-                    string.IsNullOrEmpty(entryPath) || allSceneReferences.All(r => CatalogBuildScenes.GetScenePath(r) != entryPath)),
+                    string.IsNullOrEmpty(entryPath) || allSceneReferences.All(r => CatalogBuildScenes.GetScenePath(r) != entryPath), false),
                 ("Every segment scene reference is valid (SceneAsset assigned)",
-                    allSceneReferences.All(r => r != null && r.IsValid)),
+                    allSceneReferences.All(r => r != null && r.IsValid), false),
                 ("No scene is referenced by two different segments",
-                    allSceneReferences.Where(r => r != null && r.IsValid).GroupBy(r => r.SceneName).All(g => g.Count() == 1)),
-                ("No SegmentDefinition is listed twice in the catalog", segments.Distinct().Count() == segments.Count),
+                    allSceneReferences.Where(r => r != null && r.IsValid).GroupBy(r => r.SceneName).All(g => g.Count() == 1), false),
+                ("No SegmentDefinition is listed twice in the catalog", segments.Distinct().Count() == segments.Count, false),
                 ("No utility scene (Bootstrap/ExitGameLoop) is set as Entry or Segment",
                     (entryRow == null || !UtilitySceneReasons.ContainsKey(entryRow.Name)) &&
                     _rows.Where(r => r.ConfigRole == "Segment" || r.ConfigRole == "Segment+")
-                        .All(r => !UtilitySceneReasons.ContainsKey(r.Name))),
-                ("Build Settings matches the catalog", _buildDiff.InSync),
+                        .All(r => !UtilitySceneReasons.ContainsKey(r.Name)), false),
+                ("Build Settings matches the catalog", _buildDiff.InSync, false),
                 ("Bootstrap scene is first in Build Settings",
                     EditorBuildSettings.scenes.Length > 0 &&
                     EditorBuildSettings.scenes[0].path == CatalogBuildScenes.GetScenePath(_catalog.BootstrapScene) &&
-                    EditorBuildSettings.scenes[0].enabled),
-                ("AtmosphereScene is set and exists among scanned scenes", atmosphereRow != null),
-                ("AtmosphereScene has no SceneContext", atmosphereRow != null && !atmosphereRow.HasSceneContext),
+                    EditorBuildSettings.scenes[0].enabled, false),
+                ("AtmosphereScene is set and exists among scanned scenes", atmosphereRow != null, false),
+                ("AtmosphereScene has no SceneContext", atmosphereRow != null && !atmosphereRow.HasSceneContext, false),
                 ("AtmosphereScene does not overlap EntryScene or segment scenes",
                     string.IsNullOrEmpty(atmospherePath) ||
-                    (atmospherePath != entryPath && allSceneReferences.All(r => CatalogBuildScenes.GetScenePath(r) != atmospherePath))),
-                ("AtmosphereScene is enabled in Build Settings", atmosphereRow != null && atmosphereRow.BuildSettingsState == "enabled"),
+                    (atmospherePath != entryPath && allSceneReferences.All(r => CatalogBuildScenes.GetScenePath(r) != atmospherePath)), false),
+                ("AtmosphereScene is enabled in Build Settings", atmosphereRow != null && atmosphereRow.BuildSettingsState == "enabled", false),
                 ("Every segment scene has a SegmentInjector",
                     _rows.Where(r => r.ConfigRole == "Segment" || r.ConfigRole == "Segment+")
-                        .All(r => r.HasSegmentInjector)),
+                        .All(r => r.HasSegmentInjector), false),
+                ("Every catalog segment has a valid SegmentBakedData band",
+                    segments.Where(s => s != null).All(s => s.Baked != null && s.Baked.IsValid), false),
+                ("No band overlap between non-adjacent segments", !hasNonAdjacentOverlap, false),
+                ("No height gap between neighboring segment bands", !hasGap, true),
+                ("No segment band top is above 10000 (scene-architecture.md §7.4)",
+                    orderedBands.All(b => b.TopY <= 10000f), true),
             };
 
-            foreach ((string label, bool passed) in checks)
+            foreach ((string label, bool passed, bool isWarning) in checks)
             {
-                if (!passed)
-                    Debug.LogWarning($"[ProjectScenesWindow] Validation failed: {label}");
+                if (passed)
+                    continue;
+
+                if (isWarning)
+                    Debug.LogWarning($"[ProjectScenesWindow] Validation warning: {label}");
+                else
+                    Debug.LogError($"[ProjectScenesWindow] Validation failed: {label}");
             }
 
-            string report = string.Join("\n", checks.Select(c => (c.Passed ? "✓ " : "✗ ") + c.Label));
+            string report = string.Join("\n", checks.Select(c =>
+                (c.Passed ? "✓ " : c.IsWarning ? "⚠ " : "✗ ") + c.Label));
             EditorUtility.DisplayDialog("Validate Configuration", report, "OK");
+        }
+
+        private void SyncSegmentBands()
+        {
+            if (_catalog == null)
+            {
+                EditorUtility.DisplayDialog("Sync Segment Bands", "GameData.asset has no TowerCatalog assigned.", "OK");
+                return;
+            }
+
+            List<SegmentBands.SyncResult> results = SegmentBands.Sync(_catalog);
+
+            string report = results.Count == 0
+                ? "No segments in the catalog."
+                : string.Join("\n", results.Select(r =>
+                    $"{(r.Success ? "✓" : "✗")} {r.SceneName ?? "?"}: {r.Message}"));
+
+            EditorUtility.DisplayDialog("Sync Segment Bands", report, "OK");
+            Refresh();
         }
 
         private static int CountGameDataPoints(GameData gd)
@@ -742,6 +793,11 @@ namespace Editor
             DrawActionButton("Reset Start Scene", startScene != null ? startScene.name : "default (not set)",
                 "Clear playModeStartScene so normal Unity Play behavior (start from the currently open scene) is restored.",
                 140, ResetPlayModeStartScene);
+
+            DrawActionButton("Sync Segment Bands", "bake SegmentBounds",
+                "Open each segment scene, read its SegmentBounds component, and write/update the matching " +
+                "SegmentBakedData asset (Assets/Settings/World/Segments/Generated). Requires all scenes saved.",
+                140, SyncSegmentBands);
 
             DrawActionButton("Validate Configuration", "read-only check",
                 "Run a checklist against the currently saved GameData.asset / TowerCatalog (Entry/Segment consistency, " +
