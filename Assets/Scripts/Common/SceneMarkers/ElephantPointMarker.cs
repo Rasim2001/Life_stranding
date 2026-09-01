@@ -1,8 +1,6 @@
-using UnityEngine;
-
 namespace Common.SceneMarkers
 {
-    public class ElephantPointMarker : MonoBehaviour
+    public class ElephantPointMarker : MarkerBase
     {
     }
 }

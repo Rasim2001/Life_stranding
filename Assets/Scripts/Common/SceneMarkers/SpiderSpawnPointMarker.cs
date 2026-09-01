@@ -1,8 +1,6 @@
-using UnityEngine;
-
 namespace Common.SceneMarkers
 {
-    public class SpiderSpawnPointMarker : MonoBehaviour
+    public class SpiderSpawnPointMarker : MarkerBase
     {
     }
 }

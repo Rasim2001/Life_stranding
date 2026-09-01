@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Common;
+using Common.SceneMarkers;
 using Infastructure.Services.SaveLoadService;
 using Infastructure.StaticData;
 using Infastructure.StaticData.World;
@@ -14,9 +15,12 @@ using UnityEngine.SceneManagement;
 namespace Editor.World
 {
     /// <summary>
-    /// Проверка ключей памяти акторов (<see cref="MarkerUniqueId"/>) по всем сценам каталога:
-    /// пустые ключи, дубликаты, читатели прогресса без <see cref="SceneProgressActor"/>.
-    /// Открывает сцены каталога аддитивно и закрывает за собой — валидацию оверрайдов
+    /// Проверка ключей памяти (<see cref="MarkerUniqueId"/>) по всем каталогам проекта:
+    /// пустые ключи, дубликаты, читатели прогресса без <see cref="SceneProgressActor"/>,
+    /// маркеры без компонента ключа, осиротевшие записи в GameData. Пространство ключей
+    /// глобально по всем мирам (Р9 в .scratch/plans/jaunty-snuggling-bengio.md), поэтому область
+    /// проверки — объединение сцен всех WorldCatalog в проекте, а не одного активного.
+    /// Открывает сцены аддитивно и закрывает за собой — валидацию оверрайдов
     /// и вложенных префабов делает Unity, а не самописный парсер YAML.
     /// </summary>
     public class ActorKeysWindow : EditorWindow
@@ -27,7 +31,9 @@ namespace Editor.World
         {
             EmptyKey,
             DuplicateKey,
-            MissingSceneProgressActor
+            MissingSceneProgressActor,
+            MarkerWithoutKeyComponent,
+            OrphanRecord
         }
 
         private class MarkerRecord
@@ -36,6 +42,7 @@ namespace Editor.World
             public string HierarchyPath;
             public string Key;
             public string GlobalObjectId;
+            public bool IsLevelMarker;
         }
 
         private class Issue
@@ -46,8 +53,10 @@ namespace Editor.World
         }
 
         private readonly List<Issue> _issues = new List<Issue>();
+        private int _catalogCount;
         private int _sceneCount;
         private int _actorCount;
+        private int _markerCount;
         private Vector2 _scroll;
         private string _statusMessage = "";
 
@@ -60,8 +69,9 @@ namespace Editor.World
             if (GUILayout.Button("Проверить", GUILayout.Width(100)))
                 Validate();
 
-            GUILayout.Label($"Сцен: {_sceneCount} · Акторов: {_actorCount} · Ошибок: {_issues.Count}",
-                EditorStyles.miniLabel);
+            GUILayout.Label(
+                $"Каталогов: {_catalogCount} · Сцен: {_sceneCount} · Акторов: {_actorCount} · " +
+                $"Маркеров: {_markerCount} · Ошибок: {_issues.Count}", EditorStyles.miniLabel);
             EditorGUILayout.EndHorizontal();
 
             if (!string.IsNullOrEmpty(_statusMessage))
@@ -69,7 +79,7 @@ namespace Editor.World
 
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
 
-            if (_issues.Count == 0 && string.IsNullOrEmpty(_statusMessage) && _actorCount > 0)
+            if (_issues.Count == 0 && string.IsNullOrEmpty(_statusMessage) && _actorCount + _markerCount > 0)
                 EditorGUILayout.LabelField("✓ Остальные ключи уникальны");
 
             foreach (Issue issue in _issues)
@@ -81,24 +91,43 @@ namespace Editor.World
         private void DrawIssue(Issue issue)
         {
             string title;
-            if (issue.Kind == IssueKind.EmptyKey)
-                title = "✗ Пустой ключ";
-            else if (issue.Kind == IssueKind.DuplicateKey)
-                title = $"✗ Дубликат ключа  {issue.Key}";
-            else
-                title = "✗ Нет SceneProgressActor у читателя прогресса";
+            switch (issue.Kind)
+            {
+                case IssueKind.EmptyKey:
+                    title = "✗ Пустой ключ";
+                    break;
+                case IssueKind.DuplicateKey:
+                    title = $"✗ Дубликат ключа  {issue.Key}";
+                    break;
+                case IssueKind.MissingSceneProgressActor:
+                    title = "✗ Нет SceneProgressActor у читателя прогресса";
+                    break;
+                case IssueKind.MarkerWithoutKeyComponent:
+                    title = "✗ Маркер без MarkerUniqueId";
+                    break;
+                default:
+                    title = "✗ Осиротевшая запись в GameData (маркера в сценах каталога нет)";
+                    break;
+            }
 
             EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
+
+            bool canAssignKey = issue.Kind == IssueKind.EmptyKey || issue.Kind == IssueKind.DuplicateKey;
 
             foreach (MarkerRecord record in issue.Records)
             {
                 EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField(
-                    $"  {Path.GetFileNameWithoutExtension(record.ScenePath)} · {record.HierarchyPath}");
 
-                if (GUILayout.Button("Показать", GUILayout.Width(80)))
+                string label = issue.Kind == IssueKind.OrphanRecord
+                    ? $"  {record.Key} · {record.HierarchyPath}"
+                    : $"  {Path.GetFileNameWithoutExtension(record.ScenePath)} · {record.HierarchyPath}";
+                EditorGUILayout.LabelField(label);
+
+                bool canShow = !string.IsNullOrEmpty(record.GlobalObjectId);
+
+                if (canShow && GUILayout.Button("Показать", GUILayout.Width(80)))
                     Show(record);
-                if (GUILayout.Button("Новый ключ", GUILayout.Width(90)))
+                if (canAssignKey && canShow && GUILayout.Button("Новый ключ", GUILayout.Width(90)))
                     AssignNewKey(record);
 
                 EditorGUILayout.EndHorizontal();
@@ -111,21 +140,31 @@ namespace Editor.World
         {
             _issues.Clear();
             _statusMessage = "";
+            _catalogCount = 0;
             _sceneCount = 0;
             _actorCount = 0;
+            _markerCount = 0;
 
-            var gameData = AssetDatabase.LoadAssetAtPath<GameStaticData>(GameDataAssetPath);
-            WorldCatalog catalog = gameData != null ? gameData.WorldCatalog : null;
-            if (catalog == null)
+            List<WorldCatalog> catalogs = AssetDatabase.FindAssets("t:WorldCatalog")
+                .Select(guid => AssetDatabase.LoadAssetAtPath<WorldCatalog>(AssetDatabase.GUIDToAssetPath(guid)))
+                .Where(c => c != null)
+                .ToList();
+
+            if (catalogs.Count == 0)
             {
-                _statusMessage = "GameData.asset не содержит WorldCatalog.";
+                _statusMessage = "В проекте нет ни одного WorldCatalog.";
                 return;
             }
 
-            List<string> scenePaths = CollectCatalogScenePaths(catalog);
+            var scenePaths = new List<string>();
+            foreach (WorldCatalog catalog in catalogs)
+                foreach (string path in CatalogBuildScenes.BuildDesiredPaths(catalog))
+                    if (!scenePaths.Contains(path))
+                        scenePaths.Add(path);
+
             if (scenePaths.Count == 0)
             {
-                _statusMessage = "В WorldCatalog не настроено ни одной сцены.";
+                _statusMessage = "Ни в одном WorldCatalog не настроено ни одной сцены.";
                 return;
             }
 
@@ -138,8 +177,9 @@ namespace Editor.World
                 }
             }
 
-            var records = new List<MarkerRecord>();
+            var keyRecords = new List<MarkerRecord>();
             var missingActorRecords = new List<MarkerRecord>();
+            var missingKeyComponentRecords = new List<MarkerRecord>();
             SceneSetup[] setup = EditorSceneManager.GetSceneManagerSetup();
 
             try
@@ -152,7 +192,7 @@ namespace Editor.World
                     if (!wasOpen)
                         scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
 
-                    CollectMarkers(scene, records, missingActorRecords);
+                    CollectMarkers(scene, keyRecords, missingActorRecords, missingKeyComponentRecords);
 
                     if (!wasOpen)
                         EditorSceneManager.CloseScene(scene, removeScene: true);
@@ -164,42 +204,16 @@ namespace Editor.World
                     EditorSceneManager.RestoreSceneManagerSetup(setup);
             }
 
+            _catalogCount = catalogs.Count;
             _sceneCount = scenePaths.Count;
-            _actorCount = records.Count;
-            BuildIssues(records, missingActorRecords);
+            _actorCount = keyRecords.Count(r => !r.IsLevelMarker);
+            _markerCount = keyRecords.Count(r => r.IsLevelMarker);
+
+            BuildIssues(keyRecords, missingActorRecords, missingKeyComponentRecords, catalogs);
         }
 
-        private static List<string> CollectCatalogScenePaths(WorldCatalog catalog)
-        {
-            var paths = new List<string>();
-
-            string entryPath = GetScenePath(catalog.EntryScene);
-            if (!string.IsNullOrEmpty(entryPath))
-                paths.Add(entryPath);
-
-            foreach (SegmentDefinition segment in catalog.Segments)
-            {
-                if (segment == null)
-                    continue;
-
-                foreach (SceneReference reference in segment.SceneReferences)
-                {
-                    string path = GetScenePath(reference);
-                    if (!string.IsNullOrEmpty(path) && !paths.Contains(path))
-                        paths.Add(path);
-                }
-            }
-
-            return paths;
-        }
-
-        private static string GetScenePath(SceneReference reference) =>
-            reference != null && reference.SceneAsset != null
-                ? AssetDatabase.GetAssetPath(reference.SceneAsset)
-                : null;
-
-        private static void CollectMarkers(Scene scene, List<MarkerRecord> records,
-            List<MarkerRecord> missingActorRecords)
+        private static void CollectMarkers(Scene scene, List<MarkerRecord> keyRecords,
+            List<MarkerRecord> missingActorRecords, List<MarkerRecord> missingKeyComponentRecords)
         {
             foreach (GameObject root in scene.GetRootGameObjects())
             {
@@ -210,14 +224,28 @@ namespace Editor.World
                         ScenePath = scene.path,
                         HierarchyPath = GetHierarchyPath(marker.transform),
                         Key = marker.UniqueId,
-                        GlobalObjectId = GlobalObjectId.GetGlobalObjectIdSlow(marker).ToString()
+                        GlobalObjectId = GlobalObjectId.GetGlobalObjectIdSlow(marker.gameObject).ToString(),
+                        IsLevelMarker = marker.GetComponent<MarkerBase>() != null
                     };
-                    records.Add(record);
+                    keyRecords.Add(record);
 
                     bool hasReader = marker.GetComponent<ISavedProgressReader>() != null;
                     bool hasSceneActor = marker.GetComponent<SceneProgressActor>() != null;
                     if (hasReader && !hasSceneActor)
                         missingActorRecords.Add(record);
+                }
+
+                foreach (MarkerBase levelMarker in root.GetComponentsInChildren<MarkerBase>(true))
+                {
+                    if (levelMarker.GetComponent<MarkerUniqueId>() != null)
+                        continue;
+
+                    missingKeyComponentRecords.Add(new MarkerRecord
+                    {
+                        ScenePath = scene.path,
+                        HierarchyPath = GetHierarchyPath(levelMarker.transform),
+                        GlobalObjectId = GlobalObjectId.GetGlobalObjectIdSlow(levelMarker.gameObject).ToString()
+                    });
                 }
             }
         }
@@ -234,13 +262,14 @@ namespace Editor.World
             return path;
         }
 
-        private void BuildIssues(List<MarkerRecord> records, List<MarkerRecord> missingActorRecords)
+        private void BuildIssues(List<MarkerRecord> keyRecords, List<MarkerRecord> missingActorRecords,
+            List<MarkerRecord> missingKeyComponentRecords, List<WorldCatalog> catalogs)
         {
-            List<MarkerRecord> empty = records.Where(r => string.IsNullOrEmpty(r.Key)).ToList();
+            List<MarkerRecord> empty = keyRecords.Where(r => string.IsNullOrEmpty(r.Key)).ToList();
             if (empty.Count > 0)
                 _issues.Add(new Issue { Kind = IssueKind.EmptyKey, Records = empty });
 
-            var duplicateGroups = records
+            var duplicateGroups = keyRecords
                 .Where(r => !string.IsNullOrEmpty(r.Key))
                 .GroupBy(r => r.Key)
                 .Where(g => g.Count() > 1);
@@ -253,21 +282,104 @@ namespace Editor.World
                 {
                     Kind = IssueKind.MissingSceneProgressActor, Records = missingActorRecords
                 });
+
+            if (missingKeyComponentRecords.Count > 0)
+                _issues.Add(new Issue
+                {
+                    Kind = IssueKind.MarkerWithoutKeyComponent, Records = missingKeyComponentRecords
+                });
+
+            List<MarkerRecord> orphans = FindOrphanRecords(catalogs, keyRecords);
+            if (orphans.Count > 0)
+                _issues.Add(new Issue { Kind = IssueKind.OrphanRecord, Records = orphans });
+        }
+
+        private static List<MarkerRecord> FindOrphanRecords(List<WorldCatalog> catalogs,
+            List<MarkerRecord> keyRecords)
+        {
+            var orphans = new List<MarkerRecord>();
+
+            var gameData = AssetDatabase.LoadAssetAtPath<GameStaticData>(GameDataAssetPath);
+            if (gameData == null)
+                return orphans;
+
+            foreach (WorldCatalog catalog in catalogs)
+            {
+                if (string.IsNullOrEmpty(catalog.LevelDataKey))
+                    continue;
+
+                if (!gameData.GameDatas.TryGetValue(catalog.LevelDataKey, out GameData data))
+                    continue;
+
+                var contentScenePaths = new HashSet<string>(CatalogContentScenes.CollectScenePaths(catalog));
+                var presentKeys = new HashSet<string>(keyRecords
+                    .Where(r => r.IsLevelMarker && !string.IsNullOrEmpty(r.Key) &&
+                        contentScenePaths.Contains(r.ScenePath))
+                    .Select(r => r.Key));
+
+                foreach (string key in GetRecordKeys(data))
+                {
+                    if (presentKeys.Contains(key))
+                        continue;
+
+                    orphans.Add(new MarkerRecord
+                    {
+                        ScenePath = "",
+                        HierarchyPath = $"каталог {catalog.name}",
+                        Key = key
+                    });
+                }
+            }
+
+            return orphans;
+        }
+
+        private static IEnumerable<string> GetRecordKeys(GameData data)
+        {
+            if (data == null)
+                yield break;
+
+            if (data.SpiderSpawnData != null && !string.IsNullOrEmpty(data.SpiderSpawnData.UniqueId))
+                yield return data.SpiderSpawnData.UniqueId;
+
+            if (data.FlowerSpawnData != null && !string.IsNullOrEmpty(data.FlowerSpawnData.UniqueId))
+                yield return data.FlowerSpawnData.UniqueId;
+
+            var lists = new[] { data.CheckPoints, data.GeneratorPoints, data.BatteriesPoints, data.EnergyPoints,
+                data.ElephantPoints };
+
+            foreach (List<WorldData> list in lists)
+            {
+                if (list == null)
+                    continue;
+
+                foreach (WorldData worldData in list)
+                    if (worldData != null && !string.IsNullOrEmpty(worldData.UniqueId))
+                        yield return worldData.UniqueId;
+            }
+
+            if (data.SkillsData == null)
+                yield break;
+
+            foreach (ProductSkillData skillData in data.SkillsData)
+                if (skillData != null && !string.IsNullOrEmpty(skillData.UniqueId))
+                    yield return skillData.UniqueId;
         }
 
         private void Show(MarkerRecord record)
         {
-            MarkerUniqueId marker = ResolveMarker(record);
-            if (marker == null)
+            GameObject go = ResolveGameObject(record);
+            if (go == null)
                 return;
 
-            Selection.activeObject = marker.gameObject;
-            EditorGUIUtility.PingObject(marker.gameObject);
+            Selection.activeObject = go;
+            EditorGUIUtility.PingObject(go);
         }
 
         private void AssignNewKey(MarkerRecord record)
         {
-            MarkerUniqueId marker = ResolveMarker(record);
+            GameObject go = ResolveGameObject(record);
+            MarkerUniqueId marker = go != null ? go.GetComponent<MarkerUniqueId>() : null;
             if (marker == null)
                 return;
 
@@ -288,8 +400,11 @@ namespace Editor.World
             EditorSceneManager.MarkSceneDirty(marker.gameObject.scene);
         }
 
-        private static MarkerUniqueId ResolveMarker(MarkerRecord record)
+        private static GameObject ResolveGameObject(MarkerRecord record)
         {
+            if (string.IsNullOrEmpty(record.GlobalObjectId))
+                return null;
+
             if (!GlobalObjectId.TryParse(record.GlobalObjectId, out GlobalObjectId globalId))
                 return null;
 
@@ -297,8 +412,7 @@ namespace Editor.World
             if (!scene.IsValid() || !scene.isLoaded)
                 EditorSceneManager.OpenScene(record.ScenePath, OpenSceneMode.Additive);
 
-            var go = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalId) as GameObject;
-            return go != null ? go.GetComponent<MarkerUniqueId>() : null;
+            return GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalId) as GameObject;
         }
     }
 }

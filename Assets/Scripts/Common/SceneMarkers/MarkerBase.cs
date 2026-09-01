@@ -1,9 +1,11 @@
+using Common;
 using UnityEngine;
 
 namespace Common.SceneMarkers
 {
-    public class MarkerBase : MonoBehaviour
+    [RequireComponent(typeof(MarkerUniqueId))]
+    public abstract class MarkerBase : MonoBehaviour
     {
-        public string UniqueId;
+        public string UniqueId => GetComponent<MarkerUniqueId>()?.UniqueId;
     }
 }

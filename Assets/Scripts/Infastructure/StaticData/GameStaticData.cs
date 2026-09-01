@@ -52,8 +52,8 @@ namespace Infastructure.StaticData
     {
         public ProductType ProductType;
 
-        public ProductSkillData(Vector3 worldPosition, Quaternion worldRotation, ProductType productType) : base(
-            worldPosition, worldRotation)
+        public ProductSkillData(Vector3 worldPosition, Quaternion worldRotation, ProductType productType,
+            string unique = null) : base(worldPosition, worldRotation, unique)
         {
             ProductType = productType;
         }
