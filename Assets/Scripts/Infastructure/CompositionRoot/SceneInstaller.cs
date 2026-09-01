@@ -57,7 +57,7 @@ namespace Infastructure.CompositionRoot
 
                 if (_atmosphereRoot == null)
                     throw new System.InvalidOperationException(
-                        "AtmosphereRoot not found — сцена атмосферы не загружена, проверь TowerCatalog.AtmosphereScene.");
+                        "AtmosphereRoot not found — сцена атмосферы не загружена, проверь WorldCatalog.AtmosphereScene.");
 
                 if (_atmosphereRoot.GlobalVolume == null || _atmosphereRoot.WeatherRig == null)
                     throw new System.InvalidOperationException(

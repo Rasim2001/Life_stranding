@@ -33,7 +33,7 @@ namespace Editor.World
                 ToDisable.Count == 0 && !ReorderNeeded;
         }
 
-        public static List<string> BuildDesiredPaths(TowerCatalog catalog)
+        public static List<string> BuildDesiredPaths(WorldCatalog catalog)
         {
             var paths = new List<string>();
 
@@ -66,13 +66,13 @@ namespace Editor.World
             return paths;
         }
 
-        public static Diff Compare(TowerCatalog catalog)
+        public static Diff Compare(WorldCatalog catalog)
         {
             var blockers = new List<string>();
 
             if (catalog == null)
             {
-                blockers.Add("no TowerCatalog assigned");
+                blockers.Add("no WorldCatalog assigned");
                 return new Diff(new List<string>(), new List<string>(), new List<string>(), false, blockers);
             }
 
@@ -125,7 +125,7 @@ namespace Editor.World
             return new Diff(toAdd, toEnable, toDisable, reorderNeeded, blockers);
         }
 
-        public static bool Apply(TowerCatalog catalog)
+        public static bool Apply(WorldCatalog catalog)
         {
             Diff diff = Compare(catalog);
             if (diff.Blockers.Count > 0)

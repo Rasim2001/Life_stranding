@@ -5,20 +5,18 @@ using UnityEngine;
 namespace Infastructure.StaticData.World
 {
     /// <summary>
-    /// Единственный источник правды о составе столба.
+    /// Единственный источник правды о составе мира.
     /// </summary>
-    [CreateAssetMenu(fileName = "DATA_TowerCatalog", menuName = "StaticData/World/Tower Catalog")]
-    public class TowerCatalog : ScriptableObject, ISceneReferenceOwner
+    [CreateAssetMenu(fileName = "DATA_World_", menuName = "StaticData/World/World Catalog")]
+    public class WorldCatalog : ScriptableObject, ISceneReferenceOwner
     {
         [SerializeField] private SceneReference _bootstrapScene;
         [SerializeField] private SceneReference[] _residentScenes = System.Array.Empty<SceneReference>();
         [SerializeField] private SceneReference _atmosphereScene;
         [SerializeField] private SceneReference _entryScene;
         [SerializeField] private SegmentDefinition[] _segments = System.Array.Empty<SegmentDefinition>();
-        [SerializeField] private LoadPolicy _policy = LoadPolicy.KeepAllLoaded;
         [SerializeField] private string _levelDataKey;
         [SerializeField] private bool _showsFirstEncounter;
-        [SerializeField] private float _preloadLeadMeters = 30f;
 
         /// <summary>Сцена загрузчика, всегда индекс 0 в списке сборки.</summary>
         public SceneReference BootstrapScene => _bootstrapScene;
@@ -45,15 +43,6 @@ namespace Infastructure.StaticData.World
                 .Where(s => s != null)
                 .OrderBy(s => s.Baked != null && s.Baked.IsValid ? s.Baked.BottomY : float.MaxValue)
                 .ToList();
-
-        /// <summary>Выгрузки нет по решению спека; второе значение появится только после замеров.</summary>
-        public LoadPolicy Policy => _policy;
-
-        /// <summary>
-        /// Дистанция в метрах до нижней границы следующего этажа, на которой
-        /// SegmentLoadingDirector начинает его подгружать (тикет 08).
-        /// </summary>
-        public float PreloadLeadMeters => _preloadLeadMeters;
 
         public string LevelDataKey => _levelDataKey;
 

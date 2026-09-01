@@ -16,7 +16,7 @@ namespace Editor
     /// how many markers, whether there's a GameDatas entry, Build Settings and config state.
     /// Switching the entry/segment scenes and launching Play from any scene.
     /// Scene content is determined by text-parsing .unity (YAML), without opening scenes.
-    /// Configuration source is TowerCatalog (Assets/Scripts/Infastructure/StaticData/World) —
+    /// Configuration source is WorldCatalog (Assets/Scripts/Infastructure/StaticData/World) —
     /// see .scratch/additive-scenes-vertical/spec.md. Tool behavior is meant to survive
     /// config changes unchanged.
     /// </summary>
@@ -57,7 +57,7 @@ namespace Editor
         private readonly List<SceneRow> _rows = new List<SceneRow>();
         private readonly Dictionary<string, string> _scenePathByName = new Dictionary<string, string>();
         private GameStaticData _gameData;
-        private TowerCatalog _catalog;
+        private WorldCatalog _catalog;
         private CatalogBuildScenes.Diff _buildDiff;
         private Vector2 _scroll;
         private string _lastRefreshInfo = "";
@@ -99,7 +99,7 @@ namespace Editor
 
             _gameData = AssetDatabase.LoadAssetAtPath<GameStaticData>(GameDataAssetPath);
             GameStaticData gameData = _gameData;
-            _catalog = gameData != null ? gameData.TowerCatalog : null;
+            _catalog = gameData != null ? gameData.WorldCatalog : null;
             _buildDiff = CatalogBuildScenes.Compare(_catalog);
 
             // path -> (role, owning segment; null for Entry)
@@ -207,7 +207,7 @@ namespace Editor
         {
             if (_catalog == null)
             {
-                EditorUtility.DisplayDialog("No TowerCatalog", "GameData.asset has no TowerCatalog assigned.", "Got it");
+                EditorUtility.DisplayDialog("No WorldCatalog", "GameData.asset has no WorldCatalog assigned.", "Got it");
                 return;
             }
 
@@ -249,7 +249,7 @@ namespace Editor
             if (!hasLevelDataEntry)
             {
                 bool proceed = EditorUtility.DisplayDialog("No GameDatas entry",
-                    $"TowerCatalog.LevelDataKey «{_catalog.LevelDataKey}» has no entry in GameDatas — the runtime will throw KeyNotFoundException in GameFactory. Set as Entry anyway?",
+                    $"WorldCatalog.LevelDataKey «{_catalog.LevelDataKey}» has no entry in GameDatas — the runtime will throw KeyNotFoundException in GameFactory. Set as Entry anyway?",
                     "Set anyway", "Cancel");
                 if (!proceed)
                     return;
@@ -269,7 +269,7 @@ namespace Editor
         {
             if (_catalog == null)
             {
-                EditorUtility.DisplayDialog("No TowerCatalog", "GameData.asset has no TowerCatalog assigned.", "Got it");
+                EditorUtility.DisplayDialog("No WorldCatalog", "GameData.asset has no WorldCatalog assigned.", "Got it");
                 return;
             }
 
@@ -314,7 +314,7 @@ namespace Editor
         {
             if (_catalog == null)
             {
-                EditorUtility.DisplayDialog("No TowerCatalog", "GameData.asset has no TowerCatalog assigned.", "Got it");
+                EditorUtility.DisplayDialog("No WorldCatalog", "GameData.asset has no WorldCatalog assigned.", "Got it");
                 return;
             }
 
@@ -483,7 +483,7 @@ namespace Editor
 
             if (_catalog == null)
             {
-                EditorUtility.DisplayDialog("Validate Configuration", "GameData.asset has no TowerCatalog assigned.", "OK");
+                EditorUtility.DisplayDialog("Validate Configuration", "GameData.asset has no WorldCatalog assigned.", "OK");
                 return;
             }
 
@@ -580,7 +580,7 @@ namespace Editor
         {
             if (_catalog == null)
             {
-                EditorUtility.DisplayDialog("Sync Segment Bands", "GameData.asset has no TowerCatalog assigned.", "OK");
+                EditorUtility.DisplayDialog("Sync Segment Bands", "GameData.asset has no WorldCatalog assigned.", "OK");
                 return;
             }
 
@@ -800,7 +800,7 @@ namespace Editor
                 140, SyncSegmentBands);
 
             DrawActionButton("Validate Configuration", "read-only check",
-                "Run a checklist against the currently saved GameData.asset / TowerCatalog (Entry/Segment consistency, " +
+                "Run a checklist against the currently saved GameData.asset / WorldCatalog (Entry/Segment consistency, " +
                 "Build Settings, GameDatas entries, utility-scene misuse). Doesn't write anything.",
                 140, ValidateConfiguration);
 

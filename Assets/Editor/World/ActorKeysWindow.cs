@@ -115,17 +115,17 @@ namespace Editor.World
             _actorCount = 0;
 
             var gameData = AssetDatabase.LoadAssetAtPath<GameStaticData>(GameDataAssetPath);
-            TowerCatalog catalog = gameData != null ? gameData.TowerCatalog : null;
+            WorldCatalog catalog = gameData != null ? gameData.WorldCatalog : null;
             if (catalog == null)
             {
-                _statusMessage = "GameData.asset не содержит TowerCatalog.";
+                _statusMessage = "GameData.asset не содержит WorldCatalog.";
                 return;
             }
 
             List<string> scenePaths = CollectCatalogScenePaths(catalog);
             if (scenePaths.Count == 0)
             {
-                _statusMessage = "В TowerCatalog не настроено ни одной сцены.";
+                _statusMessage = "В WorldCatalog не настроено ни одной сцены.";
                 return;
             }
 
@@ -169,7 +169,7 @@ namespace Editor.World
             BuildIssues(records, missingActorRecords);
         }
 
-        private static List<string> CollectCatalogScenePaths(TowerCatalog catalog)
+        private static List<string> CollectCatalogScenePaths(WorldCatalog catalog)
         {
             var paths = new List<string>();
 

@@ -36,7 +36,7 @@ namespace Editor.World
             }
         }
 
-        public static List<SyncResult> Sync(TowerCatalog catalog)
+        public static List<SyncResult> Sync(WorldCatalog catalog)
         {
             var results = new List<SyncResult>();
             if (catalog == null)
@@ -146,7 +146,7 @@ namespace Editor.World
         }
 
         /// <summary>Полосы из уже сериализованной ссылки SegmentDefinition.Baked. Сцены не открывает.</summary>
-        public static Dictionary<SegmentDefinition, SegmentBakedData> ReadBands(TowerCatalog catalog)
+        public static Dictionary<SegmentDefinition, SegmentBakedData> ReadBands(WorldCatalog catalog)
         {
             var result = new Dictionary<SegmentDefinition, SegmentBakedData>();
             if (catalog == null)

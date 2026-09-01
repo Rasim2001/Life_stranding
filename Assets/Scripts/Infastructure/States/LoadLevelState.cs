@@ -33,20 +33,20 @@ namespace Infastructure.States
             _segmentLoadingDirector = segmentLoadingDirector;
         }
 
-        private TowerCatalog Catalog
+        private WorldCatalog Catalog
         {
             get
             {
-                TowerCatalog catalog = _staticDataService.GameStaticData.TowerCatalog;
+                WorldCatalog catalog = _staticDataService.GameStaticData.WorldCatalog;
 
                 if (catalog == null)
-                    throw new InvalidOperationException("GameStaticData.TowerCatalog is not assigned.");
+                    throw new InvalidOperationException("GameStaticData.WorldCatalog is not assigned.");
 
                 if (catalog.EntryScene == null || !catalog.EntryScene.IsValid)
-                    throw new InvalidOperationException("TowerCatalog.EntryScene is not set.");
+                    throw new InvalidOperationException("WorldCatalog.EntryScene is not set.");
 
                 if (catalog.AtmosphereScene == null || !catalog.AtmosphereScene.IsValid)
-                    throw new InvalidOperationException("TowerCatalog.AtmosphereScene is not set.");
+                    throw new InvalidOperationException("WorldCatalog.AtmosphereScene is not set.");
 
                 return catalog;
             }

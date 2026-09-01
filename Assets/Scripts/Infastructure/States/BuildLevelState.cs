@@ -37,7 +37,7 @@ namespace Infastructure.States
         private readonly ISaveLoadService _saveLoadService;
         private readonly ISpiderCamera _spiderCamera;
         private readonly IStableWorldUp _stableWorldUp;
-        private readonly ISegmentLoadingDirector _segmentLoadingDirector;
+        private readonly ISegmentActivation _segmentActivation;
 
         public BuildLevelState(
             IGameFactory gameFactory,
@@ -54,10 +54,10 @@ namespace Infastructure.States
             ISaveLoadService saveLoadService,
             ISpiderCamera spiderCamera,
             IStableWorldUp stableWorldUp,
-            ISegmentLoadingDirector segmentLoadingDirector
+            ISegmentActivation segmentActivation
         )
         {
-            _segmentLoadingDirector = segmentLoadingDirector;
+            _segmentActivation = segmentActivation;
             _cameraProviderService = cameraProviderService;
             _progressWatchersService = progressWatchersService;
             _tasksService = tasksService;
@@ -127,7 +127,6 @@ namespace Infastructure.States
 
             Flower flower = InitFlower();
             Spider spider = InitSpider(flower);
-            _segmentLoadingDirector.Track(spider.transform);
 
             InitHUD(flower, spider);
             InitTerrainScan(spider);
@@ -143,6 +142,8 @@ namespace Infastructure.States
 
             _spiderCamera.Initialize();
             _saveLoadService.InitLoadingProgress();
+
+            _segmentActivation.ActivateAll();
         }
 
         private void InitLastChanceRoot(Flower flower, Spider spider)

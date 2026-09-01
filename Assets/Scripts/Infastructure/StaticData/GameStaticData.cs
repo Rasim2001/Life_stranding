@@ -10,7 +10,7 @@ namespace Infastructure.StaticData
     [CreateAssetMenu(fileName = "GameData", menuName = "StaticData/GameData")]
     public class GameStaticData : SerializedScriptableObject
     {
-        public TowerCatalog TowerCatalog;
+        public WorldCatalog WorldCatalog;
 
         public Dictionary<string, GameData> GameDatas = new Dictionary<string, GameData>();
     }

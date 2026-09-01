@@ -510,10 +510,10 @@ Settings/World/Segments/
 └─ DATA_Segment_05_Bridges.asset
 ```
 
-`TowerCatalog` — редкий агрегатор:
+`WorldCatalog` — редкий агрегатор:
 
 ```text
-Settings/World/DATA_TowerCatalog.asset
+Settings/World/DATA_World_Tower.asset
 ```
 
 Если конкретная реализация потребует загрузки этих объектов через `Resources.Load`,
@@ -1098,7 +1098,7 @@ Rendering Debugger в билде и реестр APV-данных по сцен�
 
 - каталог владельцев корневых папок;
 - список всех строковых resource-ключей;
-- список сцен в Build Settings / будущем `TowerCatalog`;
+- список сцен в Build Settings / будущем `WorldCatalog`;
 - список дублирующих имён и предполагаемых владельцев;
 - классификация `authoring / generated / vendor / archive`.
 

@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 34c56efd1de5e744d88672e7f3a2ac76, type: 3}
-  m_Name: DATA_TowerCatalog
-  m_EditorClassIdentifier: Assembly-CSharp::Infastructure.StaticData.World.TowerCatalog
+  m_Name: DATA_World_Tower
+  m_EditorClassIdentifier: Assembly-CSharp::Infastructure.StaticData.World.WorldCatalog
   _bootstrapScene:
     _sceneAsset: {fileID: 102900000, guid: 41089604a76c1b84892684a467cd1c85, type: 3}
     _sceneName: Bootstrap
@@ -26,7 +26,5 @@ MonoBehaviour:
     _sceneName: Gameplay
   _segments:
   - {fileID: 11400000, guid: f6c6e10044e2730478ed5660f09d05d4, type: 2}
-  _policy: 0
   _levelDataKey: SCN_LevelDesingDraft
   _showsFirstEncounter: 1
-  _preloadLeadMeters: 30

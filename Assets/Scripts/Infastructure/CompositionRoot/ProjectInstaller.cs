@@ -64,10 +64,15 @@ namespace Infastructure.CompositionRoot
             BindStartGameReceiver();
 
             BindSegmentLoadingDirector();
+
+            BindSegmentActivation();
         }
 
         private void BindSegmentLoadingDirector() =>
             Container.BindInterfacesAndSelfTo<SegmentLoadingDirector>().AsSingle();
+
+        private void BindSegmentActivation() =>
+            Container.BindInterfacesAndSelfTo<SegmentActivation>().AsSingle();
 
         private void BindStartGameReceiver() =>
             Container.BindInterfacesAndSelfTo<StartGameReceiver>().AsSingle();

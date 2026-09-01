@@ -8,14 +8,14 @@ namespace Infastructure.Services.CurrentLevel
     {
         private readonly IStaticDataService _staticDataService;
 
-        private TowerCatalog Catalog
+        private WorldCatalog Catalog
         {
             get
             {
-                TowerCatalog catalog = _staticDataService.GameStaticData.TowerCatalog;
+                WorldCatalog catalog = _staticDataService.GameStaticData.WorldCatalog;
 
                 if (catalog == null)
-                    throw new InvalidOperationException("GameStaticData.TowerCatalog is not assigned.");
+                    throw new InvalidOperationException("GameStaticData.WorldCatalog is not assigned.");
 
                 return catalog;
             }

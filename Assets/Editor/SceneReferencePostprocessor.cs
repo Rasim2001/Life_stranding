@@ -17,7 +17,7 @@ namespace Editor
             if (!touchedScene)
                 return;
 
-            foreach (string guid in AssetDatabase.FindAssets("t:TowerCatalog t:SegmentDefinition"))
+            foreach (string guid in AssetDatabase.FindAssets("t:WorldCatalog t:SegmentDefinition"))
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
                 var owner = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path) as ISceneReferenceOwner;
