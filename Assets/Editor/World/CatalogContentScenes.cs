@@ -1,13 +1,16 @@
 using System.Collections.Generic;
 using Infastructure.StaticData.World;
+using UnityEngine;
 
 namespace Editor.World
 {
     /// <summary>
-    /// Контентные сцены каталога: EntryScene + сцены сегментов. Бутстрап, резидентный слой
-    /// и сцена атмосферы сюда не входят — они не сцены каталога-контента
-    /// (docs/scene-regulations.md §1, Р8 в .scratch/plans/jaunty-snuggling-bengio.md).
-    /// Общий источник для Collect (GameDataEditor) и Actor Keys (ActorKeysWindow).
+    /// Общие помощники редакторных инструментов по сценам каталога: контентные сцены
+    /// (EntryScene + сцены сегментов; бутстрап, резидентный слой и сцена атмосферы сюда
+    /// не входят — они не сцены каталога-контента, docs/scene-regulations.md §1,
+    /// Р8 в .scratch/plans/jaunty-snuggling-bengio.md) и путь объекта в иерархии сцены.
+    /// Общий источник для Collect (GameDataEditor), Actor Keys (ActorKeysWindow)
+    /// и Scene Structure (SceneStructureWindow).
     /// </summary>
     public static class CatalogContentScenes
     {
@@ -33,6 +36,18 @@ namespace Editor.World
             }
 
             return paths;
+        }
+
+        public static string GetHierarchyPath(Transform t)
+        {
+            string path = t.name;
+            while (t.parent != null)
+            {
+                t = t.parent;
+                path = t.name + "/" + path;
+            }
+
+            return path;
         }
     }
 }

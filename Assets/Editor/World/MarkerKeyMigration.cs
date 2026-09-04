@@ -32,10 +32,17 @@ namespace Editor.World
             public int KeysTransferred;
             public int MarkersRestored;
             public int FreshKeysIssued;
+            public readonly List<(string Type, string Key, Vector3 Position)> Unmatched =
+                new List<(string, string, Vector3)>();
         }
 
         [MenuItem("GD Tools/Migrate/Marker Keys (one-shot)")]
-        public static void Run()
+        public static void Run() => Execute(dryRun: false);
+
+        [MenuItem("GD Tools/Migrate/Marker Keys (preview)")]
+        public static void Preview() => Execute(dryRun: true);
+
+        private static void Execute(bool dryRun)
         {
             var gameData = AssetDatabase.LoadAssetAtPath<GameStaticData>(GameDataAssetPath);
             if (gameData == null)
@@ -67,14 +74,22 @@ namespace Editor.World
             var report = new Report();
 
             foreach (WorldCatalog catalog in catalogs)
-                MigrateCatalog(catalog, gameData, report);
+                MigrateCatalog(catalog, gameData, report, dryRun);
 
-            Debug.Log($"Marker Keys migration: компонентов добавлено {report.ComponentsAdded}, " +
+            string prefix = dryRun ? "Marker Keys preview" : "Marker Keys migration";
+            Debug.Log($"{prefix}: компонентов добавлено {report.ComponentsAdded}, " +
                 $"ключей перенесено {report.KeysTransferred}, маркеров восстановлено {report.MarkersRestored}, " +
                 $"выдано новых {report.FreshKeysIssued}.");
+
+            if (!dryRun || report.Unmatched.Count == 0)
+                return;
+
+            Debug.Log($"{prefix}: записи без совпадения ({report.Unmatched.Count}):\n" +
+                string.Join("\n", report.Unmatched.Select(u => $"  {u.Type} · {u.Key} · {u.Position}")));
         }
 
-        private static void MigrateCatalog(WorldCatalog catalog, GameStaticData gameData, Report report)
+        private static void MigrateCatalog(WorldCatalog catalog, GameStaticData gameData, Report report,
+            bool dryRun)
         {
             if (string.IsNullOrEmpty(catalog.LevelDataKey))
                 return;
@@ -107,7 +122,7 @@ namespace Editor.World
                         allMarkers.AddRange(root.GetComponentsInChildren<MarkerBase>(true));
 
                 foreach (MarkerBase marker in allMarkers)
-                    EnsureKeyComponent(marker, report);
+                    EnsureKeyComponent(marker, report, dryRun);
 
                 // "Целевая сцена" под ---CONTRACT--- — первый (самый нижний) сегмент каталога:
                 // сегодня он единственный, и это конечное место маркеров после Шага 3.
@@ -116,17 +131,28 @@ namespace Editor.World
                     Debug.LogWarning($"Marker Keys migration: '{ContractRootName}' не найден для каталога " +
                         $"'{catalog.name}' — восстановленные маркеры лягут в корень первого сегмента.");
 
-                MigrateList<CheckPointMarker>(record.CheckPoints, allMarkers, contractRoot, report);
-                MigrateList<GeneratorPointMarker>(record.GeneratorPoints, allMarkers, contractRoot, report);
-                MigrateList<BatteryPointMarker>(record.BatteriesPoints, allMarkers, contractRoot, report);
-                MigrateList<EnergyPointMarker>(record.EnergyPoints, allMarkers, contractRoot, report);
+                var transferredMarkers = new HashSet<MarkerBase>();
+
+                MigrateList<CheckPointMarker>(record.CheckPoints, allMarkers, contractRoot, report, dryRun,
+                    transferredMarkers);
+                MigrateList<GeneratorPointMarker>(record.GeneratorPoints, allMarkers, contractRoot, report, dryRun,
+                    transferredMarkers);
+                MigrateList<BatteryPointMarker>(record.BatteriesPoints, allMarkers, contractRoot, report, dryRun,
+                    transferredMarkers);
+                MigrateList<EnergyPointMarker>(record.EnergyPoints, allMarkers, contractRoot, report, dryRun,
+                    transferredMarkers);
+                MigrateList<ElephantPointMarker>(record.ElephantPoints, allMarkers, contractRoot, report, dryRun,
+                    transferredMarkers);
+                MigrateList<ProductSkillPointMarker>(record.SkillsData, allMarkers, contractRoot, report, dryRun,
+                    transferredMarkers);
 
                 foreach (MarkerBase marker in allMarkers)
-                    AssignFreshKeyIfNeeded(marker, report);
+                    AssignFreshKeyIfNeeded(marker, report, dryRun, transferredMarkers);
 
-                foreach ((string _, Scene scene, bool _) in openedScenes)
-                    if (scene.isDirty)
-                        EditorSceneManager.SaveScene(scene);
+                if (!dryRun)
+                    foreach ((string _, Scene scene, bool _) in openedScenes)
+                        if (scene.isDirty)
+                            EditorSceneManager.SaveScene(scene);
             }
             finally
             {
@@ -136,15 +162,18 @@ namespace Editor.World
             }
         }
 
-        private static void EnsureKeyComponent(MarkerBase marker, Report report)
+        private static void EnsureKeyComponent(MarkerBase marker, Report report, bool dryRun)
         {
             if (marker.GetComponent<MarkerUniqueId>() != null)
+                return;
+
+            report.ComponentsAdded++;
+            if (dryRun)
                 return;
 
             Undo.AddComponent<MarkerUniqueId>(marker.gameObject);
             EditorUtility.SetDirty(marker.gameObject);
             EditorSceneManager.MarkSceneDirty(marker.gameObject.scene);
-            report.ComponentsAdded++;
         }
 
         private static Transform ResolveContractRoot(WorldCatalog catalog,
@@ -166,8 +195,9 @@ namespace Editor.World
             return null;
         }
 
-        private static void MigrateList<T>(List<WorldData> records, List<MarkerBase> allMarkers,
-            Transform contractRoot, Report report) where T : MarkerBase
+        private static void MigrateList<T>(IEnumerable<WorldData> records, List<MarkerBase> allMarkers,
+            Transform contractRoot, Report report, bool dryRun, HashSet<MarkerBase> transferredMarkers)
+            where T : MarkerBase
         {
             if (records == null)
                 return;
@@ -182,10 +212,14 @@ namespace Editor.World
 
                 T nearest = null;
                 float nearestDistSqr = epsilonSqr;
+                int candidateCount = 0;
 
                 foreach (T candidate in unmatched)
                 {
                     float distSqr = (candidate.transform.position - recordEntry.WorldPosition).sqrMagnitude;
+                    if (distSqr <= epsilonSqr)
+                        candidateCount++;
+
                     if (distSqr <= nearestDistSqr)
                     {
                         nearest = candidate;
@@ -193,32 +227,45 @@ namespace Editor.World
                     }
                 }
 
+                if (candidateCount > 1)
+                    Debug.LogWarning($"Marker Keys migration: {candidateCount} кандидатов в ε для записи " +
+                        $"'{recordEntry.UniqueId}' у {recordEntry.WorldPosition} — разобрать вручную.");
+
                 if (nearest != null)
                 {
                     unmatched.Remove(nearest);
-                    TransferKey(nearest, recordEntry.UniqueId, report);
+                    transferredMarkers.Add(nearest);
+                    TransferKey(nearest, recordEntry.UniqueId, report, dryRun);
                 }
                 else
                 {
-                    RestoreMarker<T>(recordEntry, contractRoot, report);
+                    RestoreMarker<T>(recordEntry, contractRoot, report, dryRun);
                 }
             }
         }
 
-        private static void TransferKey(MarkerBase marker, string key, Report report)
+        private static void TransferKey(MarkerBase marker, string key, Report report, bool dryRun)
         {
+            report.KeysTransferred++;
+            if (dryRun)
+                return;
+
             MarkerUniqueId uniqueId = marker.GetComponent<MarkerUniqueId>();
             Undo.RecordObject(uniqueId, "Migrate marker key");
             uniqueId.UniqueId = key;
             PrefabUtility.RecordPrefabInstancePropertyModifications(uniqueId);
             EditorUtility.SetDirty(uniqueId);
             EditorSceneManager.MarkSceneDirty(uniqueId.gameObject.scene);
-            report.KeysTransferred++;
         }
 
-        private static void RestoreMarker<T>(WorldData recordEntry, Transform contractRoot, Report report)
-            where T : MarkerBase
+        private static void RestoreMarker<T>(WorldData recordEntry, Transform contractRoot, Report report,
+            bool dryRun) where T : MarkerBase
         {
+            report.Unmatched.Add((typeof(T).Name, recordEntry.UniqueId, recordEntry.WorldPosition));
+            report.MarkersRestored++;
+            if (dryRun)
+                return;
+
             var go = new GameObject(typeof(T).Name);
             Undo.RegisterCreatedObjectUndo(go, "Restore marker from GameData");
 
@@ -228,18 +275,34 @@ namespace Editor.World
             go.transform.position = recordEntry.WorldPosition;
             go.transform.rotation = recordEntry.WorldRotation;
 
-            go.AddComponent<T>();
+            T marker = go.AddComponent<T>();
+            if (marker is ProductSkillPointMarker skillMarker && recordEntry is ProductSkillData skillData)
+                skillMarker.ProductType = skillData.ProductType;
+
             MarkerUniqueId uniqueId = go.GetComponent<MarkerUniqueId>();
             uniqueId.UniqueId = recordEntry.UniqueId;
 
             EditorUtility.SetDirty(go);
             EditorSceneManager.MarkSceneDirty(go.scene);
-            report.MarkersRestored++;
         }
 
-        private static void AssignFreshKeyIfNeeded(MarkerBase marker, Report report)
+        private static void AssignFreshKeyIfNeeded(MarkerBase marker, Report report, bool dryRun,
+            HashSet<MarkerBase> transferredMarkers)
         {
+            if (transferredMarkers.Contains(marker))
+                return;
+
             MarkerUniqueId uniqueId = marker.GetComponent<MarkerUniqueId>();
+
+            if (dryRun)
+            {
+                if (uniqueId != null && !string.IsNullOrEmpty(uniqueId.UniqueId))
+                    return;
+
+                report.FreshKeysIssued++;
+                return;
+            }
+
             if (uniqueId == null || !string.IsNullOrEmpty(uniqueId.UniqueId))
                 return;
 

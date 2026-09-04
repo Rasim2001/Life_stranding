@@ -81,7 +81,7 @@ namespace Editor
             if (skipped.Count > 0)
                 Debug.LogWarning("Collect: маркеры вне каталога пропущены (не собраны):\n" +
                     string.Join("\n", skipped.Select(m =>
-                        $"  {m.gameObject.scene.path} · {GetHierarchyPath(m.transform)}")));
+                        $"  {m.gameObject.scene.path} · {CatalogContentScenes.GetHierarchyPath(m.transform)}")));
 
             var spiderSpawns = collected.OfType<SpiderSpawnPointMarker>().ToList();
             if (spiderSpawns.Count != 1)
@@ -101,7 +101,7 @@ namespace Editor
             if (withoutKey.Count > 0)
             {
                 Debug.LogError("Collect: маркеры без ключа памяти (нет MarkerUniqueId или ключ пуст):\n" +
-                    string.Join("\n", withoutKey.Select(m => "  " + GetHierarchyPath(m.transform))));
+                    string.Join("\n", withoutKey.Select(m => "  " + CatalogContentScenes.GetHierarchyPath(m.transform))));
                 return;
             }
 
@@ -110,7 +110,7 @@ namespace Editor
             if (duplicateGroups.Count > 0)
             {
                 Debug.LogError("Collect: дубликаты ключей:\n" + string.Join("\n", duplicateGroups.Select(g =>
-                    $"  {g.Key}:\n" + string.Join("\n", g.Select(m => "    " + GetHierarchyPath(m.transform))))));
+                    $"  {g.Key}:\n" + string.Join("\n", g.Select(m => "    " + CatalogContentScenes.GetHierarchyPath(m.transform))))));
                 return;
             }
 
@@ -148,17 +148,5 @@ namespace Editor
 
         private static WorldData ToWorldData(MarkerBase marker) =>
             new WorldData(marker.transform.position, marker.transform.rotation, marker.UniqueId);
-
-        private static string GetHierarchyPath(Transform t)
-        {
-            string path = t.name;
-            while (t.parent != null)
-            {
-                t = t.parent;
-                path = t.name + "/" + path;
-            }
-
-            return path;
-        }
     }
 }

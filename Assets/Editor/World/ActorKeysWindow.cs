@@ -33,7 +33,8 @@ namespace Editor.World
             DuplicateKey,
             MissingSceneProgressActor,
             MarkerWithoutKeyComponent,
-            OrphanRecord
+            OrphanRecord,
+            MarkerOutsideContentScenes
         }
 
         private class MarkerRecord
@@ -43,6 +44,7 @@ namespace Editor.World
             public string Key;
             public string GlobalObjectId;
             public bool IsLevelMarker;
+            public bool IsContentScene;
         }
 
         private class Issue
@@ -105,6 +107,9 @@ namespace Editor.World
                 case IssueKind.MarkerWithoutKeyComponent:
                     title = "✗ Маркер без MarkerUniqueId";
                     break;
+                case IssueKind.MarkerOutsideContentScenes:
+                    title = "✗ Маркер уровня вне контентных сцен (в сбор не попадёт)";
+                    break;
                 default:
                     title = "✗ Осиротевшая запись в GameData (маркера в сценах каталога нет)";
                     break;
@@ -162,6 +167,11 @@ namespace Editor.World
                     if (!scenePaths.Contains(path))
                         scenePaths.Add(path);
 
+            var contentScenePaths = new HashSet<string>();
+            foreach (WorldCatalog catalog in catalogs)
+                foreach (string path in CatalogContentScenes.CollectScenePaths(catalog))
+                    contentScenePaths.Add(path);
+
             if (scenePaths.Count == 0)
             {
                 _statusMessage = "Ни в одном WorldCatalog не настроено ни одной сцены.";
@@ -192,7 +202,8 @@ namespace Editor.World
                     if (!wasOpen)
                         scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
 
-                    CollectMarkers(scene, keyRecords, missingActorRecords, missingKeyComponentRecords);
+                    CollectMarkers(scene, contentScenePaths, keyRecords, missingActorRecords,
+                        missingKeyComponentRecords);
 
                     if (!wasOpen)
                         EditorSceneManager.CloseScene(scene, removeScene: true);
@@ -212,8 +223,9 @@ namespace Editor.World
             BuildIssues(keyRecords, missingActorRecords, missingKeyComponentRecords, catalogs);
         }
 
-        private static void CollectMarkers(Scene scene, List<MarkerRecord> keyRecords,
-            List<MarkerRecord> missingActorRecords, List<MarkerRecord> missingKeyComponentRecords)
+        private static void CollectMarkers(Scene scene, HashSet<string> contentScenePaths,
+            List<MarkerRecord> keyRecords, List<MarkerRecord> missingActorRecords,
+            List<MarkerRecord> missingKeyComponentRecords)
         {
             foreach (GameObject root in scene.GetRootGameObjects())
             {
@@ -222,10 +234,11 @@ namespace Editor.World
                     var record = new MarkerRecord
                     {
                         ScenePath = scene.path,
-                        HierarchyPath = GetHierarchyPath(marker.transform),
+                        HierarchyPath = CatalogContentScenes.GetHierarchyPath(marker.transform),
                         Key = marker.UniqueId,
                         GlobalObjectId = GlobalObjectId.GetGlobalObjectIdSlow(marker.gameObject).ToString(),
-                        IsLevelMarker = marker.GetComponent<MarkerBase>() != null
+                        IsLevelMarker = marker.GetComponent<MarkerBase>() != null,
+                        IsContentScene = contentScenePaths.Contains(scene.path)
                     };
                     keyRecords.Add(record);
 
@@ -243,23 +256,11 @@ namespace Editor.World
                     missingKeyComponentRecords.Add(new MarkerRecord
                     {
                         ScenePath = scene.path,
-                        HierarchyPath = GetHierarchyPath(levelMarker.transform),
+                        HierarchyPath = CatalogContentScenes.GetHierarchyPath(levelMarker.transform),
                         GlobalObjectId = GlobalObjectId.GetGlobalObjectIdSlow(levelMarker.gameObject).ToString()
                     });
                 }
             }
-        }
-
-        private static string GetHierarchyPath(Transform t)
-        {
-            string path = t.name;
-            while (t.parent != null)
-            {
-                t = t.parent;
-                path = t.name + "/" + path;
-            }
-
-            return path;
         }
 
         private void BuildIssues(List<MarkerRecord> keyRecords, List<MarkerRecord> missingActorRecords,
@@ -289,6 +290,12 @@ namespace Editor.World
                     Kind = IssueKind.MarkerWithoutKeyComponent, Records = missingKeyComponentRecords
                 });
 
+            List<MarkerRecord> outsideContent = keyRecords
+                .Where(r => r.IsLevelMarker && !r.IsContentScene)
+                .ToList();
+            if (outsideContent.Count > 0)
+                _issues.Add(new Issue { Kind = IssueKind.MarkerOutsideContentScenes, Records = outsideContent });
+
             List<MarkerRecord> orphans = FindOrphanRecords(catalogs, keyRecords);
             if (orphans.Count > 0)
                 _issues.Add(new Issue { Kind = IssueKind.OrphanRecord, Records = orphans });
@@ -303,6 +310,10 @@ namespace Editor.World
             if (gameData == null)
                 return orphans;
 
+            var presentKeys = new HashSet<string>(keyRecords
+                .Where(r => r.IsLevelMarker && !string.IsNullOrEmpty(r.Key))
+                .Select(r => r.Key));
+
             foreach (WorldCatalog catalog in catalogs)
             {
                 if (string.IsNullOrEmpty(catalog.LevelDataKey))
@@ -310,12 +321,6 @@ namespace Editor.World
 
                 if (!gameData.GameDatas.TryGetValue(catalog.LevelDataKey, out GameData data))
                     continue;
-
-                var contentScenePaths = new HashSet<string>(CatalogContentScenes.CollectScenePaths(catalog));
-                var presentKeys = new HashSet<string>(keyRecords
-                    .Where(r => r.IsLevelMarker && !string.IsNullOrEmpty(r.Key) &&
-                        contentScenePaths.Contains(r.ScenePath))
-                    .Select(r => r.Key));
 
                 foreach (string key in GetRecordKeys(data))
                 {
