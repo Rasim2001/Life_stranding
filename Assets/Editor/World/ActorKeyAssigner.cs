@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using Common;
 using UnityEditor;
-using UnityEditor.Experimental.SceneManagement;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
@@ -90,11 +88,7 @@ namespace Editor.World
                 return;
             }
 
-            Undo.RecordObject(marker, "Assign actor key");
-            marker.UniqueId = Guid.NewGuid().ToString();
-            PrefabUtility.RecordPrefabInstancePropertyModifications(marker);
-            EditorUtility.SetDirty(marker);
-            EditorSceneManager.MarkSceneDirty(marker.gameObject.scene);
+            CatalogContentScenes.IssueNewKey(marker, "Assign actor key");
 
             occupiedKeys.Add(marker.UniqueId);
         }

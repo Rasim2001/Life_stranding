@@ -534,8 +534,9 @@ namespace Editor
                 ("No scene is referenced by two different segments",
                     allSceneReferences.Where(r => r != null && r.IsValid).GroupBy(r => r.SceneName).All(g => g.Count() == 1), false),
                 ("No SegmentDefinition is listed twice in the catalog", segments.Distinct().Count() == segments.Count, false),
-                ("No utility scene (Bootstrap/ExitGameLoop) is set as Entry or Segment",
+                ("No utility scene (Bootstrap/ExitGameLoop) is set as Entry, Atmosphere or Segment",
                     (entryRow == null || !UtilitySceneReasons.ContainsKey(entryRow.Name)) &&
+                    (atmosphereRow == null || !UtilitySceneReasons.ContainsKey(atmosphereRow.Name)) &&
                     _rows.Where(r => r.ConfigRole == "Segment" || r.ConfigRole == "Segment+")
                         .All(r => !UtilitySceneReasons.ContainsKey(r.Name)), false),
                 ("Build Settings matches the catalog", _buildDiff.InSync, false),
@@ -639,8 +640,10 @@ namespace Editor
             if (_catalog == null || _catalog.EntryScene == null || !_catalog.EntryScene.IsValid)
                 return "(EntryScene not set)";
 
-            string segments = _catalog.Segments != null && _catalog.Segments.Count > 0
-                ? " + " + string.Join(" + ", _catalog.Segments.Where(s => s != null).Select(s => s.Scene?.SceneName ?? "?"))
+            IReadOnlyList<SegmentDefinition> catalogSegments = _catalog.Segments;
+
+            string segments = catalogSegments.Count > 0
+                ? " + " + string.Join(" + ", catalogSegments.Select(s => s.Scene?.SceneName ?? "?"))
                 : "";
 
             string atmosphere = _catalog.AtmosphereScene != null && _catalog.AtmosphereScene.IsValid

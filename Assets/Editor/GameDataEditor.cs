@@ -83,14 +83,14 @@ namespace Editor
                     string.Join("\n", skipped.Select(m =>
                         $"  {m.gameObject.scene.path} · {CatalogContentScenes.GetHierarchyPath(m.transform)}")));
 
-            var spiderSpawns = collected.OfType<SpiderSpawnPointMarker>().ToList();
+            List<SpiderSpawnPointMarker> spiderSpawns = collected.OfType<SpiderSpawnPointMarker>().ToList();
             if (spiderSpawns.Count != 1)
             {
                 Debug.LogError($"Collect: найдено SpiderSpawnPointMarker — {spiderSpawns.Count}, требуется ровно 1.");
                 return;
             }
 
-            var flowers = collected.OfType<FlowerPointMarker>().ToList();
+            List<FlowerPointMarker> flowers = collected.OfType<FlowerPointMarker>().ToList();
             if (flowers.Count != 1)
             {
                 Debug.LogError($"Collect: найдено FlowerPointMarker — {flowers.Count}, требуется ровно 1.");

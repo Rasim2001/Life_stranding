@@ -1,6 +1,6 @@
 using Common;
+using Editor.World;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace Editor
@@ -25,13 +25,7 @@ namespace Editor
                     "Отмена");
 
                 if (confirmed)
-                {
-                    Undo.RecordObject(marker, "Assign new actor key");
-                    marker.UniqueId = System.Guid.NewGuid().ToString();
-                    PrefabUtility.RecordPrefabInstancePropertyModifications(marker);
-                    EditorUtility.SetDirty(marker);
-                    EditorSceneManager.MarkSceneDirty(marker.gameObject.scene);
-                }
+                    CatalogContentScenes.IssueNewKey(marker, "Assign new actor key");
             }
         }
     }

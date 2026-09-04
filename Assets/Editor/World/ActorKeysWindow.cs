@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,7 +16,8 @@ namespace Editor.World
     /// <summary>
     /// Проверка ключей памяти (<see cref="MarkerUniqueId"/>) по всем каталогам проекта:
     /// пустые ключи, дубликаты, читатели прогресса без <see cref="SceneProgressActor"/>,
-    /// маркеры без компонента ключа, осиротевшие записи в GameData. Пространство ключей
+    /// маркеры без компонента ключа, осиротевшие записи в GameData, маркеры уровня
+    /// не в Contract/ сцены сегмента (вне контентных сцен или в EntryScene). Пространство ключей
     /// глобально по всем мирам (Р9 в .scratch/plans/jaunty-snuggling-bengio.md), поэтому область
     /// проверки — объединение сцен всех WorldCatalog в проекте, а не одного активного.
     /// Открывает сцены аддитивно и закрывает за собой — валидацию оверрайдов
@@ -34,7 +34,8 @@ namespace Editor.World
             MissingSceneProgressActor,
             MarkerWithoutKeyComponent,
             OrphanRecord,
-            MarkerOutsideContentScenes
+            MarkerOutsideContentScenes,
+            MarkerInEntryScene
         }
 
         private class MarkerRecord
@@ -109,6 +110,9 @@ namespace Editor.World
                     break;
                 case IssueKind.MarkerOutsideContentScenes:
                     title = "✗ Маркер уровня вне контентных сцен (в сбор не попадёт)";
+                    break;
+                case IssueKind.MarkerInEntryScene:
+                    title = "✗ Маркер уровня в EntryScene (место маркеров — Contract/ сцены сегмента)";
                     break;
                 default:
                     title = "✗ Осиротевшая запись в GameData (маркера в сценах каталога нет)";
@@ -247,12 +251,12 @@ namespace Editor.World
             if (empty.Count > 0)
                 _issues.Add(new Issue { Kind = IssueKind.EmptyKey, Records = empty });
 
-            var duplicateGroups = keyRecords
+            IEnumerable<IGrouping<string, MarkerRecord>> duplicateGroups = keyRecords
                 .Where(r => !string.IsNullOrEmpty(r.Key))
                 .GroupBy(r => r.Key)
                 .Where(g => g.Count() > 1);
 
-            foreach (var group in duplicateGroups)
+            foreach (IGrouping<string, MarkerRecord> group in duplicateGroups)
                 _issues.Add(new Issue { Kind = IssueKind.DuplicateKey, Key = group.Key, Records = group.ToList() });
 
             if (missingActorRecords.Count > 0)
@@ -273,6 +277,20 @@ namespace Editor.World
             if (outsideContent.Count > 0)
                 _issues.Add(new Issue { Kind = IssueKind.MarkerOutsideContentScenes, Records = outsideContent });
 
+            // EntryScene — контентная сцена, поэтому Collect маркеры оттуда соберёт и ни одна
+            // другая проверка не возразит. Но место маркеров по регламенту — Contract/ сцены
+            // сегмента (docs/scene-regulations.md §4, §7): маркер, оторванный от геометрии
+            // в другой сцене, молча разъезжается с ней при любом переносе.
+            var entryScenePaths = new HashSet<string>(catalogs
+                .Select(c => CatalogBuildScenes.GetScenePath(c.EntryScene))
+                .Where(p => !string.IsNullOrEmpty(p)));
+
+            List<MarkerRecord> inEntryScene = keyRecords
+                .Where(r => r.IsLevelMarker && entryScenePaths.Contains(r.ScenePath))
+                .ToList();
+            if (inEntryScene.Count > 0)
+                _issues.Add(new Issue { Kind = IssueKind.MarkerInEntryScene, Records = inEntryScene });
+
             List<MarkerRecord> orphans = FindOrphanRecords(catalogs, keyRecords);
             if (orphans.Count > 0)
                 _issues.Add(new Issue { Kind = IssueKind.OrphanRecord, Records = orphans });
@@ -287,8 +305,13 @@ namespace Editor.World
             if (gameData == null)
                 return orphans;
 
+            // Только контентные сцены: ровно тот набор, из которого пишет
+            // GameDataEditor.Collect. Маркер вне этого набора не «присутствует» —
+            // Collect его никогда не запишет, и запись в GameData под его ключом
+            // действительно сирота. Сами такие маркеры репортятся отдельно
+            // (IssueKind.MarkerOutsideContentScenes).
             var presentKeys = new HashSet<string>(keyRecords
-                .Where(r => r.IsLevelMarker && !string.IsNullOrEmpty(r.Key))
+                .Where(r => r.IsLevelMarker && r.IsContentScene && !string.IsNullOrEmpty(r.Key))
                 .Select(r => r.Key));
 
             foreach (WorldCatalog catalog in catalogs)
@@ -375,11 +398,7 @@ namespace Editor.World
             if (!confirmed)
                 return;
 
-            Undo.RecordObject(marker, "Assign new actor key");
-            marker.UniqueId = Guid.NewGuid().ToString();
-            PrefabUtility.RecordPrefabInstancePropertyModifications(marker);
-            EditorUtility.SetDirty(marker);
-            EditorSceneManager.MarkSceneDirty(marker.gameObject.scene);
+            CatalogContentScenes.IssueNewKey(marker, "Assign new actor key");
         }
 
         private static GameObject ResolveGameObject(MarkerRecord record)

@@ -48,6 +48,11 @@ namespace Infastructure.States
                 if (catalog.AtmosphereScene == null || !catalog.AtmosphereScene.IsValid)
                     throw new InvalidOperationException("WorldCatalog.AtmosphereScene is not set.");
 
+                if (string.IsNullOrEmpty(catalog.LevelDataKey) ||
+                    !_staticDataService.GameStaticData.GameDatas.ContainsKey(catalog.LevelDataKey))
+                    throw new InvalidOperationException(
+                        $"GameDatas has no entry for WorldCatalog.LevelDataKey '{catalog.LevelDataKey}'.");
+
                 return catalog;
             }
         }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Common;
 using Infastructure.StaticData.World;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -82,6 +83,21 @@ namespace Editor.World
             }
 
             return paths;
+        }
+
+        /// <summary>
+        /// Выдаёт маркеру новый ключ памяти: запись в Undo, свежий Guid, фиксация
+        /// оверрайда префаба, пометка объекта и сцены грязными. Единственное место,
+        /// где ключ рождается — кнопка инспектора, автоназначение при перетаскивании
+        /// и окно Actor Keys обязаны вести себя одинаково.
+        /// </summary>
+        public static void IssueNewKey(MarkerUniqueId marker, string undoName)
+        {
+            Undo.RecordObject(marker, undoName);
+            marker.UniqueId = Guid.NewGuid().ToString();
+            PrefabUtility.RecordPrefabInstancePropertyModifications(marker);
+            EditorUtility.SetDirty(marker);
+            EditorSceneManager.MarkSceneDirty(marker.gameObject.scene);
         }
 
         public static string GetHierarchyPath(Transform t)
