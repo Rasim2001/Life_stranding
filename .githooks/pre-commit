@@ -1,0 +1,33 @@
+#!/bin/sh
+# spiderrig-hook v1
+# Гард на артефакты запекания APV (docs/scene-regulations.md §10).
+# Блобы *.Cell*.bytes не версионируются никогда — финальный бейк это одна машина,
+# та же, с которой уходит билд. Ставится автоматически GitHooksInstaller.cs.
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACM)
+
+FORBIDDEN=$(printf '%s\n' "$STAGED" | grep -E \
+    -e '^Assets/Scenes/.*\.Cell[^/]*\.bytes(\.meta)?$' \
+    -e '^Assets/Scenes/.*/Lightmap-[^/]*\.(exr|png)$' \
+    -e '^Assets/Scenes/.*/ReflectionProbe-[^/]*\.exr$' \
+    -e '^Assets/Scenes/.*/LightingData\.asset$' \
+    -e '^Assets/Scenes/.*/OcclusionCullingData\.asset$' \
+    -e '^Assets/Scenes/.*/NavMesh\.asset$' \
+    -e '^Assets/Scenes/.*/LightmapSnapshot\.asset$')
+
+if [ -z "$FORBIDDEN" ]; then
+    exit 0
+fi
+
+if [ -f .allow-bake-commit ]; then
+    echo "spiderrig-hook: разрешение .allow-bake-commit израсходовано, коммит бейка пропущен."
+    rm -f .allow-bake-commit
+    exit 0
+fi
+
+echo "spiderrig-hook: в коммите артефакты запекания APV — их нельзя версионировать:"
+printf '%s\n' "$FORBIDDEN"
+echo ""
+echo "Правило: блобы бейка не версионируются никогда (docs/scene-regulations.md §10)."
+echo "Осознанный разовый коммит: touch .allow-bake-commit && git add ... && git commit ..."
+exit 1

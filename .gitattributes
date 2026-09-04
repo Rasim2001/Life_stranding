@@ -27,6 +27,11 @@ Assets/**/TerrainData.asset    text diff merge=unityyamlmerge eol=lf -filter
 Assets/**/NoiseTex3D.asset     text diff merge=unityyamlmerge eol=lf -filter
 
 ################################################################################
+# Хуки — версионируемый источник (Assets/Editor/GitHooksInstaller.cs копирует в .git/hooks)
+################################################################################
+.githooks/** text eol=lf
+
+################################################################################
 # 2) КОД / КОНФИГИ — текст LF
 ################################################################################
 *.asmdef               text eol=lf diff

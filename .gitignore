@@ -110,12 +110,17 @@ Assets/FR2_Cache.asset.meta
 **/OcclusionCullingData.asset
 **/NavMesh.asset
 **/LightmapSnapshot.asset
-# Артефакты бейка наших сцен. Стоп-гэп до тикета 07 (гард на коммит бейка).
-# Область сужена до Assets/Scenes: под Assets/Art лежат демо-сцены вендорских
-# пакетов со своими .exr, их версионирование не наше дело.
+# Артефакты бейка наших сцен — не версионируем никогда (docs/scene-regulations.md §10).
+# Область сужена до Assets/Scenes: под Assets/Art лежат демо-сцены вендорских пакетов
+# со своими .exr, их версионирование не наше дело.
 Assets/Scenes/**/Lightmap-*.exr
 Assets/Scenes/**/Lightmap-*.png
 Assets/Scenes/**/ReflectionProbe-*.exr
+Assets/Scenes/**/*.Cell*.bytes
+Assets/Scenes/**/*.Cell*.bytes.meta
+
+# Одноразовое разрешение на коммит бейка (docs/scene-regulations.md §10)
+/.allow-bake-commit
 
 # Пакеты — не версионируем содержимое  после ! знака - исключения они в git идут
 Packages/**
