@@ -150,10 +150,7 @@ namespace Editor.World
             _actorCount = 0;
             _markerCount = 0;
 
-            List<WorldCatalog> catalogs = AssetDatabase.FindAssets("t:WorldCatalog")
-                .Select(guid => AssetDatabase.LoadAssetAtPath<WorldCatalog>(AssetDatabase.GUIDToAssetPath(guid)))
-                .Where(c => c != null)
-                .ToList();
+            List<WorldCatalog> catalogs = CatalogContentScenes.FindAllCatalogs();
 
             if (catalogs.Count == 0)
             {
@@ -190,30 +187,10 @@ namespace Editor.World
             var keyRecords = new List<MarkerRecord>();
             var missingActorRecords = new List<MarkerRecord>();
             var missingKeyComponentRecords = new List<MarkerRecord>();
-            SceneSetup[] setup = EditorSceneManager.GetSceneManagerSetup();
 
-            try
-            {
-                foreach (string path in scenePaths)
-                {
-                    Scene scene = EditorSceneManager.GetSceneByPath(path);
-                    bool wasOpen = scene.IsValid() && scene.isLoaded;
-
-                    if (!wasOpen)
-                        scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
-
-                    CollectMarkers(scene, contentScenePaths, keyRecords, missingActorRecords,
-                        missingKeyComponentRecords);
-
-                    if (!wasOpen)
-                        EditorSceneManager.CloseScene(scene, removeScene: true);
-                }
-            }
-            finally
-            {
-                if (setup != null && setup.Length > 0)
-                    EditorSceneManager.RestoreSceneManagerSetup(setup);
-            }
+            CatalogContentScenes.ForEachScene(scenePaths, scene =>
+                CollectMarkers(scene, contentScenePaths, keyRecords, missingActorRecords,
+                    missingKeyComponentRecords));
 
             _catalogCount = catalogs.Count;
             _sceneCount = scenePaths.Count;

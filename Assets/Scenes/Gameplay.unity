@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 62783730}
   - component: {fileID: 62783731}
+  - component: {fileID: 62783732}
   m_Layer: 0
   m_Name: BatteryMarkerPoint (9)
   m_TagString: Untagged
@@ -163,6 +164,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 165540b3994d4d1aa0a763c6682d139b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &62783732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 62783729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a463dd3e263943f182156a21f3e397a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Common.MarkerUniqueId
+  UniqueId: 2a4ca82e-f791-49e4-a851-a87fb55ffe3a
 --- !u!1 &166995658
 GameObject:
   m_ObjectHideFlags: 0
@@ -293,6 +307,7 @@ GameObject:
   m_Component:
   - component: {fileID: 384132820}
   - component: {fileID: 384132821}
+  - component: {fileID: 384132822}
   m_Layer: 0
   m_Name: BatteryMarkerPoint (4)
   m_TagString: Untagged
@@ -327,6 +342,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 165540b3994d4d1aa0a763c6682d139b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &384132822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 384132819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a463dd3e263943f182156a21f3e397a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Common.MarkerUniqueId
+  UniqueId: 3030e7c5-b447-44e6-990c-67b881794e7f
 --- !u!1 &623601249
 GameObject:
   m_ObjectHideFlags: 0
@@ -5745,6 +5773,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1241127637}
   - component: {fileID: 1241127638}
+  - component: {fileID: 1241127639}
   m_Layer: 0
   m_Name: BatteryMarkerPoint (5)
   m_TagString: Untagged
@@ -5779,6 +5808,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 165540b3994d4d1aa0a763c6682d139b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1241127639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1241127636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a463dd3e263943f182156a21f3e397a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Common.MarkerUniqueId
+  UniqueId: 88c5b94d-fa57-40da-adb1-44c7f978c906
 --- !u!1 &1391028327
 GameObject:
   m_ObjectHideFlags: 0
@@ -5789,6 +5831,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1391028328}
   - component: {fileID: 1391028329}
+  - component: {fileID: 1391028330}
   m_Layer: 0
   m_Name: EnergyPoint (5)
   m_TagString: Untagged
@@ -5823,7 +5866,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf55a285d45b4578b9272e00840599ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UniqueId: 
+--- !u!114 &1391028330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1391028327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a463dd3e263943f182156a21f3e397a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Common.MarkerUniqueId
+  UniqueId: 96415f06-f6d7-4167-802c-fde110eb123e
 --- !u!1 &1421439893
 GameObject:
   m_ObjectHideFlags: 0
@@ -5966,6 +6021,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1488498504}
   - component: {fileID: 1488498505}
+  - component: {fileID: 1488498506}
   m_Layer: 0
   m_Name: BatteryMarkerPoint (6)
   m_TagString: Untagged
@@ -6000,6 +6056,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 165540b3994d4d1aa0a763c6682d139b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1488498506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1488498503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a463dd3e263943f182156a21f3e397a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Common.MarkerUniqueId
+  UniqueId: 0bf97062-5e76-4889-8ff3-29e5b0467081
 --- !u!1 &1508404592
 GameObject:
   m_ObjectHideFlags: 0
@@ -6041,6 +6110,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1545354446}
   - component: {fileID: 1545354447}
+  - component: {fileID: 1545354448}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -6075,6 +6145,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4efacb70763c4cce962fd3c2036771f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1545354448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1545354445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a463dd3e263943f182156a21f3e397a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Common.MarkerUniqueId
+  UniqueId: f3da0d03-e8cb-4ef3-a7f2-13fe428a89d9
 --- !u!1 &1687837899
 GameObject:
   m_ObjectHideFlags: 0
@@ -6340,6 +6423,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1811415441}
   - component: {fileID: 1811415442}
+  - component: {fileID: 1811415443}
   m_Layer: 0
   m_Name: BatteryMarkerPoint (8)
   m_TagString: Untagged
@@ -6374,6 +6458,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 165540b3994d4d1aa0a763c6682d139b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1811415443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1811415440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a463dd3e263943f182156a21f3e397a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Common.MarkerUniqueId
+  UniqueId: 5090a37d-429b-4173-9290-912db158fd41
 --- !u!1 &1908268813
 GameObject:
   m_ObjectHideFlags: 0
@@ -6384,6 +6481,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1908268814}
   - component: {fileID: 1908268815}
+  - component: {fileID: 1908268816}
   m_Layer: 0
   m_Name: BatteryMarkerPoint (7)
   m_TagString: Untagged
@@ -6418,6 +6516,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 165540b3994d4d1aa0a763c6682d139b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1908268816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1908268813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a463dd3e263943f182156a21f3e397a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Common.MarkerUniqueId
+  UniqueId: 5f163716-5970-4863-ab8a-243940a957c5
 --- !u!1 &1983446425
 GameObject:
   m_ObjectHideFlags: 0
@@ -6488,6 +6599,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1428254967}
     m_Modifications:
+    - target: {fileID: 64389926362909200, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: 730823b8-276c-4e26-b328-0217cd0c51aa
+      objectReference: {fileID: 0}
     - target: {fileID: 209573678304815463, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.21352
@@ -6584,6 +6699,22 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.083941825
       objectReference: {fileID: 0}
+    - target: {fileID: 610479429260101033, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: 0e07941f-8b16-4d9c-abef-c999fb2b517b
+      objectReference: {fileID: 0}
+    - target: {fileID: 653417848307584956, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: e828946d-c433-43bc-9f5e-abddd52a187f
+      objectReference: {fileID: 0}
+    - target: {fileID: 926957998654278563, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: 3ac5120b-2b69-4788-a2ec-17f416136ba8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1015041499782648962, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: d4e0b90b-44de-41bb-b570-048fcc20fefb
+      objectReference: {fileID: 0}
     - target: {fileID: 1511719911506757733, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
       propertyPath: m_LocalPosition.x
       value: -15.895437
@@ -6596,6 +6727,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 79.01458
       objectReference: {fileID: 0}
+    - target: {fileID: 1779706844751694624, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: 62731621-bd6b-47a3-8575-099d087f1996
+      objectReference: {fileID: 0}
+    - target: {fileID: 1846160818449846934, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: 551df8c5-0b23-4b3c-b87e-c2f98072ee95
+      objectReference: {fileID: 0}
     - target: {fileID: 2151395770118167027, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
       propertyPath: m_LocalPosition.x
       value: 14.862146
@@ -6607,6 +6746,14 @@ PrefabInstance:
     - target: {fileID: 2151395770118167027, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
       propertyPath: m_LocalPosition.z
       value: 166.79828
+      objectReference: {fileID: 0}
+    - target: {fileID: 2502476729879671018, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: 5469ae1f-fe7a-45a8-a559-a7a6ffd06636
+      objectReference: {fileID: 0}
+    - target: {fileID: 2527726709527685419, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: 15c86d3c-c2f1-4f96-bbf2-f3d915272cd6
       objectReference: {fileID: 0}
     - target: {fileID: 2586167321155521219, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6631,6 +6778,10 @@ PrefabInstance:
     - target: {fileID: 2650718843794567041, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
       propertyPath: m_LocalPosition.z
       value: -83.47516
+      objectReference: {fileID: 0}
+    - target: {fileID: 2879773454438883402, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: bef1d2d0-b683-4b62-bad1-b0de7fcb4be2
       objectReference: {fileID: 0}
     - target: {fileID: 3153170158460892700, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6691,6 +6842,10 @@ PrefabInstance:
     - target: {fileID: 4255682293628675416, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
       propertyPath: m_LocalPosition.z
       value: -33.995003
+      objectReference: {fileID: 0}
+    - target: {fileID: 4432178030923469718, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: f21a5e8b-32b2-4b60-9213-34f7666d7df6
       objectReference: {fileID: 0}
     - target: {fileID: 4462802823635864340, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6756,9 +6911,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4925778666415319155, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: d497ab8d-9fc2-48d6-a111-4a55b39823fc
+      objectReference: {fileID: 0}
     - target: {fileID: 5423685858628997409, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
       propertyPath: m_Name
       value: GameData
+      objectReference: {fileID: 0}
+    - target: {fileID: 5470393436507510775, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: 5e567b96-a714-4875-a942-af2651e7ada1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5659214343119302536, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: 13fb23e4-3d2a-4f61-8724-55e1549078ca
+      objectReference: {fileID: 0}
+    - target: {fileID: 6211336969369845030, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: a589cc34-55fa-4e1c-b100-58ce2732f720
       objectReference: {fileID: 0}
     - target: {fileID: 6430697203936631957, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6800,6 +6971,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 155.66827
       objectReference: {fileID: 0}
+    - target: {fileID: 6701569297176764970, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: fcd6df62-0712-44b8-add3-215ce05d2f10
+      objectReference: {fileID: 0}
     - target: {fileID: 6783257237594537893, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4.632692
@@ -6811,6 +6986,10 @@ PrefabInstance:
     - target: {fileID: 6783257237594537893, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
       propertyPath: m_LocalPosition.z
       value: 122.45092
+      objectReference: {fileID: 0}
+    - target: {fileID: 7508515949640230166, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: ae7be97f-e548-4335-81e7-b1d8c9580a6f
       objectReference: {fileID: 0}
     - target: {fileID: 7583277634611598001, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
       propertyPath: m_LocalScale.x
@@ -6848,6 +7027,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.2402366
       objectReference: {fileID: 0}
+    - target: {fileID: 7698102468538581996, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: dda9ab39-f094-4e6e-83d7-ba52082dc36b
+      objectReference: {fileID: 0}
     - target: {fileID: 7928384343604491603, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
       propertyPath: m_LocalPosition.x
       value: 40.830055
@@ -6876,9 +7059,25 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.0016852055
       objectReference: {fileID: 0}
+    - target: {fileID: 8024047849079973078, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: 273db87c-396e-4850-96de-59b4eb264987
+      objectReference: {fileID: 0}
+    - target: {fileID: 8040937054023353902, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: 16593fc5-f901-46ec-9082-0429437afa5b
+      objectReference: {fileID: 0}
     - target: {fileID: 8056309677527744289, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8912961083141887490, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: 2b780c96-6568-4f0b-bf4f-b14fcaa5f012
+      objectReference: {fileID: 0}
+    - target: {fileID: 8926427550382644356, guid: ff74a7e2e2635dd478c8b9e54bafdc99, type: 3}
+      propertyPath: UniqueId
+      value: 8ea0b387-4e9c-4aa7-a794-e3cff9210ea9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

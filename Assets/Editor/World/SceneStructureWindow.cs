@@ -108,10 +108,7 @@ namespace Editor.World
             _catalogCount = 0;
             _sceneCount = 0;
 
-            List<WorldCatalog> catalogs = AssetDatabase.FindAssets("t:WorldCatalog")
-                .Select(guid => AssetDatabase.LoadAssetAtPath<WorldCatalog>(AssetDatabase.GUIDToAssetPath(guid)))
-                .Where(c => c != null)
-                .ToList();
+            List<WorldCatalog> catalogs = CatalogContentScenes.FindAllCatalogs();
 
             if (catalogs.Count == 0)
             {
@@ -140,29 +137,7 @@ namespace Editor.World
                 }
             }
 
-            SceneSetup[] setup = EditorSceneManager.GetSceneManagerSetup();
-
-            try
-            {
-                foreach (string path in scenePaths)
-                {
-                    Scene scene = EditorSceneManager.GetSceneByPath(path);
-                    bool wasOpen = scene.IsValid() && scene.isLoaded;
-
-                    if (!wasOpen)
-                        scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
-
-                    ValidateScene(scene, roleByPath[path]);
-
-                    if (!wasOpen)
-                        EditorSceneManager.CloseScene(scene, removeScene: true);
-                }
-            }
-            finally
-            {
-                if (setup != null && setup.Length > 0)
-                    EditorSceneManager.RestoreSceneManagerSetup(setup);
-            }
+            CatalogContentScenes.ForEachScene(scenePaths, scene => ValidateScene(scene, roleByPath[scene.path]));
 
             _catalogCount = catalogs.Count;
             _sceneCount = scenePaths.Count;
