@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7188270792481137652}
   - component: {fileID: 9159514536788311278}
-  - component: {fileID: 4978253927147027463}
   - component: {fileID: 4021155325952652589}
   - component: {fileID: 3570889008522227728}
   - component: {fileID: 162726071033211271}
@@ -336,142 +335,6 @@ MonoBehaviour:
       m_Data: []
   m_Knots:
     m_KnotsLink: []
---- !u!114 &4978253927147027463
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2163913318004059119}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b7e501cc04647c88b1198192f3931e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startCap:
-    prefab: {fileID: 0}
-    previousPrefab: {fileID: 0}
-    offset: {x: 0, y: 0, z: 0}
-    shift: 0
-    align: 1
-    rotation: {x: 0, y: 0, z: 0}
-    matchScale: 1
-    scale: {x: 1, y: 1, z: 1}
-    instances: []
-  endCap:
-    prefab: {fileID: 0}
-    previousPrefab: {fileID: 0}
-    offset: {x: 0, y: 0, z: 0}
-    shift: 0
-    align: 1
-    rotation: {x: 0, y: 0, z: 0}
-    matchScale: 1
-    scale: {x: 1, y: 1, z: 1}
-    instances: []
-  sourceMesh: {fileID: 4990382326821318623, guid: 5565b50152c659948ba7fd2392c4e6fe, type: 3}
-  rotation: {x: 0, y: 0, z: -90}
-  outputObject: {fileID: 2163913318004059119}
-  rebuildOnStart: 0
-  rebuildTriggers: 55
-  meshCollider: {fileID: 162726071033211271}
-  settings:
-    collision:
-      enable: 1
-      colliderOnly: 0
-      type: 1
-      boxSubdivisions: 0
-      collisionMesh: {fileID: 4990382326821318623, guid: 5565b50152c659948ba7fd2392c4e6fe, type: 3}
-    distribution:
-      segments: 1
-      autoSegmentCount: 1
-      stretchToFit: 1
-      evenOnly: 0
-      trimStart: 0
-      trimEnd: 0
-      spacing: 0
-    deforming:
-      curveOffset: {x: 0, y: 0}
-      pivotOffset: {x: 0, y: 0}
-      scale: {x: 1, y: 1, z: 1}
-      scalePathIndexUnit: 0
-      scaleInterpolation: 0
-      ignoreKnotRotation: 0
-      rollMode: 0
-      rollFrequency: 0.1
-      rollAngle: 0
-      rollPathIndexUnit: 0
-    uv:
-      scale: {x: 1, y: 1}
-      offset: {x: 0, y: 0}
-      stretchMode: 0
-    color:
-      pathIndexUnit: 0
-    conforming:
-      enable: 0
-      pathIndexUnit: 0
-      direction: 0
-      seekDistance: 5
-      terrainOnly: 0
-      layerMask:
-        serializedVersion: 2
-        m_Bits: 4294967295
-      align: 1
-      blendNormal: 1
-    mesh:
-      keepReadable: 0
-      storeGradientsInUV: 1
-      lightmapUVMarginMultiplier: 1
-      lightmapUVAngleThreshold: 88
-  onPreRebuild:
-    m_PersistentCalls:
-      m_Calls: []
-  onPostRebuild:
-    m_PersistentCalls:
-      m_Calls: []
-  m_meshFilter: {fileID: 4021155325952652589}
-  splineContainer: {fileID: 9159514536788311278}
-  splineCount: 1
-  splineChangeMode: 0
-  scaleData:
-  - m_IndexUnit: 0
-    m_DefaultValue:
-      x: 1
-      y: 1
-      z: 1
-    m_DataPoints: []
-  rollData:
-  - m_IndexUnit: 0
-    m_DefaultValue: 0
-    m_DataPoints: []
-  conformingStrength:
-  - m_IndexUnit: 0
-    m_DefaultValue: 1
-    m_DataPoints: []
-  vertexColorRedData:
-  - m_IndexUnit: 0
-    m_DefaultValue:
-      value: 0
-      blend: 1
-    m_DataPoints: []
-  vertexColorGreenData:
-  - m_IndexUnit: 0
-    m_DefaultValue:
-      value: 0
-      blend: 1
-    m_DataPoints: []
-  vertexColorBlueData:
-  - m_IndexUnit: 0
-    m_DefaultValue:
-      value: 0
-      blend: 1
-    m_DataPoints: []
-  vertexColorAlphaData:
-  - m_IndexUnit: 0
-    m_DefaultValue:
-      value: 0
-      blend: 1
-    m_DataPoints: []
-  debounceTime: 0.1
 --- !u!33 &4021155325952652589
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -500,6 +363,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -521,9 +386,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!64 &162726071033211271
 MeshCollider:
