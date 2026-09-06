@@ -1214,6 +1214,9 @@ Rendering Debugger в билде и реестр APV-данных по сцен�
 
 ## 12. Отложенные решения
 
+<!-- deferred-table title="asset-organization §12" what=1 why=2 when=3 -->
+**Пересмотрено:** 2026-09-06
+
 | Решение | Почему не сейчас | Условие возврата |
 |---|---|---|
 | Полный переход на feature-first дерево | конфликтует с уже большой type-first веткой `Art` | только при крупной смене production pipeline |

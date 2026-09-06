@@ -180,7 +180,7 @@ Data.YVelocity -= SpiderStaticData.BaseGravity * Data.AirbornSpeed * Time.deltaT
   `ScrollSensitivity = 15`, `SmoothTime = 0.05`, `WorldUpSmoothRotation = 1.8`.
 
 Спеки, из которых эти параметры выросли: `.scratch/camera-pitch/`,
-`.scratch/camera-horizon-drift/`.
+`.scratch/_archive/camera-horizon-drift/`.
 
 **Не заполнено:** описание фич камеры словами — что каждая делает и в каком
 состоянии включается. Переносить сюда при следующей работе над камерой.
