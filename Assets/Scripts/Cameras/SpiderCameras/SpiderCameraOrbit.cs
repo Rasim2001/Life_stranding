@@ -159,7 +159,17 @@ namespace Cameras.SpiderCameras
                 return;
 
             Vector3 currentWorldUp = _stableWorldUp.StableWorldUpTransform.up;
-            if (currentWorldUp == _lastWorldUp)
+
+            // Accumulate until the shift is big enough for FromToRotation to actually see it.
+            // In float32 it returns identity below ~0.07° (dot rounds to exactly 1), while the
+            // old `==` check let anything above 0.0006° through — so the tail of every horizon
+            // convergence was dropped from the orbit but recorded in _lastWorldUp as applied.
+            // Measured live: 18.6° of pivot tilt after a few ceiling-floor jumps, ~2.6° lost per
+            // convergence. Squared distance, not Vector3.Angle — that has the same dead zone.
+            // 0.005 ≈ 0.29°: FromToRotation is exact there, and the residual mismatch is bounded
+            // by this instead of accumulating.
+            const float carryThresholdSqr = 0.005f * 0.005f;
+            if ((currentWorldUp - _lastWorldUp).sqrMagnitude < carryThresholdSqr)
                 return;
 
             Quaternion delta = Quaternion.FromToRotation(_lastWorldUp, currentWorldUp);

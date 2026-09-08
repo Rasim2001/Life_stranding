@@ -72,7 +72,7 @@ namespace Infastructure.Common.StableWorlUpManagement
                 _hasCommitted = true;
             }
 
-            UpdateSettleState(targetUp);
+            UpdateSettleState(targetUp, isGrounded);
             UpdateCommittedUp(targetUp, isGrounded);
 
             Quaternion fromTo = Quaternion.FromToRotation(transform.up, _committedUp);
@@ -85,9 +85,13 @@ namespace Infastructure.Common.StableWorlUpManagement
             );
         }
 
-        private void UpdateSettleState(Vector3 targetUp)
+        private void UpdateSettleState(Vector3 targetUp, bool isGrounded)
         {
-            if (Vector3.Angle(targetUp, _settleReferenceUp) > SpiderStaticData.HorizonSettleAngle)
+            // Покой в воздухе не считается: иначе долгое падение набирает лимит до касания,
+            // и вывод разворота срабатывает на первом кадре контакта по ориентации, которая
+            // на этой поверхности ещё не улеглась. Запрет выводить в воздухе (ниже) это не
+            // закрывал — он лишь переносил вывод на кадр приземления.
+            if (!isGrounded || Vector3.Angle(targetUp, _settleReferenceUp) > SpiderStaticData.HorizonSettleAngle)
             {
                 _settleReferenceUp = targetUp;
                 _settleTime = 0f;
@@ -118,6 +122,19 @@ namespace Infastructure.Common.StableWorlUpManagement
                     _committedUp = _preFollowUp;
 
                 return;
+            }
+
+            // Якорь: единственная внешняя сверка фиксации. Расхождение ниже порога входа механизм
+            // разворота не видит никогда, поэтому кривая фиксация ниже 55° застревала навсегда
+            // (замерено 31.5°). Пишется константа — мировая вертикаль, — а не верх паука, поэтому
+            // якорь не может колебаться и не следит за корпусом на рампах и ступеньках.
+            // Условие «осел» после правки таймера означает «на поверхности не меньше HorizonSettleTime»,
+            // так что в воздухе и в первые 0.25 с после касания якорь молчит.
+            if (isGrounded
+                && _settleTime >= SpiderStaticData.HorizonSettleTime
+                && Vector3.Angle(targetUp, Vector3.up) <= SpiderStaticData.HorizonLevelAnchorAngle)
+            {
+                _committedUp = Vector3.up;
             }
 
             if (Vector3.Angle(targetUp, _committedUp) < SpiderStaticData.HorizonFollowEnterAngle)
