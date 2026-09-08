@@ -137,6 +137,11 @@ graphify-out
 .graphifyignore
 CLAUDE.md
 
+# Локальные инструкции Codex; данные проекта остаются в общих docs/ и .scratch/.
+.agents/
+.codex/
+AGENTS.md
+
 # Рабочая область: спеки, тикеты, бэклог, гриль-леджеры. Локальная, как .claude и CLAUDE.md.
 # Знания и регламенты живут в docs/ и идут в репозиторий — там же docs/agents/.
 .scratch/

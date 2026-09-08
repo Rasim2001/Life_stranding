@@ -7,6 +7,7 @@ using Infastructure.StaticData.HUD;
 using Infastructure.StaticData.LastChance;
 using Infastructure.StaticData.Materials;
 using Infastructure.StaticData.Product;
+using Infastructure.StaticData.SlowTime;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.Stikers;
 using Infastructure.StaticData.Task;
@@ -34,6 +35,7 @@ namespace Infastructure.StaticData.StaticDataService
         public CutScenesStaticData CutScenesStaticData { get; private set; }
         public GravityGunStaticData GravityGunStaticData { get; private set; }
         public CheatsStaticData CheatsStaticData { get; private set; }
+        public SlowTimeStaticData SlowTimeStaticData { get; private set; }
 
         public void LoadStaticData()
         {
@@ -55,6 +57,7 @@ namespace Infastructure.StaticData.StaticDataService
             CutScenesStaticData = Resources.Load<CutScenesStaticData>(AssetsPath.CutSceneStaticDataPath);
             GravityGunStaticData = Resources.Load<GravityGunStaticData>(AssetsPath.GravityGunStaticDataPath);
             CheatsStaticData = Resources.Load<CheatsStaticData>(AssetsPath.CheatsStaticDataPath);
+            SlowTimeStaticData = Resources.Load<SlowTimeStaticData>(AssetsPath.SlowTimeStaticDataPath);
         }
     }
 }

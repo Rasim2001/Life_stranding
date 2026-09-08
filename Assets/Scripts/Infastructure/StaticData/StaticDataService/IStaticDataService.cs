@@ -6,6 +6,7 @@ using Infastructure.StaticData.HUD;
 using Infastructure.StaticData.LastChance;
 using Infastructure.StaticData.Materials;
 using Infastructure.StaticData.Product;
+using Infastructure.StaticData.SlowTime;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.Stikers;
 using Infastructure.StaticData.Task;
@@ -33,5 +34,6 @@ namespace Infastructure.StaticData.StaticDataService
         CutScenesStaticData CutScenesStaticData { get; }
         GravityGunStaticData GravityGunStaticData { get; }
         CheatsStaticData CheatsStaticData { get; }
+        SlowTimeStaticData SlowTimeStaticData { get; }
     }
 }

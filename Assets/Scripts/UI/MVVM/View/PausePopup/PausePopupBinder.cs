@@ -2,7 +2,6 @@ using Infastructure.Services.Ability;
 using Infastructure.Services.Pause;
 using Infastructure.Services.PauseWindow;
 using Infastructure.Services.Restart;
-using Infastructure.Services.SlowTime;
 using Infastructure.States;
 using UI.Curtain;
 using UI.MVVM.Base;
@@ -27,16 +26,14 @@ namespace UI.MVVM.View.PausePopup
         private IAbilityService _abilityService;
         private IStateMachine _stateMachine;
         private ICurtainRoot _curtainRoot;
-        private ISlowTimeRunner _slowTimeRunner;
         private UIGameplayRootViewModel _gameplayRootViewModel;
 
         [Inject]
         public void Construct(IPauseService pauseService, IPauseWindowService pauseWindowService,
             IRestartService restartService, IAbilityService abilityService, IStateMachine stateMachine,
-            ICurtainRoot curtainRoot, ISlowTimeRunner slowTimeRunner, UIGameplayRootViewModel gameplayRootViewModel)
+            ICurtainRoot curtainRoot, UIGameplayRootViewModel gameplayRootViewModel)
         {
             _gameplayRootViewModel = gameplayRootViewModel;
-            _slowTimeRunner = slowTimeRunner;
             _curtainRoot = curtainRoot;
             _stateMachine = stateMachine;
             _abilityService = abilityService;
@@ -53,9 +50,6 @@ namespace UI.MVVM.View.PausePopup
             _gotoMenu.onClick.AddListener(GoToMenu);
             _exit.onClick.AddListener(Exit);
 
-            if (_slowTimeRunner.IsRunning())
-                _slowTimeRunner.StopSlowDown();
-
             _pauseService.StartPause(gameObject.name);
         }
 
@@ -68,9 +62,6 @@ namespace UI.MVVM.View.PausePopup
             _exit.onClick.RemoveListener(Exit);
 
             _pauseService.StopPause(gameObject.name);
-
-            if (_slowTimeRunner.IsRunning())
-                _slowTimeRunner.SlowDown();
         }
 
 

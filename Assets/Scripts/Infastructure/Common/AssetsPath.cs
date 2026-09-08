@@ -7,7 +7,6 @@ namespace Infastructure.Common
         public const string CurtainRootPath = "Prefabs/UI/CurtainRoot";
         public const string PickupDisplayerPath = "Prefabs/UI/PickupDisplayerRoot";
         public const string TrajectoryEndPointDisplayerPath = "Prefabs/UI/TrajectoryEndPointDisplayer";
-        public const string SlowTimeRunnerPath = "Prefabs/SlowTimeRunner";
         public const string GravityGunDisplayerPath = "Prefabs/UI/GravityGunDisplayer";
         public const string TeleportDisplayerPath = "Prefabs/UI/TeleportDisplayer";
         public const string SpiderCameraPath = "Prefabs/CameraSystem/CameraSystem";
@@ -44,5 +43,6 @@ namespace Infastructure.Common
         public const string CutSceneStaticDataPath = "StaticData/CutScenes/CutScenesData";
         public const string GravityGunStaticDataPath = "StaticData/Spider/GravityGunData";
         public const string CheatsStaticDataPath = "StaticData/Cheats/Cheats";
+        public const string SlowTimeStaticDataPath = "StaticData/SlowTime/SlowTimeData";
     }
 }

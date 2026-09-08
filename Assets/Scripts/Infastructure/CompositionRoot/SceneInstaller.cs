@@ -23,7 +23,6 @@ using Infastructure.Services.PlayerInput;
 using Infastructure.Services.QTE;
 using Infastructure.Services.Registries.FlowerRegistry;
 using Infastructure.Services.Registries.SpiderRegistry;
-using Infastructure.Services.SlowTime;
 using Infastructure.Services.Tasks;
 using Infastructure.Services.Teleports;
 using Infastructure.Services.Timer;
@@ -122,8 +121,6 @@ namespace Infastructure.CompositionRoot
 
             BindLastChanceQTEService();
 
-            BindSlowTimeService();
-
             BindCutSceneService();
 
             BindTrajectoryEndPointDisplayer();
@@ -178,15 +175,6 @@ namespace Infastructure.CompositionRoot
 
         private void BindFlowerRegistryService() =>
             Container.BindInterfacesAndSelfTo<FlowerRegistryService>().AsSingle();
-
-        private void BindSlowTimeService()
-        {
-            Container
-                .Bind<ISlowTimeRunner>()
-                .To<SlowTimeRunner>()
-                .FromComponentInNewPrefabResource(AssetsPath.SlowTimeRunnerPath)
-                .AsSingle();
-        }
 
         private void BindGravityGunDisplayer()
         {

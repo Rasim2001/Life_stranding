@@ -82,7 +82,7 @@ MonoBehaviour:
   _rotationComposer: {fileID: 8636421224016774457}
   _thirdPersonFollow: {fileID: 4561231729578116344}
   _cinemachineCamera: {fileID: 8251630939384945481}
-  _cameraShake: {fileID: 7599560345730644428}
+  _impulseSource: {fileID: 5297263267177027818}
   _showAimTarget: 1
   _showAimTargetOnScreen: 1
 --- !u!1 &6879631944178656443
@@ -334,36 +334,24 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4554190647538258172, guid: 330118f6d795d454d8f3b3b603946fcf, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4554190647538258172, guid: 330118f6d795d454d8f3b3b603946fcf, type: 3}
-      propertyPath: KeepPlayModeChanges
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4554190647538258172, guid: 330118f6d795d454d8f3b3b603946fcf, type: 3}
-      propertyPath: managedReferences[1].m_ImpulseDefinition.RawSignal
-      value: 
-      objectReference: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 330118f6d795d454d8f3b3b603946fcf, type: 3}
---- !u!4 &5395570551870910736 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2063872701345634336, guid: 330118f6d795d454d8f3b3b603946fcf, type: 3}
-  m_PrefabInstance: {fileID: 6216290872595048752}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &7599560345730644428 stripped
+--- !u!114 &5297263267177027818 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4554190647538258172, guid: 330118f6d795d454d8f3b3b603946fcf, type: 3}
+  m_CorrespondingSourceObject: {fileID: 2289829159633433050, guid: 330118f6d795d454d8f3b3b603946fcf, type: 3}
   m_PrefabInstance: {fileID: 6216290872595048752}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Script: {fileID: 11500000, guid: 180ecf9b41d478f468eb3e9083753217, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineImpulseSource
+--- !u!4 &5395570551870910736 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2063872701345634336, guid: 330118f6d795d454d8f3b3b603946fcf, type: 3}
+  m_PrefabInstance: {fileID: 6216290872595048752}
+  m_PrefabAsset: {fileID: 0}

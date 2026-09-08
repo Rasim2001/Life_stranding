@@ -1,8 +1,6 @@
 using Infastructure.Factories;
 using Infastructure.StaticData.Spider;
 using Infastructure.StaticData.StaticDataService;
-using MoreMountains.Feedbacks;
-using MoreMountains.FeedbacksForThirdParty;
 using Unity.Cinemachine;
 using UnityEngine;
 using Zenject;
@@ -16,7 +14,7 @@ namespace Cameras.SpiderCameras
         [SerializeField] private CinemachineRotationComposer _rotationComposer;
         [SerializeField] private CinemachineThirdPersonFollow _thirdPersonFollow;
         [SerializeField] private CinemachineCamera _cinemachineCamera;
-        [SerializeField] private MMF_Player _cameraShake;
+        [SerializeField] private CinemachineImpulseSource _impulseSource;
 
         [Header("Debug")]
         [Tooltip("Draws where the camera is actually aiming, in the Scene view during play. " +
@@ -83,9 +81,6 @@ namespace Cameras.SpiderCameras
             }
         }
 
-        private MMF_CinemachineImpulse Impulse =>
-            _cameraShake.GetFeedbackOfType<MMF_CinemachineImpulse>();
-
         private IStaticDataService _staticData;
         private IDiFactory _diFactory;
 
@@ -133,10 +128,10 @@ namespace Cameras.SpiderCameras
 
             float force = Mathf.Lerp(data.MinForceShake, data.MaxForceShake, distanceNormalized);
 
-            Impulse.m_ImpulseDefinition.FrequencyGain = force;
-            Impulse.m_ImpulseDefinition.AmplitudeGain = force;
+            _impulseSource.ImpulseDefinition.FrequencyGain = force;
+            _impulseSource.ImpulseDefinition.AmplitudeGain = force;
 
-            _cameraShake.PlayFeedbacks();
+            _impulseSource.GenerateImpulse();
         }
 
         public void AlignToSpider() =>

@@ -6,7 +6,7 @@ using Infastructure.Localization;
 using Infastructure.Services.CurrentLevel;
 using Infastructure.Services.CursorVisible;
 using Infastructure.Services.CutScene;
-using Infastructure.Services.Pause;
+using Infastructure.Services.GameTime;
 using Infastructure.Services.PlayerProgressService;
 using Infastructure.Services.ProgressWatchers;
 using Infastructure.Services.QuitApplication;
@@ -47,7 +47,7 @@ namespace Infastructure.CompositionRoot
 
             BindCurtainRoot();
 
-            BindPauseService();
+            BindGameTimeService();
 
             BindRestartService();
 
@@ -93,8 +93,8 @@ namespace Infastructure.CompositionRoot
         private void BindRestartService() =>
             Container.BindInterfacesAndSelfTo<RestartService>().AsSingle();
 
-        private void BindPauseService() =>
-            Container.BindInterfacesAndSelfTo<PauseService>().AsSingle();
+        private void BindGameTimeService() =>
+            Container.BindInterfacesAndSelfTo<GameTimeService>().AsSingle();
 
 
         private void BindPersistentProgressService() =>
