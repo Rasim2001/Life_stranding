@@ -114,7 +114,7 @@ namespace Infastructure.StaticData.Spider
         // на вопрос «насколько наклонённым может быть паук, чтобы мир всё ещё считался ровным»,
         // а не на то, следует ли горизонт за пауком — ниже HorizonFollowEnterAngle он не следует.
         // Держать запас до HorizonFollowEnterAngle не меньше 10°.
-        public float HorizonLevelAnchorAngle = 30f;
+        public float HorizonLevelAnchorAngle = 40f;
 
         [Header("CameraClimb")]
         // Автоподъём камеры, когда паук перестаёт быть горизонтальным. Наклон, при котором подъём
