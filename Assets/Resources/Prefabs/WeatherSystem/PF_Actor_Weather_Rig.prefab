@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1560849760641587370}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.94909614, y: 0, z: 0, w: -0.31498656}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -40,7 +40,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1560849760641587370}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 12
   m_Type: 1
   m_Color: {r: 0.6, g: 0.68, b: 0.85, a: 1}
@@ -151,7 +151,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2999204777887508446}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.066987306, y: -0.25000003, z: 0.25000003, w: 0.9330127}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -172,7 +172,7 @@ GameObject:
   - component: {fileID: 4524578543822215920}
   - component: {fileID: 8865550623880819296}
   - component: {fileID: 6840428235648114210}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: Dome Sky
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -188,7 +188,7 @@ Transform:
   m_GameObject: {fileID: 3470804246201328486}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.6407452, y: -1.0110316, z: -16.473694}
+  m_LocalPosition: {x: -5.0556474, y: 42.65323, z: 110.570465}
   m_LocalScale: {x: 3600, y: 3600, z: 3600}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -291,8 +291,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4954765241389929703}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.117984094, y: 0.85972595, z: 0.44032267, w: 0.23036283}
-  m_LocalPosition: {x: 932.38544, y: 2595.6992, z: -1635.9868}
+  m_LocalRotation: {x: 0.2678603, y: -0.08015012, z: 0.022366894, w: 0.9598576}
+  m_LocalPosition: {x: -459.08127, y: -1614.3099, z: 2810.263}
   m_LocalScale: {x: 160, y: 160, z: 160}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -422,9 +422,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeatherSystem.WeatherRig
   _bands:
   - StartY: 0
-    EndY: 100100
-    BlendUpwards: 0
-    Preset: {fileID: 11400000, guid: a0fc44f822047d049b37323d006ff16f, type: 2}
+    EndY: 100
+    BlendUpwards: 50
+    Preset: {fileID: 11400000, guid: b5a5fd3cb1265a945ae2fd5ae47fec00, type: 2}
+  - StartY: 200
+    EndY: 300
+    BlendUpwards: 50
+    Preset: {fileID: 11400000, guid: b5a5fd3cb1265a945ae2fd5ae47fec00, type: 2}
   _sunLight: {fileID: 9064363662116806332}
   _moonLight: {fileID: 1536564114862877}
   _sunMoonPivot: {fileID: 7948983444500103440}
@@ -432,7 +436,7 @@ MonoBehaviour:
   _skyDome: {fileID: 6840428235648114210}
   _cloudsDome: {fileID: 1433005408106587843}
   _moon: {fileID: 6652819438172005904}
-  _startingTimeOfDay01: 0.036000013
+  _startingTimeOfDay01: 0.352
   _timeOfDayRunning: 0
   _dayLengthSeconds: 600
   _arcAzimuth: -30
@@ -441,8 +445,6 @@ MonoBehaviour:
   _horizonFadeBand: 0.07
   _sunShadowType: 2
   _moonShadowType: 2
-  _sunShadowStrength: 1
-  _moonShadowStrength: 1
 --- !u!1 &6303750039202666137
 GameObject:
   m_ObjectHideFlags: 0
@@ -455,7 +457,7 @@ GameObject:
   - component: {fileID: 1034629222347049998}
   - component: {fileID: 8440404181133584018}
   - component: {fileID: 1433005408106587843}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: Dome Clouds
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -471,7 +473,7 @@ Transform:
   m_GameObject: {fileID: 6303750039202666137}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.6407452, y: -1.0110316, z: -16.473694}
+  m_LocalPosition: {x: -5.0556474, y: 42.65323, z: 110.570465}
   m_LocalScale: {x: 3600, y: 3600, z: 3600}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -559,7 +561,7 @@ GameObject:
   - component: {fileID: 7243059298299223469}
   - component: {fileID: 1623024195728048227}
   - component: {fileID: 7518853715563439949}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: Cloud Layer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -678,7 +680,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6950328803771567216}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.31498653, y: 0, z: 0, w: 0.94909614}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -695,8 +697,8 @@ Light:
   m_Enabled: 1
   serializedVersion: 12
   m_Type: 1
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
+  m_Color: {r: 1.6512887, g: 1.4904085, b: 1.4300785, a: 1}
+  m_Intensity: 1.5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208

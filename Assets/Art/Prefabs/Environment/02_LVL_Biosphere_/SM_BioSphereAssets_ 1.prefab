@@ -11,12 +11,13 @@ GameObject:
   - component: {fileID: 2397424579840037465}
   - component: {fileID: 4484207790222751655}
   - component: {fileID: 1796210329629214617}
+  - component: {fileID: 7623402151245291558}
   m_Layer: 0
   m_Name: BioFridgeGlass (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &2397424579840037465
 Transform:
@@ -61,6 +62,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -82,10 +85,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &7623402151245291558
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87472356055540003}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -350422731635986249, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &1060749524936334661
 GameObject:
   m_ObjectHideFlags: 0
@@ -97,12 +124,13 @@ GameObject:
   - component: {fileID: 2702656074747266923}
   - component: {fileID: 4611188800502832583}
   - component: {fileID: 5010889737401971183}
+  - component: {fileID: 4313632245298159906}
   m_Layer: 0
   m_Name: BioTableMini (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &2702656074747266923
 Transform:
@@ -147,6 +175,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -168,10 +198,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &4313632245298159906
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1060749524936334661}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6596125859724095820, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &1076132711401953378
 GameObject:
   m_ObjectHideFlags: 0
@@ -183,12 +237,13 @@ GameObject:
   - component: {fileID: 1267613031739920988}
   - component: {fileID: 7069579234034527602}
   - component: {fileID: 5052135396994228621}
+  - component: {fileID: 4040268146807364006}
   m_Layer: 0
   m_Name: BioFridge (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &1267613031739920988
 Transform:
@@ -233,6 +288,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -254,10 +311,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &4040268146807364006
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1076132711401953378}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6713504738340079576, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &1408309942446336734
 GameObject:
   m_ObjectHideFlags: 0
@@ -269,12 +350,13 @@ GameObject:
   - component: {fileID: 8738732475978723619}
   - component: {fileID: 5778268215675204689}
   - component: {fileID: 1511503120805733121}
+  - component: {fileID: 411909500956868000}
   m_Layer: 0
   m_Name: BioComp (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &8738732475978723619
 Transform:
@@ -319,6 +401,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -340,10 +424,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &411909500956868000
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1408309942446336734}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -1687766534600888095, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &1495894676196321784
 GameObject:
   m_ObjectHideFlags: 0
@@ -355,12 +463,13 @@ GameObject:
   - component: {fileID: 6137161533588858003}
   - component: {fileID: 1542054885238938178}
   - component: {fileID: 8318010374508221791}
+  - component: {fileID: 8377769462025150793}
   m_Layer: 0
   m_Name: BioFridgeColder (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &6137161533588858003
 Transform:
@@ -405,6 +514,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -426,10 +537,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &8377769462025150793
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1495894676196321784}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -703682211977555366, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &1515803140625436044
 GameObject:
   m_ObjectHideFlags: 0
@@ -441,12 +576,13 @@ GameObject:
   - component: {fileID: 7504722764811893997}
   - component: {fileID: 1874777945677523130}
   - component: {fileID: 1561555204558505315}
+  - component: {fileID: 8183769159507635054}
   m_Layer: 0
   m_Name: BioTable (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &7504722764811893997
 Transform:
@@ -491,6 +627,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -512,10 +650,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &8183769159507635054
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1515803140625436044}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -6952964726529999905, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &1672741968552541385
 GameObject:
   m_ObjectHideFlags: 0
@@ -527,12 +689,13 @@ GameObject:
   - component: {fileID: 8144728366322454077}
   - component: {fileID: 5407389336932911663}
   - component: {fileID: 21591234370928718}
+  - component: {fileID: 4420775571210816225}
   m_Layer: 0
   m_Name: Bio_ElectronPanel (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &8144728366322454077
 Transform:
@@ -577,6 +740,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -598,10 +763,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &4420775571210816225
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1672741968552541385}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5286849308943814319, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &1770179170642625379
 GameObject:
   m_ObjectHideFlags: 0
@@ -613,12 +802,13 @@ GameObject:
   - component: {fileID: 4135289648709742348}
   - component: {fileID: 376825317431718782}
   - component: {fileID: 1595090880991916723}
+  - component: {fileID: 7480546660091091909}
   m_Layer: 0
   m_Name: BioTableMini (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &4135289648709742348
 Transform:
@@ -663,6 +853,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -684,10 +876,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &7480546660091091909
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1770179170642625379}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6596125859724095820, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &2507372730897548599
 GameObject:
   m_ObjectHideFlags: 0
@@ -699,12 +915,13 @@ GameObject:
   - component: {fileID: 3414400069793287290}
   - component: {fileID: 936258503223488880}
   - component: {fileID: 5934356920270372544}
+  - component: {fileID: 4832322560357285395}
   m_Layer: 0
   m_Name: BioTable (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &3414400069793287290
 Transform:
@@ -749,6 +966,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -770,10 +989,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &4832322560357285395
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2507372730897548599}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -6952964726529999905, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &2875069664475798136
 GameObject:
   m_ObjectHideFlags: 0
@@ -785,12 +1028,13 @@ GameObject:
   - component: {fileID: 7622301517862926393}
   - component: {fileID: 1311997958716356629}
   - component: {fileID: 7211799837148162870}
+  - component: {fileID: 8609691361662220264}
   m_Layer: 0
   m_Name: BioTableMini (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &7622301517862926393
 Transform:
@@ -835,6 +1079,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -856,10 +1102,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &8609691361662220264
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2875069664475798136}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6596125859724095820, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &2981105596153179387
 GameObject:
   m_ObjectHideFlags: 0
@@ -871,12 +1141,13 @@ GameObject:
   - component: {fileID: 6013511333321312623}
   - component: {fileID: 789452983760655007}
   - component: {fileID: 2751119967366854867}
+  - component: {fileID: 149104596919227062}
   m_Layer: 0
   m_Name: BioComp (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &6013511333321312623
 Transform:
@@ -921,6 +1192,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -942,10 +1215,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &149104596919227062
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2981105596153179387}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -1687766534600888095, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &3962140699151009039
 GameObject:
   m_ObjectHideFlags: 0
@@ -957,12 +1254,13 @@ GameObject:
   - component: {fileID: 316138996665970471}
   - component: {fileID: 5119413218850570529}
   - component: {fileID: 9064793087068950656}
+  - component: {fileID: 6164750604640205585}
   m_Layer: 0
   m_Name: BioFridgeColder (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &316138996665970471
 Transform:
@@ -1007,6 +1305,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1028,10 +1328,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &6164750604640205585
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3962140699151009039}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -703682211977555366, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &5247403646179389970
 GameObject:
   m_ObjectHideFlags: 0
@@ -1043,12 +1367,13 @@ GameObject:
   - component: {fileID: 7661657012843822229}
   - component: {fileID: 2112009475338891508}
   - component: {fileID: 8940302767212578300}
+  - component: {fileID: 4807157504333705864}
   m_Layer: 0
   m_Name: BioTableMini (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &7661657012843822229
 Transform:
@@ -1093,6 +1418,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1114,10 +1441,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &4807157504333705864
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5247403646179389970}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6596125859724095820, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &5520808819671178754
 GameObject:
   m_ObjectHideFlags: 0
@@ -1129,12 +1480,13 @@ GameObject:
   - component: {fileID: 6464781489158835953}
   - component: {fileID: 1240792273410169300}
   - component: {fileID: 5611348653804678738}
+  - component: {fileID: 3501754237730750050}
   m_Layer: 0
   m_Name: BioFridge (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &6464781489158835953
 Transform:
@@ -1179,6 +1531,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1200,10 +1554,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &3501754237730750050
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5520808819671178754}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6713504738340079576, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &5635206928494907035
 GameObject:
   m_ObjectHideFlags: 0
@@ -1215,12 +1593,13 @@ GameObject:
   - component: {fileID: 4274235382208436687}
   - component: {fileID: 5052503111926685697}
   - component: {fileID: 3351289081862742356}
+  - component: {fileID: 5291837033390198044}
   m_Layer: 0
   m_Name: BioFridgeColder (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &4274235382208436687
 Transform:
@@ -1265,6 +1644,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1286,10 +1667,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &5291837033390198044
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5635206928494907035}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -703682211977555366, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &5913250385111130906
 GameObject:
   m_ObjectHideFlags: 0
@@ -1301,12 +1706,13 @@ GameObject:
   - component: {fileID: 4750166104853504259}
   - component: {fileID: 8469431587262525439}
   - component: {fileID: 5108079040247338996}
+  - component: {fileID: 1420228305149885115}
   m_Layer: 0
   m_Name: BioTableMini (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &4750166104853504259
 Transform:
@@ -1351,6 +1757,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1372,10 +1780,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &1420228305149885115
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5913250385111130906}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6596125859724095820, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &7101168927951434383
 GameObject:
   m_ObjectHideFlags: 0
@@ -1387,12 +1819,13 @@ GameObject:
   - component: {fileID: 2500315420468403058}
   - component: {fileID: 3360482825221539906}
   - component: {fileID: 1881350026832549147}
+  - component: {fileID: 1885900171852317081}
   m_Layer: 0
   m_Name: Bio_ElectronPanel (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &2500315420468403058
 Transform:
@@ -1437,6 +1870,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1458,10 +1893,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &1885900171852317081
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7101168927951434383}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5286849308943814319, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &7277934124446838059
 GameObject:
   m_ObjectHideFlags: 0
@@ -1473,12 +1932,13 @@ GameObject:
   - component: {fileID: 7609651310852385349}
   - component: {fileID: 5279117507265805521}
   - component: {fileID: 1943276126095951182}
+  - component: {fileID: 1378536542395097429}
   m_Layer: 0
   m_Name: BioWater (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &7609651310852385349
 Transform:
@@ -1523,6 +1983,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1544,10 +2006,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &1378536542395097429
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7277934124446838059}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -7188704853869921082, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &7647971928818680771
 GameObject:
   m_ObjectHideFlags: 0
@@ -1559,12 +2045,13 @@ GameObject:
   - component: {fileID: 2020301861545642660}
   - component: {fileID: 4522672051466610116}
   - component: {fileID: 1690652817531500455}
+  - component: {fileID: 4672951424985315848}
   m_Layer: 0
   m_Name: BioComp (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &2020301861545642660
 Transform:
@@ -1609,6 +2096,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1630,10 +2119,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &4672951424985315848
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7647971928818680771}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -1687766534600888095, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &8288476714764567894
 GameObject:
   m_ObjectHideFlags: 0
@@ -1645,12 +2158,13 @@ GameObject:
   - component: {fileID: 8664846325277997818}
   - component: {fileID: 6117936643868123145}
   - component: {fileID: 2674675243175962693}
+  - component: {fileID: 8536207427474161987}
   m_Layer: 0
   m_Name: BioFridgeGlass (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &8664846325277997818
 Transform:
@@ -1695,6 +2209,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1716,10 +2232,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &8536207427474161987
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8288476714764567894}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -350422731635986249, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1 &8683485770778691125
 GameObject:
   m_ObjectHideFlags: 0
@@ -1731,12 +2271,13 @@ GameObject:
   - component: {fileID: 8179641454860821859}
   - component: {fileID: 4394782986477360019}
   - component: {fileID: 1972672099411986976}
+  - component: {fileID: 735105911326885022}
   m_Layer: 0
   m_Name: BioTableMini (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 81
   m_IsActive: 1
 --- !u!4 &8179641454860821859
 Transform:
@@ -1781,6 +2322,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1802,10 +2345,34 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &735105911326885022
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8683485770778691125}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6596125859724095820, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!1001 &7848230087043990486
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1816,15 +2383,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6.69
+      value: -5.9386797
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 111.28
+      value: -2.4629135
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -171.93
+      value: 12.364243
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1836,7 +2403,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
       propertyPath: m_LocalRotation.z
@@ -1854,6 +2421,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7409873350341373591, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 81
+      objectReference: {fileID: 0}
     - target: {fileID: -6425149109838947419, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.61
@@ -1870,6 +2441,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 33407bc01be45e94892b8434f36a6deb, type: 2}
+    - target: {fileID: -4926145681926243287, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 81
+      objectReference: {fileID: 0}
     - target: {fileID: -4922233213080738137, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -1878,6 +2453,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 1bfe21f397c9bfa44a57763391d814bc, type: 2}
+    - target: {fileID: -2211280352610785239, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 81
+      objectReference: {fileID: 0}
     - target: {fileID: -1386039671475524025, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.0085842125
@@ -1910,6 +2489,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 33407bc01be45e94892b8434f36a6deb, type: 2}
+    - target: {fileID: -434418660207599588, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 81
+      objectReference: {fileID: 0}
     - target: {fileID: -334977300068463950, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.6
@@ -1950,9 +2533,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 908591951058307307, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 81
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
       propertyPath: m_Name
       value: SM_BioSphereAssets_ 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 81
       objectReference: {fileID: 0}
     - target: {fileID: 1959091145908211293, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1994,6 +2585,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 2897464832972475713, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 81
+      objectReference: {fileID: 0}
     - target: {fileID: 2916545100981754658, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -2002,6 +2597,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 33407bc01be45e94892b8434f36a6deb, type: 2}
+    - target: {fileID: 5519569298747354459, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 81
+      objectReference: {fileID: 0}
     - target: {fileID: 7746227881754365876, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -2010,6 +2609,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 33407bc01be45e94892b8434f36a6deb, type: 2}
+    - target: {fileID: 8528332573251764957, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 81
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -2076,10 +2679,250 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7609651310852385349}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2897464832972475713, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3584201695458372006}
+    - targetCorrespondingSourceObject: {fileID: -2211280352610785239, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5434104502272071293}
+    - targetCorrespondingSourceObject: {fileID: 8528332573251764957, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3581715872700695640}
+    - targetCorrespondingSourceObject: {fileID: -4926145681926243287, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2404250316670954248}
+    - targetCorrespondingSourceObject: {fileID: 908591951058307307, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 282367269535229014}
+    - targetCorrespondingSourceObject: {fileID: -434418660207599588, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8629600633427409839}
+    - targetCorrespondingSourceObject: {fileID: 5519569298747354459, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5860270355546846153}
+    - targetCorrespondingSourceObject: {fileID: -7409873350341373591, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1496711679618477813}
   m_SourcePrefab: {fileID: 100100000, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+--- !u!1 &983323564849441791 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2211280352610785239, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+  m_PrefabInstance: {fileID: 7848230087043990486}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &5434104502272071293
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983323564849441791}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -1687766534600888095, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+--- !u!1 &1518312484611302346 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -434418660207599588, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+  m_PrefabInstance: {fileID: 7848230087043990486}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &8629600633427409839
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1518312484611302346}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -6952964726529999905, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+--- !u!1 &1923101795687252235 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8528332573251764957, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+  m_PrefabInstance: {fileID: 7848230087043990486}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &3581715872700695640
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923101795687252235}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6713504738340079576, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+--- !u!1 &2338477228116323981 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5519569298747354459, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+  m_PrefabInstance: {fileID: 7848230087043990486}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &5860270355546846153
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2338477228116323981}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6596125859724095820, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+--- !u!1 &4962790063055867543 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2897464832972475713, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+  m_PrefabInstance: {fileID: 7848230087043990486}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &3584201695458372006
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4962790063055867543}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5286849308943814319, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+--- !u!1 &6289368364862963711 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -4926145681926243287, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+  m_PrefabInstance: {fileID: 7848230087043990486}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &2404250316670954248
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6289368364862963711}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -703682211977555366, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+--- !u!1 &6949463511748987709 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 908591951058307307, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+  m_PrefabInstance: {fileID: 7848230087043990486}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &282367269535229014
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6949463511748987709}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -350422731635986249, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
 --- !u!4 &7737248841148605501 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
   m_PrefabInstance: {fileID: 7848230087043990486}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8484875005183562431 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -7409873350341373591, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}
+  m_PrefabInstance: {fileID: 7848230087043990486}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &1496711679618477813
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8484875005183562431}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -7188704853869921082, guid: 30e2ce782640c2447881e5f8cf692656, type: 3}

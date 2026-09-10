@@ -93,7 +93,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 20201, guid: 0000000000000000f000000000000000, type: 0}
+  m_LightingDataAsset: {fileID: 112000004, guid: 9086f2c025459b0468c027ed74cc971d, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: c2984068ed808944a8e84f1c576fcda2, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -224,9 +224,29 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1174136281}
     m_Modifications:
+    - target: {fileID: 1536564114862877, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: m_Lightmapping
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6178518731960043662, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
       propertyPath: m_Name
       value: PF_Actor_Weather_Rig
+      objectReference: {fileID: 0}
+    - target: {fileID: 6178518731960043662, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6339430398971814183, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -42.227
+      objectReference: {fileID: 0}
+    - target: {fileID: 6339430398971814183, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 14.888
+      objectReference: {fileID: 0}
+    - target: {fileID: 6339430398971814183, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 17.856
       objectReference: {fileID: 0}
     - target: {fileID: 6588140479700291329, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -268,49 +288,45 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
-      propertyPath: _altitudeMaxY
-      value: 128
+    - target: {fileID: 7948983444500103440, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.9330127
       objectReference: {fileID: 0}
-    - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
-      propertyPath: _altitudeMinY
-      value: 3
+    - target: {fileID: 7948983444500103440, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.06698732
       objectReference: {fileID: 0}
-    - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
-      propertyPath: _bands.Array.size
-      value: 2
+    - target: {fileID: 7948983444500103440, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.25000012
+      objectReference: {fileID: 0}
+    - target: {fileID: 7948983444500103440, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.25000006
+      objectReference: {fileID: 0}
+    - target: {fileID: 9064363662116806332, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: m_Lightmapping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9064363662116806332, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: m_BoundingSphereOverride.w
+      value: 1.6530639e-38
+      objectReference: {fileID: 0}
+    - target: {fileID: 9064363662116806332, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: m_BoundingSphereOverride.x
+      value: 1.616329e-38
+      objectReference: {fileID: 0}
+    - target: {fileID: 9064363662116806332, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: m_BoundingSphereOverride.y
+      value: 1.6346966e-38
+      objectReference: {fileID: 0}
+    - target: {fileID: 9064363662116806332, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: m_BoundingSphereOverride.z
+      value: 1.653064e-38
       objectReference: {fileID: 0}
     - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
       propertyPath: _startingTimeOfDay01
       value: 0.352
-      objectReference: {fileID: 0}
-    - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
-      propertyPath: _bands.Array.data[0].EndY
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
-      propertyPath: _bands.Array.data[1].EndY
-      value: 300
-      objectReference: {fileID: 0}
-    - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
-      propertyPath: _bands.Array.data[0].Preset
-      value: 
-      objectReference: {fileID: 11400000, guid: b5a5fd3cb1265a945ae2fd5ae47fec00, type: 2}
-    - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
-      propertyPath: _bands.Array.data[1].Preset
-      value: 
-      objectReference: {fileID: 11400000, guid: b5a5fd3cb1265a945ae2fd5ae47fec00, type: 2}
-    - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
-      propertyPath: _bands.Array.data[1].StartY
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
-      propertyPath: _bands.Array.data[0].BlendUpwards
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
-      propertyPath: _bands.Array.data[1].BlendUpwards
-      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
