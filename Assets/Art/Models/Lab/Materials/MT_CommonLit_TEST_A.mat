@@ -26,7 +26,6 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ALBEDOVERTEXCOLORMODE_REPLACE
-  - _ALPHA_CUTOFF_ON
   - _CAST_SHADOWS_ON
   - _COLORRAMPLIGHTINGSTAGE_BEFORELIGHTING
   - _FADEUVSET_UV1
@@ -34,16 +33,20 @@ Material:
   - _HEIGHTGRADIENTPOSITIONSPACE_LOCAL
   - _LIGHTMODEL_CLASSIC
   - _MATCAPBLENDMODE_MULTIPLY
+  - _METALLIC_MAP_ON
+  - _NORMAL_MAP_ON
   - _OUTLINETYPE_NONE
   - _RECEIVEDSHADOWSTYPE_CLASSIC
   - _RECEIVE_SHADOWS_ON
   - _REFLECTIONS_NONE
   - _RIMLIGHTINGSTAGE_BEFORELIGHTING
-  - _SHADINGMODEL_BASIC
-  - _SPECULARMODEL_NONE
+  - _SHADINGMODEL_PBR
+  - _SPECULARMODEL_CLASSIC
   - _TEXTUREBLENDINGMODE_RGB
-  - _TEXTUREBLENDINGSOURCE_VERTEXCOLOR
-  - _TRIPLANARNORMALSPACE_WORLD
+  - _TEXTUREBLENDINGSOURCE_TEXTURE
+  - _TEXTURE_BLENDING_ON
+  - _TRIPLANARNORMALSPACE_LOCAL
+  - _TRIPLANAR_NOISE_TRANSITION_ON
   - _USE_WIND_VERTICAL_MASK
   m_InvalidKeywords:
   - _EMISSION
@@ -58,7 +61,7 @@ Material:
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
-  m_LockedProperties: 
+  m_LockedProperties: _Smoothness
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -139,11 +142,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 1775b07cabcbc014dacac994be5ebeee, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 2800000, guid: 120df76dc2d17ed4cb2d4b8b08292ed9, type: 3}
+        m_Texture: {fileID: 2800000, guid: cd5977a1158ae6c4dbdcab86632331fc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -163,7 +166,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecularMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 42fab20393ee83946a7d6d967d5eeee0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TexBlendingMask:
@@ -176,7 +179,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _TriplanarNoiseTex:
         m_Texture: {fileID: 2800000, guid: fcb69fdadf254834880fe3c443965278, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Scale: {x: 3, y: 3}
         m_Offset: {x: 0, y: 0}
     - _TriplanarTopNormalMap:
         m_Texture: {fileID: 2800000, guid: 8175cba73bf87af41aeba7bbd2f3c4cd, type: 3}
@@ -208,12 +211,12 @@ Material:
     - _AOMapEnabled: 0
     - _AOMapStrength: 1
     - _AddPrecomputedVelocity: 0
-    - _AdvancedConfigurationEnabled: 0
+    - _AdvancedConfigurationEnabled: 1
     - _AffectedByLightmaps: 0
     - _AlbedoVertexColorMode: 1
     - _AlbedoVertexColorOn: 0
     - _AlphaClip: 0
-    - _AlphaCutoffOn: 1
+    - _AlphaCutoffOn: 0
     - _AlphaCutoffValue: 0.25
     - _AlphaRoundOn: 0
     - _AlphaToMask: 0
@@ -267,7 +270,7 @@ Material:
     - _EmissionEnabled: 0
     - _EmissionSelfGlow: 1
     - _EnvironmentReflections: 1
-    - _FaceDownCutoff: 0.25
+    - _FaceDownCutoff: 0.356
     - _FadeAmount: 0
     - _FadeBurnOn: 0
     - _FadeBurnWidth: 0.01
@@ -341,14 +344,14 @@ Material:
     - _MaxInflate: 0.2
     - _MaxRim: 1
     - _Metallic: 1
-    - _MetallicMapOn: 0
+    - _MetallicMapOn: 1
     - _MinDistanceToFade: 0
     - _MinGradientHeight: 0
     - _MinInflate: 0
     - _MinRim: 0
     - _NearFade: 0
     - _NormalInfluence: 0.5
-    - _NormalMapEnabled: 0
+    - _NormalMapEnabled: 1
     - _NormalStrength: 1
     - _OcclusionStrength: 0
     - _OutlineMode: 8
@@ -379,16 +382,16 @@ Material:
     - _ScrollTextureOn: 0
     - _ScrollTextureX: 1
     - _ScrollTextureY: 1
-    - _ShadingModel: 0
+    - _ShadingModel: 1
     - _ShadowCutoff: 0.2
     - _ShakeBlend: 1
     - _ShakeSpeedMult: 1
     - _Shininess: 16
     - _Smoothness: 1
     - _SmoothnessTextureChannel: 1
-    - _SpecularAtten: 0.5
+    - _SpecularAtten: 1
     - _SpecularHighlights: 1
-    - _SpecularModel: 0
+    - _SpecularModel: 1
     - _SpecularToonCutoff: 0.35
     - _SpecularToonSmoothness: 0
     - _SpherizeNormals: 0
@@ -400,19 +403,19 @@ Material:
     - _StochasticSkew: 0.57735026
     - _SubsurfaceScattering: 0
     - _Surface: 0
-    - _TextureBlending: 0
+    - _TextureBlending: 1
     - _TextureBlendingMode: 0
-    - _TextureBlendingSource: 0
+    - _TextureBlendingSource: 1
     - _TimingSeed: 0
     - _ToonCutoff: 0.5
     - _ToonFactor: 0
     - _ToonSmoothness: 0.5
     - _TopNormalStrength: 1
     - _TriplanarMappingOn: 0
-    - _TriplanarNoiseTransitionOn: 0
-    - _TriplanarNormalSpace: 1
-    - _TriplanarSharpness: 15
-    - _TriplanarTransitionPower: 0.75
+    - _TriplanarNoiseTransitionOn: 1
+    - _TriplanarNormalSpace: 0
+    - _TriplanarSharpness: 29.2
+    - _TriplanarTransitionPower: 0.088
     - _UVDistortion: 0
     - _UseCustomTime: 0
     - _UseVerticalMask: 1
