@@ -14,34 +14,43 @@ Material:
   m_ValidKeywords:
   - _ALBEDOVERTEXCOLORMODE_REPLACE
   - _ALPHA_CUTOFF_ON
+  - _AOMAP_ON
   - _CAST_SHADOWS_ON
   - _COLORRAMPLIGHTINGSTAGE_BEFORELIGHTING
-  - _GREYSCALESTAGE_BEFORELIGHTING
+  - _CONTRAST_BRIGHTNESS_ON
+  - _EMISSION_ON
+  - _FADEUVSET_UV1
+  - _GREYSCALESTAGE_AFTERLIGHTING
   - _HEIGHTGRADIENTPOSITIONSPACE_LOCAL
+  - _HEIGHT_GRADIENT_ON
   - _LIGHTMODEL_CLASSIC
   - _MATCAPBLENDMODE_MULTIPLY
+  - _METALLIC_MAP_ON
+  - _NORMAL_MAP_ON
   - _OUTLINETYPE_NONE
   - _RECEIVEDSHADOWSTYPE_CLASSIC
   - _RECEIVE_SHADOWS_ON
-  - _REFLECTIONS_NONE
-  - _RIMLIGHTINGSTAGE_BEFORELIGHTING
-  - _SHADINGMODEL_BASIC
-  - _SPECULARMODEL_NONE
+  - _REFLECTIONS_CLASSIC
+  - _RIMLIGHTINGSTAGE_AFTERLIGHTING
+  - _RIM_LIGHTING_ON
+  - _SHADINGMODEL_PBR
+  - _SPECULARMODEL_CLASSIC
   - _TEXTUREBLENDINGMODE_RGB
   - _TEXTUREBLENDINGSOURCE_VERTEXCOLOR
+  - _TEXTURE_BLENDING_ON
   - _TRIPLANARNORMALSPACE_WORLD
+  - _TRIPLANAR_MAPPING_ON
   - _USE_WIND_VERTICAL_MASK
   m_InvalidKeywords:
-  - _FADEUVSET_UV1
   - _GLITCHWORLDSPACE_ON
-  m_LightmapFlags: 4
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2000
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
-  m_LockedProperties: 
+  m_LockedProperties: _TextureBlendingMode
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -110,7 +119,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 657b506bbb7c669418c188a9fd6c66ce, type: 3}
+        m_Texture: {fileID: 2800000, guid: 263e376b1303e334eb5e67a580dd47fc, type: 3}
         m_Scale: {x: 3, y: 3}
         m_Offset: {x: 0, y: 0}
     - _MatcapTex:
@@ -122,11 +131,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: 1775b07cabcbc014dacac994be5ebeee, type: 3}
+        m_Scale: {x: 3, y: 3}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 2800000, guid: 120df76dc2d17ed4cb2d4b8b08292ed9, type: 3}
+        m_Texture: {fileID: 2800000, guid: cd5977a1158ae6c4dbdcab86632331fc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -146,7 +155,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecularMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: bbcf074cec646b74a97f015c9c6b889d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TexBlendingMask:
@@ -188,10 +197,10 @@ Material:
     m_Ints: []
     m_Floats:
     - _AOContrast: 1
-    - _AOMapEnabled: 0
+    - _AOMapEnabled: 1
     - _AOMapStrength: 1
     - _AddPrecomputedVelocity: 0
-    - _AdvancedConfigurationEnabled: 0
+    - _AdvancedConfigurationEnabled: 1
     - _AffectedByLightmaps: 0
     - _AlbedoVertexColorMode: 1
     - _AlbedoVertexColorOn: 0
@@ -201,7 +210,7 @@ Material:
     - _AlphaRoundOn: 0
     - _AlphaToMask: 0
     - _AnisoShininess: 0.85
-    - _Anisotropy: 0.45
+    - _Anisotropy: 0.501
     - _Blend: 0
     - _BlendDst: 0
     - _BlendModePreserveSpecular: 1
@@ -219,14 +228,14 @@ Material:
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _ColorMask: 15
-    - _ColorRampBlend: 1
+    - _ColorRampBlend: 0.647
     - _ColorRampLightingStage: 0
-    - _ColorRampLuminosity: 0
+    - _ColorRampLuminosity: 0.048
     - _ColorRampOn: 0
     - _ColorRampScrollSpeed: 0
-    - _ColorRampTiling: 1
+    - _ColorRampTiling: 0.78
     - _Contrast: 1
-    - _ContrastBrightnessOn: 0
+    - _ContrastBrightnessOn: 1
     - _ContrastLM: 1
     - _Cull: 2
     - _CullingMode: 2
@@ -247,8 +256,8 @@ Material:
     - _DitherScale: 1
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _EmissionEnabled: 0
-    - _EmissionSelfGlow: 1
+    - _EmissionEnabled: 1
+    - _EmissionSelfGlow: 1.33
     - _EnvironmentReflections: 1
     - _FaceDownCutoff: 0.25
     - _FadeAmount: 0
@@ -259,7 +268,7 @@ Material:
     - _FadePower: 1
     - _FadeTransition: 0.2
     - _FadeUVSet: 0
-    - _FlatNormalsBlend: 1
+    - _FlatNormalsBlend: 0
     - _FlatNormalsEnabled: 0
     - _FogOn: 0
     - _GeneralAlpha: 1
@@ -271,16 +280,16 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _GreyScaleStage: 0
+    - _GreyScaleStage: 1
     - _Greyscale: 0
     - _GreyscaleBlending: 1
-    - _GreyscaleLuminosity: 0
+    - _GreyscaleLuminosity: 0.067
     - _HalfLambertWrap: 1
     - _HandDrawn: 0
     - _HandDrawnAmount: 10
     - _HandDrawnSpeed: 5
     - _HardnessFakeGI: 0.75
-    - _HeightGradientOn: 0
+    - _HeightGradientOn: 1
     - _HeightGradientPositionSpace: 0
     - _HighlightCutoff: 0.5
     - _HighlightSmoothness: 0.5
@@ -323,15 +332,15 @@ Material:
     - _MaxGradientHeight: 0.75
     - _MaxInflate: 0.2
     - _MaxRim: 1
-    - _Metallic: 0
-    - _MetallicMapOn: 0
+    - _Metallic: 0.78
+    - _MetallicMapOn: 1
     - _MinDistanceToFade: 0
     - _MinGradientHeight: 0
     - _MinInflate: 0
-    - _MinRim: 0
+    - _MinRim: 0.831
     - _NearFade: 0
     - _NormalInfluence: 0.5
-    - _NormalMapEnabled: 0
+    - _NormalMapEnabled: 1
     - _NormalStrength: 1
     - _OcclusionStrength: 1
     - _OutlineMode: 8
@@ -347,12 +356,12 @@ Material:
     - _RecalculateNormals: 0
     - _ReceiveShadows: 1
     - _ReceivedShadowsType: 0
-    - _Reflections: 0
+    - _Reflections: 1
     - _ReflectionsAtten: 0.5
     - _RenderPreset: 1
-    - _RimAttenuation: 1
-    - _RimLighting: 0
-    - _RimLightingStage: 0
+    - _RimAttenuation: 0.922
+    - _RimLighting: 1
+    - _RimLightingStage: 2
     - _SSSAtten: 1
     - _SSSFrontAtten: 0.3
     - _SSSFrontPower: 3
@@ -362,16 +371,16 @@ Material:
     - _ScrollTextureOn: 0
     - _ScrollTextureX: 1
     - _ScrollTextureY: 1
-    - _ShadingModel: 0
+    - _ShadingModel: 1
     - _ShadowCutoff: 0.2
     - _ShakeBlend: 1
     - _ShakeSpeedMult: 1
     - _Shininess: 16
-    - _Smoothness: 0.5
+    - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
-    - _SpecularAtten: 0.5
+    - _SpecularAtten: 0.925
     - _SpecularHighlights: 1
-    - _SpecularModel: 0
+    - _SpecularModel: 1
     - _SpecularToonCutoff: 0.35
     - _SpecularToonSmoothness: 0
     - _SpherizeNormals: 0
@@ -383,7 +392,7 @@ Material:
     - _StochasticSkew: 0.57735026
     - _SubsurfaceScattering: 0
     - _Surface: 0
-    - _TextureBlending: 0
+    - _TextureBlending: 1
     - _TextureBlendingMode: 0
     - _TextureBlendingSource: 0
     - _TimingSeed: 0
@@ -391,7 +400,7 @@ Material:
     - _ToonFactor: 0
     - _ToonSmoothness: 0.5
     - _TopNormalStrength: 1
-    - _TriplanarMappingOn: 0
+    - _TriplanarMappingOn: 1
     - _TriplanarNoiseTransitionOn: 0
     - _TriplanarNormalSpace: 1
     - _TriplanarSharpness: 15
@@ -425,7 +434,7 @@ Material:
     m_Colors:
     - _AOColor: {r: 0, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 0.6745283, g: 0.91305023, b: 1, a: 1}
+    - _Color: {r: 1, g: 0.15384616, b: 0, a: 1}
     - _CustomAmbientColor: {r: 0.65, g: 0.65, b: 0.65, a: 1}
     - _DepthGlowColor: {r: 1, g: 0.9869999, b: 0.6, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
