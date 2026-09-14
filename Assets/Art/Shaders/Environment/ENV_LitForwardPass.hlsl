@@ -41,10 +41,9 @@ struct Attributes
     float2 texcoord     : TEXCOORD0;
     float2 staticLightmapUV   : TEXCOORD1;
     float2 dynamicLightmapUV  : TEXCOORD2;
-    // ENV_Lit: сток вообще не читает vertex color. Заводим канал про запас — потребитель
-    // не назначен (см. docs/lighting-and-shading.md §9 "Отложено": маска-мазок и тонировка
-    // альбедо из vertex color обе пока закрыты — см. AllIn13DShader как референс метода,
-    // который туда же и упирается). Ничего в этом файле его не читает.
+    // ENV_Lit: сток вообще не читает vertex color. Потребитель — смешивание материалов
+    // мазком (04): G несёт вес первого подмешиваемого слоя, B — второго, R и A
+    // зарезервированы и не читаются. См. SampleMixWeights в ENV_LitInput.hlsl.
     float4 color        : COLOR;
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
@@ -85,7 +84,7 @@ struct Varyings
     float4 probeOcclusion : TEXCOORD10;
 #endif
 
-    // ENV_Lit: непотреблённый vertex color, см. правку Attributes выше.
+    // ENV_Lit: вес мазка смешивания, см. правку Attributes выше.
     half4 vertexColor               : TEXCOORD11;
 
     float4 positionCS               : SV_POSITION;
@@ -203,7 +202,7 @@ Varyings LitPassVertex(Attributes input)
 
     output.uv = TRANSFORM_TEX(input.texcoord, _BaseMap);
 
-    // ENV_Lit: непотреблённый vertex color, см. правку Attributes выше.
+    // ENV_Lit: вес мазка смешивания, см. правку Attributes выше.
     output.vertexColor = half4(input.color);
 
     // already normalized from normal transform to WS.
@@ -246,40 +245,6 @@ Varyings LitPassVertex(Attributes input)
     return output;
 }
 
-// ENV_Lit: градиент по высоте (_HEIGHT_GRADIENT) — только здесь, не в ENV_LitInput.hlsl.
-// Причина: набор интерполяторов Meta-пасса URP несёт только positionCS и uv, мировой
-// позиции там нет, а форкать Meta-пасс ради отскока от десятисантиметровой полоски
-// отвергнуто в спеке (.scratch/env-lit-shader/spec.md). Эффект в запечку сознательно
-// не едет. lerp, не умножение — умножение умеет только темнить, см. тот же спек.
-//
-// alpha приезжает параметром из-за порядка: InitializeStandardLitSurfaceData уже прогнала
-// альбедо через AlphaModulate (на Multiply-блендинге это lerp к белому по альфе), а мы
-// подмешиваем цвет после неё. Подмешать сырой gradientColor — значит вернуть тонировку
-// в полную силу мимо этого затухания, и почти прозрачная Multiply-поверхность начнёт
-// красить фон. Модулируем цвет градиента тем же способом: lerp(AM(a), AM(g), s) тождественно
-// равно AM(lerp(a, g, s)), то есть результат тот же, как если бы градиент шёл до модуляции.
-// На непрозрачном пути AlphaModulate — тождество, там ничего не меняется.
-half3 ApplyHeightGradient(half3 albedo, float3 positionWS, half alpha)
-{
-#if defined(_HEIGHT_GRADIENT)
-#if defined(_GRADIENTSPACE_WORLD)
-    float height = GetAbsolutePositionWS(positionWS).y;
-#else
-    float height = TransformWorldToObject(positionWS).y;
-#endif
-    float range = max(_GradientMaxHeight - _GradientMinHeight, 1e-5);
-    float t = saturate((height - _GradientMinHeight) / range);
-    half4 gradientColor = lerp(_GradientColor01, _GradientColor02, t);
-    // Альфа цвета — локальная сила подмеса поверх общего _GradientStrength. Лерп идёт по
-    // half4, поэтому альфа тоже интерполируется по высоте: цвет с нулевой альфой на одном
-    // конце даёт градиент, затухающий в исходное альбедо, а не в другой цвет. Без этого
-    // альфа в пикере цвета редактировалась бы, но ни на что не влияла.
-    half gradientWeight = _GradientStrength * gradientColor.a;
-    albedo = lerp(albedo, AlphaModulate(gradientColor.rgb, alpha), gradientWeight);
-#endif
-    return albedo;
-}
-
 // Used in Standard (Physically Based) shader
 void LitPassFragment(
     Varyings input
@@ -304,7 +269,38 @@ void LitPassFragment(
 
     SurfaceData surfaceData;
     InitializeStandardLitSurfaceData(input.uv, surfaceData);
-    surfaceData.albedo = ApplyHeightGradient(surfaceData.albedo, input.positionWS, surfaceData.alpha);
+
+    // ENV_Lit: пространство проекции общее для градиента и слоя наноса —
+    // GetProjectionPosition (ENV_LitInput.hlsl) считает то же число, что и мета-пасс.
+    float3 positionPS = GetProjectionPosition(input.positionWS, TransformWorldToObject(input.positionWS));
+    surfaceData.albedo = ApplyHeightGradient(surfaceData.albedo, positionPS.y, surfaceData.alpha);
+
+    // ENV_Lit: узор (03) — одна выборка на материал, два потребителя: слой наноса ниже
+    // и смешивание материалов (04). Гейт ENV_NEEDS_PATTERN объявлен в ENV_LitInput.hlsl
+    // и включает оба; при выключенном узоре функция возвращает нейтральную единицу.
+#if defined(ENV_NEEDS_PATTERN)
+    half patternMultiplier = SamplePatternMultiplier(input.uv, positionPS);
+#else
+    half patternMultiplier = half(1.0);
+#endif
+
+    // ENV_Lit: смешивание материалов мазком (04) — ДО слоя наноса. Снег ложится на то, что
+    // под ним уже сложилось, а маска наноса ниже считается по уже смешанной normalTS.
+    ApplyMaterialMix(input.uv, positionPS, input.vertexColor, patternMultiplier,
+                     surfaceData.alpha, surfaceData);
+
+#if defined(_OVERLAY_LAYER_0)
+    // ENV_Lit: маска слоя наноса считается по нормали ПОСЛЕ карты нормалей — та же сборка,
+    // что чуть ниже сделает InitializeInputData, но нужна здесь раньше: маска зависит
+    // от готовой нормали, а слой её же и правит перед тем, как InitializeInputData её примет.
+#if defined(_NORMALMAP)
+    half3 overlayBaseNormalWS = ENV_ResolveNormalWS(surfaceData.normalTS, input.normalWS, input.tangentWS);
+#else
+    half3 overlayBaseNormalWS = NormalizeNormalPerPixel(input.normalWS);
+#endif
+    half overlayMask = ComputeOverlayMask0(input.uv, overlayBaseNormalWS, patternMultiplier);
+    ApplyOverlayLayer0(positionPS, overlayMask, surfaceData.alpha, surfaceData);
+#endif
 
 #ifdef LOD_FADE_CROSSFADE
     LODFadeCrossFade(input.positionCS);
@@ -312,6 +308,14 @@ void LitPassFragment(
 
     InputData inputData;
     InitializeInputData(input, surfaceData.normalTS, inputData);
+
+#if defined(_OVERLAY_LAYER_0)
+    // ENV_Lit: подмешивание нормали слоя — после InitializeInputData, поверх готовой
+    // мировой нормали базы. Мета-пасс делает то же самое, но своей нормали не считает —
+    // UnityMetaFragment её не читает.
+    inputData.normalWS = normalize(lerp(inputData.normalWS, GetOverlayNormalWS0(positionPS), overlayMask));
+#endif
+
     SETUP_DEBUG_TEXTURE_DATA(inputData, UNDO_TRANSFORM_TEX(input.uv, _BaseMap));
 
 #if defined(_DBUFFER)

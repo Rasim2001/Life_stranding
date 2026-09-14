@@ -26,16 +26,19 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _MASKMAP_SEPARATE
+  - _MATERIAL_MIX
   - _NORMALMAP
+  - _PATTERN
+  - _PATTERNSPACE_UV
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: 2006
   stringTagMap:
     RenderType: Opaque
   disabledShaderPasses: []
-  m_LockedProperties: 
+  m_LockedProperties: _MixMaskTiling
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -44,7 +47,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: cd5977a1158ae6c4dbdcab86632331fc, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -63,6 +66,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: f1ae603dbb934e847ba486a022c6eb47, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _HeightMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: 263e376b1303e334eb5e67a580dd47fc, type: 3}
         m_Scale: {x: 2, y: 2}
@@ -79,12 +86,44 @@ Material:
         m_Texture: {fileID: 2800000, guid: 1775b07cabcbc014dacac994be5ebeee, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MixMap1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixMap2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixMaskMap:
+        m_Texture: {fileID: 2800000, guid: 27248a215d4e5fe449733cb0631f0785, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixNormalMap1:
+        m_Texture: {fileID: 2800000, guid: 6246e3fe4a63c1f4f9acec9623576fc7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixNormalMap2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 2800000, guid: 0eebdcfc933de824ba2b37ac577f021a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _OverlayMap0:
+        m_Texture: {fileID: 2800000, guid: 7dd391639aa29ed45a73e9a214f4872c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OverlayNormalMap0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PatternMap:
+        m_Texture: {fileID: 2800000, guid: f23d809bb3bc90548972f185c1d8bee8, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SmoothnessMap:
@@ -116,7 +155,7 @@ Material:
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _Brightness: -0.204
-    - _BumpScale: 2
+    - _BumpScale: 0
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Contrast: 1.219
@@ -138,10 +177,38 @@ Material:
     - _HueShift: 0
     - _InvertNormalG: 0
     - _MaskMapSeparate: 1
+    - _MaterialMix: 1
+    - _MaterialMixTwo: 0
     - _Metallic: 1
+    - _MixCoverage: 0.743
+    - _MixEdgeSoftness: 0.033
+    - _MixMaskFromTexture: 0
+    - _MixMaskTiling: 1
+    - _MixMetallic1: 0
+    - _MixMetallic2: 0
+    - _MixNormalScale1: 1.43
+    - _MixNormalScale2: 1.04
+    - _MixSmoothness1: 0.367
+    - _MixSmoothness2: 0.5
+    - _MixTiling1: 1
+    - _MixTiling2: 1
     - _OcclusionStrength: 0.564
+    - _OverlayCoverage0: 0.75
+    - _OverlayEdgeSoftness0: 0
+    - _OverlayHeightDepth0: 0
+    - _OverlayLayer0: 0
+    - _OverlayMetallic0: 0
+    - _OverlayNormalScale0: 0
+    - _OverlaySmoothness0: 0
+    - _OverlayTiling0: 1
     - _Parallax: 0.005
-    - _QueueOffset: 0
+    - _Pattern: 1
+    - _PatternChannel: 0
+    - _PatternProjection: 1
+    - _PatternStrength: 0.864
+    - _PatternTiling: 1
+    - _ProjectionSpace: 0
+    - _QueueOffset: 6
     - _ReceiveShadows: 1
     - _Smoothness: 1
     - _SmoothnessIsRoughness: 0
@@ -159,6 +226,9 @@ Material:
     - _EmissionColor: {r: 1.392867, g: 1.392867, b: 1.392867, a: 1}
     - _GradientColor01: {r: 1, g: 0, b: 0, a: 1}
     - _GradientColor02: {r: 1, g: 1, b: 1, a: 0}
+    - _MixColor1: {r: 1, g: 0, b: 0, a: 1}
+    - _MixColor2: {r: 1, g: 0.59695065, b: 0, a: 1}
+    - _OverlayColor0: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

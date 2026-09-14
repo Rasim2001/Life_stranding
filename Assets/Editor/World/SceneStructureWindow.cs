@@ -16,7 +16,8 @@ namespace Editor.World
     /// §6, §9, §11): живая ветка сохранена выключенной и не содержит того, что не должна;
     /// группировочные объекты и корни сцен сегментов несут единичный трансформ; Probe Volume
     /// не приезжает в префаб и не приезжает в резидентный слой/атмосферу/бутстрап; звук
-    /// сегмента не 2D и не бьёт дальше разумного. Открывает сцены аддитивно и закрывает
+    /// сегмента не 2D и не бьёт дальше разумного; материал ENV_Lit в режиме Local не стоит
+    /// на объекте с Batching Static. Открывает сцены аддитивно и закрывает
     /// за собой, как ActorKeysWindow — валидацию оверрайдов и вложенных префабов делает
     /// Unity, а не самописный парсер YAML.
     /// </summary>
@@ -185,6 +186,7 @@ namespace Editor.World
             ValidateLiveRoots(scene, roots);
             ValidateGroups(scene, roots, role);
             ValidateProbeVolumes(scene, roots, role);
+            ValidateProjectionSpace(scene, roots);
 
             if (role == SceneRole.Segment)
                 ValidateSegmentAudio(scene, roots);
@@ -306,6 +308,98 @@ namespace Editor.World
                             scene, probeVolume.transform);
                 }
             }
+        }
+
+        // --- Пространство проекции ENV_Lit (docs/lighting-and-shading.md §6) ---
+
+        // Static Batching склеивает меши, переведя вершины в мир, и обнуляет матрицу объекта.
+        // Запечка идёт в редакторе до склейки и видит авторское объектное пространство,
+        // а ForwardLit в рантайме — мировое. Материал в режиме Local на батчащемся рендерере
+        // считает от разных нулей в запечке и на экране всё, что опирается на пространство
+        // проекции: градиент по высоте, планарную проекцию слоя наноса и — в планарном
+        // режиме — узор с маской мазка смешивания. Дефект тихий: в Scene view всё верно,
+        // расходится только в Play Mode и билде.
+        //
+        // Contribute GI в условие не входит намеренно: Local под батчингом врёт и без запечки —
+        // эффект, выставленный глазами в Scene view, в рантайме уезжает в мировые координаты.
+        private void ValidateProjectionSpace(Scene scene, GameObject[] roots)
+        {
+            foreach (GameObject root in roots)
+            {
+                // Именно MeshRenderer: статический батчинг склеивает только их, SkinnedMeshRenderer
+                // сохраняет свою матрицу и этому дефекту не подвержен.
+                foreach (MeshRenderer meshRenderer in root.GetComponentsInChildren<MeshRenderer>(true))
+                {
+                    StaticEditorFlags flags = GameObjectUtility.GetStaticEditorFlags(meshRenderer.gameObject);
+                    if ((flags & StaticEditorFlags.BatchingStatic) == 0)
+                        continue;
+
+                    foreach (Material material in meshRenderer.sharedMaterials)
+                        if (UsesLocalProjection(material))
+                            AddFinding(Level.Error,
+                                $"Batching Static + Local projection ({material.name})",
+                                scene, meshRenderer.transform);
+                }
+            }
+        }
+
+        // Гейт по включённому потребителю пространства, а не по одному _ProjectionSpace:
+        // Local сам по себе ни на что не влияет, и без гейта правило кричало бы на каждом
+        // материале с дефолтными настройками.
+        //
+        // Безусловных потребителей два: градиент по высоте и слой наноса
+        // (.scratch/env-lit-layers/issues/02-overlay-layer.md). Оба читают positionPS всегда,
+        // независимо от прочих настроек.
+        //
+        // Третий — смешивание материалов мазком (04), и он условный, поэтому вынесен
+        // в отдельный метод: сам по себе _MaterialMix координат не читает. Текстуры слоёв
+        // идут по UV базы, а вес в вершинном режиме приходит из покраски — ни там, ни там
+        // пространства проекции нет. Оно появляется только через GetPatternUV, у которой
+        // два входа: узор и текстурная маска мазка. И только в планарном режиме —
+        // Mesh UV не трогает positionPS вовсе.
+        //
+        // HasProperty на каждой галочке отдельно, а не одним «и»: материал на старой
+        // ревизии ENV_Lit несёт не весь набор, и отсутствие одного свойства не должно
+        // отключать проверку по остальным.
+        private static bool UsesLocalProjection(Material material)
+        {
+            if (material == null || !material.HasProperty("_ProjectionSpace"))
+                return false;
+
+            if (material.GetFloat("_ProjectionSpace") >= 0.5f)
+                return false;
+
+            return IsToggleOn(material, "_HeightGradient") ||
+                IsToggleOn(material, "_OverlayLayer0") ||
+                MixUsesProjection(material);
+        }
+
+        // Мазок смешивания (04) читает пространство проекции только через GetPatternUV,
+        // то есть при планарной проекции И при включённом хотя бы одном её потребителе:
+        // узоре (_Pattern) или текстурной маске мазка (_MixMaskFromTexture). В вершинном
+        // режиме без узора мазок к координатам не обращается, и склейка ему безразлична.
+        //
+        // Узор без мазка и без наноса сюда не попадает намеренно: выборка узора стоит
+        // под ENV_NEEDS_PATTERN (_OVERLAY_LAYER_0 либо _MATERIAL_MIX), и без обоих
+        // потребителей SamplePatternMultiplier не зовётся вовсе.
+        private static bool MixUsesProjection(Material material)
+        {
+            if (!IsToggleOn(material, "_MaterialMix"))
+                return false;
+
+            // Planar XZ — ноль, Mesh UV — единица. Отсутствие свойства трактуем как планар:
+            // это дефолт шейдера, и молчать на старой ревизии материала опаснее, чем шуметь.
+            if (material.HasProperty("_PatternProjection") &&
+                material.GetFloat("_PatternProjection") >= 0.5f)
+                return false;
+
+            return IsToggleOn(material, "_Pattern") ||
+                IsToggleOn(material, "_MixMaskFromTexture");
+        }
+
+        private static bool IsToggleOn(Material material, string property)
+        {
+            return material.HasProperty(property) && material.GetFloat(property) > 0.5f;
         }
 
         // --- Звук сегмента (docs/scene-regulations.md §9) ---

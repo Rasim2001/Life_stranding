@@ -221,11 +221,11 @@ MonoBehaviour:
         hasOnlyBiggerBricks: 1
     - position: {x: 0, y: 0, z: 0}
       index: 13
-      probeCount: 43200
+      probeCount: 43264
       minSubdiv: 0
       indexChunkCount: 209
       shChunkCount: 6
-      bricksCount: 675
+      bricksCount: 676
       indirectionEntryInfo:
       - positionInBricks: {x: 0, y: 0, z: 0}
         minSubdiv: 1
@@ -753,7 +753,7 @@ MonoBehaviour:
     - Sealed
     - Breached
     m_Values:
-    - sceneHash: 2027606954
+    - sceneHash: 1025380200
       cellDataAsset:
         m_AssetGUID: cbf21a303be396c4d8ba90ab1c4e584b
         m_StreamableAssetPath: APVStreamingAssets\9fbb0ee0ee3cc8446b811c0f28617644\cbf21a303be396c4d8ba90ab1c4e584b.bytes
@@ -861,10 +861,10 @@ MonoBehaviour:
       - offset: 0
         elementCount: 944
       - offset: 15104
-        elementCount: 675
-      - offset: 25904
+        elementCount: 676
+      - offset: 25920
         elementCount: 2560
-      - offset: 66864
+      - offset: 66880
         elementCount: 3537
     m_Asset: {fileID: 4900000, guid: b65aba9310e20eb4286ce44539c84941, type: 3}
   cellSupportDataAsset:
@@ -918,7 +918,7 @@ MonoBehaviour:
   supportDataChunkSize: 262144
   lightingScenario: Sealed
   version: 2
-  freezePlacement: 1
+  freezePlacement: 0
   probeOffset: {x: 0, y: 0, z: 0}
   simplificationLevels: 4
   minDistanceBetweenProbes: 1

@@ -25,10 +25,24 @@ Shader "SpiderRig/ENV_Lit"
         // Режим маски (_MASKMAP_SEPARATE): упакованная одна карта или три раздельные —
         // см. спек .scratch/env-lit-shader/spec.md, "Два режима карт — оба финальные".
         [ToggleUI] _MaskMapSeparate("Separate Metallic/AO/Smoothness Maps", Float) = 0.0
-        [NoScaleOffset] _MaskMap("Mask Map (R:Metallic G:AO B:_ A:Smoothness)", 2D) = "white" {}
+
+        // Пространство проекции — режим материала, общий для градиента по высоте и для
+        // будущих слоёв наноса/узора (см. .scratch/env-lit-layers/spec.md). World даёт
+        // непрерывность через стыки модулей (четыре плиты пола — одна поверхность),
+        // Local прибивает эффект к мешу и терпит перемещение объекта (башня из повторяющихся
+        // этажей). Один переключатель на материал — не три вырожденных случая.
+        [Enum(Local, 0, World, 1)] _ProjectionSpace("Projection Space", Float) = 0.0
+        // Проекция текстур границы — узора и маски-мазка. Отдельно от _ProjectionSpace:
+        // та выбирает мировые или объектные координаты, эта — планарную развёртку или
+        // собственную UV меша. Planar непрерывен через стыки модулей, но «развёрнут» только
+        // сверху и тянется полосами на вертикалях; UV работает на любой ориентации, но
+        // повторяется на каждом экземпляре модуля. См. GetPatternUV в ENV_LitInput.hlsl.
+        [Enum(Planar XZ, 0, Mesh UV, 1)] _PatternProjection("Pattern / Mask Projection", Float) = 0.0
+        [NoScaleOffset] _MaskMap("Mask Map (R:Metallic G:AO B:Height A:Smoothness)", 2D) = "white" {}
         [NoScaleOffset] _MetallicMap("Metallic", 2D) = "white" {}
         [NoScaleOffset] _OcclusionMap("Occlusion", 2D) = "white" {}
         [NoScaleOffset] _SmoothnessMap("Smoothness", 2D) = "white" {}
+        [NoScaleOffset] _HeightMap("Height", 2D) = "white" {}
         // Дефолты консервативные, а не «прозрачный множитель»: слоты карт по умолчанию
         // "white", поэтому скаляр 1.0 дал бы материалу без единой текстуры metallic = 1
         // и smoothness = 1, то есть зеркало. Те же числа, что у стокового URP Lit.
@@ -57,10 +71,9 @@ Shader "SpiderRig/ENV_Lit"
         _Contrast("Contrast", Range(0.0, 2.0)) = 1.0
         _Brightness("Brightness", Range(-0.5, 0.5)) = 0.0
 
-        // Градиент по высоте (_HEIGHT_GRADIENT) — lerp к цвету, не умножение; не едет
-        // в запечку, см. спек. Local — дефолт (башня из повторяющихся этажей).
+        // Градиент по высоте (_HEIGHT_GRADIENT) — lerp к цвету, не умножение. Пространство
+        // проекции — свойство материала _ProjectionSpace выше, не своё.
         [ToggleUI] _HeightGradient("Height Gradient", Float) = 0.0
-        [Enum(Local, 0, World, 1)] _GradientSpace("Space", Float) = 0.0
         // Границы градиента ползунками, а не полями ввода: их крутят на глаз, а не набирают
         // числом. Диапазон ±10 взят под Local — пространство по умолчанию, где высота
         // отсчитывается от опорной точки чанка или пропса и в эти пределы укладывается.
@@ -71,6 +84,83 @@ Shader "SpiderRig/ENV_Lit"
         _GradientColor01("Color 01", Color) = (1,1,1,1)
         _GradientColor02("Color 02", Color) = (1,1,1,1)
         _GradientStrength("Strength", Range(0.0, 1.0)) = 0.0
+
+        // Слой наноса (_OVERLAY_LAYER_0) — снег/пыль/грязь поверх основного материала.
+        // Индекс 0 в именах свойств с самого начала: второй слой заложен именованием,
+        // не реализуется (.scratch/env-lit-layers/spec.md, "Один слой, второй заложен
+        // именованием"). Маска считается по нормали ПОСЛЕ карты нормалей и по высоте
+        // микрорельефа — см. ComputeOverlayMask0 в ENV_LitInput.hlsl. Пространство проекции —
+        // общее свойство материала _ProjectionSpace выше, не своё.
+        [ToggleUI] _OverlayLayer0("Overlay Layer", Float) = 0.0
+        _OverlayMap0("Overlay Albedo", 2D) = "white" {}
+        // Дефолт — sRGB 235, потолок дисциплины альбедо (§8), не единица: белый снег
+        // это верхняя граница диапазона, а не выход за него.
+        _OverlayColor0("Overlay Color", Color) = (0.921, 0.921, 0.921, 1)
+        [Normal] _OverlayNormalMap0("Overlay Normal", 2D) = "bump" {}
+        _OverlayNormalScale0("Overlay Normal Scale", Range(0.0, 4.0)) = 1.0
+        _OverlayTiling0("Overlay Tiling", Float) = 1.0
+        _OverlayMetallic0("Overlay Metallic", Range(0.0, 1.0)) = 0.0
+        _OverlaySmoothness0("Overlay Smoothness", Range(0.0, 1.0)) = 0.2
+        // 0 — слоя не видно нигде: закрывает самый вероятный отказ тикета (материал
+        // без единой карты не должен менять вид при включении наноса).
+        _OverlayCoverage0("Coverage", Range(0.0, 1.0)) = 0.0
+        _OverlayEdgeSoftness0("Edge Softness", Range(0.0, 1.0)) = 0.1
+        // 0 — слой ложится ровной плёнкой, без микрорельефа.
+        _OverlayHeightDepth0("Height Depth", Range(0.0, 1.0)) = 0.0
+
+        // Художественный узор (_PATTERN) — форма границы слоя наноса берётся из текстуры,
+        // а не из математики. Один узор на материал, общий с будущим смешиванием материалов
+        // (04) — .scratch/env-lit-layers/issues/03-pattern.md. Множится на источник маски
+        // ДО порога, не добавляется к готовой маске — см. SamplePatternMultiplier
+        // в ENV_LitInput.hlsl.
+        [ToggleUI] _Pattern("Pattern", Float) = 0.0
+        [NoScaleOffset] _PatternMap("Pattern (три рисунка в RGB)", 2D) = "white" {}
+        [Enum(R, 0, G, 1, B, 2)] _PatternChannel("Pattern Channel", Float) = 0.0
+        _PatternTiling("Pattern Tiling", Float) = 1.0
+        // Узор только УБАВЛЯЕТ покрытие (source *= множитель ≤ 1). 0 — гладкая аналитическая
+        // граница слоя наноса, как до этого тикета. Поднимая силу, компенсируй Coverage выше.
+        _PatternStrength("Pattern Strength", Range(0.0, 1.0)) = 0.0
+
+        // Смешивание материалов мазком (_MATERIAL_MIX) — второй и третий материал по весу
+        // из вершинного цвета или маски-текстуры (.scratch/env-lit-layers/issues/
+        // 04-material-blending.md). Граница мазка рвётся тем же узором, что и нанос.
+        //
+        // Префикс _Mix, а не _Blend: _Blend, _SrcBlend, _DstBlend и _BlendModePreserveSpecular
+        // ниже — имена URP, занятые блендстейтом, и пятое _Blend* рядом с ними читалось бы
+        // как ещё одна настройка прозрачности. Индексы 1 и 2, ноль остаётся за наносом.
+        [ToggleUI] _MaterialMix("Material Blending", Float) = 0.0
+        [ToggleUI] _MaterialMixTwo("Second Blend Layer", Float) = 0.0
+        [ToggleUI] _MixMaskFromTexture("Mask From Texture", Float) = 0.0
+        // Дефолт "black", единственный такой слот в шейдере, и это не описка: пустая маска
+        // обязана давать вес 0, то есть чистый объект. Белый дефолт утопил бы объект
+        // во втором материале целиком при включении текстурного источника — самый вероятный
+        // отказ этого тикета.
+        [NoScaleOffset] _MixMaskMap("Blend Mask (G: слой 1, B: слой 2)", 2D) = "black" {}
+        _MixMaskTiling("Mask Tiling", Float) = 1.0
+        // Один ползунок на оба слоя: края обоих мазков должны рваться согласованно.
+        _MixEdgeSoftness("Blend Edge Softness", Range(0.0, 1.0)) = 0.1
+        // 0 — мазка нет вовсе, и это обязательный дефолт: меш без вершинных цветов отдаёт
+        // в шейдер белый, то есть вес 1, и без этой ручки включение галочки утопило бы
+        // непокрашенный объект во втором материале целиком. Потолок 2, чтобы полутона
+        // чёрно-белой маски дотягивались до полного покрытия без проблесков базы.
+        _MixCoverage("Blend Coverage", Range(0.0, 2.0)) = 0.0
+
+        _MixMap1("Layer 1 Albedo", 2D) = "white" {}
+        // Как у наноса — sRGB 235, потолок дисциплины альбедо (§8), не белый.
+        _MixColor1("Layer 1 Color", Color) = (0.921, 0.921, 0.921, 1)
+        [Normal] _MixNormalMap1("Layer 1 Normal", 2D) = "bump" {}
+        _MixNormalScale1("Layer 1 Normal Scale", Range(0.0, 4.0)) = 1.0
+        _MixTiling1("Layer 1 Tiling", Float) = 1.0
+        _MixMetallic1("Layer 1 Metallic", Range(0.0, 1.0)) = 0.0
+        _MixSmoothness1("Layer 1 Smoothness", Range(0.0, 1.0)) = 0.5
+
+        _MixMap2("Layer 2 Albedo", 2D) = "white" {}
+        _MixColor2("Layer 2 Color", Color) = (0.921, 0.921, 0.921, 1)
+        [Normal] _MixNormalMap2("Layer 2 Normal", 2D) = "bump" {}
+        _MixNormalScale2("Layer 2 Normal Scale", Range(0.0, 4.0)) = 1.0
+        _MixTiling2("Layer 2 Tiling", Float) = 1.0
+        _MixMetallic2("Layer 2 Metallic", Range(0.0, 1.0)) = 0.0
+        _MixSmoothness2("Layer 2 Smoothness", Range(0.0, 1.0)) = 0.5
 
         // Blending state — унаследовано от URP Lit один в один, переключатель Surface Type
         // достаётся бесплатно (§6 "База": прозрачность есть в базе).
@@ -132,7 +222,17 @@ Shader "SpiderRig/ENV_Lit"
             #pragma shader_feature_local_fragment _MASKMAP_SEPARATE
             #pragma shader_feature_local_fragment _ALBEDO_ADJUST
             #pragma shader_feature_local_fragment _HEIGHT_GRADIENT
-            #pragma shader_feature_local_fragment _GRADIENTSPACE_WORLD
+            #pragma shader_feature_local_fragment _PROJECTIONSPACE_WORLD
+            #pragma shader_feature_local_fragment _OVERLAY_LAYER_0
+            #pragma shader_feature_local_fragment _PATTERN
+            #pragma shader_feature_local_fragment _PATTERNSPACE_UV
+            // Смешивание материалов (04). Суффикс _fragment верен для всех трёх: вершинный
+            // цвет и positionPS приезжают безусловно, кейворды гейтят только фрагмент.
+            // _MATERIAL_MIX_2 инспектор ставит только вместе с _MATERIAL_MIX — комбинации
+            // «второй слой без первого» не существует, вариантов три, а не четыре.
+            #pragma shader_feature_local_fragment _MATERIAL_MIX
+            #pragma shader_feature_local_fragment _MATERIAL_MIX_2
+            #pragma shader_feature_local_fragment _MIX_MASK_TEXTURE
 
             // -------------------------------------
             // Universal Pipeline keywords
@@ -265,7 +365,11 @@ Shader "SpiderRig/ENV_Lit"
             ENDHLSL
         }
 
-        // Не участвует в обычном рендере — только запечка лайтмап/APV.
+        // Не участвует в обычном рендере — только запечка лайтмап/APV. Свой форк
+        // (ENV_LitMetaPass.hlsl), не пакетный LitMetaPass.hlsl — см. .scratch/env-lit-layers/
+        // issues/01-projection-space-and-meta-pass.md. Причина форка: стоковый мета-пасс
+        // несёт во фрагмент только positionCS и uv, а градиент по высоте (и будущие нанос
+        // и узор) нуждаются в позиции — она есть на входе вершинника, просто не проброшена.
         Pass
         {
             Name "Meta"
@@ -276,17 +380,30 @@ Shader "SpiderRig/ENV_Lit"
             HLSLPROGRAM
             #pragma target 2.0
 
-            #pragma vertex UniversalVertexMeta
-            #pragma fragment UniversalFragmentMetaLit
+            #pragma vertex ENV_LitMetaVertex
+            #pragma fragment ENV_LitMetaFragment
 
+            // _NORMALMAP и _PROJECTIONSPACE_WORLD без _fragment: оба гейтят работу вершинника
+            // (тангент — первый, резолв пространства — второй), а не только фрагмента.
+            #pragma shader_feature_local _NORMALMAP
+            #pragma shader_feature_local _PROJECTIONSPACE_WORLD
             #pragma shader_feature_local_fragment _EMISSION
             #pragma shader_feature_local_fragment _ALPHATEST_ON
             #pragma shader_feature_local_fragment _MASKMAP_SEPARATE
             #pragma shader_feature_local_fragment _ALBEDO_ADJUST
+            #pragma shader_feature_local_fragment _HEIGHT_GRADIENT
+            #pragma shader_feature_local_fragment _OVERLAY_LAYER_0
+            #pragma shader_feature_local_fragment _PATTERN
+            #pragma shader_feature_local_fragment _PATTERNSPACE_UV
+            // Мазок обязан попасть в запечку — прямой критерий тикета 04, и мета-пасс
+            // для того и форкался в 01.
+            #pragma shader_feature_local_fragment _MATERIAL_MIX
+            #pragma shader_feature_local_fragment _MATERIAL_MIX_2
+            #pragma shader_feature_local_fragment _MIX_MASK_TEXTURE
             #pragma shader_feature EDITOR_VISUALIZATION
 
             #include "ENV_LitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitMetaPass.hlsl"
+            #include "ENV_LitMetaPass.hlsl"
             ENDHLSL
         }
     }
