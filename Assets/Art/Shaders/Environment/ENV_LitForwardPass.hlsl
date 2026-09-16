@@ -43,7 +43,7 @@ struct Attributes
     float2 dynamicLightmapUV  : TEXCOORD2;
     // ENV_Lit: сток вообще не читает vertex color. Потребитель — смешивание материалов
     // мазком (04): G несёт вес первого подмешиваемого слоя, B — второго, R и A
-    // зарезервированы и не читаются. См. SampleMixWeights в ENV_LitInput.hlsl.
+    // зарезервированы и не читаются. См. SampleMixCoverage в ENV_LitInput.hlsl.
     float4 color        : COLOR;
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
@@ -275,18 +275,10 @@ void LitPassFragment(
     float3 positionPS = GetProjectionPosition(input.positionWS, TransformWorldToObject(input.positionWS));
     surfaceData.albedo = ApplyHeightGradient(surfaceData.albedo, positionPS.y, surfaceData.alpha);
 
-    // ENV_Lit: узор (03) — одна выборка на материал, два потребителя: слой наноса ниже
-    // и смешивание материалов (04). Гейт ENV_NEEDS_PATTERN объявлен в ENV_LitInput.hlsl
-    // и включает оба; при выключенном узоре функция возвращает нейтральную единицу.
-#if defined(ENV_NEEDS_PATTERN)
-    half patternMultiplier = SamplePatternMultiplier(input.uv, positionPS);
-#else
-    half patternMultiplier = half(1.0);
-#endif
-
-    // ENV_Lit: смешивание материалов мазком (04) — ДО слоя наноса. Снег ложится на то, что
-    // под ним уже сложилось, а маска наноса ниже считается по уже смешанной normalTS.
-    ApplyMaterialMix(input.uv, positionPS, input.vertexColor, patternMultiplier,
+    // ENV_Lit: смешивание материалов мазком (04, 06) — ДО слоя наноса. Снег ложится на то,
+    // что под ним уже сложилось, а маска наноса ниже считается по уже смешанной normalTS.
+    // Узор смешивания (06) сэмплируется внутри ApplyMaterialMix своим блоком настроек.
+    ApplyMaterialMix(input.uv, positionPS, input.normalWS, input.vertexColor,
                      surfaceData.alpha, surfaceData);
 
 #if defined(_OVERLAY_LAYER_0)
@@ -298,7 +290,8 @@ void LitPassFragment(
 #else
     half3 overlayBaseNormalWS = NormalizeNormalPerPixel(input.normalWS);
 #endif
-    half overlayMask = ComputeOverlayMask0(input.uv, overlayBaseNormalWS, patternMultiplier);
+    // ENV_Lit: узор наноса (06) сэмплируется внутри ComputeOverlayMask0 своим блоком настроек.
+    half overlayMask = ComputeOverlayMask0(input.uv, positionPS, overlayBaseNormalWS);
     ApplyOverlayLayer0(positionPS, overlayMask, surfaceData.alpha, surfaceData);
 #endif
 

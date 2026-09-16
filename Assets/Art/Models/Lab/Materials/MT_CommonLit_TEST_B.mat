@@ -27,10 +27,12 @@ Material:
   m_ValidKeywords:
   - _MASKMAP_SEPARATE
   - _MATERIAL_MIX
+  - _MATERIAL_MIX_2
   - _NORMALMAP
+  - _OVERLAY_LAYER_0
   - _PATTERN
+  m_InvalidKeywords:
   - _PATTERNSPACE_UV
-  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -98,6 +100,22 @@ Material:
         m_Texture: {fileID: 2800000, guid: 27248a215d4e5fe449733cb0631f0785, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MixMaskMap1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixMaskMap2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixMetallicMap1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixMetallicMap2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MixNormalMap1:
         m_Texture: {fileID: 2800000, guid: 6246e3fe4a63c1f4f9acec9623576fc7, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -106,15 +124,51 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MixOcclusionMap1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixOcclusionMap2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixSmoothnessMap1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixSmoothnessMap2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 2800000, guid: 0eebdcfc933de824ba2b37ac577f021a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OverlayHeightMap0:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OverlayMap0:
         m_Texture: {fileID: 2800000, guid: 7dd391639aa29ed45a73e9a214f4872c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _OverlayMaskMap0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OverlayMetallicMap0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OverlayNormalMap0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OverlayOcclusionMap0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OverlaySmoothnessMap0:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -174,20 +228,39 @@ Material:
     - _GradientSpace: 0
     - _GradientStrength: 1
     - _HeightGradient: 0
+    - _HeightStrength: 1
     - _HueShift: 0
     - _InvertNormalG: 0
     - _MaskMapSeparate: 1
     - _MaterialMix: 1
-    - _MaterialMixTwo: 0
+    - _MaterialMixTwo: 1
     - _Metallic: 1
     - _MixCoverage: 0.743
+    - _MixCoverage1: 0
+    - _MixCoverage2: 0
     - _MixEdgeSoftness: 0.033
+    - _MixEdgeSoftness1: 0.1
+    - _MixEdgeSoftness2: 0.1
     - _MixMaskFromTexture: 0
+    - _MixMaskFromTexture1: 0
+    - _MixMaskFromTexture2: 0
     - _MixMaskTiling: 1
     - _MixMetallic1: 0
     - _MixMetallic2: 0
     - _MixNormalScale1: 1.43
     - _MixNormalScale2: 1.04
+    - _MixOcclusionStrength1: 1
+    - _MixOcclusionStrength2: 1
+    - _MixPatternBias1: 0.5
+    - _MixPatternBias2: 0.5
+    - _MixPatternChannel1: 1
+    - _MixPatternChannel2: 2
+    - _MixPatternRotation1: 0
+    - _MixPatternRotation2: 0
+    - _MixPatternSpace1: 0
+    - _MixPatternSpace2: 0
+    - _MixPatternStrength1: 0
+    - _MixPatternStrength2: 0
     - _MixSmoothness1: 0.367
     - _MixSmoothness2: 0.5
     - _MixTiling1: 1
@@ -196,16 +269,23 @@ Material:
     - _OverlayCoverage0: 0.75
     - _OverlayEdgeSoftness0: 0
     - _OverlayHeightDepth0: 0
-    - _OverlayLayer0: 0
+    - _OverlayHeightStrength0: 0
+    - _OverlayLayer0: 1
     - _OverlayMetallic0: 0
     - _OverlayNormalScale0: 0
+    - _OverlayOcclusionStrength0: 1
     - _OverlaySmoothness0: 0
     - _OverlayTiling0: 1
     - _Parallax: 0.005
     - _Pattern: 1
+    - _PatternBias0: 0.5
     - _PatternChannel: 0
+    - _PatternChannel0: 0
     - _PatternProjection: 1
+    - _PatternRotation0: 0
+    - _PatternSpace0: 0
     - _PatternStrength: 0.864
+    - _PatternStrength0: 0
     - _PatternTiling: 1
     - _ProjectionSpace: 0
     - _QueueOffset: 6
@@ -228,7 +308,10 @@ Material:
     - _GradientColor02: {r: 1, g: 1, b: 1, a: 0}
     - _MixColor1: {r: 1, g: 0, b: 0, a: 1}
     - _MixColor2: {r: 1, g: 0.59695065, b: 0, a: 1}
+    - _MixPatternTiling1: {r: 1, g: 1, b: 0, a: 0}
+    - _MixPatternTiling2: {r: 1, g: 1, b: 0, a: 0}
     - _OverlayColor0: {r: 1, g: 1, b: 1, a: 1}
+    - _PatternTiling0: {r: 1, g: 1, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

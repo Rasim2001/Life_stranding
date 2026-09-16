@@ -28,7 +28,7 @@ struct Attributes
     float2 uv1          : TEXCOORD1;
     float2 uv2          : TEXCOORD2;
     // ENV_Lit: вертекс-цвет — вес мазка смешивания (04). G — первый подмешиваемый слой,
-    // B — второй, R и A зарезервированы. См. SampleMixWeights в ENV_LitInput.hlsl.
+    // B — второй, R и A зарезервированы. См. SampleMixCoverage в ENV_LitInput.hlsl.
     float4 color        : COLOR;
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
@@ -102,17 +102,12 @@ half4 ENV_LitMetaFragment(Varyings input) : SV_Target
     // ENV_Lit: та же точка входа, что и в ForwardLit — оба пасса считают эффект одинаково.
     surfaceData.albedo = ApplyHeightGradient(surfaceData.albedo, input.positionPS.y, surfaceData.alpha);
 
-    // ENV_Lit: та же выборка узора и тот же вызов мазка, что и в ForwardLit — оба пасса
-    // считают поверхность одной парой функций, иначе площадь эффекта в кадре и в запечке
-    // разойдётся. Нормаль здесь не собирается: UnityMetaFragment её не читает, но normalTS
-    // мазок всё равно правит — её читает маска наноса ниже.
-#if defined(ENV_NEEDS_PATTERN)
-    half patternMultiplier = SamplePatternMultiplier(input.uv, input.positionPS);
-#else
-    half patternMultiplier = half(1.0);
-#endif
-
-    ApplyMaterialMix(input.uv, input.positionPS, input.vertexColor, patternMultiplier,
+    // ENV_Lit: те же ApplyMaterialMix/ComputeOverlayMask0, что и в ForwardLit — оба пасса
+    // считают поверхность одной парой функций (каждая сама сэмплирует свой блок узора,
+    // тикет 06), иначе площадь эффекта в кадре и в запечке разойдётся. Нормаль здесь
+    // не собирается: UnityMetaFragment её не читает, но normalTS мазок всё равно правит —
+    // её читает маска наноса ниже.
+    ApplyMaterialMix(input.uv, input.positionPS, input.normalWS, input.vertexColor,
                      surfaceData.alpha, surfaceData);
 
 #if defined(_OVERLAY_LAYER_0)
@@ -124,7 +119,7 @@ half4 ENV_LitMetaFragment(Varyings input) : SV_Target
 #else
     half3 overlayBaseNormalWS = normalize(input.normalWS);
 #endif
-    half overlayMask = ComputeOverlayMask0(input.uv, overlayBaseNormalWS, patternMultiplier);
+    half overlayMask = ComputeOverlayMask0(input.uv, input.positionPS, overlayBaseNormalWS);
     ApplyOverlayLayer0(input.positionPS, overlayMask, surfaceData.alpha, surfaceData);
 #endif
 

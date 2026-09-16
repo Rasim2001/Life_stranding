@@ -5,13 +5,11 @@ using UnityEngine;
 namespace SpiderRig.Editor.Shaders
 {
     // Валидатор импорта текстур ENV_Lit. Едет тем же куском, что и остальной инспектор —
-    // см. спек .scratch/env-lit-shader/spec.md, "Валидатор": он единственное, что делает
-    // диагностическую ручку _SmoothnessIsRoughness законной, а не тихим
-    // костылём. Детерминированное (sRGB, тип Normal Map, формат сжатия) — с кнопкой
-    // «Исправить». DirectX/OpenGL и roughness/smoothness автоматического вердикта не имеют
-    // и здесь не проверяются вовсе: спек предлагал показывать среднюю яркость канала
-    // числом, но владелец отказался от неё как от памятки — решение по этим двум вопросам
-    // принимается глазами по объекту, а не по цифре в инспекторе.
+    // см. спек .scratch/env-lit-shader/spec.md, "Валидатор". Детерминированное (sRGB, тип
+    // Normal Map, формат сжатия, Wrap Mode) — с кнопкой «Исправить». DirectX/OpenGL и
+    // roughness/smoothness автоматического вердикта не имеют и здесь не проверяются вовсе:
+    // конвенция канала гладкости — ответственность художника за файл (тикет 07, грилл
+    // 15.09.2026), решение принимается по объекту глазами, а не по цифре в инспекторе.
     internal static class ENV_LitTextureValidator
     {
         // "Standalone" — реальный оверрайд платформы (та же вкладка, что «PC, Mac & Linux
@@ -95,13 +93,30 @@ namespace SpiderRig.Editor.Shaders
             return string.Empty;
         }
 
-        // Диагностическая инверсия включена — не автоматический вердикт, а напоминание
-        // проверить источник. См. спек: "источник неверный, поправь файл и сними галочку".
-        public static void DrawInversionWarning(MaterialProperty prop, string message)
+        // Wrap Mode карты шума (тикет 06): трипланарная проекция сэмплирует до трёх плоскостей
+        // у краёв объекта, и Clamp там растягивает крайний тексель в полосу — артефакт,
+        // который на глаз читается как сломанная проекция, а не как настройка импорта.
+        // С кнопкой «Исправить», как и у остальных проверок этого файла.
+        public static void DrawWrapModeCheck(Texture texture, TextureWrapMode expected, string message)
         {
-            if (prop == null || prop.floatValue <= 0.5f) return;
-            EditorGUILayout.HelpBox(message, MessageType.Warning);
-        }
+            if (texture == null) return;
 
+            string path = AssetDatabase.GetAssetPath(texture);
+            if (string.IsNullOrEmpty(path)) return;
+
+            var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (importer == null) return;
+
+            if (importer.wrapMode == expected) return;
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.HelpBox(message, MessageType.Warning);
+            if (GUILayout.Button("Исправить", GUILayout.Width(80), GUILayout.Height(38)))
+            {
+                importer.wrapMode = expected;
+                importer.SaveAndReimport();
+            }
+            EditorGUILayout.EndHorizontal();
+        }
     }
 }

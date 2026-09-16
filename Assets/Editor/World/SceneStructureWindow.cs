@@ -374,27 +374,30 @@ namespace Editor.World
                 MixUsesProjection(material);
         }
 
-        // Мазок смешивания (04) читает пространство проекции только через GetPatternUV,
-        // то есть при планарной проекции И при включённом хотя бы одном её потребителе:
-        // узоре (_Pattern) или текстурной маске мазка (_MixMaskFromTexture). В вершинном
-        // режиме без узора мазок к координатам не обращается, и склейка ему безразлична.
-        //
-        // Узор без мазка и без наноса сюда не попадает намеренно: выборка узора стоит
-        // под ENV_NEEDS_PATTERN (_OVERLAY_LAYER_0 либо _MATERIAL_MIX), и без обоих
-        // потребителей SamplePatternMultiplier не зовётся вовсе.
+        // Смешивание читает пространство проекции только при включённом RGB Noise.
+        // У каждого слоя свой режим: Mesh UV к пространству не обращается, Planar XZ
+        // и Triplanar обращаются. Второй слой участвует только когда он включён.
         private static bool MixUsesProjection(Material material)
         {
-            if (!IsToggleOn(material, "_MaterialMix"))
+            if (!IsToggleOn(material, "_MaterialMix") || !IsToggleOn(material, "_Pattern"))
                 return false;
 
-            // Planar XZ — ноль, Mesh UV — единица. Отсутствие свойства трактуем как планар:
-            // это дефолт шейдера, и молчать на старой ревизии материала опаснее, чем шуметь.
-            if (material.HasProperty("_PatternProjection") &&
-                material.GetFloat("_PatternProjection") >= 0.5f)
-                return false;
+            if (UsesProjectionSpace(material, "_MixPatternSpace1"))
+                return true;
 
-            return IsToggleOn(material, "_Pattern") ||
-                IsToggleOn(material, "_MixMaskFromTexture");
+            return IsToggleOn(material, "_MaterialMixTwo") &&
+                UsesProjectionSpace(material, "_MixPatternSpace2");
+        }
+
+        private static bool UsesProjectionSpace(Material material, string projectionProperty)
+        {
+            // Отсутствующее свойство старого материала трактуется как Planar XZ —
+            // это дефолт шейдера. Только Mesh UV (значение 1) не использует пространство.
+            if (!material.HasProperty(projectionProperty))
+                return true;
+
+            float value = material.GetFloat(projectionProperty);
+            return value < 0.5f || value > 1.5f;
         }
 
         private static bool IsToggleOn(Material material, string property)
