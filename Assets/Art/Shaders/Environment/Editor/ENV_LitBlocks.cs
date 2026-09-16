@@ -41,8 +41,12 @@ namespace SpiderRig.Editor.Shaders
         // вписывалась в квадрат.
         private const float ResetButtonWidth = 18f;
         private const float ResetButtonGap = 2f;
+        private const float InlineTextureGap = 8f;
+        private const float InlineAlbedoMinViewWidth = 430f;
+        private const float AlbedoTileOffsetIndent = 48f;
 
         private static GUIStyle boxStyle;
+        private static GUIStyle mutedMiniLabelStyle;
 
         // Один эталонный материал на шейдер — источник дефолтов для кнопки сброса.
         // Не Shader.GetPropertyDefaultFloatValue/DefaultVectorValue: то API отдаёт число
@@ -85,6 +89,11 @@ namespace SpiderRig.Editor.Shaders
             boxStyle = new GUIStyle(EditorStyles.helpBox);
             boxStyle.margin = new RectOffset(0, 0, 2, 2);
             boxStyle.padding = new RectOffset(8, 8, 6, 6);
+
+            mutedMiniLabelStyle = new GUIStyle(EditorStyles.miniLabel)
+            {
+                wordWrap = true
+            };
         }
 
         // Светлый прямоугольник вокруг группы. Парный EndBox обязателен.
@@ -110,6 +119,12 @@ namespace SpiderRig.Editor.Shaders
                 : new Color(0f, 0f, 0f, 0.20f);
             EditorGUI.DrawRect(line, color);
             GUILayout.Space(SeparatorPadding);
+        }
+
+        public static void MutedMiniLabel(string text)
+        {
+            EnsureStyles();
+            GUILayout.Label(new GUIContent(text), mutedMiniLabelStyle);
         }
 
         // Галка слева, имя блока справа — без рамки и без треугольника. Возвращает,
@@ -172,7 +187,7 @@ namespace SpiderRig.Editor.Shaders
             float height = materialEditor.GetPropertyHeight(prop, label.text);
             Rect line = EditorGUILayout.GetControlRect(false, height);
 
-            var propRect = new Rect(line.x, line.y, line.width - ResetButtonWidth - ResetButtonGap, height);
+            var propRect = new Rect(line.x, line.y, line.width - ResetButtonWidth - ResetButtonGap, line.height);
             var buttonRect = new Rect(propRect.xMax + ResetButtonGap, line.y,
                 ResetButtonWidth, EditorGUIUtility.singleLineHeight);
 
@@ -220,7 +235,52 @@ namespace SpiderRig.Editor.Shaders
             float height = materialEditor.GetPropertyHeight(prop, label);
             Rect line = EditorGUILayout.GetControlRect(false, height);
 
-            var propRect = new Rect(line.x, line.y, line.width - ResetButtonWidth - ResetButtonGap, height);
+            DrawTextureSlot(materialEditor, prop, label, scaleOffset, line);
+        }
+
+        // Общий Albedo-контрол для Base/Top/Mix: цвет отдельной строкой, затем большой
+        // слот. На широкой панели Scale/Offset занимает пустую область слева от превью;
+        // на узкой переезжает под слот. Рисуют значения по-прежнему штатные методы
+        // MaterialEditor, поэтому Material Variants, mixed values и Undo не обходятся.
+        public static void Albedo(MaterialEditor materialEditor,
+            MaterialProperty mapProp, MaterialProperty colorProp,
+            GUIContent mapLabel, GUIContent colorLabel)
+        {
+            Property(materialEditor, colorProp, colorLabel);
+
+            // В Layout GetControlRect может вернуть служебный Rect шириной 1 px, тогда как
+            // в Repaint тот же вызов уже возвращает фактическую ширину. Нельзя выбирать по
+            // нему ветку с другим числом EditorGUILayout-вызовов: следующие контролы получат
+            // чужие Rect. currentViewWidth стабилен в пределах IMGUI-прохода и поэтому задаёт
+            // один и тот же режим раскладки для Layout и Repaint.
+            bool drawTileOffsetInline = EditorGUIUtility.currentViewWidth >= InlineAlbedoMinViewWidth;
+            float textureHeight = materialEditor.GetPropertyHeight(mapProp, mapLabel.text);
+            Rect textureLine = EditorGUILayout.GetControlRect(false, textureHeight);
+            DrawTextureSlot(materialEditor, mapProp, mapLabel.text, false, textureLine);
+
+            if (drawTileOffsetInline)
+            {
+                float tileOffsetWidth = textureLine.width
+                    - ResetButtonWidth - ResetButtonGap
+                    - textureHeight - InlineTextureGap;
+                float rowHeight = EditorGUIUtility.singleLineHeight;
+                float tileOffsetHeight = rowHeight * 2f + EditorGUIUtility.standardVerticalSpacing;
+                var tileOffsetRect = new Rect(textureLine.x + AlbedoTileOffsetIndent,
+                    textureLine.y + rowHeight + EditorGUIUtility.standardVerticalSpacing,
+                    tileOffsetWidth - AlbedoTileOffsetIndent, tileOffsetHeight);
+                DrawTileOffset(materialEditor, mapProp, tileOffsetRect);
+            }
+            else
+            {
+                TileOffset(materialEditor, mapProp, AlbedoTileOffsetIndent);
+            }
+        }
+
+        private static void DrawTextureSlot(MaterialEditor materialEditor, MaterialProperty prop,
+            string label, bool scaleOffset, Rect line)
+        {
+            var propRect = new Rect(line.x, line.y,
+                line.width - ResetButtonWidth - ResetButtonGap, line.height);
             var buttonRect = new Rect(propRect.xMax + ResetButtonGap, line.y,
                 ResetButtonWidth, EditorGUIUtility.singleLineHeight);
 
@@ -231,13 +291,24 @@ namespace SpiderRig.Editor.Shaders
         // Tiling + Offset одного _ST-свойства, каждая ось — своя кнопка сброса: Tiling (XY)
         // возвращает компоненты x/y, Offset (ZW) — z/w, вторая пара при этом не трогается
         // ни одной из кнопок.
-        public static void TileOffset(MaterialEditor materialEditor, MaterialProperty stProp)
+        public static void TileOffset(MaterialEditor materialEditor, MaterialProperty stProp,
+            float leftIndent = 0f)
         {
             if (stProp == null) return;
 
             float rowHeight = EditorGUIUtility.singleLineHeight;
             float totalHeight = rowHeight * 2f + EditorGUIUtility.standardVerticalSpacing;
             Rect line = EditorGUILayout.GetControlRect(false, totalHeight);
+            line.x += leftIndent;
+            line.width -= leftIndent;
+
+            DrawTileOffset(materialEditor, stProp, line);
+        }
+
+        private static void DrawTileOffset(MaterialEditor materialEditor, MaterialProperty stProp, Rect line)
+        {
+            float rowHeight = EditorGUIUtility.singleLineHeight;
+            float totalHeight = rowHeight * 2f + EditorGUIUtility.standardVerticalSpacing;
 
             var propRect = new Rect(line.x, line.y, line.width - ResetButtonWidth - ResetButtonGap, totalHeight);
             materialEditor.TextureScaleOffsetProperty(propRect, stProp);

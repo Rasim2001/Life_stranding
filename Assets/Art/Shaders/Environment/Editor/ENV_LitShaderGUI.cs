@@ -320,7 +320,7 @@ namespace SpiderRig.Editor.Shaders
         }
 
         // Комплект материальных карт одного слоя (тикет 07) — та же раскладка режима
-        // _MASKMAP_SEPARATE, что у базы (DrawMaskMapBlock). Своя Occlusion Strength у слоя
+        // _MASKMAP_SEPARATE, что у базы (DrawBaseMaterialMaps). Своя Occlusion Strength у слоя
         // (тикет 2-03, разворот решения тикета 07: владелец попросил повторить для слоёв
         // смешивания то же, что уже сделано у наноса). Общий метод на оба слоя смешивания —
         // слои обязаны вести себя одинаково, как и в HLSL (ENV_ApplyMixLayer/
@@ -399,7 +399,8 @@ namespace SpiderRig.Editor.Shaders
             string channelTooltip = maskMapSeparateProp.floatValue > 0.5f
                 ? "Действует на базу и на все слои сразу (нанос, оба слоя смешивания). Четыре отдельные карты, из каждой читается канал R: Metallic — R, Occlusion — R, Smoothness — R, Height — R. Формат BC4 (один канал)."
                 : "Действует на базу и на все слои сразу (нанос, оба слоя смешивания). Одна упакованная карта: R — Metallic, G — Occlusion, B — Height (микрорельеф под базой и под слоем наноса), A — Smoothness. Формат BC7.";
-            var maskModeLabel = new GUIContent(maskMapSeparateProp.displayName, channelTooltip);
+            var maskModeLabel = new GUIContent(
+                "Separate Metallic/AO/Height/Smoothness Maps", channelTooltip);
             materialEditor.ShaderProperty(maskMapSeparateProp, maskModeLabel);
 
             // Пространство проекции — режим материала, общий для градиента по высоте
@@ -414,17 +415,13 @@ namespace SpiderRig.Editor.Shaders
             materialEditor.ShaderProperty(projectionSpaceProp, projectionSpaceLabel);
         }
 
-        // Каждая карта — своя секция в светлом боксе. Разделитель остаётся только между
-        // Normal Map и Emission: это граница между картами, описывающими саму поверхность,
-        // и Emission, который к поверхности не привязан. Между остальными блоками разделитель
-        // убран — боксы сами по себе достаточно разделяют секции, вторая линия была лишней.
+        // Все карты базы живут в одном Material Maps. Разделители внутри бокса связывают
+        // карту с её силой и одновременно отделяют её от следующей карты.
         // Базовый DrawSurfaceInputs не зовём: он рисует альбедо через TexturePropertySingleLine,
         // то есть мелкой иконкой слева, и набор карт получался разнородным.
         public override void DrawSurfaceInputs(Material material)
         {
-            DrawAlbedoBlock();
-            DrawMaskMapBlock(material);
-            DrawNormalBlock();
+            DrawBaseMaterialMaps();
             ENV_LitBlocks.Separator();
 
             DrawEmissionBlock(material);
@@ -435,37 +432,71 @@ namespace SpiderRig.Editor.Shaders
             DrawMaterialBlendBlock();
         }
 
-        private void DrawAlbedoBlock()
+        private void DrawBaseMaterialMaps()
         {
-            ENV_LitBlocks.BeginBox();
+            bool separate = maskMapSeparateProp.floatValue > 0.5f;
 
-            ENV_LitBlocks.TextureSlot(materialEditor, baseMapProp, "Albedo", false);
+            ENV_LitBlocks.BeginBox();
+            EditorGUILayout.LabelField("Material Maps", EditorStyles.miniBoldLabel);
+
+            ENV_LitBlocks.Albedo(materialEditor, baseMapProp, baseColorProp,
+                new GUIContent("Albedo"), new GUIContent(baseColorProp.displayName));
             // sRGB для альбедо обязателен — выключенный отдаёт цвет как линейные данные
             // и материал едет с неверной яркостью. Формат не проверяем: у альбедо он зависит
             // от материала (BC1 без альфы, BC7 при cutout), однозначного ожидания нет.
             ENV_LitTextureValidator.DrawTextureCheck(baseMapProp.textureValue, true, false, null);
 
-            ENV_LitBlocks.Property(materialEditor, baseColorProp, baseColorProp.displayName);
-
             // Общий тайлинг PBR-набора (альбедо + маска + нормаль) — одно _BaseMap_ST,
             // без отдельных ручек на каждой карте. См. спек, "Не делаем: _ST на нормали и маске".
-            ENV_LitBlocks.TileOffset(materialEditor, baseMapProp);
+            ENV_LitBlocks.Separator();
+            if (separate)
+            {
+                ENV_LitBlocks.TextureSlot(materialEditor, metallicMapProp, "Metallic", false);
+                ENV_LitTextureValidator.DrawTextureCheck(metallicMapProp.textureValue, false, false, TextureImporterFormat.BC4);
+                ENV_LitBlocks.Property(materialEditor, metallicProp, "Metallic Strength");
+
+                ENV_LitBlocks.Separator();
+                ENV_LitBlocks.TextureSlot(materialEditor, smoothnessMapProp, "Smoothness", false);
+                ENV_LitTextureValidator.DrawTextureCheck(smoothnessMapProp.textureValue, false, false, TextureImporterFormat.BC4);
+                ENV_LitBlocks.Property(materialEditor, smoothnessProp, "Smoothness Strength");
+
+                ENV_LitBlocks.Separator();
+                ENV_LitBlocks.TextureSlot(materialEditor, occlusionMapProp, "Occlusion", false);
+                ENV_LitTextureValidator.DrawTextureCheck(occlusionMapProp.textureValue, false, false, TextureImporterFormat.BC4);
+                ENV_LitBlocks.Property(materialEditor, occlusionStrengthProp, "Occlusion Strength");
+
+                DrawBaseNormalSection();
+
+                ENV_LitBlocks.Separator();
+                ENV_LitBlocks.TextureSlot(materialEditor, heightMapProp, "Height", false);
+                ENV_LitTextureValidator.DrawTextureCheck(heightMapProp.textureValue, false, false, TextureImporterFormat.BC4);
+                ENV_LitBlocks.Property(materialEditor, heightStrengthProp, HeightStrengthLabel());
+            }
+            else
+            {
+                EditorGUILayout.LabelField("Packed Maps", EditorStyles.miniBoldLabel);
+                ENV_LitBlocks.MutedMiniLabel("R: Metallic · G: AO · B: Height · A: Smoothness");
+                ENV_LitBlocks.TextureSlot(materialEditor, maskMapProp, string.Empty, false);
+                ENV_LitTextureValidator.DrawTextureCheck(maskMapProp.textureValue, false, false, TextureImporterFormat.BC7);
+
+                ENV_LitBlocks.Property(materialEditor, metallicProp, "Metallic Strength");
+                ENV_LitBlocks.Property(materialEditor, smoothnessProp, "Smoothness Strength");
+                ENV_LitBlocks.Property(materialEditor, occlusionStrengthProp, "Occlusion Strength");
+                ENV_LitBlocks.Property(materialEditor, heightStrengthProp, HeightStrengthLabel());
+
+                DrawBaseNormalSection();
+            }
 
             ENV_LitBlocks.EndBox();
+            DrawAbandonedMaskReferencesWarning(separate);
         }
 
-        private void DrawNormalBlock()
+        private void DrawBaseNormalSection()
         {
-            ENV_LitBlocks.BeginBox();
-
+            ENV_LitBlocks.Separator();
             ENV_LitBlocks.TextureSlot(materialEditor, bumpMapProp, "Normal Map", false);
             ENV_LitTextureValidator.DrawTextureCheck(bumpMapProp.textureValue, false, true, TextureImporterFormat.BC5);
-
-            // Виден всегда, а не только при назначенной текстуре (спек, общее правило):
-            // пустой слот не даёт эффекта, и это ожидаемо, а не повод прятать ручку.
-            ENV_LitBlocks.Property(materialEditor, bumpScaleProp, bumpScaleProp.displayName);
-
-            ENV_LitBlocks.EndBox();
+            ENV_LitBlocks.Property(materialEditor, bumpScaleProp, "Normal Strength");
         }
 
         // Эмиссия собрана вручную, а не через BaseShaderGUI.DrawEmissionProperties: тот рисует
@@ -490,63 +521,6 @@ namespace SpiderRig.Editor.Shaders
             ENV_LitBlocks.EndBox();
         }
 
-        private void DrawMaskMapBlock(Material material)
-        {
-            bool separate = maskMapSeparateProp.floatValue > 0.5f;
-
-            if (separate)
-            {
-                // Каждая карта — своя секция: слот, валидация именно её, её скаляр. Раньше
-                // три слота и три проверки шли двумя группами, и одинаковые предупреждения
-                // подряд не давали понять, какую из карт чинить.
-                ENV_LitBlocks.BeginBox();
-                ENV_LitBlocks.TextureSlot(materialEditor, metallicMapProp, "Metallic", false);
-                ENV_LitTextureValidator.DrawTextureCheck(metallicMapProp.textureValue, false, false, TextureImporterFormat.BC4);
-                ENV_LitBlocks.Property(materialEditor, metallicProp, metallicProp.displayName);
-                ENV_LitBlocks.EndBox();
-
-                ENV_LitBlocks.BeginBox();
-                ENV_LitBlocks.TextureSlot(materialEditor, occlusionMapProp, "Occlusion", false);
-                ENV_LitTextureValidator.DrawTextureCheck(occlusionMapProp.textureValue, false, false, TextureImporterFormat.BC4);
-                ENV_LitBlocks.Property(materialEditor, occlusionStrengthProp, occlusionStrengthProp.displayName);
-                ENV_LitBlocks.EndBox();
-
-                ENV_LitBlocks.BeginBox();
-                ENV_LitBlocks.TextureSlot(materialEditor, smoothnessMapProp, "Smoothness", false);
-                ENV_LitTextureValidator.DrawTextureCheck(smoothnessMapProp.textureValue, false, false, TextureImporterFormat.BC4);
-                ENV_LitBlocks.Property(materialEditor, smoothnessProp, smoothnessProp.displayName);
-                ENV_LitBlocks.EndBox();
-
-                // Высота показывается всегда, а не только при включённом слое наноса —
-                // это тот самый процесс, ради которого существует раздельный режим: карты
-                // подключаются со стора и проверяются в движке ДО того, как решено, нужен
-                // ли нанос, а потом пакуются в Substance. Высота обязана себя вести
-                // как остальные три канала.
-                ENV_LitBlocks.BeginBox();
-                ENV_LitBlocks.TextureSlot(materialEditor, heightMapProp, "Height", false);
-                ENV_LitTextureValidator.DrawTextureCheck(heightMapProp.textureValue, false, false, TextureImporterFormat.BC4);
-                ENV_LitBlocks.Property(materialEditor, heightStrengthProp, HeightStrengthLabel());
-                ENV_LitBlocks.EndBox();
-            }
-            else
-            {
-                ENV_LitBlocks.BeginBox();
-                // Раскладка каналов больше не дублируется в подписи слота — она стоит
-                // у переключателя режима в Surface Options.
-                ENV_LitBlocks.TextureSlot(materialEditor, maskMapProp, "Mask Map", false);
-                ENV_LitTextureValidator.DrawTextureCheck(maskMapProp.textureValue, false, false, TextureImporterFormat.BC7);
-
-                // Одна карта на три канала — значит и три скаляра относятся к ней одной.
-                ENV_LitBlocks.Property(materialEditor, metallicProp, metallicProp.displayName);
-                ENV_LitBlocks.Property(materialEditor, occlusionStrengthProp, occlusionStrengthProp.displayName);
-                ENV_LitBlocks.Property(materialEditor, smoothnessProp, smoothnessProp.displayName);
-                ENV_LitBlocks.Property(materialEditor, heightStrengthProp, HeightStrengthLabel());
-                ENV_LitBlocks.EndBox();
-            }
-
-            DrawAbandonedMaskReferencesWarning(separate);
-        }
-
         // Общий тултип ручки силы бампа из высоты (тикет 02) — читается канал B упакованной
         // карты либо слот Height раздельного режима, 0 это плоско, рельеф требует включённой
         // карты нормалей (инспектор включает её сам при назначенной карте высоты).
@@ -554,7 +528,7 @@ namespace SpiderRig.Editor.Shaders
         {
             return new GUIContent("Height Strength",
                 "Рисует рельеф поверхности бампом из высоты, без смещения геометрии. Источник — " +
-                "канал B упакованной Mask Map либо слот Height раздельного режима. 0 — плоско. " +
+                "канал B Packed Maps либо слот Height раздельного режима. 0 — плоско. " +
                 "Требует включённой карты нормалей — инспектор включает её сам при назначенной " +
                 "карте высоты.");
         }
