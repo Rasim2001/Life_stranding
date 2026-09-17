@@ -21,39 +21,18 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: MT_Pipe_Ring_B
-  m_Shader: {fileID: 4800000, guid: 0dde7f0097aeb2541aea684ca0ad0e3c, type: 3}
+  m_Shader: {fileID: 4800000, guid: d0bd3ebd5f0986d45b8d24fb419154a4, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - _ALBEDOVERTEXCOLORMODE_REPLACE
-  - _ALPHA_CUTOFF_ON
-  - _CAST_SHADOWS_ON
-  - _COLORRAMPLIGHTINGSTAGE_BEFORELIGHTING
-  - _GREYSCALESTAGE_BEFORELIGHTING
-  - _HEIGHTGRADIENTPOSITIONSPACE_LOCAL
-  - _LIGHTMODEL_TOON
-  - _MATCAPBLENDMODE_MULTIPLY
-  - _OUTLINETYPE_NONE
-  - _RECEIVEDSHADOWSTYPE_CLASSIC
-  - _RECEIVE_SHADOWS_ON
-  - _REFLECTIONS_NONE
-  - _RIMLIGHTINGSTAGE_BEFORELIGHTING
-  - _SHADINGMODEL_PBR
-  - _SPECULARMODEL_ANISOTROPIC
-  - _TEXTUREBLENDINGMODE_RGB
-  - _TEXTUREBLENDINGSOURCE_VERTEXCOLOR
-  - _TRIPLANARNORMALSPACE_WORLD
-  - _USE_WIND_VERTICAL_MASK
-  m_InvalidKeywords:
-  - _FADEUVSET_UV1
-  - _GLITCHWORLDSPACE_ON
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses:
-  - MOTIONVECTORS
+  stringTagMap:
+    RenderType: Opaque
+  disabledShaderPasses: []
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -122,7 +101,15 @@ Material:
         m_Texture: {fileID: 2800000, guid: fcb69fdadf254834880fe3c443965278, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _HeightMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -138,6 +125,54 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MixMap1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixMap2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixMaskMap1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixMaskMap2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixMetallicMap1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixMetallicMap2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixNormalMap1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixNormalMap2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixOcclusionMap1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixOcclusionMap2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixSmoothnessMap1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixSmoothnessMap2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _NormalMap:
         m_Texture: {fileID: 2800000, guid: 120df76dc2d17ed4cb2d4b8b08292ed9, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -146,11 +181,47 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _OverlayHeightMap0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OverlayMap0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OverlayMaskMap0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OverlayMetallicMap0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OverlayNormalMap0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OverlayOcclusionMap0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OverlaySmoothnessMap0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _PatternMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SSSMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SmoothnessMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -206,6 +277,7 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AdvancedConfigurationEnabled: 0
     - _AffectedByLightmaps: 0
+    - _AlbedoAdjust: 0
     - _AlbedoVertexColorMode: 1
     - _AlbedoVertexColorOn: 0
     - _AlphaClip: 0
@@ -284,6 +356,9 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _GradientMaxHeight: 1
+    - _GradientMinHeight: 0
+    - _GradientStrength: 0
     - _GreyScaleStage: 0
     - _Greyscale: 0
     - _GreyscaleBlending: 1
@@ -293,8 +368,10 @@ Material:
     - _HandDrawnAmount: 10
     - _HandDrawnSpeed: 5
     - _HardnessFakeGI: 0.75
+    - _HeightGradient: 0
     - _HeightGradientOn: 0
     - _HeightGradientPositionSpace: 0
+    - _HeightStrength: 1
     - _HighlightCutoff: 0.5
     - _HighlightSmoothness: 0.5
     - _Highlights: 0
@@ -326,10 +403,13 @@ Material:
     - _IntersectionGlowOn: 0
     - _LightModel: 2
     - _LightmapColorCorrection: 0
+    - _MaskMapSeparate: 0
     - _Matcap: 0
     - _MatcapBlend: 1
     - _MatcapBlendMode: 0
     - _MatcapIntensity: 1
+    - _MaterialMix: 0
+    - _MaterialMixTwo: 0
     - _MaxCameraDistance: 1000
     - _MaxDistanceToFade: 100
     - _MaxFadeDistance: 250
@@ -342,6 +422,30 @@ Material:
     - _MinGradientHeight: 0
     - _MinInflate: 0
     - _MinRim: 0
+    - _MixCoverage1: 0
+    - _MixCoverage2: 0
+    - _MixEdgeSoftness1: 0.1
+    - _MixEdgeSoftness2: 0.1
+    - _MixMaskFromTexture1: 0
+    - _MixMaskFromTexture2: 0
+    - _MixMetallic1: 0
+    - _MixMetallic2: 0
+    - _MixNormalScale1: 1
+    - _MixNormalScale2: 1
+    - _MixOcclusionStrength1: 1
+    - _MixOcclusionStrength2: 1
+    - _MixPatternBias1: 0.5
+    - _MixPatternBias2: 0.5
+    - _MixPatternChannel1: 1
+    - _MixPatternChannel2: 2
+    - _MixPatternRotation1: 0
+    - _MixPatternRotation2: 0
+    - _MixPatternSpace1: 0
+    - _MixPatternSpace2: 0
+    - _MixPatternStrength1: 0
+    - _MixPatternStrength2: 0
+    - _MixSmoothness1: 0.5
+    - _MixSmoothness2: 0.5
     - _NearFade: 0
     - _NormalInfluence: 0.5
     - _NormalMapEnabled: 0
@@ -350,12 +454,27 @@ Material:
     - _OutlineMode: 8
     - _OutlineThickness: 1
     - _OutlineType: 0
+    - _OverlayCoverage0: 0
+    - _OverlayEdgeSoftness0: 0.1
+    - _OverlayHeightStrength0: 0
+    - _OverlayLayer0: 0
+    - _OverlayMetallic0: 0
+    - _OverlayNormalScale0: 1
+    - _OverlayOcclusionStrength0: 1
+    - _OverlaySmoothness0: 0.2
     - _Parallax: 0.005
+    - _Pattern: 0
+    - _PatternBias0: 0.5
+    - _PatternChannel0: 0
+    - _PatternRotation0: 0
+    - _PatternSpace0: 0
+    - _PatternStrength0: 0
     - _Pixelate: 0
     - _PixelateSize: 32
     - _Posterize: 0
     - _PosterizeGamma: 0.75
     - _PosterizeNumColors: 8
+    - _ProjectionSpace: 0
     - _QueueOffset: 0
     - _RecalculateNormals: 0
     - _ReceiveShadows: 1
@@ -437,13 +556,15 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _AOColor: {r: 0, g: 0, b: 0, a: 0}
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColor: {r: 0.23529412, g: 0.42745098, b: 0.47058824, a: 1}
     - _Color: {r: 0.23362406, g: 0.4266571, b: 0.4716981, a: 1}
     - _CustomAmbientColor: {r: 0.65, g: 0.65, b: 0.65, a: 1}
     - _DepthGlowColor: {r: 1, g: 0.9869999, b: 0.6, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FadeBurnColor: {r: 1, g: 1, b: 0, a: 1}
     - _GlitchOffset: {r: -0.5, g: 0, b: 0, a: 0}
+    - _GradientColor01: {r: 1, g: 1, b: 1, a: 1}
+    - _GradientColor02: {r: 1, g: 1, b: 1, a: 1}
     - _GradientHeightColor01: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _GradientHeightColor02: {r: 1, g: 1, b: 1, a: 1}
     - _GreyscaleTintColor: {r: 1, g: 1, b: 1, a: 1}
@@ -452,7 +573,13 @@ Material:
     - _HitColor: {r: 1, g: 1, b: 1, a: 1}
     - _HologramColor: {r: 1.25, g: 2.8, b: 6.8, a: 1}
     - _HologramLineDirection: {r: 0, g: 1, b: 0, a: 0}
+    - _MixColor1: {r: 0.921, g: 0.921, b: 0.921, a: 1}
+    - _MixColor2: {r: 0.921, g: 0.921, b: 0.921, a: 1}
+    - _MixPatternTiling1: {r: 1, g: 1, b: 0, a: 0}
+    - _MixPatternTiling2: {r: 1, g: 1, b: 0, a: 0}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _OverlayColor0: {r: 0.921, g: 0.921, b: 0.921, a: 1}
+    - _PatternTiling0: {r: 1, g: 1, b: 0, a: 0}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
     - _RimOffset: {r: 0, g: 0, b: 0, a: 0}
     - _SSSColor: {r: 1, g: 1, b: 1, a: 1}
