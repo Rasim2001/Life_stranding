@@ -12,6 +12,12 @@ namespace SpiderRig.Editor.Shaders
     // 15.09.2026), решение принимается по объекту глазами, а не по цифре в инспекторе.
     internal static class ENV_LitTextureValidator
     {
+        private const float WarningIconSize = 16f;
+        private const float FixButtonWidth = 44f;
+        private const float ConvertButtonWidth = 60f;
+        private static Texture warningIcon;
+        private static GUIStyle warningTextStyle;
+
         // "Standalone" — реальный оверрайд платформы (та же вкладка, что «PC, Mac & Linux
         // Standalone» в инспекторе текстуры), не общая вкладка "Default". Заведено 12.09.2026:
         // форс явного блочного формата (BC4/BC5/BC7) через "Default" писал в консоль
@@ -57,16 +63,44 @@ namespace SpiderRig.Editor.Shaders
                 formatWrong = actualFormat != expectedFormat.Value;
             }
 
-            if (!srgbWrong && !typeWrong && !formatWrong) return;
+            bool importerChanged = false;
 
-            EditorGUILayout.BeginHorizontal();
-            string message = BuildMessage(srgbWrong, expectSRGB, typeWrong, formatWrong, expectedFormat);
-            EditorGUILayout.HelpBox(message, MessageType.Warning);
-            if (GUILayout.Button("Исправить", GUILayout.Width(80), GUILayout.Height(38)))
+            if (srgbWrong)
             {
-                if (srgbWrong) importer.sRGBTexture = expectSRGB;
-                if (typeWrong) importer.textureType = TextureImporterType.NormalMap;
-                if (formatWrong && expectedFormat.HasValue)
+                GUIContent message = expectSRGB
+                    ? new GUIContent("sRGB must be enabled for color textures.",
+                        "sRGB выключен — альбедо должно читаться как цвет.")
+                    : new GUIContent("sRGB must be disabled for data textures.",
+                        "sRGB включён — это линейные данные (маска/нормаль), не цвет.");
+                if (DrawActionWarning(message,
+                    new GUIContent("Fix", "Исправить только настройку sRGB этой текстуры."),
+                    FixButtonWidth))
+                {
+                    importer.sRGBTexture = expectSRGB;
+                    importerChanged = true;
+                }
+            }
+
+            if (typeWrong)
+            {
+                GUIContent message = new GUIContent("Texture Type must be Normal Map.",
+                    "Texture Type должен быть установлен в Normal Map.");
+                if (DrawActionWarning(message,
+                    new GUIContent("Fix", "Исправить только Texture Type этой текстуры."),
+                    FixButtonWidth))
+                {
+                    importer.textureType = TextureImporterType.NormalMap;
+                    importerChanged = true;
+                }
+            }
+
+            if (formatWrong)
+            {
+                GUIContent message = new GUIContent($"Compression format must be {expectedFormat.Value}.",
+                    $"Формат сжатия должен быть {expectedFormat.Value}, иначе возможна потеря качества.");
+                if (DrawActionWarning(message,
+                    new GUIContent("Convert", "Преобразовать только формат сжатия этой текстуры."),
+                    ConvertButtonWidth))
                 {
                     // Автоматический выбор Unity не гарантирует конкретный блочный формат
                     // (BC5 для нормали он сам не предложит) — форсируем явным оверрайдом
@@ -77,27 +111,19 @@ namespace SpiderRig.Editor.Shaders
                     settings.overridden = true;
                     settings.format = expectedFormat.Value;
                     importer.SetPlatformTextureSettings(settings);
+                    importerChanged = true;
                 }
-                importer.SaveAndReimport();
             }
-            EditorGUILayout.EndHorizontal();
-        }
 
-        private static string BuildMessage(bool srgbWrong, bool expectSRGB, bool typeWrong, bool formatWrong, TextureImporterFormat? expectedFormat)
-        {
-            if (srgbWrong) return expectSRGB
-                ? "sRGB выключен — альбедо должно читаться как цвет."
-                : "sRGB включён — это линейные данные (маска/нормаль), не цвет.";
-            if (typeWrong) return "Texture Type не Normal Map.";
-            if (formatWrong) return $"Формат сжатия не {expectedFormat.Value} — потеря качества.";
-            return string.Empty;
+            if (importerChanged)
+                importer.SaveAndReimport();
         }
 
         // Wrap Mode карты шума (тикет 06): трипланарная проекция сэмплирует до трёх плоскостей
         // у краёв объекта, и Clamp там растягивает крайний тексель в полосу — артефакт,
         // который на глаз читается как сломанная проекция, а не как настройка импорта.
-        // С кнопкой «Исправить», как и у остальных проверок этого файла.
-        public static void DrawWrapModeCheck(Texture texture, TextureWrapMode expected, string message)
+        // С кнопкой Fix, как и у остальных проверок этого файла.
+        public static void DrawWrapModeCheck(Texture texture, TextureWrapMode expected, GUIContent message)
         {
             if (texture == null) return;
 
@@ -109,14 +135,42 @@ namespace SpiderRig.Editor.Shaders
 
             if (importer.wrapMode == expected) return;
 
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox(message, MessageType.Warning);
-            if (GUILayout.Button("Исправить", GUILayout.Width(80), GUILayout.Height(38)))
+            if (DrawActionWarning(message,
+                new GUIContent("Fix", "Исправить только Wrap Mode этой текстуры."),
+                FixButtonWidth))
             {
                 importer.wrapMode = expected;
                 importer.SaveAndReimport();
             }
+        }
+
+        // Stateless: строка рисуется, пока вызывающий код видит реальную проблему импорта.
+        // Малый штатный warning icon сохраняет семантику HelpBox, но не раздувает строку.
+        private static bool DrawActionWarning(GUIContent message, GUIContent action,
+            float actionWidth)
+        {
+            if (warningIcon == null)
+                warningIcon = EditorGUIUtility.IconContent("console.warnicon.sml").image;
+
+            if (warningTextStyle == null)
+            {
+                warningTextStyle = new GUIStyle(EditorStyles.miniLabel)
+                {
+                    alignment = TextAnchor.MiddleLeft,
+                    wordWrap = true
+                };
+            }
+
+            EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
+            GUILayout.Label(warningIcon, GUIStyle.none,
+                GUILayout.Width(WarningIconSize), GUILayout.Height(WarningIconSize));
+            GUILayout.Label(message, warningTextStyle, GUILayout.ExpandWidth(true));
+            bool actionRequested = GUILayout.Button(action, EditorStyles.miniButton,
+                GUILayout.Width(actionWidth),
+                GUILayout.Height(EditorGUIUtility.singleLineHeight));
             EditorGUILayout.EndHorizontal();
+
+            return actionRequested;
         }
     }
 }

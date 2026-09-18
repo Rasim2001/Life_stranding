@@ -49,7 +49,7 @@ Shader "SpiderRig/ENV_Lit"
         _OcclusionStrength("Occlusion Strength", Range(0.0, 1.0)) = 1.0
 
         _BumpScale("Scale", Range(0.0, 4.0)) = 1.0
-        [Normal] _BumpMap("Normal Map", 2D) = "bump" {}
+        _BumpMap("Normal Map", 2D) = "bump" {}
         // Ручки инверсии зелёного канала здесь сознательно нет. Она применялась бы только
         // в ForwardLit: пассы DepthNormals / ShadowCaster / DepthOnly — пакетные, они
         // сэмплят нормаль сами и про материальное свойство не знают. То есть включённая
@@ -102,7 +102,7 @@ Shader "SpiderRig/ENV_Lit"
         // Дефолт — sRGB 235, потолок дисциплины альбедо (§8), не единица: белый снег
         // это верхняя граница диапазона, а не выход за него.
         _OverlayColor0("Color", Color) = (0.921, 0.921, 0.921, 1)
-        [Normal] _OverlayNormalMap0("Normal Top", 2D) = "bump" {}
+        _OverlayNormalMap0("Normal Top", 2D) = "bump" {}
         _OverlayNormalScale0("Scale", Range(0.0, 4.0)) = 1.0
         // Тикет 2-03: своя карта высоты слоя, следует общему режиму _MaskMapSeparate,
         // как база (раздельный — свой слот, упакованный — канал B Mask Map Top).
@@ -133,7 +133,6 @@ Shader "SpiderRig/ENV_Lit"
         // и серый при байасе 0.5 — нейтраль (сдвиг = 0 при любой силе).
         [NoScaleOffset] _PatternMap("RGB Noise Map", 2D) = "gray" {}
 
-        [Header(Overlay RGB Noise Block)]
         [Enum(Planar XZ, 0, Mesh UV, 1, Triplanar, 2)] _PatternSpace0("Projection", Float) = 0.0
         // Vector, не Float (тикет 2-03) — тайлинг по двум осям раздельно, как штатный
         // Scale/Offset. Читаются только .xy.
@@ -158,7 +157,7 @@ Shader "SpiderRig/ENV_Lit"
         _MixMap1("Layer 1 Albedo", 2D) = "white" {}
         // Как у наноса — sRGB 235, потолок дисциплины альбедо (§8), не белый.
         _MixColor1("Layer 1 Color", Color) = (0.921, 0.921, 0.921, 1)
-        [Normal] _MixNormalMap1("Layer 1 Normal", 2D) = "bump" {}
+        _MixNormalMap1("Layer 1 Normal", 2D) = "bump" {}
         _MixNormalScale1("Scale", Range(0.0, 4.0)) = 1.0
         _MixMetallic1("Layer 1 Metallic", Range(0.0, 1.0)) = 0.0
         _MixSmoothness1("Layer 1 Smoothness", Range(0.0, 1.0)) = 0.5
@@ -185,7 +184,7 @@ Shader "SpiderRig/ENV_Lit"
 
         _MixMap2("Layer 2 Albedo", 2D) = "white" {}
         _MixColor2("Layer 2 Color", Color) = (0.921, 0.921, 0.921, 1)
-        [Normal] _MixNormalMap2("Layer 2 Normal", 2D) = "bump" {}
+        _MixNormalMap2("Layer 2 Normal", 2D) = "bump" {}
         _MixNormalScale2("Scale", Range(0.0, 4.0)) = 1.0
         _MixMetallic2("Layer 2 Metallic", Range(0.0, 1.0)) = 0.0
         _MixSmoothness2("Layer 2 Smoothness", Range(0.0, 1.0)) = 0.5

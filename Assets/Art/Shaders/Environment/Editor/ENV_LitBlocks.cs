@@ -42,8 +42,8 @@ namespace SpiderRig.Editor.Shaders
         private const float ResetButtonWidth = 18f;
         private const float ResetButtonGap = 2f;
         private const float InlineTextureGap = 8f;
-        private const float InlineAlbedoMinViewWidth = 430f;
-        private const float AlbedoTileOffsetIndent = 48f;
+        private const float InlineColorTextureMinViewWidth = 430f;
+        private const float ColorTextureTileOffsetIndent = 48f;
 
         private static GUIStyle boxStyle;
         private static GUIStyle mutedMiniLabelStyle;
@@ -123,8 +123,13 @@ namespace SpiderRig.Editor.Shaders
 
         public static void MutedMiniLabel(string text)
         {
+            MutedMiniLabel(new GUIContent(text));
+        }
+
+        public static void MutedMiniLabel(GUIContent content)
+        {
             EnsureStyles();
-            GUILayout.Label(new GUIContent(text), mutedMiniLabelStyle);
+            GUILayout.Label(content, mutedMiniLabelStyle);
         }
 
         // Галка слева, имя блока справа — без рамки и без треугольника. Возвращает,
@@ -184,6 +189,14 @@ namespace SpiderRig.Editor.Shaders
 
         public static void Property(MaterialEditor materialEditor, MaterialProperty prop, GUIContent label)
         {
+            Property(materialEditor, prop, label, 0f);
+        }
+
+        // Вариант с отступом только подписи: поле значения и кнопка R остаются в общих
+        // колонках. Нужен для вложенных Projection/Tiling/Rotation в Blend Layers.
+        public static void Property(MaterialEditor materialEditor, MaterialProperty prop,
+            GUIContent label, float labelIndent)
+        {
             float height = materialEditor.GetPropertyHeight(prop, label.text);
             Rect line = EditorGUILayout.GetControlRect(false, height);
 
@@ -191,8 +204,35 @@ namespace SpiderRig.Editor.Shaders
             var buttonRect = new Rect(propRect.xMax + ResetButtonGap, line.y,
                 ResetButtonWidth, EditorGUIUtility.singleLineHeight);
 
-            materialEditor.ShaderProperty(propRect, prop, label);
+            if (labelIndent > 0f)
+            {
+                DrawIndentedLabel(propRect, label, labelIndent);
+                Rect fieldRect = ValueRect(propRect);
+                materialEditor.ShaderProperty(fieldRect, prop, GUIContent.none);
+            }
+            else
+            {
+                materialEditor.ShaderProperty(propRect, prop, label);
+            }
+
             DrawResetButton(buttonRect, prop, materialEditor);
+        }
+
+        // Dropdown без R. При labelIndent смещается только текст подписи, значение остаётся
+        // в той же колонке, что и остальные свойства блока.
+        public static void DropdownProperty(MaterialEditor materialEditor, MaterialProperty prop,
+            GUIContent label, float labelIndent = 0f)
+        {
+            if (labelIndent <= 0f)
+            {
+                materialEditor.ShaderProperty(prop, label);
+                return;
+            }
+
+            float height = materialEditor.GetPropertyHeight(prop, label.text);
+            Rect line = EditorGUILayout.GetControlRect(false, height);
+            DrawIndentedLabel(line, label, labelIndent);
+            materialEditor.ShaderProperty(ValueRect(line), prop, GUIContent.none);
         }
 
         // Vector2 со своей кнопкой сброса (тикет 2-03) — для тайлинга RGB Noise. Готового
@@ -202,6 +242,12 @@ namespace SpiderRig.Editor.Shaders
         // Кнопка одна на весь Vector2 (решено в 2-01), не по кнопке на компонент.
         public static void Vector2Property(MaterialEditor materialEditor, MaterialProperty prop, GUIContent label)
         {
+            Vector2Property(materialEditor, prop, label, 0f);
+        }
+
+        public static void Vector2Property(MaterialEditor materialEditor, MaterialProperty prop,
+            GUIContent label, float labelIndent)
+        {
             float height = EditorGUIUtility.singleLineHeight;
             Rect line = EditorGUILayout.GetControlRect(false, height);
 
@@ -209,13 +255,27 @@ namespace SpiderRig.Editor.Shaders
             var buttonRect = new Rect(propRect.xMax + ResetButtonGap, line.y, ResetButtonWidth, height);
 
             Vector4 current = prop.vectorValue;
+            bool previousMixedValue = EditorGUI.showMixedValue;
+            EditorGUI.showMixedValue = prop.hasMixedValue;
             EditorGUI.BeginChangeCheck();
-            Vector2 edited = EditorGUI.Vector2Field(propRect, label, new Vector2(current.x, current.y));
+            Vector2 edited;
+            if (labelIndent > 0f)
+            {
+                DrawIndentedLabel(propRect, label, labelIndent);
+                edited = EditorGUI.Vector2Field(ValueRect(propRect), GUIContent.none,
+                    new Vector2(current.x, current.y));
+            }
+            else
+            {
+                edited = EditorGUI.Vector2Field(propRect, label, new Vector2(current.x, current.y));
+            }
+
             if (EditorGUI.EndChangeCheck())
             {
                 materialEditor.RegisterPropertyChangeUndo(prop.displayName);
                 prop.vectorValue = new Vector4(edited.x, edited.y, current.z, current.w);
             }
+            EditorGUI.showMixedValue = previousMixedValue;
 
             if (GUI.Button(buttonRect, "R"))
             {
@@ -238,11 +298,24 @@ namespace SpiderRig.Editor.Shaders
             DrawTextureSlot(materialEditor, prop, label, scaleOffset, line);
         }
 
-        // Общий Albedo-контрол для Base/Top/Mix: цвет отдельной строкой, затем большой
+        // Вариант для слотов, которые проверяет ENV_LitTextureValidator. Он сохраняет
+        // стандартное поле назначения, mixed values, Undo и Material Variants, но намеренно
+        // не вызывает MaterialEditor.TextureProperty: тот добавляет собственный большой
+        // compatibility warning поверх нашего компактного предупреждения.
+        public static void TextureSlotWithoutCompatibilityWarning(
+            MaterialEditor materialEditor, MaterialProperty prop, string label)
+        {
+            float height = materialEditor.GetPropertyHeight(prop, label);
+            Rect line = EditorGUILayout.GetControlRect(false, height);
+
+            DrawTextureSlotWithoutCompatibilityWarning(materialEditor, prop, label, line);
+        }
+
+        // Общий контрол цветной карты для Base/Top/Mix и Emission: цвет отдельной строкой, затем большой
         // слот. На широкой панели Scale/Offset занимает пустую область слева от превью;
         // на узкой переезжает под слот. Рисуют значения по-прежнему штатные методы
         // MaterialEditor, поэтому Material Variants, mixed values и Undo не обходятся.
-        public static void Albedo(MaterialEditor materialEditor,
+        public static void ColorTexture(MaterialEditor materialEditor,
             MaterialProperty mapProp, MaterialProperty colorProp,
             GUIContent mapLabel, GUIContent colorLabel)
         {
@@ -253,7 +326,7 @@ namespace SpiderRig.Editor.Shaders
             // нему ветку с другим числом EditorGUILayout-вызовов: следующие контролы получат
             // чужие Rect. currentViewWidth стабилен в пределах IMGUI-прохода и поэтому задаёт
             // один и тот же режим раскладки для Layout и Repaint.
-            bool drawTileOffsetInline = EditorGUIUtility.currentViewWidth >= InlineAlbedoMinViewWidth;
+            bool drawTileOffsetInline = EditorGUIUtility.currentViewWidth >= InlineColorTextureMinViewWidth;
             float textureHeight = materialEditor.GetPropertyHeight(mapProp, mapLabel.text);
             Rect textureLine = EditorGUILayout.GetControlRect(false, textureHeight);
             DrawTextureSlot(materialEditor, mapProp, mapLabel.text, false, textureLine);
@@ -265,14 +338,14 @@ namespace SpiderRig.Editor.Shaders
                     - textureHeight - InlineTextureGap;
                 float rowHeight = EditorGUIUtility.singleLineHeight;
                 float tileOffsetHeight = rowHeight * 2f + EditorGUIUtility.standardVerticalSpacing;
-                var tileOffsetRect = new Rect(textureLine.x + AlbedoTileOffsetIndent,
+                var tileOffsetRect = new Rect(textureLine.x + ColorTextureTileOffsetIndent,
                     textureLine.y + rowHeight + EditorGUIUtility.standardVerticalSpacing,
-                    tileOffsetWidth - AlbedoTileOffsetIndent, tileOffsetHeight);
+                    tileOffsetWidth - ColorTextureTileOffsetIndent, tileOffsetHeight);
                 DrawTileOffset(materialEditor, mapProp, tileOffsetRect);
             }
             else
             {
-                TileOffset(materialEditor, mapProp, AlbedoTileOffsetIndent);
+                TileOffset(materialEditor, mapProp, ColorTextureTileOffsetIndent);
             }
         }
 
@@ -286,6 +359,54 @@ namespace SpiderRig.Editor.Shaders
 
             materialEditor.TextureProperty(propRect, prop, label, scaleOffset);
             DrawResetButton(buttonRect, prop, materialEditor);
+        }
+
+        private static void DrawTextureSlotWithoutCompatibilityWarning(
+            MaterialEditor materialEditor, MaterialProperty prop, string label, Rect line)
+        {
+            var propRect = new Rect(line.x, line.y,
+                line.width - ResetButtonWidth - ResetButtonGap, line.height);
+            var buttonRect = new Rect(propRect.xMax + ResetButtonGap, line.y,
+                ResetButtonWidth, EditorGUIUtility.singleLineHeight);
+
+            var propertyScopeRect = new Rect(propRect.x, propRect.y,
+                propRect.width, EditorGUIUtility.singleLineHeight);
+            MaterialEditor.BeginProperty(propertyScopeRect, prop);
+            materialEditor.BeginAnimatedCheck(propRect, prop);
+
+            Rect textureRect = EditorGUI.PrefixLabel(propRect, new GUIContent(label));
+            textureRect.xMin = textureRect.xMax - EditorGUIUtility.fieldWidth;
+
+            bool previousMixedValue = EditorGUI.showMixedValue;
+            EditorGUI.showMixedValue = prop.hasMixedValue;
+            EditorGUI.BeginChangeCheck();
+            Texture selectedTexture = EditorGUI.ObjectField(
+                textureRect, prop.textureValue, typeof(Texture2D), false) as Texture;
+            if (EditorGUI.EndChangeCheck())
+            {
+                materialEditor.RegisterPropertyChangeUndo(prop.displayName);
+                prop.textureValue = selectedTexture;
+            }
+
+            EditorGUI.showMixedValue = previousMixedValue;
+            materialEditor.EndAnimatedCheck();
+            MaterialEditor.EndProperty();
+
+            DrawResetButton(buttonRect, prop, materialEditor);
+        }
+
+        private static Rect ValueRect(Rect line)
+        {
+            float labelWidth = Mathf.Min(EditorGUIUtility.labelWidth, line.width);
+            return new Rect(line.x + labelWidth, line.y, line.width - labelWidth, line.height);
+        }
+
+        private static void DrawIndentedLabel(Rect line, GUIContent label, float labelIndent)
+        {
+            float labelWidth = Mathf.Min(EditorGUIUtility.labelWidth, line.width);
+            var labelRect = new Rect(line.x + labelIndent, line.y,
+                Mathf.Max(0f, labelWidth - labelIndent), EditorGUIUtility.singleLineHeight);
+            EditorGUI.LabelField(labelRect, label);
         }
 
         // Tiling + Offset одного _ST-свойства, каждая ось — своя кнопка сброса: Tiling (XY)
