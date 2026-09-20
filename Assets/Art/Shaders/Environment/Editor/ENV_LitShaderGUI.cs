@@ -25,13 +25,17 @@ namespace SpiderRig.Editor.Shaders
         private MaterialProperty occlusionStrengthProp;
         private MaterialProperty bumpScaleProp;
         private MaterialProperty bumpMapProp;
+        private MaterialProperty baseProjectionProp;
+        private MaterialProperty baseRotationProp;
 
         private MaterialProperty albedoAdjustProp;
         private MaterialProperty hueShiftProp;
+        private MaterialProperty saturationProp;
         private MaterialProperty contrastProp;
         private MaterialProperty brightnessProp;
 
-        private MaterialProperty projectionSpaceProp;
+        private MaterialProperty gradientSpaceProp;
+        private MaterialProperty overlaySpace0Prop;
 
         private MaterialProperty heightGradientProp;
         private MaterialProperty gradientMinHeightProp;
@@ -49,6 +53,9 @@ namespace SpiderRig.Editor.Shaders
         private MaterialProperty overlaySmoothness0Prop;
         private MaterialProperty overlayCoverage0Prop;
         private MaterialProperty overlayEdgeSoftness0Prop;
+        private MaterialProperty overlayThickness0Prop;
+        private MaterialProperty overlayEdgeThickness0Prop;
+        private MaterialProperty overlayInheritRelief0Prop;
         private MaterialProperty overlayHeightMap0Prop;
         private MaterialProperty overlayHeightStrength0Prop;
         private MaterialProperty overlayOcclusionStrength0Prop;
@@ -70,6 +77,8 @@ namespace SpiderRig.Editor.Shaders
         private MaterialProperty materialMixTwoProp;
 
         private MaterialProperty mixMap1Prop;
+        private MaterialProperty mixProjection1Prop;
+        private MaterialProperty mixRotation1Prop;
         private MaterialProperty mixColor1Prop;
         private MaterialProperty mixNormalMap1Prop;
         private MaterialProperty mixNormalScale1Prop;
@@ -77,7 +86,7 @@ namespace SpiderRig.Editor.Shaders
         private MaterialProperty mixSmoothness1Prop;
         private MaterialProperty mixMaskFromTexture1Prop;
         private MaterialProperty mixCoverage1Prop;
-        private MaterialProperty mixPatternSpace1Prop;
+        private MaterialProperty mixPatternProjection1Prop;
         private MaterialProperty mixPatternTiling1Prop;
         private MaterialProperty mixPatternRotation1Prop;
         private MaterialProperty mixPatternChannel1Prop;
@@ -89,8 +98,20 @@ namespace SpiderRig.Editor.Shaders
         private MaterialProperty mixMetallicMap1Prop;
         private MaterialProperty mixOcclusionMap1Prop;
         private MaterialProperty mixSmoothnessMap1Prop;
+        private MaterialProperty mixHeightMap1Prop;
+        private MaterialProperty mixHeightStrength1Prop;
+        private MaterialProperty mixReliefSmoothing1Prop;
+        private MaterialProperty mixEdgeThickness1Prop;
+        private MaterialProperty mixInheritRelief1Prop;
+        private MaterialProperty mixHeightMap2Prop;
+        private MaterialProperty mixHeightStrength2Prop;
+        private MaterialProperty mixReliefSmoothing2Prop;
+        private MaterialProperty mixEdgeThickness2Prop;
+        private MaterialProperty mixInheritRelief2Prop;
 
         private MaterialProperty mixMap2Prop;
+        private MaterialProperty mixProjection2Prop;
+        private MaterialProperty mixRotation2Prop;
         private MaterialProperty mixColor2Prop;
         private MaterialProperty mixNormalMap2Prop;
         private MaterialProperty mixNormalScale2Prop;
@@ -98,7 +119,7 @@ namespace SpiderRig.Editor.Shaders
         private MaterialProperty mixSmoothness2Prop;
         private MaterialProperty mixMaskFromTexture2Prop;
         private MaterialProperty mixCoverage2Prop;
-        private MaterialProperty mixPatternSpace2Prop;
+        private MaterialProperty mixPatternProjection2Prop;
         private MaterialProperty mixPatternTiling2Prop;
         private MaterialProperty mixPatternRotation2Prop;
         private MaterialProperty mixPatternChannel2Prop;
@@ -127,13 +148,17 @@ namespace SpiderRig.Editor.Shaders
             occlusionStrengthProp = FindProperty("_OcclusionStrength", properties);
             bumpScaleProp = FindProperty("_BumpScale", properties);
             bumpMapProp = FindProperty("_BumpMap", properties);
+            baseProjectionProp = FindProperty("_BaseProjection", properties);
+            baseRotationProp = FindProperty("_BaseRotation", properties);
 
             albedoAdjustProp = FindProperty("_AlbedoAdjust", properties);
             hueShiftProp = FindProperty("_HueShift", properties);
+            saturationProp = FindProperty("_Saturation", properties);
             contrastProp = FindProperty("_Contrast", properties);
             brightnessProp = FindProperty("_Brightness", properties);
 
-            projectionSpaceProp = FindProperty("_ProjectionSpace", properties);
+            gradientSpaceProp = FindProperty("_GradientSpace", properties);
+            overlaySpace0Prop = FindProperty("_OverlaySpace0", properties);
 
             heightGradientProp = FindProperty("_HeightGradient", properties);
             gradientMinHeightProp = FindProperty("_GradientMinHeight", properties);
@@ -151,6 +176,9 @@ namespace SpiderRig.Editor.Shaders
             overlaySmoothness0Prop = FindProperty("_OverlaySmoothness0", properties);
             overlayCoverage0Prop = FindProperty("_OverlayCoverage0", properties);
             overlayEdgeSoftness0Prop = FindProperty("_OverlayEdgeSoftness0", properties);
+            overlayThickness0Prop = FindProperty("_OverlayThickness0", properties);
+            overlayEdgeThickness0Prop = FindProperty("_OverlayEdgeThickness0", properties);
+            overlayInheritRelief0Prop = FindProperty("_OverlayInheritRelief0", properties);
             overlayHeightMap0Prop = FindProperty("_OverlayHeightMap0", properties);
             overlayHeightStrength0Prop = FindProperty("_OverlayHeightStrength0", properties);
             overlayOcclusionStrength0Prop = FindProperty("_OverlayOcclusionStrength0", properties);
@@ -172,6 +200,8 @@ namespace SpiderRig.Editor.Shaders
             materialMixTwoProp = FindProperty("_MaterialMixTwo", properties);
 
             mixMap1Prop = FindProperty("_MixMap1", properties);
+            mixProjection1Prop = FindProperty("_MixProjection1", properties);
+            mixRotation1Prop = FindProperty("_MixRotation1", properties);
             mixColor1Prop = FindProperty("_MixColor1", properties);
             mixNormalMap1Prop = FindProperty("_MixNormalMap1", properties);
             mixNormalScale1Prop = FindProperty("_MixNormalScale1", properties);
@@ -179,7 +209,7 @@ namespace SpiderRig.Editor.Shaders
             mixSmoothness1Prop = FindProperty("_MixSmoothness1", properties);
             mixMaskFromTexture1Prop = FindProperty("_MixMaskFromTexture1", properties);
             mixCoverage1Prop = FindProperty("_MixCoverage1", properties);
-            mixPatternSpace1Prop = FindProperty("_MixPatternSpace1", properties);
+            mixPatternProjection1Prop = FindProperty("_MixPatternProjection1", properties);
             mixPatternTiling1Prop = FindProperty("_MixPatternTiling1", properties);
             mixPatternRotation1Prop = FindProperty("_MixPatternRotation1", properties);
             mixPatternChannel1Prop = FindProperty("_MixPatternChannel1", properties);
@@ -191,8 +221,20 @@ namespace SpiderRig.Editor.Shaders
             mixMetallicMap1Prop = FindProperty("_MixMetallicMap1", properties);
             mixOcclusionMap1Prop = FindProperty("_MixOcclusionMap1", properties);
             mixSmoothnessMap1Prop = FindProperty("_MixSmoothnessMap1", properties);
+            mixHeightMap1Prop = FindProperty("_MixHeightMap1", properties);
+            mixHeightStrength1Prop = FindProperty("_MixHeightStrength1", properties);
+            mixReliefSmoothing1Prop = FindProperty("_MixReliefSmoothing1", properties);
+            mixEdgeThickness1Prop = FindProperty("_MixEdgeThickness1", properties);
+            mixInheritRelief1Prop = FindProperty("_MixInheritRelief1", properties);
+            mixHeightMap2Prop = FindProperty("_MixHeightMap2", properties);
+            mixHeightStrength2Prop = FindProperty("_MixHeightStrength2", properties);
+            mixReliefSmoothing2Prop = FindProperty("_MixReliefSmoothing2", properties);
+            mixEdgeThickness2Prop = FindProperty("_MixEdgeThickness2", properties);
+            mixInheritRelief2Prop = FindProperty("_MixInheritRelief2", properties);
 
             mixMap2Prop = FindProperty("_MixMap2", properties);
+            mixProjection2Prop = FindProperty("_MixProjection2", properties);
+            mixRotation2Prop = FindProperty("_MixRotation2", properties);
             mixColor2Prop = FindProperty("_MixColor2", properties);
             mixNormalMap2Prop = FindProperty("_MixNormalMap2", properties);
             mixNormalScale2Prop = FindProperty("_MixNormalScale2", properties);
@@ -200,7 +242,7 @@ namespace SpiderRig.Editor.Shaders
             mixSmoothness2Prop = FindProperty("_MixSmoothness2", properties);
             mixMaskFromTexture2Prop = FindProperty("_MixMaskFromTexture2", properties);
             mixCoverage2Prop = FindProperty("_MixCoverage2", properties);
-            mixPatternSpace2Prop = FindProperty("_MixPatternSpace2", properties);
+            mixPatternProjection2Prop = FindProperty("_MixPatternProjection2", properties);
             mixPatternTiling2Prop = FindProperty("_MixPatternTiling2", properties);
             mixPatternRotation2Prop = FindProperty("_MixPatternRotation2", properties);
             mixPatternChannel2Prop = FindProperty("_MixPatternChannel2", properties);
@@ -238,15 +280,30 @@ namespace SpiderRig.Editor.Shaders
             CoreUtils.SetKeyword(material, "_MASKMAP_SEPARATE", material.GetFloat("_MaskMapSeparate") > 0.5f);
             CoreUtils.SetKeyword(material, "_ALBEDO_ADJUST", material.GetFloat("_AlbedoAdjust") > 0.5f);
             CoreUtils.SetKeyword(material, "_HEIGHT_GRADIENT", material.GetFloat("_HeightGradient") > 0.5f);
-            CoreUtils.SetKeyword(material, "_PROJECTIONSPACE_WORLD", material.GetFloat("_ProjectionSpace") > 0.5f);
+            // Пространство эффектов — у каждого потребителя своё, и держит вариант шейдера только
+            // включённый эффект: выключенный блок не должен множить варианты.
+            CoreUtils.SetKeyword(material, "_GRADIENTSPACE_WORLD",
+                material.GetFloat("_HeightGradient") > 0.5f && material.GetFloat("_GradientSpace") > 0.5f);
             CoreUtils.SetKeyword(material, "_OVERLAY_LAYER_0", material.GetFloat("_OverlayLayer0") > 0.5f);
+            CoreUtils.SetKeyword(material, "_OVERLAYSPACE0_WORLD",
+                material.GetFloat("_OverlayLayer0") > 0.5f && material.GetFloat("_OverlaySpace0") > 0.5f);
             CoreUtils.SetKeyword(material, "_PATTERN", material.GetFloat("_Pattern") > 0.5f);
 
-            // Проекция блока наноса — трёхпозиционная, keyword'ом (тикет 06): 0 — Planar XZ
+            // Проекция шума блока наноса — трёхпозиционная, keyword'ом (тикет 06): 0 — Planar XZ
             // (обе выключены), 1 — Mesh UV, 2 — Triplanar.
             SetProjectionKeywords(material, "_PatternSpace0", "_PATTERNSPACE0_UV", "_PATTERNSPACE0_TRIPLANAR");
+            // Проекция карт Base: 0 — Mesh UV (обе выключены), 1 — Local, 2 — World. Это не та же
+            // раскладка, что у шума, поэтому свой вызов, а не SetProjectionKeywords.
+            SetMapProjectionKeywords(material, "_BaseProjection",
+                "_BASEPROJECTION_LOCAL", "_BASEPROJECTION_WORLD");
             bool materialMix = material.GetFloat("_MaterialMix") > 0.5f;
             bool materialMixTwo = materialMix && material.GetFloat("_MaterialMixTwo") > 0.5f;
+            // Проекция карт слоёв Blend — независимо от Base и друг от друга. Выключенный слой
+            // не держит вариант шейдера.
+            SetMapProjectionKeywords(material, "_MixProjection1",
+                "_MIXPROJECTION1_LOCAL", "_MIXPROJECTION1_WORLD", materialMix);
+            SetMapProjectionKeywords(material, "_MixProjection2",
+                "_MIXPROJECTION2_LOCAL", "_MIXPROJECTION2_WORLD", materialMixTwo);
             CoreUtils.SetKeyword(material, "_MATERIAL_MIX", materialMix);
             // Второй слой — только вместе с первым: комбинации «второй без первого»
             // не существует, и shader_feature компилирует три состояния, а не четыре.
@@ -255,10 +312,11 @@ namespace SpiderRig.Editor.Shaders
                 materialMix && material.GetFloat("_MixMaskFromTexture1") > 0.5f);
             CoreUtils.SetKeyword(material, "_MIX_MASK_TEXTURE_2",
                 materialMixTwo && material.GetFloat("_MixMaskFromTexture2") > 0.5f);
-            SetProjectionKeywords(material, "_MixPatternSpace1",
-                "_MIXPATTERNSPACE1_UV", "_MIXPATTERNSPACE1_TRIPLANAR", materialMix);
-            SetProjectionKeywords(material, "_MixPatternSpace2",
-                "_MIXPATTERNSPACE2_UV", "_MIXPATTERNSPACE2_TRIPLANAR", materialMixTwo);
+            // Проекция RGB Noise (маски) слоёв Blend — независимо от карт слоя и друг от друга.
+            SetMapProjectionKeywords(material, "_MixPatternProjection1",
+                "_MIXPATTERNPROJECTION1_LOCAL", "_MIXPATTERNPROJECTION1_WORLD", materialMix);
+            SetMapProjectionKeywords(material, "_MixPatternProjection2",
+                "_MIXPATTERNPROJECTION2_LOCAL", "_MIXPATTERNPROJECTION2_WORLD", materialMixTwo);
 
             // _NORMALMAP доставляется принудительно, если назначена нормаль подмешиваемого
             // слоя. Причина: слой правит surfaceData.normalTS, а её ниже по коду читают
@@ -270,7 +328,10 @@ namespace SpiderRig.Editor.Shaders
             // _BumpMap, и мы её решение только расширяем, никогда не снимаем. Побочных
             // эффектов нет — пустой слот _BumpMap даёт дефолт "bump", то есть плоскую
             // нормаль, а пакетные пассы сэмплят её сами и ведут себя так же.
-            if (material.GetTexture("_MixNormalMap1") != null || material.GetTexture("_MixNormalMap2") != null)
+            // Слой 1 (тикет 05) правит нормаль всегда: кромка работает и без единой карты, поэтому
+            // при включённом Material Blending _NORMALMAP нужен независимо от назначенных текстур.
+            if (materialMix
+                || material.GetTexture("_MixNormalMap1") != null || material.GetTexture("_MixNormalMap2") != null)
             {
                 CoreUtils.SetKeyword(material, "_NORMALMAP", true);
             }
@@ -309,6 +370,19 @@ namespace SpiderRig.Editor.Shaders
                 ? material.GetTexture("_OverlayHeightMap0") != null
                 : material.GetTexture("_OverlayMaskMap0") != null;
             CoreUtils.SetKeyword(material, "_OVERLAY_HEIGHT_0", hasOverlayHeight);
+
+            // Высота слоя 1 (тикет 05) — та же идиома: из наличия текстуры активного режима.
+            bool hasMixHeight1 = separate
+                ? material.GetTexture("_MixHeightMap1") != null
+                : material.GetTexture("_MixMaskMap1") != null;
+            CoreUtils.SetKeyword(material, "_MIX_HEIGHT_1", materialMix && hasMixHeight1);
+
+            // Высота слоя 2 (тикет 06) — так же, но только при включённом втором слое: выключенный слой
+            // не оставляет скрытого вклада (keyword снят).
+            bool hasMixHeight2 = separate
+                ? material.GetTexture("_MixHeightMap2") != null
+                : material.GetTexture("_MixMaskMap2") != null;
+            CoreUtils.SetKeyword(material, "_MIX_HEIGHT_2", materialMixTwo && hasMixHeight2);
         }
 
         private static bool HasLayerMaps(Material material, bool separate,
@@ -319,6 +393,15 @@ namespace SpiderRig.Editor.Shaders
                   || material.GetTexture(occlusionMapName) != null
                   || material.GetTexture(smoothnessMapName) != null
                 : material.GetTexture(maskMapName) != null;
+        }
+
+        // Проекция карт комплекта: 0 — Mesh UV (обе выключены), 1 — Local Triplanar, 2 — World Triplanar.
+        private static void SetMapProjectionKeywords(Material material, string enumPropertyName,
+            string localKeyword, string worldKeyword, bool active = true)
+        {
+            float value = material.GetFloat(enumPropertyName);
+            CoreUtils.SetKeyword(material, localKeyword, active && value > 0.5f && value < 1.5f);
+            CoreUtils.SetKeyword(material, worldKeyword, active && value > 1.5f);
         }
 
         // Трёхпозиционный Enum-переключатель (0 Planar XZ / 1 Mesh UV / 2 Triplanar) → пара
@@ -353,17 +436,6 @@ namespace SpiderRig.Editor.Shaders
             var maskModeLabel = new GUIContent(
                 "Separate Metallic/AO/Height/Smoothness Maps", channelTooltip);
             materialEditor.ShaderProperty(maskMapSeparateProp, maskModeLabel);
-
-            // Пространство проекции — режим материала, общий для градиента по высоте
-            // и для будущих слоёв наноса/узора (.scratch/env-lit-layers/spec.md), поэтому
-            // стоит здесь, рядом с режимом маски, а не внутри блока градиента, который
-            // его сейчас единственный читает.
-            var projectionSpaceLabel = new GUIContent(projectionSpaceProp.displayName,
-                "World — непрерывность через стыки модулей (плиты пола читаются одной поверхностью), " +
-                "и это единственный режим, в котором триплanar-проекция карты шума остаётся бесшовной. " +
-                "Local — рисунок прибит к мешу и терпит перемещение объекта (башня из повторяющихся этажей). " +
-                "Зависимые блоки: Height Gradient, Top Projection Layer, оба блока RGB Noise.");
-            materialEditor.ShaderProperty(projectionSpaceProp, projectionSpaceLabel);
         }
 
         // Все карты базы живут в одном Material Maps. Разделители внутри бокса связывают
@@ -395,6 +467,9 @@ namespace SpiderRig.Editor.Shaders
             // sRGB для альбедо обязателен — выключенный отдаёт цвет как линейные данные
             // и материал едет с неверной яркостью. Формат не проверяем: у альбедо он зависит
             // от материала (BC1 без альфы, BC7 при cutout), однозначного ожидания нет.
+            // Проекция и поворот — сразу под блоком Tiling/Offset: значения Tiling не зависят
+            // от режима, меняется только смысл единиц.
+            DrawBaseProjection();
             ENV_LitTextureValidator.DrawTextureCheck(baseMapProp.textureValue, true, false, null);
 
             // Общий тайлинг PBR-набора (альбедо + маска + нормаль) — одно _BaseMap_ST,
@@ -440,6 +515,34 @@ namespace SpiderRig.Editor.Shaders
 
             ENV_LitBlocks.EndBox();
             DrawAbandonedMaskReferencesWarning(separate);
+        }
+
+        private void DrawBaseProjection()
+        {
+            DrawMapProjection(baseProjectionProp, baseRotationProp, "Base",
+                "Albedo, Normal, Height, Metallic, Occlusion, Smoothness",
+                "Вырез и прозрачность (Alpha Clip) и Emission всегда идут по Mesh UV и не поворачиваются. ");
+        }
+
+        // Строка Projection и Rotation комплекта карт — одна функция на Base и оба слоя Blend,
+        // чтобы тексты не разъехались. maskNote — то, что особенного у владельца комплекта.
+        private void DrawMapProjection(MaterialProperty projectionProp, MaterialProperty rotationProp,
+            string owner, string maps, string maskNote)
+        {
+            var projectionLabel = new GUIContent(projectionProp.displayName,
+                "Как карты " + owner + " ложатся на поверхность. Mesh UV — по развёртке меша, Tiling считает " +
+                "повторы на UV-остров. Local Triplanar — рисунок следует объекту, растягивается его " +
+                "масштабом, Tiling — повторов на локальную единицу. World Triplanar — рисунок стоит " +
+                "в мире, объект проходит сквозь него, Tiling — повторов на метр: 1 — на метр, 2 — вдвое " +
+                "мельче, 0.5 — вдвое крупнее; одинаковые настройки разных материалов (и Base, и слоёв " +
+                "Blend) совпадают по фазе. Действует на все карты: " + maps + ". " + maskNote +
+                "Невидимый шов на скруглениях трипланар не гарантирует.");
+            ENV_LitBlocks.DropdownProperty(materialEditor, projectionProp, projectionLabel);
+
+            var rotationLabel = new GUIContent(rotationProp.displayName,
+                "Поворот рисунка всех карт " + owner + ", градусы. Один угол в трёх проекциях, нормали " +
+                "поворачиваются вместе с рисунком.");
+            ENV_LitBlocks.Property(materialEditor, rotationProp, rotationLabel);
         }
 
         private void DrawBaseNormalSection()
@@ -559,6 +662,9 @@ namespace SpiderRig.Editor.Shaders
 
             ENV_LitBlocks.BeginBox();
             ENV_LitBlocks.Property(materialEditor, hueShiftProp, hueShiftProp.displayName);
+            ENV_LitBlocks.Property(materialEditor, saturationProp, new GUIContent(saturationProp.displayName,
+                "-1 — чёрно-белый, 0 — без изменений, +1 — удвоенная насыщенность. " +
+                "Только цвет Base: слои Blend и Top не меняются."));
             ENV_LitBlocks.Property(materialEditor, contrastProp, contrastProp.displayName);
             ENV_LitBlocks.Property(materialEditor, brightnessProp, brightnessProp.displayName);
             ENV_LitBlocks.EndBox();
@@ -569,6 +675,9 @@ namespace SpiderRig.Editor.Shaders
             if (!ENV_LitBlocks.DrawToggleHeader(materialEditor, new GUIContent("Height Gradient"), heightGradientProp)) return;
 
             ENV_LitBlocks.BeginBox();
+            ENV_LitBlocks.DropdownProperty(materialEditor, gradientSpaceProp, new GUIContent(gradientSpaceProp.displayName,
+                "Local — высота от опорной точки объекта, следует за ним. World — абсолютная высота в мире. " +
+                "Действует только на этот градиент."));
             ENV_LitBlocks.Property(materialEditor, gradientMinHeightProp, gradientMinHeightProp.displayName);
             ENV_LitBlocks.Property(materialEditor, gradientMaxHeightProp, gradientMaxHeightProp.displayName);
             // Альфа цвета — локальная сила подмеса, её читает шейдер (см. ApplyHeightGradient).
@@ -579,8 +688,8 @@ namespace SpiderRig.Editor.Shaders
         }
 
         // Слой наноса — снег/пыль/грязь поверх основного материала (.scratch/env-lit-layers/
-        // spec.md). Маска считается по нормали после карты нормалей и по высоте
-        // микрорельефа — см. ComputeOverlayMask0 в ENV_LitInput.hlsl.
+        // spec.md). Маска считается по нормали меша до текстурного рельефа; Relief Smoothing,
+        // Edge Thickness, наследование и силы карт её не двигают.
         private void DrawOverlayLayerBlock()
         {
             if (!ENV_LitBlocks.DrawToggleHeader(materialEditor, new GUIContent("Top Projection Layer"), overlayLayer0Prop)) return;
@@ -588,6 +697,11 @@ namespace SpiderRig.Editor.Shaders
             bool separate = maskMapSeparateProp.floatValue > 0.5f;
 
             ENV_LitBlocks.BeginBox();
+            ENV_LitBlocks.DropdownProperty(materialEditor, overlaySpace0Prop, new GUIContent(overlaySpace0Prop.displayName,
+                "Local — рисунок Top прибит к мешу и терпит перемещение объекта. World — непрерывность " +
+                "через стыки модулей. Действует на карты Top, наклон нанесения и RGB Noise Top; " +
+                "карты Base, Blend и градиент не затрагивает."));
+            ENV_LitBlocks.Separator();
             EditorGUILayout.LabelField("Material Maps", EditorStyles.miniBoldLabel);
 
             var overlayColorLabel = new GUIContent(overlayColor0Prop.displayName,
@@ -605,9 +719,8 @@ namespace SpiderRig.Editor.Shaders
                 "Своя сила затенения слоя — AO базы описывает швы кладки, под сплошным снегом " +
                 "он не к месту. Без карты комплекта затенения у слоя нет вовсе.");
             var heightStrengthLabel = new GUIContent("Height Strength",
-                "Толщина слоя — бампом из карты Height Top, без смещения геометрии. Та же ручка " +
-                "задаёт, насколько слой затекает в рельеф ОСНОВАНИЯ (по базовой карте высоты): " +
-                "до 1 набирается затекание, выше растёт только толщина. 0 — слой ложится плёнкой.");
+                "Сила бампа из карты Height Top, без смещения геометрии. Не меняет площадь " +
+                "покрытия или положение границы. 0 — рельеф Height Top выключен.");
 
             ENV_LitBlocks.Separator();
             if (separate)
@@ -657,8 +770,26 @@ namespace SpiderRig.Editor.Shaders
 
             ENV_LitBlocks.BeginBox();
             EditorGUILayout.LabelField("Mask Top", EditorStyles.miniBoldLabel);
-            ENV_LitBlocks.Property(materialEditor, overlayCoverage0Prop, overlayCoverage0Prop.displayName);
-            ENV_LitBlocks.Property(materialEditor, overlayEdgeSoftness0Prop, overlayEdgeSoftness0Prop.displayName);
+            ENV_LitBlocks.Property(materialEditor, overlayCoverage0Prop,
+                new GUIContent("Coverage",
+                    "Площадь покрытия. 0 — Top отсутствует, 1 — покрытие полное. Relief Smoothing, " +
+                    "Edge Thickness, наследование и силы Normal/Height границу не двигают."));
+            ENV_LitBlocks.Property(materialEditor, overlayEdgeSoftness0Prop,
+                new GUIContent("Edge Softness",
+                    "Ширина мягкого перехода вокруг неизменного контура. 0 — жёсткая художественная " +
+                    "граница с пиксельным сглаживанием, 1 — широкий пологий сход."));
+            ENV_LitBlocks.Property(materialEditor, overlayThickness0Prop,
+                new GUIContent("Relief Smoothing",
+                    "Подавление унаследованного рельефа Base и Blend Layers. 0 — пыль повторяет " +
+                    "основание, 1 — текстурный рельеф полностью сглажен. Маску и геометрию не меняет."));
+            ENV_LitBlocks.Property(materialEditor, overlayEdgeThickness0Prop,
+                new GUIContent("Edge Thickness",
+                    "Выраженность виртуальной освещаемой кромки слоя. Не меняет геометрию, " +
+                    "коллизии, силуэт, AO или маску покрытия."));
+            ENV_LitBlocks.Property(materialEditor, overlayInheritRelief0Prop,
+                new GUIContent("Inherit Underlying Relief",
+                    "Включено — Top наследует итоговый рельеф Base и Blend Layers с учётом Relief " +
+                    "Smoothing. Выключено — остаются форма меша и собственные Normal/Height Top."));
             ENV_LitBlocks.EndBox();
 
             ENV_LitBlocks.BeginBox();
@@ -672,7 +803,11 @@ namespace SpiderRig.Editor.Shaders
                     "временно не влияют. Coverage и Edge Softness продолжают работать."));
             }
 
-            DrawPatternSpaceBlock(patternSpace0Prop, patternTiling0Prop, patternRotation0Prop);
+            DrawPatternSpaceBlock(patternSpace0Prop, patternTiling0Prop, patternRotation0Prop,
+                "Planar XZ — непрерывность через стыки модулей, но тянется полосами на вертикалях. " +
+                "Mesh UV — по сырой развёртке меша (Tiling/Offset Base не влияют), повторяется на каждом " +
+                "экземпляре модуля. Triplanar — три проекции по нормали, без полос на вертикалях. " +
+                "Planar и Triplanar следуют пространству Space этого слоя (World — бесшовность через стык модулей).");
 
             // Выпадающий список канала — без кнопки сброса (решение владельца 15.09.2026).
             var channelLabel = new GUIContent(patternChannel0Prop.displayName,
@@ -686,8 +821,8 @@ namespace SpiderRig.Editor.Shaders
             ENV_LitBlocks.Property(materialEditor, patternStrength0Prop, strengthLabel);
 
             var biasLabel = new GUIContent(patternBias0Prop.displayName,
-                "Нейтраль канала карты шума. Дефолт 0.5 держит серую заглушку без смещения " +
-                "при любой силе; для карты с другой средней яркостью канала подвинь сюда.");
+                "0 — без смещения площади покрытия; -1 уменьшает покрытие, +1 наращивает. " +
+                "Смещение масштабируется ручкой Strength. Старое значение: new = (0.5 - old) × 2.");
             ENV_LitBlocks.Property(materialEditor, patternBias0Prop, biasLabel);
 
             ENV_LitBlocks.EndBox();
@@ -735,13 +870,9 @@ namespace SpiderRig.Editor.Shaders
         // и для обоих слоёв смешивания — все читают ту же карту тем же способом.
         // Все тайлинги Vector2; проверка типа оставлена как защита общей обёртки.
         private void DrawPatternSpaceBlock(MaterialProperty spaceProp, MaterialProperty tilingProp,
-            MaterialProperty rotationProp, float labelIndent = 0f)
+            MaterialProperty rotationProp, string projectionTooltip, float labelIndent = 0f)
         {
-            var spaceLabel = new GUIContent(spaceProp.displayName,
-                "Planar XZ — непрерывность через стыки модулей, но тянется полосами на вертикалях. " +
-                "Mesh UV — одинаково на любой ориентации, но повторяется на каждом экземпляре модуля. " +
-                "Triplanar — три проекции по нормали, без полос на вертикалях; всегда следует " +
-                "Projection Space материала (World нужен для бесшовности через стык модулей).");
+            var spaceLabel = new GUIContent(spaceProp.displayName, projectionTooltip);
             // Выпадающий список проекции — без кнопки сброса (решение владельца 15.09.2026).
             ENV_LitBlocks.DropdownProperty(materialEditor, spaceProp, spaceLabel, labelIndent);
 
@@ -767,12 +898,14 @@ namespace SpiderRig.Editor.Shaders
                 "Каждый слой независимо читает вершинный цвет или общую карту RGB Noise.");
             if (!ENV_LitBlocks.DrawToggleHeader(materialEditor, header, materialMixProp)) return;
 
-            DrawMixLayer(1, mixMap1Prop, mixColor1Prop, mixNormalMap1Prop, mixNormalScale1Prop,
+            DrawMixLayer(1, mixMap1Prop, mixProjection1Prop, mixRotation1Prop, mixColor1Prop, mixNormalMap1Prop, mixNormalScale1Prop,
                 mixMetallic1Prop, mixSmoothness1Prop, mixMaskFromTexture1Prop, mixCoverage1Prop,
-                mixPatternSpace1Prop, mixPatternTiling1Prop, mixPatternRotation1Prop,
+                mixPatternProjection1Prop, mixPatternTiling1Prop, mixPatternRotation1Prop,
                 mixPatternChannel1Prop, mixPatternStrength1Prop, mixPatternBias1Prop, mixEdgeSoftness1Prop,
                 mixMaskMap1Prop, mixMetallicMap1Prop, mixOcclusionMap1Prop, mixSmoothnessMap1Prop,
-                mixOcclusionStrength1Prop);
+                mixOcclusionStrength1Prop,
+                mixHeightMap1Prop, mixHeightStrength1Prop, mixReliefSmoothing1Prop,
+                mixEdgeThickness1Prop, mixInheritRelief1Prop);
 
             if (ENV_LitBlocks.DrawToggleHeader(materialEditor,
                 new GUIContent("Second Blend Layer",
@@ -780,18 +913,21 @@ namespace SpiderRig.Editor.Shaders
                     "Кисть держит сумму весов в пределах единицы, поэтому на практике они почти не перекрываются."),
                 materialMixTwoProp))
             {
-                DrawMixLayer(2, mixMap2Prop, mixColor2Prop, mixNormalMap2Prop, mixNormalScale2Prop,
+                DrawMixLayer(2, mixMap2Prop, mixProjection2Prop, mixRotation2Prop, mixColor2Prop, mixNormalMap2Prop, mixNormalScale2Prop,
                     mixMetallic2Prop, mixSmoothness2Prop, mixMaskFromTexture2Prop, mixCoverage2Prop,
-                    mixPatternSpace2Prop, mixPatternTiling2Prop, mixPatternRotation2Prop,
+                    mixPatternProjection2Prop, mixPatternTiling2Prop, mixPatternRotation2Prop,
                     mixPatternChannel2Prop, mixPatternStrength2Prop, mixPatternBias2Prop, mixEdgeSoftness2Prop,
                     mixMaskMap2Prop, mixMetallicMap2Prop, mixOcclusionMap2Prop, mixSmoothnessMap2Prop,
-                    mixOcclusionStrength2Prop);
+                    mixOcclusionStrength2Prop,
+                    mixHeightMap2Prop, mixHeightStrength2Prop, mixReliefSmoothing2Prop,
+                    mixEdgeThickness2Prop, mixInheritRelief2Prop);
             }
         }
 
         // Один подмешиваемый слой. Общий метод на оба, а не два похожих: тикет требует,
         // чтобы слои вели себя одинаково, и это касается инспектора тоже.
-        private void DrawMixLayer(int index, MaterialProperty mapProp, MaterialProperty colorProp,
+        private void DrawMixLayer(int index, MaterialProperty mapProp,
+            MaterialProperty projectionProp, MaterialProperty rotationProp, MaterialProperty colorProp,
             MaterialProperty normalMapProp, MaterialProperty normalScaleProp,
             MaterialProperty metallicProp, MaterialProperty smoothnessProp,
             MaterialProperty maskSourceProp, MaterialProperty coverageProp,
@@ -801,7 +937,10 @@ namespace SpiderRig.Editor.Shaders
             MaterialProperty patternBiasProp, MaterialProperty edgeSoftnessProp,
             MaterialProperty maskMapProp, MaterialProperty metallicMapProp,
             MaterialProperty occlusionMapProp, MaterialProperty smoothnessMapProp,
-            MaterialProperty occlusionStrengthProp)
+            MaterialProperty occlusionStrengthProp,
+            MaterialProperty heightMapProp = null, MaterialProperty heightStrengthProp = null,
+            MaterialProperty reliefSmoothingProp = null, MaterialProperty edgeThicknessProp = null,
+            MaterialProperty inheritReliefProp = null)
         {
             ENV_LitBlocks.BeginBox();
 
@@ -844,33 +983,62 @@ namespace SpiderRig.Editor.Shaders
             ENV_LitBlocks.Property(materialEditor, patternStrengthProp, strengthLabel);
 
             var biasLabel = new GUIContent("Bias",
-                "Нейтраль канала карты шума. Дефолт 0.5 — без смещения при любой силе для карты " +
-                "со средней яркостью канала около середины.");
+                "0 — без смещения площади покрытия; -1 уменьшает покрытие, +1 наращивает. " +
+                "Смещение масштабируется ручкой Strength. Старое значение: new = (0.5 - old) × 2.");
             ENV_LitBlocks.Property(materialEditor, patternBiasProp, biasLabel);
 
             var edgeLabel = new GUIContent("Softness",
                 "Своя у слоя — у слоёв уже разные канал/сила/байас, общая мягкость была бы " +
                 "произволом (грилл 15.09.2026). 0 — жёсткий край, 1 — мягкий, слой не становится " +
-                "равномерной плёнкой ни при каком значении.");
+                "равномерной плёнкой ни при каком значении. Крупный средний контур " +
+                "остаётся на месте, переход становится шире и положе; мелкие пятна могут растворяться.");
             ENV_LitBlocks.Property(materialEditor, edgeSoftnessProp, edgeLabel);
 
             DrawPatternSpaceBlock(patternSpaceProp, patternTilingProp, patternRotationProp,
+                "Проекция RGB Noise этого слоя — независимо от его карт, другого слоя, Top и градиента. " +
+                "Mesh UV — сырая развёртка меша (Tiling/Offset Base не влияют). Local Triplanar — следует объекту, " +
+                "растягивается с ним. World Triplanar — закреплена в мире. Tiling 1 — повтор на метр (World) " +
+                "или на локальную единицу (Local); размер пятен не связан с размером карт слоя.",
                 BlendPatternLabelIndent);
 
             ENV_LitBlocks.EndBox();
 
-            DrawMixLayerMaterialMaps(index, mapProp, colorProp, normalMapProp, normalScaleProp,
+            DrawMixLayerMaterialMaps(index, mapProp, projectionProp, rotationProp, colorProp, normalMapProp, normalScaleProp,
                 metallicProp, smoothnessProp, maskMapProp, metallicMapProp, occlusionMapProp,
-                smoothnessMapProp, occlusionStrengthProp);
+                smoothnessMapProp, occlusionStrengthProp, heightMapProp, heightStrengthProp);
+
+            if (reliefSmoothingProp != null)
+            {
+                ENV_LitBlocks.BeginBox();
+                EditorGUILayout.LabelField("Relief", EditorStyles.miniBoldLabel);
+                string underlying = index == 1 ? "Base" : "Base и Layer 1";
+                ENV_LitBlocks.Property(materialEditor, reliefSmoothingProp,
+                    new GUIContent("Relief Smoothing",
+                        $"Подавление унаследованного рельефа под слоем ({underlying}): мелкие детали исчезают раньше крупных. " +
+                        "0 — слой повторяет то, что под ним, 1 — текстурный рельеф под слоем скрыт, форма меша остаётся. " +
+                        "Маску и геометрию не меняет."));
+                ENV_LitBlocks.Property(materialEditor, edgeThicknessProp,
+                    new GUIContent("Edge Thickness",
+                        "Виртуальная освещаемая кромка пятна. Минус — углубление, плюс — выступ, 0 — без кромки " +
+                        "(слой остаётся). Внутри пятна всегда материал этого слоя. Не меняет маску, геометрию, " +
+                        "коллизии, силуэт и AO."));
+                ENV_LitBlocks.Property(materialEditor, inheritReliefProp,
+                    new GUIContent("Inherit Underlying Relief",
+                        $"Включено — слой наследует рельеф под ним ({underlying}) с учётом Relief Smoothing. Выключено — остаются " +
+                        "форма меша и собственные Normal/Height слоя. Свои карты слоя от переключателя не гаснут."));
+                ENV_LitBlocks.EndBox();
+            }
         }
 
         private void DrawMixLayerMaterialMaps(int index,
-            MaterialProperty mapProp, MaterialProperty colorProp,
+            MaterialProperty mapProp, MaterialProperty projectionProp, MaterialProperty rotationProp,
+            MaterialProperty colorProp,
             MaterialProperty normalMapProp, MaterialProperty normalScaleProp,
             MaterialProperty metallicProp, MaterialProperty smoothnessProp,
             MaterialProperty maskMapProp, MaterialProperty metallicMapProp,
             MaterialProperty occlusionMapProp, MaterialProperty smoothnessMapProp,
-            MaterialProperty occlusionStrengthProp)
+            MaterialProperty occlusionStrengthProp,
+            MaterialProperty heightMapProp = null, MaterialProperty heightStrengthProp = null)
         {
             bool separate = maskMapSeparateProp.floatValue > 0.5f;
 
@@ -881,6 +1049,10 @@ namespace SpiderRig.Editor.Shaders
                 "Альфа не используется. Дефолт — sRGB 235, потолок дисциплины альбедо (§8), не белый.");
             ENV_LitBlocks.ColorTexture(materialEditor, mapProp, colorProp,
                 new GUIContent($"Albedo L{index}"), colorLabel);
+            // Проекция и поворот — сразу под блоком Tiling/Offset слоя, как у Base.
+            DrawMapProjection(projectionProp, rotationProp, $"Layer {index}",
+                "Albedo, Normal, Metallic, Occlusion, Smoothness",
+                "Маска (Vertex Color / RGB Noise) настраивается отдельно и от проекции карт не зависит. ");
             ENV_LitTextureValidator.DrawTextureCheck(mapProp.textureValue, true, false, null);
 
             var metallicLabel = new GUIContent("Metallic Strength",
@@ -893,8 +1065,11 @@ namespace SpiderRig.Editor.Shaders
                 "Своя сила затенения слоя — AO базы описывает швы базы, под заменённым " +
                 "материалом он не к месту. Без карты комплекта затенения у слоя нет вовсе.");
             const string normalTooltip =
-                "Работает только при включённой карте нормалей материала — инспектор включает " +
-                "её сам при назначении этого слота, но базовую карту всё равно стоит заполнить.";
+                "Сила карты нормалей слоя. 0 — карта не вносит рельеф. Инспектор сам включает " +
+                "обработку нормалей при включённом Material Blending.";
+            var heightStrengthLabel = new GUIContent("Height Strength",
+                "Сила бампа из карты Height слоя, без смещения геометрии. Не меняет площадь покрытия " +
+                "и положение границы. 0 — рельеф Height слоя выключен.");
 
             ENV_LitBlocks.Separator();
             if (separate)
@@ -912,16 +1087,28 @@ namespace SpiderRig.Editor.Shaders
                 ENV_LitBlocks.TextureSlot(materialEditor, occlusionMapProp, "Occlusion", false);
                 ENV_LitTextureValidator.DrawTextureCheck(occlusionMapProp.textureValue, false, false, TextureImporterFormat.BC4);
                 ENV_LitBlocks.Property(materialEditor, occlusionStrengthProp, occlusionLabel);
+
+                if (heightMapProp != null)
+                {
+                    ENV_LitBlocks.Separator();
+                    ENV_LitBlocks.TextureSlot(materialEditor, heightMapProp, "Height", false);
+                    ENV_LitTextureValidator.DrawTextureCheck(heightMapProp.textureValue, false, false, TextureImporterFormat.BC4);
+                    ENV_LitBlocks.Property(materialEditor, heightStrengthProp, heightStrengthLabel);
+                }
             }
             else
             {
                 EditorGUILayout.LabelField("Packed Maps", EditorStyles.miniBoldLabel);
-                ENV_LitBlocks.MutedMiniLabel("R: Metallic · G: AO · B: Unused · A: Smoothness");
+                ENV_LitBlocks.MutedMiniLabel(heightMapProp != null
+                    ? "R: Metallic · G: AO · B: Height · A: Smoothness"
+                    : "R: Metallic · G: AO · B: Unused · A: Smoothness");
                 ENV_LitBlocks.TextureSlot(materialEditor, maskMapProp, string.Empty, false);
                 ENV_LitTextureValidator.DrawTextureCheck(maskMapProp.textureValue, false, false, TextureImporterFormat.BC7);
                 ENV_LitBlocks.Property(materialEditor, metallicProp, metallicLabel);
                 ENV_LitBlocks.Property(materialEditor, smoothnessProp, smoothnessLabel);
                 ENV_LitBlocks.Property(materialEditor, occlusionStrengthProp, occlusionLabel);
+                if (heightStrengthProp != null)
+                    ENV_LitBlocks.Property(materialEditor, heightStrengthProp, heightStrengthLabel);
             }
 
             ENV_LitBlocks.Separator();

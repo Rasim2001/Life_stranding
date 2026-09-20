@@ -1,10 +1,11 @@
 #ifndef SPIDERRIG_ENV_LIT_INPUT_INCLUDED
 #define SPIDERRIG_ENV_LIT_INPUT_INCLUDED
 
-// ENV_Lit — не монолит: пасс ForwardLit (и переиспользуемые без правок ShadowCaster /
-// DepthOnly / DepthNormals / Meta из пакета URP) держатся на контракте
-// InitializeStandardLitSurfaceData(uv, out SurfaceData). Этот файл — наш код: что за
-// поверхность. Спек: docs/lighting-and-shading.md §6.
+// ENV_Lit — не монолит: наши пассы ForwardLit и Meta держатся на контракте
+// InitializeStandardLitSurfaceData(geo, out SurfaceData), а ShadowCaster / DepthOnly /
+// DepthNormals — пакетные пассы URP без правок, они эту функцию не зовут и читают только
+// _BaseMap по Mesh UV. Этот файл — наш код: что за поверхность. Спек:
+// docs/lighting-and-shading.md §6.
 //
 // PBR, metallic workflow, BRDF Unity не форкнут (см. §6 "Модель освещения") —
 // _Reflectance сознательно не реализован в этой версии: диэлектрический F0 = 0.04
@@ -24,6 +25,8 @@
 // переваривает разную раскладку буфера между материалами одного шейдера (§6, правило 1).
 CBUFFER_START(UnityPerMaterial)
 float4 _BaseMap_ST;
+// Поворот рисунка карт Base, градусы — одна ручка на все карты (см. ENV_BuildBaseProjection).
+half _BaseRotation;
 half4 _BaseColor;
 half4 _EmissionColor;
 half _Cutoff;
@@ -47,14 +50,14 @@ half _Surface;
 half _SrcBlend;
 half _DstBlend;
 float4 _EmissionMap_ST;
-// Правка альбедо (_ALBEDO_ADJUST): сдвиг тона, затем контраст и яркость. До освещения —
-// см. §6 "Граница законности эффекта" в спеке.
+// Правка альбедо (_ALBEDO_ADJUST): сдвиг тона, насыщенность, затем контраст и яркость.
+// До освещения — см. §6 "Граница законности эффекта" в спеке.
 half _HueShift;
+half _Saturation;
 half _Contrast;
 half _Brightness;
 // Градиент по высоте (_HEIGHT_GRADIENT): подмешивание цвета к альбедо, не умножение —
-// умножение умеет только темнить. Пространство — общее свойство материала _ProjectionSpace,
-// см. GetProjectionPosition ниже.
+// умножение умеет только темнить. Пространство — своё, _GradientSpace, см. ENV_GradientHeight ниже.
 float _GradientMinHeight;
 float _GradientMaxHeight;
 half4 _GradientColor01;
@@ -63,7 +66,7 @@ half _GradientStrength;
 // Слой наноса (_OVERLAY_LAYER_0): второй материал поверх основного — снег/пыль/грязь.
 // Индекс 0 в именах — с самого начала: материал хранит значения по имени свойства,
 // переименование под второй слой позже молча обнулит настройки на всех материалах.
-// Пространство проекции общее с градиентом — _ProjectionSpace, см. GetProjectionPosition.
+// Пространство слоя — своё, _OverlaySpace0 (карты, наклон и шум Top), см. ENV_OverlayPosition.
 half4 _OverlayColor0;
 // Штатный Scale/Offset слота Albedo Top (тикет 2-03) — заменил самодельный _OverlayTiling0,
 // одна координата на все карты слоя (ENV_OverlayUV0).
@@ -73,8 +76,11 @@ half _OverlayMetallic0;
 half _OverlaySmoothness0;
 half _OverlayCoverage0;
 half _OverlayEdgeSoftness0;
-// Тикет 2-03: одна ручка питает бамп своей Height Top и затекание по высоте БАЗЫ —
-// см. ENV_SampleOverlayHeight0 / ENV_OverlayHeightBumpTS0 / ComputeOverlayMask0.
+half _OverlayThickness0;
+half _OverlayEdgeThickness0;
+half _OverlayInheritRelief0;
+// Height Strength управляет только собственным бампом Top; маска и наследование рельефа
+// используют независимые свойства.
 half _OverlayHeightStrength0;
 half _OverlayOcclusionStrength0;
 // Texel size обоих режимов карты высоты слоя — как _HeightMap_TexelSize у базы, обязаны
@@ -124,14 +130,33 @@ half _MixCoverage2;
 half _MixOcclusionStrength2;
 half4 _MixColor1;
 float4 _MixMap1_ST;
+// Поворот рисунка карт слоя, градусы — одна ручка на все карты слоя (ENV_BuildProjection).
+half _MixRotation1;
 half _MixNormalScale1;
 half _MixMetallic1;
 half _MixSmoothness1;
 half4 _MixColor2;
 float4 _MixMap2_ST;
+half _MixRotation2;
 half _MixNormalScale2;
 half _MixMetallic2;
 half _MixSmoothness2;
+// Рельеф слоя 1 (тикет 05): сила бампа Height, подавление унаследованного рельефа Base, подписанная
+// кромка (-1 углубление .. +1 выступ) и наследование. Texel size обоих режимов карты высоты слоя —
+// как у Base, обязан жить в CBUFFER, иначе уедет в $Globals и уронит SRP Batcher.
+half _MixHeightStrength1;
+half _MixReliefSmoothing1;
+half _MixEdgeThickness1;
+half _MixInheritRelief1;
+float4 _MixHeightMap1_TexelSize;
+float4 _MixMaskMap1_TexelSize;
+// Рельеф слоя 2 (тикет 06) — те же свойства, что у слоя 1.
+half _MixHeightStrength2;
+half _MixReliefSmoothing2;
+half _MixEdgeThickness2;
+half _MixInheritRelief2;
+float4 _MixHeightMap2_TexelSize;
+float4 _MixMaskMap2_TexelSize;
 // Переменные отладочной текстуры Rendering Debugger (material override, mip streaming).
 // Как в стоковом LitInput.hlsl: макрос фиксированного размера, внутрь CBUFFER, без ifdef.
 UNITY_TEXTURE_STREAMING_DEBUG_VARS;
@@ -144,6 +169,7 @@ CBUFFER_END
 
 UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
     UNITY_DOTS_INSTANCED_PROP(float4, _BaseColor)
+    UNITY_DOTS_INSTANCED_PROP(float , _BaseRotation)
     UNITY_DOTS_INSTANCED_PROP(float4, _EmissionColor)
     UNITY_DOTS_INSTANCED_PROP(float , _Cutoff)
     UNITY_DOTS_INSTANCED_PROP(float , _Metallic)
@@ -153,6 +179,7 @@ UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
     UNITY_DOTS_INSTANCED_PROP(float , _HeightStrength)
     UNITY_DOTS_INSTANCED_PROP(float , _Surface)
     UNITY_DOTS_INSTANCED_PROP(float , _HueShift)
+    UNITY_DOTS_INSTANCED_PROP(float , _Saturation)
     UNITY_DOTS_INSTANCED_PROP(float , _Contrast)
     UNITY_DOTS_INSTANCED_PROP(float , _Brightness)
     UNITY_DOTS_INSTANCED_PROP(float , _GradientMinHeight)
@@ -166,6 +193,9 @@ UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
     UNITY_DOTS_INSTANCED_PROP(float , _OverlaySmoothness0)
     UNITY_DOTS_INSTANCED_PROP(float , _OverlayCoverage0)
     UNITY_DOTS_INSTANCED_PROP(float , _OverlayEdgeSoftness0)
+    UNITY_DOTS_INSTANCED_PROP(float , _OverlayThickness0)
+    UNITY_DOTS_INSTANCED_PROP(float , _OverlayEdgeThickness0)
+    UNITY_DOTS_INSTANCED_PROP(float , _OverlayInheritRelief0)
     UNITY_DOTS_INSTANCED_PROP(float , _OverlayHeightStrength0)
     UNITY_DOTS_INSTANCED_PROP(float , _OverlayOcclusionStrength0)
     UNITY_DOTS_INSTANCED_PROP(float4, _PatternTiling0)
@@ -191,17 +221,28 @@ UNITY_DOTS_INSTANCING_START(MaterialPropertyMetadata)
     UNITY_DOTS_INSTANCED_PROP(float , _MixOcclusionStrength2)
     UNITY_DOTS_INSTANCED_PROP(float4, _MixColor1)
     UNITY_DOTS_INSTANCED_PROP(float4, _MixMap1_ST)
+    UNITY_DOTS_INSTANCED_PROP(float , _MixRotation1)
     UNITY_DOTS_INSTANCED_PROP(float , _MixNormalScale1)
     UNITY_DOTS_INSTANCED_PROP(float , _MixMetallic1)
     UNITY_DOTS_INSTANCED_PROP(float , _MixSmoothness1)
     UNITY_DOTS_INSTANCED_PROP(float4, _MixColor2)
     UNITY_DOTS_INSTANCED_PROP(float4, _MixMap2_ST)
+    UNITY_DOTS_INSTANCED_PROP(float , _MixRotation2)
     UNITY_DOTS_INSTANCED_PROP(float , _MixNormalScale2)
     UNITY_DOTS_INSTANCED_PROP(float , _MixMetallic2)
     UNITY_DOTS_INSTANCED_PROP(float , _MixSmoothness2)
+    UNITY_DOTS_INSTANCED_PROP(float , _MixHeightStrength1)
+    UNITY_DOTS_INSTANCED_PROP(float , _MixReliefSmoothing1)
+    UNITY_DOTS_INSTANCED_PROP(float , _MixEdgeThickness1)
+    UNITY_DOTS_INSTANCED_PROP(float , _MixInheritRelief1)
+    UNITY_DOTS_INSTANCED_PROP(float , _MixHeightStrength2)
+    UNITY_DOTS_INSTANCED_PROP(float , _MixReliefSmoothing2)
+    UNITY_DOTS_INSTANCED_PROP(float , _MixEdgeThickness2)
+    UNITY_DOTS_INSTANCED_PROP(float , _MixInheritRelief2)
 UNITY_DOTS_INSTANCING_END(MaterialPropertyMetadata)
 
 static float4 unity_DOTS_Sampled_BaseColor;
+static float  unity_DOTS_Sampled_BaseRotation;
 static float4 unity_DOTS_Sampled_EmissionColor;
 static float  unity_DOTS_Sampled_Cutoff;
 static float  unity_DOTS_Sampled_Metallic;
@@ -211,6 +252,7 @@ static float  unity_DOTS_Sampled_BumpScale;
 static float  unity_DOTS_Sampled_HeightStrength;
 static float  unity_DOTS_Sampled_Surface;
 static float  unity_DOTS_Sampled_HueShift;
+static float  unity_DOTS_Sampled_Saturation;
 static float  unity_DOTS_Sampled_Contrast;
 static float  unity_DOTS_Sampled_Brightness;
 static float  unity_DOTS_Sampled_GradientMinHeight;
@@ -224,6 +266,9 @@ static float  unity_DOTS_Sampled_OverlayMetallic0;
 static float  unity_DOTS_Sampled_OverlaySmoothness0;
 static float  unity_DOTS_Sampled_OverlayCoverage0;
 static float  unity_DOTS_Sampled_OverlayEdgeSoftness0;
+static float  unity_DOTS_Sampled_OverlayThickness0;
+static float  unity_DOTS_Sampled_OverlayEdgeThickness0;
+static float  unity_DOTS_Sampled_OverlayInheritRelief0;
 static float  unity_DOTS_Sampled_OverlayHeightStrength0;
 static float  unity_DOTS_Sampled_OverlayOcclusionStrength0;
 static float4 unity_DOTS_Sampled_PatternTiling0;
@@ -249,18 +294,29 @@ static float  unity_DOTS_Sampled_MixCoverage2;
 static float  unity_DOTS_Sampled_MixOcclusionStrength2;
 static float4 unity_DOTS_Sampled_MixColor1;
 static float4 unity_DOTS_Sampled_MixMap1_ST;
+static float  unity_DOTS_Sampled_MixRotation1;
 static float  unity_DOTS_Sampled_MixNormalScale1;
 static float  unity_DOTS_Sampled_MixMetallic1;
 static float  unity_DOTS_Sampled_MixSmoothness1;
 static float4 unity_DOTS_Sampled_MixColor2;
 static float4 unity_DOTS_Sampled_MixMap2_ST;
+static float  unity_DOTS_Sampled_MixRotation2;
 static float  unity_DOTS_Sampled_MixNormalScale2;
 static float  unity_DOTS_Sampled_MixMetallic2;
 static float  unity_DOTS_Sampled_MixSmoothness2;
+static float  unity_DOTS_Sampled_MixHeightStrength1;
+static float  unity_DOTS_Sampled_MixReliefSmoothing1;
+static float  unity_DOTS_Sampled_MixEdgeThickness1;
+static float  unity_DOTS_Sampled_MixInheritRelief1;
+static float  unity_DOTS_Sampled_MixHeightStrength2;
+static float  unity_DOTS_Sampled_MixReliefSmoothing2;
+static float  unity_DOTS_Sampled_MixEdgeThickness2;
+static float  unity_DOTS_Sampled_MixInheritRelief2;
 
 void SetupDOTSENVLitMaterialPropertyCaches()
 {
     unity_DOTS_Sampled_BaseColor             = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _BaseColor);
+    unity_DOTS_Sampled_BaseRotation          = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _BaseRotation);
     unity_DOTS_Sampled_EmissionColor         = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _EmissionColor);
     unity_DOTS_Sampled_Cutoff                = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _Cutoff);
     unity_DOTS_Sampled_Metallic              = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _Metallic);
@@ -270,6 +326,7 @@ void SetupDOTSENVLitMaterialPropertyCaches()
     unity_DOTS_Sampled_HeightStrength        = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _HeightStrength);
     unity_DOTS_Sampled_Surface               = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _Surface);
     unity_DOTS_Sampled_HueShift              = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _HueShift);
+    unity_DOTS_Sampled_Saturation            = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _Saturation);
     unity_DOTS_Sampled_Contrast              = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _Contrast);
     unity_DOTS_Sampled_Brightness            = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _Brightness);
     unity_DOTS_Sampled_GradientMinHeight     = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _GradientMinHeight);
@@ -283,6 +340,9 @@ void SetupDOTSENVLitMaterialPropertyCaches()
     unity_DOTS_Sampled_OverlaySmoothness0    = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _OverlaySmoothness0);
     unity_DOTS_Sampled_OverlayCoverage0      = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _OverlayCoverage0);
     unity_DOTS_Sampled_OverlayEdgeSoftness0  = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _OverlayEdgeSoftness0);
+    unity_DOTS_Sampled_OverlayThickness0     = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _OverlayThickness0);
+    unity_DOTS_Sampled_OverlayEdgeThickness0 = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _OverlayEdgeThickness0);
+    unity_DOTS_Sampled_OverlayInheritRelief0 = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _OverlayInheritRelief0);
     unity_DOTS_Sampled_OverlayHeightStrength0 = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _OverlayHeightStrength0);
     unity_DOTS_Sampled_OverlayOcclusionStrength0 = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _OverlayOcclusionStrength0);
     unity_DOTS_Sampled_PatternTiling0        = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _PatternTiling0);
@@ -308,20 +368,31 @@ void SetupDOTSENVLitMaterialPropertyCaches()
     unity_DOTS_Sampled_MixOcclusionStrength2 = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _MixOcclusionStrength2);
     unity_DOTS_Sampled_MixColor1             = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _MixColor1);
     unity_DOTS_Sampled_MixMap1_ST            = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _MixMap1_ST);
+    unity_DOTS_Sampled_MixRotation1          = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _MixRotation1);
     unity_DOTS_Sampled_MixNormalScale1       = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _MixNormalScale1);
     unity_DOTS_Sampled_MixMetallic1          = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _MixMetallic1);
     unity_DOTS_Sampled_MixSmoothness1        = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _MixSmoothness1);
     unity_DOTS_Sampled_MixColor2             = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _MixColor2);
     unity_DOTS_Sampled_MixMap2_ST            = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float4, _MixMap2_ST);
+    unity_DOTS_Sampled_MixRotation2          = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _MixRotation2);
     unity_DOTS_Sampled_MixNormalScale2       = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _MixNormalScale2);
     unity_DOTS_Sampled_MixMetallic2          = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _MixMetallic2);
     unity_DOTS_Sampled_MixSmoothness2        = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _MixSmoothness2);
+    unity_DOTS_Sampled_MixHeightStrength1    = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _MixHeightStrength1);
+    unity_DOTS_Sampled_MixReliefSmoothing1   = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _MixReliefSmoothing1);
+    unity_DOTS_Sampled_MixEdgeThickness1     = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _MixEdgeThickness1);
+    unity_DOTS_Sampled_MixInheritRelief1     = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _MixInheritRelief1);
+    unity_DOTS_Sampled_MixHeightStrength2    = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _MixHeightStrength2);
+    unity_DOTS_Sampled_MixReliefSmoothing2   = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _MixReliefSmoothing2);
+    unity_DOTS_Sampled_MixEdgeThickness2     = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _MixEdgeThickness2);
+    unity_DOTS_Sampled_MixInheritRelief2     = UNITY_ACCESS_DOTS_INSTANCED_PROP_WITH_DEFAULT(float , _MixInheritRelief2);
 }
 
 #undef UNITY_SETUP_DOTS_MATERIAL_PROPERTY_CACHES
 #define UNITY_SETUP_DOTS_MATERIAL_PROPERTY_CACHES() SetupDOTSENVLitMaterialPropertyCaches()
 
 #define _BaseColor               unity_DOTS_Sampled_BaseColor
+#define _BaseRotation            unity_DOTS_Sampled_BaseRotation
 #define _EmissionColor           unity_DOTS_Sampled_EmissionColor
 #define _Cutoff                  unity_DOTS_Sampled_Cutoff
 #define _Metallic                unity_DOTS_Sampled_Metallic
@@ -331,6 +402,7 @@ void SetupDOTSENVLitMaterialPropertyCaches()
 #define _HeightStrength          unity_DOTS_Sampled_HeightStrength
 #define _Surface                 unity_DOTS_Sampled_Surface
 #define _HueShift                unity_DOTS_Sampled_HueShift
+#define _Saturation              unity_DOTS_Sampled_Saturation
 #define _Contrast                unity_DOTS_Sampled_Contrast
 #define _Brightness              unity_DOTS_Sampled_Brightness
 #define _GradientMinHeight       unity_DOTS_Sampled_GradientMinHeight
@@ -344,6 +416,9 @@ void SetupDOTSENVLitMaterialPropertyCaches()
 #define _OverlaySmoothness0      unity_DOTS_Sampled_OverlaySmoothness0
 #define _OverlayCoverage0        unity_DOTS_Sampled_OverlayCoverage0
 #define _OverlayEdgeSoftness0    unity_DOTS_Sampled_OverlayEdgeSoftness0
+#define _OverlayThickness0       unity_DOTS_Sampled_OverlayThickness0
+#define _OverlayEdgeThickness0   unity_DOTS_Sampled_OverlayEdgeThickness0
+#define _OverlayInheritRelief0   unity_DOTS_Sampled_OverlayInheritRelief0
 #define _OverlayHeightStrength0  unity_DOTS_Sampled_OverlayHeightStrength0
 #define _OverlayOcclusionStrength0 unity_DOTS_Sampled_OverlayOcclusionStrength0
 #define _PatternTiling0          unity_DOTS_Sampled_PatternTiling0
@@ -369,14 +444,24 @@ void SetupDOTSENVLitMaterialPropertyCaches()
 #define _MixOcclusionStrength2   unity_DOTS_Sampled_MixOcclusionStrength2
 #define _MixColor1               unity_DOTS_Sampled_MixColor1
 #define _MixMap1_ST              unity_DOTS_Sampled_MixMap1_ST
+#define _MixRotation1            unity_DOTS_Sampled_MixRotation1
 #define _MixNormalScale1         unity_DOTS_Sampled_MixNormalScale1
 #define _MixMetallic1            unity_DOTS_Sampled_MixMetallic1
 #define _MixSmoothness1          unity_DOTS_Sampled_MixSmoothness1
 #define _MixColor2               unity_DOTS_Sampled_MixColor2
 #define _MixMap2_ST              unity_DOTS_Sampled_MixMap2_ST
+#define _MixRotation2            unity_DOTS_Sampled_MixRotation2
 #define _MixNormalScale2         unity_DOTS_Sampled_MixNormalScale2
 #define _MixMetallic2            unity_DOTS_Sampled_MixMetallic2
 #define _MixSmoothness2          unity_DOTS_Sampled_MixSmoothness2
+#define _MixHeightStrength1      unity_DOTS_Sampled_MixHeightStrength1
+#define _MixReliefSmoothing1     unity_DOTS_Sampled_MixReliefSmoothing1
+#define _MixEdgeThickness1       unity_DOTS_Sampled_MixEdgeThickness1
+#define _MixInheritRelief1       unity_DOTS_Sampled_MixInheritRelief1
+#define _MixHeightStrength2      unity_DOTS_Sampled_MixHeightStrength2
+#define _MixReliefSmoothing2     unity_DOTS_Sampled_MixReliefSmoothing2
+#define _MixEdgeThickness2       unity_DOTS_Sampled_MixEdgeThickness2
+#define _MixInheritRelief2       unity_DOTS_Sampled_MixInheritRelief2
 
 #endif
 
@@ -395,66 +480,9 @@ TEXTURE2D(_SmoothnessMap);
 TEXTURE2D(_HeightMap);
 SAMPLER(sampler_MetallicMap);
 
-// Раскладка HDRP Mask Map с заменой канала B (detail mask там не нужен) на высоту
-// микрорельефа под слоем наноса — см. §6 "База". Канал был бесплатен и остался: альфа
-// под smoothness уже требует BC7, а BC7 несёт все четыре канала независимо от того,
-// пишем мы в B или нет.
-half4 SampleMaskMap(float2 uv)
-{
-    return SAMPLE_TEXTURE2D(_MaskMap, sampler_MaskMap, uv);
-}
-
 half SampleMaskMapOcclusion(half occlusionChannel)
 {
     return LerpWhiteTo(occlusionChannel, _OcclusionStrength);
-}
-
-// Высота микрорельефа — следует существующему режиму маски, своего переключателя не
-// заводит: владелец объяснил зачем тот режим существует (раздельные карты со стора
-// подключаются быстро, проверяются в движке, потом пакуются в Substance — высота обязана
-// себя вести как остальные каналы). Дефолт "white" = 1.0 — нейтраль: «нет карты» и
-// «выступ» это одно и то же, никакого сдвига маски. Два потребителя: маска слоя наноса
-// (ComputeOverlayMask0) и бамп базовой поверхности (ENV_HeightBumpTS, тикет 02).
-half SampleLayerHeight(float2 uv)
-{
-#if defined(_MASKMAP_SEPARATE)
-    return SAMPLE_TEXTURE2D(_HeightMap, sampler_MetallicMap, uv).r;
-#else
-    // Тот же вызов с теми же аргументами уже стоит в InitializeStandardLitSurfaceData —
-    // компилятор складывает идентичные текстурные выборки. Протащить результат наружу
-    // нельзя: сигнатуру InitializeStandardLitSurfaceData(uv, out SurfaceData) держат
-    // пакетные пассы ShadowCaster/DepthOnly/DepthNormals, которые её тоже вызывают.
-    return SampleMaskMap(uv).b;
-#endif
-}
-
-// Бамп из высоты базы (_HEIGHT_BUMP, тикет 02) — псевдо-нормаль конечной разностью карты
-// высоты по u и по v, шаг один тексель, без смещения геометрии (parallax отклонён на
-// грилле). Разность вперёд (h - h_u), не центральная: две лишние выборки вместо четырёх,
-// ценой полутекселя сдвига рельефа — на бампе не читается. Знак: h - h_u это -dh/du
-// с точностью до положительного множителя, то есть выпуклость карты остаётся выпуклостью.
-//
-// GAIN — именованная константа, подобранная на глаз: сырая разность по текселю на типовой
-// карте даёт 0.01-0.05, без множителя рельеф не виден ни на каком положении ползунка.
-// При GAIN 8 ползунок 1 читается как обычная normal map, 6 — как контрастный рельеф.
-// Если на реальной карте владелец скажет «слабо/сильно» — правится это число, а не
-// диапазон ползунка _HeightStrength.
-half3 ENV_HeightBumpTS(float2 uv)
-{
-    static const half GAIN = half(8.0);
-
-#if defined(_MASKMAP_SEPARATE)
-    float2 texel = _HeightMap_TexelSize.xy;
-#else
-    float2 texel = _MaskMap_TexelSize.xy;
-#endif
-
-    half h = SampleLayerHeight(uv);
-    half hU = SampleLayerHeight(uv + float2(texel.x, 0.0));
-    half hV = SampleLayerHeight(uv + float2(0.0, texel.y));
-
-    half2 slope = half2(h - hU, h - hV) * _HeightStrength * GAIN;
-    return normalize(half3(slope.x, slope.y, half(1.0)));
 }
 
 // Слой наноса (_OVERLAY_LAYER_0): своя пара альбедо/нормаль, один сэмплер на двоих —
@@ -473,7 +501,8 @@ TEXTURE2D(_OverlaySmoothnessMap0);
 // Высота слоя (тикет 2-03) — раздельный режим, на общем sampler_OverlayMap0.
 TEXTURE2D(_OverlayHeightMap0);
 
-// Координата слоя: планарная проекция XZ со штатным Scale/Offset слота Albedo Top.
+// Координата слоя: планарная проекция XZ в пространстве слоя (_OverlaySpace0) со штатным
+// Scale/Offset слота Albedo Top.
 // Одна точка на все карты слоя — принцип тикета 07 «карты одного материала лежат
 // друг на друге» (тикет 2-03: меняется только то, чем задаются координаты — Vector2+Vector2
 // вместо скалярного множителя _OverlayTiling0).
@@ -496,7 +525,7 @@ half ENV_SampleOverlayHeight0(float2 uv)
 }
 
 // Бамп из высоты слоя (тикет 2-03) — та же техника и та же константа GAIN, что у базы
-// (ENV_HeightBumpTS): две ручки силы высоты в одном материале обязаны ощущаться одинаково.
+// (ENV_TopReliefBaseHeightNormalTS): две ручки силы высоты в одном материале обязаны ощущаться одинаково.
 half3 ENV_OverlayHeightBumpTS0(float2 uv)
 {
     static const half GAIN = half(8.0);
@@ -543,6 +572,10 @@ TEXTURE2D(_MixMaskMap2);
 TEXTURE2D(_MixMetallicMap2);
 TEXTURE2D(_MixOcclusionMap2);
 TEXTURE2D(_MixSmoothnessMap2);
+// Высота слоя 1 (тикет 05) — раздельный режим, на общем sampler_MixMap1. В упакованном — канал B _MixMaskMap1.
+TEXTURE2D(_MixHeightMap1);
+// Высота слоя 2 (тикет 06) — так же: раздельный режим на sampler_MixMap1, в упакованном — канал B _MixMaskMap2.
+TEXTURE2D(_MixHeightMap2);
 
 // Художественный узор (_PATTERN), тикет 06 — .scratch/env-lit-layers/issues/
 // 06-noise-per-consumer.md. Одна карта шума на материал, но у каждого потребителя (нанос,
@@ -566,30 +599,30 @@ half ENV_EdgeFromSlider(half slider)
 // среднее источника на месте: сила отвечает за рванину края, не за его положение.
 //
 // saturate обязателен, не для порядка: после сложения источник вылезает за [0,1] на силу/2
-// в обе стороны, а жёсткость концов ENV_ThresholdMask держится на том, что источник её
+// в обе стороны, а жёсткость концов маски держится на том, что источник её
 // не превышает.
 //
-// bias — нейтраль канала карты шума. Дефолт свойства 0.5 предполагает карту со средней
-// яркостью канала около 0.5; у карты с другим средним лечится этой же ручкой на месте,
-// без похода в Photoshop.
+// Bias в инспекторе центрирован вокруг нуля. Нулю соответствует прежняя нейтраль 0.5;
+// -1 эквивалентен прежнему Bias 1 и уменьшает покрытие, +1 эквивалентен Bias 0
+// и наращивает покрытие. Множитель 0.5 сохраняет прежний диапазон смещения.
 half ENV_NoiseSource(half base, half3 noiseRGB, half channel, half strength, half bias)
 {
     half3 channelMask = channel < half(0.5) ? half3(1.0, 0.0, 0.0)
                        : channel < half(1.5) ? half3(0.0, 1.0, 0.0)
                        :                       half3(0.0, 0.0, 1.0);
     half sampleValue = dot(noiseRGB, channelMask);
-    return saturate(base + (sampleValue - bias) * strength);
+    return saturate(base + (sampleValue - half(0.5) + bias * half(0.5)) * strength);
 }
 
-// Тело выборки карты шума — planar XZ (mode 0, дефолт) / UV меша (mode 1) / трипланар
-// (mode 2). И position, и normal приходят уже В ПРОСТРАНСТВЕ ПРОЕКЦИИ (GetProjectionPosition /
-// ENV_GetProjectionNormalFromWorld на стороне вызова) — трипланар следует общему
-// _ProjectionSpace материала, как и всё остальное в этом шейдере, а не форсирует world.
+// Тело выборки карты шума слоя Top — planar XZ (mode 0, дефолт) / UV меша (mode 1) / трипланар
+// (mode 2). Позиция и нормаль приходят уже В ПРОСТРАНСТВЕ СЛОЯ TOP (ENV_OverlayPosition /
+// ENV_OverlayNormalFromWorld на стороне вызова) — трипланар следует _OverlaySpace0.
+// UV — сырой uv0 меша: Tiling и Offset карт Base шум Top не двигают. Шум слоёв Blend сюда
+// не входит — у него своё ядро проекций (ENV_MixLayerMask).
 //
-// mode — компайл-тайм литерал, приходящий с каждого сайта вызова уже вычисленным из
-// соответствующего keyword'а (ENV_SampleNoiseOverlay0 / ENV_SampleNoiseMix ниже). При
-// инлайне ветки по константе сворачиваются, мёртвого кода и лишнего ветвления вокруг
-// выборки текстуры не остаётся.
+// mode — компайл-тайм литерал, приходящий с сайта вызова уже вычисленным из keyword'а
+// (ENV_SampleNoiseOverlay0 ниже). При инлайне ветки по константе сворачиваются, мёртвого
+// кода и лишнего ветвления вокруг выборки текстуры не остаётся.
 //
 // Поворот — матрица 2×2, применяется ДО умножения на тайлинг, поэтому не зависит
 // от масштаба. В трипланаре тот же поворот действует внутри каждой из трёх плоскостей.
@@ -639,42 +672,25 @@ half3 ENV_SampleNoiseOverlay0(float2 uv, float3 positionPS, half3 normalPS)
         uv, positionPS, normalPS, _PatternTiling0.xy, _PatternRotation0, mode);
 }
 
-half3 ENV_SampleNoiseMix1(float2 uv, float3 positionPS, half3 normalPS)
-{
-#if defined(_MIXPATTERNSPACE1_TRIPLANAR)
-    uint mode = 2u;
-#elif defined(_MIXPATTERNSPACE1_UV)
-    uint mode = 1u;
-#else
-    uint mode = 0u;
-#endif
-    return ENV_SampleNoiseCore(TEXTURE2D_ARGS(_PatternMap, sampler_PatternMap),
-        uv, positionPS, normalPS, _MixPatternTiling1.xy, _MixPatternRotation1, mode);
-}
-
-half3 ENV_SampleNoiseMix2(float2 uv, float3 positionPS, half3 normalPS)
-{
-#if defined(_MIXPATTERNSPACE2_TRIPLANAR)
-    uint mode = 2u;
-#elif defined(_MIXPATTERNSPACE2_UV)
-    uint mode = 1u;
-#else
-    uint mode = 0u;
-#endif
-    return ENV_SampleNoiseCore(TEXTURE2D_ARGS(_PatternMap, sampler_PatternMap),
-        uv, positionPS, normalPS, _MixPatternTiling2.xy, _MixPatternRotation2, mode);
-}
-
 // Правка альбедо (_ALBEDO_ADJUST), до освещения — см. спек, "Граница законности эффекта".
-// Порядок фиксирован: сдвиг тона, потом контраст/яркость. Обе часто нужны вместе на одной
-// текстуре («подкрутить тон купленного кирпича»), поэтому один keyword на обе — иначе три
-// отдельных keyword'а дали бы восемь комбинаций варианта шейдера вместо четырёх.
+// Порядок фиксирован: сдвиг тона, насыщенность, потом контраст/яркость. Они часто нужны
+// вместе на одной текстуре («подкрутить тон купленного кирпича»), поэтому один keyword на
+// все — иначе отдельные keyword'ы дали бы кратно больше комбинаций варианта шейдера.
+// Зовётся только для Base (см. InitializeStandardLitSurfaceData): цвета Blend/Top эта правка
+// не видит, а Meta-пасс получает её той же функцией.
 half3 ApplyAlbedoAdjust(half3 albedo)
 {
 #if defined(_ALBEDO_ADJUST)
     half3 hsv = RgbToHsv(albedo);
     hsv.x = frac(hsv.x + _HueShift);
     albedo = HsvToRgb(hsv);
+
+    // Насыщенность: лерп от серого той же яркости (Rec.709, линейное пространство). -1 — ЧБ
+    // с сохранением яркостных деталей, 0 — тождество, +1 — цветность вдвое. Серый остаётся
+    // серым: веса Luminance в сумме дают 1. Свой saturate не нужен — на насыщенных цветах
+    // результат может выйти за [0,1], но его срезает saturate ниже.
+    half luma = Luminance(albedo);
+    albedo = lerp(half3(luma, luma, luma), albedo, half(1.0) + _Saturation);
 
     // saturate обязателен: контраст 2.0 на тёмном текселе даёт (0 - 0.5) * 2 + 0.5 = -0.5,
     // а отрицательное альбедо — это отрицательный diffuse в HDR-таргете (тонмаппер и блум
@@ -684,28 +700,39 @@ half3 ApplyAlbedoAdjust(half3 albedo)
     return albedo;
 }
 
-// Пространство проекции — общее для градиента по высоте и для будущих слоёв наноса/узора
-// (.scratch/env-lit-layers/spec.md). Единственная точка выбора: ForwardLit и мета-пасс
-// добывают обе позиции своим способом (первый — из positionWS, второй — прямо в вершине
-// из positionOS) и зовут одну и ту же функцию, поэтому оба пасса считают эффект одинаково.
-// Неактивная ветка мертва и складывается компилятором — это keyword времени компиляции,
-// не рантайм-ветвление.
-float3 GetProjectionPosition(float3 positionWS, float3 positionOS)
+// Пространство эффектов. Общего переключателя нет: градиент по высоте (_GradientSpace) и слой
+// Top (_OverlaySpace0) выбирают Local/World каждый сам; карты Base и Blend и маски Blend —
+// свои режимы в ядре проекций (ENV_BuildProjection). Оба пасса, ForwardLit и Meta, зовут одни
+// и те же функции, поэтому считают эффект одинаково. Неактивная ветка мертва и складывается
+// компилятором — это keyword времени компиляции, не рантайм-ветвление.
+
+// Высота для градиента: мировая (с учётом camera-relative) или объектная Y.
+float ENV_GradientHeight(float3 positionWS, float3 positionOS)
 {
-#if defined(_PROJECTIONSPACE_WORLD)
+#if defined(_GRADIENTSPACE_WORLD)
+    return GetAbsolutePositionWS(positionWS).y;
+#else
+    return positionOS.y;
+#endif
+}
+
+// Позиция в пространстве слоя Top — координата его карт (XZ) и Mesh/планарного шума.
+float3 ENV_OverlayPosition(float3 positionWS, float3 positionOS)
+{
+#if defined(_OVERLAYSPACE0_WORLD)
     return GetAbsolutePositionWS(positionWS);
 #else
     return positionOS;
 #endif
 }
 
-// Пара к GetProjectionPosition — тот же keyword, для направлений вместо точек. Принимает
-// вектор, уже выраженный в осях пространства проекции (мировых или объектных), и переводит
-// его в мировое пространство. Потребитель — ось «верха» для наклона поверхности
-// (ComputeOverlayMask0). Для нормалей эта функция не годится, см. GetProjectionNormal ниже.
-float3 GetProjectionDirection(float3 dirPS)
+// Пара к ENV_OverlayPosition — для направлений вместо точек. Принимает вектор, уже выраженный
+// в осях пространства слоя (мировых или объектных), и переводит его в мировое пространство.
+// Потребитель — ось «верха» для наклона поверхности (ComputeOverlayMask0). Для нормалей эта
+// функция не годится, см. ENV_OverlayNormal ниже.
+float3 ENV_OverlayDirection(float3 dirPS)
 {
-#if defined(_PROJECTIONSPACE_WORLD)
+#if defined(_OVERLAYSPACE0_WORLD)
     return dirPS;
 #else
     return TransformObjectToWorldDir(dirPS);
@@ -718,24 +745,24 @@ float3 GetProjectionDirection(float3 dirPS)
 // значит тот же бугор нормали занимает в мире впятеро больше — наклон обязан стать положе.
 // Обычная матрица делает ровно наоборот и задирает его (наклон 45° по u → 79° вместо 11°).
 // Модульная геометрия живёт на неравномерном масштабе, так что это обычный случай, не край.
-float3 GetProjectionNormal(float3 normalPS)
+float3 ENV_OverlayNormal(float3 normalPS)
 {
-#if defined(_PROJECTIONSPACE_WORLD)
+#if defined(_OVERLAYSPACE0_WORLD)
     return normalPS;
 #else
     return TransformObjectToWorldNormal(normalPS);
 #endif
 }
 
-// Обратная пара к GetProjectionNormal — переводит МИРОВУЮ нормаль в пространство проекции,
-// а не наоборот. Нужна трипланару (тикет 06): веса ComputeTriplanarWeights обязаны смотреть
-// на нормаль в том же пространстве, что и positionPS, иначе оси весов и оси координат
+// Обратная пара к ENV_OverlayNormal — переводит МИРОВУЮ нормаль в пространство слоя Top,
+// а не наоборот. Нужна трипланару шума Top (тикет 06): веса ComputeTriplanarWeights обязаны
+// смотреть на нормаль в том же пространстве, что и позиция, иначе оси весов и оси координат
 // разъедутся. Под World — тождество, под Local — TransformWorldToObjectNormal (обратная
-// транспонированная матрица; та же оговорка о неравномерном масштабе, что у GetProjectionNormal
+// транспонированная матрица; та же оговорка о неравномерном масштабе, что у ENV_OverlayNormal
 // выше, здесь действует в обратную сторону).
-half3 ENV_GetProjectionNormalFromWorld(half3 normalWS)
+half3 ENV_OverlayNormalFromWorld(half3 normalWS)
 {
-#if defined(_PROJECTIONSPACE_WORLD)
+#if defined(_OVERLAYSPACE0_WORLD)
     return normalWS;
 #else
     return half3(TransformWorldToObjectNormal(float3(normalWS)));
@@ -764,69 +791,69 @@ half3 ENV_ResolveNormalWS(half3 normalTS, half3 vertexNormalWS, half4 tangentWS)
 #endif
 }
 
-// Общий порог всех масок этого шейдера: слоя наноса (02) и обоих слоёв смешивания (04, 06).
-// Спек требует, чтобы все три механизма пользовались одним механизмом маски, а четыре
-// строки порога в трёх копиях — ровно то, что разъезжается молча через год.
-//
-// Роли параметров у потребителей разные, и это осознанно (тикет 06):
-//   нанос — source = ENV_NoiseSource(saturate(наклон + рельеф), ...), coverage = _OverlayCoverage0;
-//   мазок — source = ENV_NoiseSource(0.5, ...) при включённом _PATTERN, иначе константа 0.5,
-//           coverage = вес из канала вершинного цвета либо собственный _MixCoverageN.
-// Оба конца при этом доказуемо жёсткие: coverage = 0 даёт порог 1+edge при source <= 1
-// (маска ровно 0), coverage = 1 даёт порог -edge при source >= 0 (ровно 1).
-//
-// Порог сдвинут на ширину края: lerp(1 + edge, -edge, coverage). Без сдвига coverage = 0
-// давал бы половину интенсивности на идеально горизонтальной поверхности — smoothstep
-// на границе диапазона возвращает 0.5, а не 0. Со сдвигом концы ползунка настоящие:
-// 0 — пусто везде, 1 — покрыто всюду, включая стены.
-//
-// Порог и края считаются в float, хотя всё вокруг — half. Не из осторожности: шаг
-// binary16 около 1.0 равен 2^-10 ~ 9.8e-4, то есть крупнее самой страховки 1e-4.
-// В half при Edge Softness 0 и Coverage 0 обе границы smoothstep округлились бы
-// в одну и ту же 1.0, а на идеально горизонтальной грани source равен ровно 1.0 —
-// вырожденный интервал и деление 0/0 в маске. На D3D11 half это float и случай
-// не наступает; на Metal/Vulkan, где half настоящий 16-битный, наступает.
-// Художественный диапазон не меняется: меняется точность, которой считается край.
-half ENV_ThresholdMask(float source, half coverage, half edgeSoftness)
+// Слой наноса (_OVERLAY_LAYER_0): маска зависит от сглаженной нормали меша до Normal/Height
+// Base, Blend Layers и Top. Та же нормаль задаёт веса трипланарного RGB Noise. Coverage,
+// Edge Softness и настройки Noise — единственные владельцы формы покрытия; рельеф,
+// Relief Smoothing, Edge Thickness и наследование её не двигают.
+// Порог Top в виде поля: d = source - (1 - coverage) — знаковая «глубина» относительно контура,
+// mask = smoothstep(-hw, hw, d). Поле и полуширина нужны кромке слоя 1: градиент от гладкого d
+// (а не от узкой полосы самой маски) не рвётся на блоки 2x2 пикселя. Концы покрытия 0/1 — жёсткие,
+// и поле там уведено далеко от контура (±1), чтобы кромка не появлялась там, где перехода нет.
+// fwidth — до всех выходов: покрытие слоя 1 может идти из вершинного цвета и меняться по пикселям,
+// а производная внутри расходящейся ветки не определена.
+struct ENV_MaskField
 {
-    float edge = max(float(edgeSoftness), 1e-4);
-    float threshold = lerp(1.0 + edge, -edge, float(coverage));
-    return half(smoothstep(threshold - edge, threshold + edge, source));
+    half mask;
+    float d;
+    float hw;
+};
+
+ENV_MaskField ENV_TopReliefMaskField(float source, half coverage, half softness)
+{
+    float d = source - (1.0 - float(coverage));
+    float pixelWidth = max(fwidth(d), 1e-4);
+    ENV_MaskField f;
+    f.hw = max(pixelWidth * 0.5, float(softness) * 0.25);
+    f.d = d;
+    f.mask = half(smoothstep(-f.hw, f.hw, d));
+    if (coverage <= half(0.0))
+    {
+        f.mask = half(0.0);
+        f.d = -1.0;
+    }
+    else if (coverage >= half(1.0))
+    {
+        f.mask = half(1.0);
+        f.d = 1.0;
+    }
+    return f;
 }
 
-// Слой наноса (_OVERLAY_LAYER_0): маска считается по нормали ПОСЛЕ карты нормалей, не по
-// геометрической — разница бесплатная и решающая, иначе слой ляжет ровной плёнкой поверх
-// кладки и проигнорирует рельеф. Входы: наклон поверхности, микрорельеф (высота из
-// SampleLayerHeight — общий канал с раздельным/упакованным режимом маски), свой блок узора
-// (тикет 06 — ENV_SampleNoiseOverlay0/ENV_NoiseSource, смещает базу, если _PATTERN включён)
-// и порог покрытия.
-//
-// normalWS приходит уже ПОСЛЕ карты нормалей — тот же вектор используется и для наклона,
-// и как normalPS для весов трипланара узора наноса (после перевода в пространство проекции).
+half ENV_TopReliefOverlayMask(float source, half coverage, half softness)
+{
+    return ENV_TopReliefMaskField(source, coverage, softness).mask;
+}
+
+// uv — сырой uv0 меша (шум Top в режиме Mesh UV); positionPS — ENV_OverlayPosition.
 half ComputeOverlayMask0(float2 uv, float3 positionPS, half3 normalWS)
 {
 #if defined(_OVERLAY_LAYER_0)
-    half3 upPS = half3(GetProjectionDirection(float3(0.0, 1.0, 0.0)));
+    half3 upPS = half3(ENV_OverlayDirection(float3(0.0, 1.0, 0.0)));
     half slope = saturate(dot(normalWS, upPS));
 
-    // Тикет 2-03: relief считается из высоты БАЗЫ (не своей Height Top) — снег затекает
-    // в рельеф кладки, а не в собственный микрорельеф. saturate, а не деление на границу
-    // ползунка: до 1 ручка набирает затекание в рельеф основания, выше растёт только
-    // толщина слоя (бамп в ENV_OverlayHeightBumpTS0).
-    half height = SampleLayerHeight(uv);
-    half relief = (half(1.0) - height) * saturate(_OverlayHeightStrength0);
-
-    half baseSource = half(saturate(float(slope) + float(relief)));
+    // ENV_Lit Top Relief contract: mask location depends on mesh slope and optional RGB noise only.
+    // Base/Top relief, Thickness and inheritance cannot move this source.
+    half baseSource = slope;
 
 #if defined(_PATTERN)
-    half3 normalPS = ENV_GetProjectionNormalFromWorld(normalWS);
+    half3 normalPS = ENV_OverlayNormalFromWorld(normalWS);
     half3 noise = ENV_SampleNoiseOverlay0(uv, positionPS, normalPS);
     half source = ENV_NoiseSource(baseSource, noise, _PatternChannel0, _PatternStrength0, _PatternBias0);
 #else
     half source = baseSource;
 #endif
 
-    return ENV_ThresholdMask(float(source), _OverlayCoverage0, _OverlayEdgeSoftness0);
+    return ENV_TopReliefOverlayMask(float(source), _OverlayCoverage0, _OverlayEdgeSoftness0);
 #else
     return half(0.0);
 #endif
@@ -914,7 +941,501 @@ half3 GetOverlayNormalWS0(float3 positionPS)
     normalTS = BlendNormal(normalTS, ENV_OverlayHeightBumpTS0(overlayUV));
 #endif
     float3 normalPS = float3(normalTS.x, normalTS.z, normalTS.y);
-    return half3(normalize(GetProjectionNormal(normalPS)));
+    return half3(normalize(ENV_OverlayNormal(normalPS)));
+}
+
+// ENV_Lit Top Relief: frequency-selective inheritance accepted by the visual and GPU-cost gate.
+half ENV_TopReliefReliefMipBias()
+{
+    half thickness = saturate(_OverlayThickness0);
+    return thickness * thickness * half(5.0);
+}
+
+half3 ENV_TopReliefSampleNormalBias(TEXTURE2D_PARAM(map, samp), float2 uv, half scale, half bias)
+{
+    half4 packedNormal = SAMPLE_TEXTURE2D_BIAS(map, samp, uv, bias);
+#if BUMP_SCALE_NOT_SUPPORTED
+    return UnpackNormal(packedNormal);
+#else
+    return UnpackNormalScale(packedNormal, scale);
+#endif
+}
+
+half ENV_TopReliefSampleBaseHeightBias(float2 uv, half bias)
+{
+#if defined(_MASKMAP_SEPARATE)
+    return SAMPLE_TEXTURE2D_BIAS(_HeightMap, sampler_MetallicMap, uv, bias).r;
+#else
+    return SAMPLE_TEXTURE2D_BIAS(_MaskMap, sampler_MaskMap, uv, bias).b;
+#endif
+}
+
+// Бамп из высоты базы (_HEIGHT_BUMP) — псевдо-нормаль конечной разностью карты высоты по u и v,
+// шаг один тексель, без смещения геометрии. Разность вперёд (h - h_u), не центральная: две лишние
+// выборки вместо четырёх, ценой полутекселя сдвига. Знак: h - h_u это -dh/du с точностью
+// до положительного множителя, то есть выпуклость карты остаётся выпуклостью.
+//
+// GAIN подобран на глаз: сырая разность по текселю на типовой карте даёт 0.01-0.05, без
+// множителя рельеф не виден ни на каком положении ползунка. При GAIN 8 ползунок 1 читается
+// как обычная normal map, 6 — как контрастный рельеф. «Слабо/сильно» правится этим числом,
+// а не диапазоном _HeightStrength. Тот же GAIN у бампа Top (ENV_OverlayHeightBumpTS0).
+half3 ENV_TopReliefBaseHeightNormalTS(float2 uv, half bias)
+{
+    static const half GAIN = half(8.0);
+#if defined(_MASKMAP_SEPARATE)
+    float2 texel = _HeightMap_TexelSize.xy;
+#else
+    float2 texel = _MaskMap_TexelSize.xy;
+#endif
+    texel *= exp2(float(bias));
+    half h = ENV_TopReliefSampleBaseHeightBias(uv, bias);
+    half hU = ENV_TopReliefSampleBaseHeightBias(uv + float2(texel.x, 0.0), bias);
+    half hV = ENV_TopReliefSampleBaseHeightBias(uv + float2(0.0, texel.y), bias);
+    half2 slope = half2(h - hU, h - hV) * _HeightStrength * GAIN;
+    return normalize(half3(slope.x, slope.y, half(1.0)));
+}
+
+half3 ENV_TopReliefFilteredBaseNormalTS(float2 uv, half bias)
+{
+#if defined(_NORMALMAP)
+    half3 normalTS = ENV_TopReliefSampleNormalBias(
+        TEXTURE2D_ARGS(_BumpMap, sampler_BumpMap), uv, _BumpScale, bias);
+#else
+    half3 normalTS = half3(0.0, 0.0, 1.0);
+#endif
+#if defined(_HEIGHT_BUMP)
+    normalTS = BlendNormal(normalTS, ENV_TopReliefBaseHeightNormalTS(uv, bias));
+#endif
+    return normalTS;
+}
+
+// ---------------------------------------------------------------------------------------------
+// Проекция карт: Mesh UV / Local Triplanar / World Triplanar. Один механизм на Base и оба слоя
+// Blend: одинаковые настройки дают одну и ту же координату и фазу, поэтому песок Base на груде
+// и песок Blend на полу совпадают без подгонки чисел.
+//
+// Координата карты: uvT = T · R · S · p + o, где p — координата в плоскости проекции (в UV-режиме
+// сырой uv0), S — знак плоскости (только трипланар), R — одна на все карты комплекта Rotation,
+// T и o — Tiling и Offset комплекта (_BaseMap_ST / _MixMapN_ST). Tiling 1 — повтор на метр
+// в World, на локальную единицу в Local, на UV-остров в Mesh UV. Слои независимы: Blend в Mesh UV
+// берёт сырой uv0 и свой ST, Tiling и Offset Base на него не действуют.
+//
+// Вырез и Emission сюда не входят: они всегда по Mesh UV (geo.uv / geo.uv0), потому что тень
+// и глубина — пакетные пассы URP, читающие только UV меша.
+struct ENV_BaseGeometry
+{
+    float2 uv;         // TRANSFORM_TEX(uv0, _BaseMap): вырез и отладка, как раньше
+    float2 uv0;        // сырой UV меша: обратное деление на Tiling теряет данные при Tiling 0
+    float3 positionWS;
+    float3 positionOS;
+    half3 normalWS;    // нормализованная нормаль меша, до карт
+    half4 tangentWS;   // xyz + знак; нулевой без _NORMALMAP — трипланарная нормаль его требует
+};
+
+ENV_BaseGeometry ENV_MakeBaseGeometry(float4 uv, float3 positionWS, half3 normalWS, half4 tangentWS)
+{
+    ENV_BaseGeometry geo;
+    geo.uv = uv.xy;
+    geo.uv0 = uv.zw;
+    geo.positionWS = positionWS;
+    geo.positionOS = TransformWorldToObject(positionWS);
+    geo.normalWS = NormalizeNormalPerPixel(normalWS);
+    geo.tangentWS = tangentWS;
+    return geo;
+}
+
+// Режим проекции комплекта карт: 0 — Mesh UV, 1 — Local, 2 — World. Компайл-тайм литерал
+// из keyword'ов (ENV_LitKeywords.hlsl): при инлайне ветки по константе сворачиваются, а лишние
+// выборки трипланара в UV-режиме исчезают.
+#if defined(_BASEPROJECTION_WORLD)
+#define ENV_BASE_MODE 2u
+#elif defined(_BASEPROJECTION_LOCAL)
+#define ENV_BASE_MODE 1u
+#else
+#define ENV_BASE_MODE 0u
+#endif
+
+#if defined(_MIXPROJECTION1_WORLD)
+#define ENV_MIX1_MODE 2u
+#elif defined(_MIXPROJECTION1_LOCAL)
+#define ENV_MIX1_MODE 1u
+#else
+#define ENV_MIX1_MODE 0u
+#endif
+
+#if defined(_MIXPROJECTION2_WORLD)
+#define ENV_MIX2_MODE 2u
+#elif defined(_MIXPROJECTION2_LOCAL)
+#define ENV_MIX2_MODE 1u
+#else
+#define ENV_MIX2_MODE 0u
+#endif
+
+// Проекция RGB Noise (маски) слоёв Blend — отдельный режим, независимый от карт слоя.
+#if defined(_MIXPATTERNPROJECTION1_WORLD)
+#define ENV_MIXPAT1_MODE 2u
+#elif defined(_MIXPATTERNPROJECTION1_LOCAL)
+#define ENV_MIXPAT1_MODE 1u
+#else
+#define ENV_MIXPAT1_MODE 0u
+#endif
+
+#if defined(_MIXPATTERNPROJECTION2_WORLD)
+#define ENV_MIXPAT2_MODE 2u
+#elif defined(_MIXPATTERNPROJECTION2_LOCAL)
+#define ENV_MIXPAT2_MODE 1u
+#else
+#define ENV_MIXPAT2_MODE 0u
+#endif
+
+struct ENV_Projection
+{
+    float2 uvA;        // Mesh UV: единственная координата. Трипланар: плоскость ZY (вес x)
+    float2 uvB;        // плоскость XZ (вес y)
+    float2 uvC;        // плоскость XY (вес z)
+    half3 weights;
+    half3 axisSign;    // знак нормали по осям: >= 0 даёт +1, а не 0 как sign()
+    half3 normalPS;    // нормаль меша в пространстве проекции
+};
+
+float2x2 ENV_RotationMatrix(half rotationDeg)
+{
+    half s, c;
+    sincos(radians(rotationDeg), s, c);
+    return float2x2(c, -s, s, c);
+}
+
+ENV_Projection ENV_BuildProjection(ENV_BaseGeometry geo, float4 st, half rotationDeg, uint mode)
+{
+    ENV_Projection p = (ENV_Projection)0;
+    float2x2 rotation = ENV_RotationMatrix(rotationDeg);
+    float2 tiling = st.xy;
+    float2 offset = st.zw;
+
+    if (mode != 0u)
+    {
+        float3 positionPS;
+        half3 normalPS;
+        if (mode == 2u)
+        {
+            positionPS = GetAbsolutePositionWS(geo.positionWS);
+            normalPS = geo.normalWS;
+        }
+        else
+        {
+            positionPS = geo.positionOS;
+            // Обратно-транспонированная матрица — та же оговорка о неравномерном масштабе,
+            // что у ENV_OverlayNormalFromWorld.
+            normalPS = half3(TransformWorldToObjectNormal(float3(geo.normalWS)));
+        }
+        float2 uvXZ, uvXY, uvZY;
+        GetTriplanarCoordinate(positionPS, uvXZ, uvXY, uvZY);
+
+        // Обратная сторона плоскости зеркалит рисунок; переворот u по знаку нормали снимает это.
+        half3 axisSign = half3(normalPS.x < 0.0 ? -1.0 : 1.0,
+                               normalPS.y < 0.0 ? -1.0 : 1.0,
+                               normalPS.z < 0.0 ? -1.0 : 1.0);
+        uvZY.x *= axisSign.x;
+        uvXZ.x *= axisSign.y;
+        uvXY.x *= -axisSign.z;
+
+        p.uvA = mul(rotation, uvZY) * tiling + offset;
+        p.uvB = mul(rotation, uvXZ) * tiling + offset;
+        p.uvC = mul(rotation, uvXY) * tiling + offset;
+        p.weights = half3(ComputeTriplanarWeights(real3(normalPS)));
+        p.axisSign = axisSign;
+        p.normalPS = normalPS;
+    }
+    else
+    {
+        p.uvA = mul(rotation, geo.uv0) * tiling + offset;
+        p.uvB = p.uvA;
+        p.uvC = p.uvA;
+        p.weights = half3(1.0, 0.0, 0.0);
+        p.axisSign = half3(1.0, 1.0, 1.0);
+        p.normalPS = geo.normalWS;
+    }
+    return p;
+}
+
+ENV_Projection ENV_BuildBaseProjection(ENV_BaseGeometry geo)
+{
+    return ENV_BuildProjection(geo, _BaseMap_ST, _BaseRotation, ENV_BASE_MODE);
+}
+
+// Выборка карты по проекции. Каналы смешиваются по весам целиком — вызывающий берёт нужный.
+half4 ENV_SampleProjected(TEXTURE2D_PARAM(tex, samp), ENV_Projection p, uint mode)
+{
+    if (mode != 0u)
+    {
+        return SAMPLE_TEXTURE2D(tex, samp, p.uvA) * p.weights.x
+             + SAMPLE_TEXTURE2D(tex, samp, p.uvB) * p.weights.y
+             + SAMPLE_TEXTURE2D(tex, samp, p.uvC) * p.weights.z;
+    }
+    return SAMPLE_TEXTURE2D(tex, samp, p.uvA);
+}
+
+half4 ENV_SampleBase(TEXTURE2D_PARAM(tex, samp), ENV_Projection p)
+{
+    return ENV_SampleProjected(TEXTURE2D_ARGS(tex, samp), p, ENV_BASE_MODE);
+}
+
+// Наклон карты нормалей/высоты переводится из осей текстуры в оси плоскости проекции:
+// dh/dp = S · Rᵀ · T · ∇h. Знак Tiling зеркалит и рисунок, и наклон вместе; неравномерный
+// Tiling поворачивает наклон вслед за растяжением. Длина сохраняется: Tiling задаёт
+// направление, а силу бампа держат Normal/Height Strength.
+half2 ENV_SlopeToPlane(half2 slope, half flipU, float4 st, half rotationDeg)
+{
+    float2 t = float2(slope) * st.xy;
+    float2 g = mul(t, ENV_RotationMatrix(rotationDeg)); // строка × R = Rᵀ · t
+    g.x *= flipU;
+    float len = length(float2(slope));
+    float glen = length(g);
+    return glen > 1e-5 ? half2(g * (len / glen)) : slope;
+}
+
+// Нормали комплекта в касательном пространстве меша. nA/nB/nC — нормали, выбранные по uvA/uvB/uvC
+// (в Mesh UV нужна только nA). Трипланар: перевод наклона в оси плоскостей, whiteout-смешивание
+// (Golus) вокруг нормали меша, затем мир и касательное пространство меша тем же базисом,
+// что собирает InitializeInputData.
+half3 ENV_ProjectedNormalToTS(half3 nA, half3 nB, half3 nC, ENV_BaseGeometry geo,
+                              ENV_Projection p, float4 st, half rotationDeg, uint mode)
+{
+    if (mode != 0u)
+    {
+        nA.xy = ENV_SlopeToPlane(nA.xy, p.axisSign.x, st, rotationDeg);
+        nB.xy = ENV_SlopeToPlane(nB.xy, p.axisSign.y, st, rotationDeg);
+        nC.xy = ENV_SlopeToPlane(nC.xy, -p.axisSign.z, st, rotationDeg);
+
+        // Оси — как в GetTriplanarCoordinate.
+        half3 n = p.normalPS;
+        half3 pX = half3(nA.xy + n.zy, abs(nA.z) * n.x);
+        half3 pY = half3(nB.xy + n.xz, abs(nB.z) * n.y);
+        half3 pZ = half3(nC.xy + n.xy, abs(nC.z) * n.z);
+        half3 perturbedPS = normalize(pX.zyx * p.weights.x + pY.xzy * p.weights.y + pZ.xyz * p.weights.z);
+
+        half3 perturbedWS;
+        if (mode == 2u)
+            perturbedWS = perturbedPS;
+        else
+            perturbedWS = half3(TransformObjectToWorldNormal(float3(perturbedPS)));
+
+        half3 bitangent = geo.tangentWS.w * cross(geo.normalWS, geo.tangentWS.xyz);
+        half3x3 tangentToWorld = half3x3(geo.tangentWS.xyz, bitangent, geo.normalWS);
+        return TransformWorldToTangent(perturbedWS, tangentToWorld);
+    }
+    nA.xy = ENV_SlopeToPlane(nA.xy, half(1.0), st, rotationDeg);
+    return nA;
+}
+
+// Нормаль Base в касательном пространстве меша: карта нормалей + бамп из высоты по проекции.
+// bias — mip-смещение фильтрованного пути Top; основной путь зовёт с нулём и получает
+// то же, что давало отдельное ядро до тикета 02.
+half3 ENV_BaseSurfaceNormalTS(ENV_BaseGeometry geo, ENV_Projection p, half bias)
+{
+    half3 nA = ENV_TopReliefFilteredBaseNormalTS(p.uvA, bias);
+    half3 nB = nA;
+    half3 nC = nA;
+    if (ENV_BASE_MODE != 0u)
+    {
+        nB = ENV_TopReliefFilteredBaseNormalTS(p.uvB, bias);
+        nC = ENV_TopReliefFilteredBaseNormalTS(p.uvC, bias);
+    }
+    return ENV_ProjectedNormalToTS(nA, nB, nC, geo, p, _BaseMap_ST, _BaseRotation, ENV_BASE_MODE);
+}
+
+// ---------------------------------------------------------------------------------------------
+// Рельеф слоёв Blend (тикеты 05, 06) — перенос принятого рельефа Top в касательное пространство меша,
+// где нормаль меша = (0,0,1). Порядок: Base -> Layer 1 -> Layer 2 -> Top; каждый следующий слой наследует итог
+// всех нижних. Общие части (бамп высоты, кромка, размытие) — одни функции на оба слоя: одинаковое поведение
+// обеспечивает код, а не копия.
+
+// Бамп из высоты слоя — та же техника и тот же GAIN, что у Base и Top: три ручки силы высоты
+// в одном материале обязаны ощущаться одинаково. Упакованный режим — канал B карты материала слоя
+// (_MixMaskMapN), раздельный — R отдельной карты Height; какую текстуру подать, решает вызывающий.
+half ENV_SampleLayerHeight(TEXTURE2D_PARAM(heightMap, samp), float2 uv, half bias)
+{
+#if defined(_MASKMAP_SEPARATE)
+    return SAMPLE_TEXTURE2D_BIAS(heightMap, samp, uv, bias).r;
+#else
+    return SAMPLE_TEXTURE2D_BIAS(heightMap, samp, uv, bias).b;
+#endif
+}
+
+half3 ENV_LayerHeightNormalTS(TEXTURE2D_PARAM(heightMap, samp), float2 texelSize, half strength,
+                              float2 uv, half bias)
+{
+    static const half GAIN = half(8.0);
+    float2 texel = texelSize * exp2(float(bias));
+    half h = ENV_SampleLayerHeight(TEXTURE2D_ARGS(heightMap, samp), uv, bias);
+    half hU = ENV_SampleLayerHeight(TEXTURE2D_ARGS(heightMap, samp), uv + float2(texel.x, 0.0), bias);
+    half hV = ENV_SampleLayerHeight(TEXTURE2D_ARGS(heightMap, samp), uv + float2(0.0, texel.y), bias);
+    half2 slope = half2(h - hU, h - hV) * strength * GAIN;
+    return normalize(half3(slope.x, slope.y, half(1.0)));
+}
+
+// Нормаль одной плоскости проекции слоя: карта нормалей + бамп из высоты (по наличию текстуры).
+half3 ENV_Mix1PlaneNormalTS(float2 uv, half bias)
+{
+    half3 n = ENV_TopReliefSampleNormalBias(
+        TEXTURE2D_ARGS(_MixNormalMap1, sampler_MixMap1), uv, _MixNormalScale1, bias);
+#if defined(_MIX_HEIGHT_1)
+#if defined(_MASKMAP_SEPARATE)
+    n = BlendNormal(n, ENV_LayerHeightNormalTS(TEXTURE2D_ARGS(_MixHeightMap1, sampler_MixMap1),
+        _MixHeightMap1_TexelSize.xy, _MixHeightStrength1, uv, bias));
+#else
+    n = BlendNormal(n, ENV_LayerHeightNormalTS(TEXTURE2D_ARGS(_MixMaskMap1, sampler_MixMap1),
+        _MixMaskMap1_TexelSize.xy, _MixHeightStrength1, uv, bias));
+#endif
+#endif
+    return n;
+}
+
+half3 ENV_Mix2PlaneNormalTS(float2 uv, half bias)
+{
+    half3 n = ENV_TopReliefSampleNormalBias(
+        TEXTURE2D_ARGS(_MixNormalMap2, sampler_MixMap1), uv, _MixNormalScale2, bias);
+#if defined(_MIX_HEIGHT_2)
+#if defined(_MASKMAP_SEPARATE)
+    n = BlendNormal(n, ENV_LayerHeightNormalTS(TEXTURE2D_ARGS(_MixHeightMap2, sampler_MixMap1),
+        _MixHeightMap2_TexelSize.xy, _MixHeightStrength2, uv, bias));
+#else
+    n = BlendNormal(n, ENV_LayerHeightNormalTS(TEXTURE2D_ARGS(_MixMaskMap2, sampler_MixMap1),
+        _MixMaskMap2_TexelSize.xy, _MixHeightStrength2, uv, bias));
+#endif
+#endif
+    return n;
+}
+
+// Собственная фактура слоя (Normal + Height) в касательном пространстве меша, по его проекции.
+half3 ENV_Mix1SurfaceNormalTS(ENV_BaseGeometry geo, ENV_Projection p, half bias)
+{
+    half3 nA = ENV_Mix1PlaneNormalTS(p.uvA, bias);
+    half3 nB = nA;
+    half3 nC = nA;
+    if (ENV_MIX1_MODE != 0u)
+    {
+        nB = ENV_Mix1PlaneNormalTS(p.uvB, bias);
+        nC = ENV_Mix1PlaneNormalTS(p.uvC, bias);
+    }
+    return ENV_ProjectedNormalToTS(nA, nB, nC, geo, p, _MixMap1_ST, _MixRotation1, ENV_MIX1_MODE);
+}
+
+half3 ENV_Mix2SurfaceNormalTS(ENV_BaseGeometry geo, ENV_Projection p, half bias)
+{
+    half3 nA = ENV_Mix2PlaneNormalTS(p.uvA, bias);
+    half3 nB = nA;
+    half3 nC = nA;
+    if (ENV_MIX2_MODE != 0u)
+    {
+        nB = ENV_Mix2PlaneNormalTS(p.uvB, bias);
+        nC = ENV_Mix2PlaneNormalTS(p.uvC, bias);
+    }
+    return ENV_ProjectedNormalToTS(nA, nB, nC, geo, p, _MixMap2_ST, _MixRotation2, ENV_MIX2_MODE);
+}
+
+// Mip-смещение размытия подложки слоя: два размытия (своё 5·S² и внешнее — Top) складываются по дисперсии;
+// единица вычитается, потому что ширина без смещения — уже 1 тексель.
+half ENV_CombinedReliefBias(half layerBias, half outerBias)
+{
+    return outerBias > half(0.0)
+        ? half(0.5) * log2(exp2(layerBias * half(2.0)) + exp2(outerBias * half(2.0)) - half(1.0))
+        : layerBias;
+}
+
+// Виртуальная кромка. Градиент берётся от гладкого поля d (знаковая глубина относительно контура), а не от
+// самой маски: маска меняется на 1-3 пикселях, и ddx/ddy по ней считаются блоками 2x2 — по контуру шла
+// пиксельная лесенка. Вес скоса — производная smoothstep по d, посчитанная по пикселю точно; полуширина
+// скоса не меньше 1.5 пикселя, чтобы жёсткий край (Softness 0) давал сглаженную линию, а не аляс.
+// Коэффициенты 0.16 (жёсткий край) .. 0.06 (самый мягкий) — как у Top: шире переход — положе скос.
+// Минус — углубление, плюс — выступ; маску не двигает (mask сюда только приходит).
+half3 ENV_ApplyLayerEdgeTS(half3 coveredTS, ENV_BaseGeometry geo, ENV_MaskField mask,
+                           half edgeThickness, half softness)
+{
+#if defined(_NORMALMAP)
+    float3 dpdx = ddx(geo.positionWS);
+    float3 dpdy = ddy(geo.positionWS);
+    float fieldDx = ddx(mask.d);
+    float fieldDy = ddy(mask.d);
+    float3 fieldGradientWS = dpdx * (fieldDx / max(dot(dpdx, dpdx), 1e-5))
+                           + dpdy * (fieldDy / max(dot(dpdy, dpdy), 1e-5));
+    float capHalfWidth = max(mask.hw, 1.5 * max(fwidth(mask.d), 1e-4));
+    float ramp = saturate((mask.d + capHalfWidth) / (2.0 * capHalfWidth));
+    float bevelWeight = 6.0 * ramp * (1.0 - ramp) / (2.0 * capHalfWidth);
+    half3 tangent = normalize(geo.tangentWS.xyz);
+    half3 bitangent = geo.tangentWS.w * cross(geo.normalWS, tangent);
+    half2 gradientTS = half2(dot(half3(fieldGradientWS), tangent), dot(half3(fieldGradientWS), bitangent))
+                     * half(bevelWeight);
+    half capStrength = clamp(edgeThickness, half(-1.0), half(1.0))
+        * lerp(half(0.16), half(0.06), saturate(softness));
+    coveredTS = normalize(half3(coveredTS.xy - gradientTS * capStrength, coveredTS.z));
+#endif
+    return coveredTS;
+}
+
+// Итоговая нормаль слоя 1 внутри его покрытия. topBias — mip-смещение фильтрованного пути Top
+// (основной путь зовёт с нулём): подавление Base под слоем и Top накладываются как два последовательных
+// размытия, свою фактуру слоя размывает только Top. Кромка от mip не зависит.
+//  * Inherit on, Relief Smoothing 0, силы 0, кромка 0 — ровно нормаль Base.
+//  * Inherit off — форма меша + своя фактура и кромка.
+//  * Кромка: минус — углубление, плюс — выступ; маску не двигает, ведь mask1 сюда только приходит.
+half3 ENV_Layer1CoveredNormalTS(ENV_BaseGeometry geo, ENV_Projection proj1, ENV_MaskField mask1, half topBias)
+{
+    half smoothing = saturate(_MixReliefSmoothing1);
+    half smoothing2 = smoothing * smoothing;
+    half ownBias = max(topBias, half(0.0));
+    half combinedBias = ENV_CombinedReliefBias(smoothing2 * half(5.0), ownBias);
+    half amplitude = (half(1.0) - smoothing2 * smoothing2) * step(half(0.5), _MixInheritRelief1);
+
+    half3 inheritedTS = half3(0.0, 0.0, 1.0);
+    if (amplitude > half(0.0))
+    {
+        half3 baseTS = ENV_BaseSurfaceNormalTS(geo, ENV_BuildBaseProjection(geo), combinedBias);
+        inheritedTS = normalize(lerp(half3(0.0, 0.0, 1.0), baseTS, amplitude));
+    }
+
+    // Своя фактура добавляется вокруг формы меша: нейтральная карта оставляет наклоны нетронутыми.
+    half3 ownTS = ENV_Mix1SurfaceNormalTS(geo, proj1, ownBias);
+    half3 coveredTS = normalize(inheritedTS + half3(ownTS.xy, half(0.0)));
+    return ENV_ApplyLayerEdgeTS(coveredTS, geo, mask1, _MixEdgeThickness1, _MixEdgeSoftness1);
+}
+
+// Поверхность под слоем 2 на mip-смещении bias: Base, а внутри покрытия слоя 1 — итог слоя 1 (с его кромкой).
+// Сложение размытий ассоциативно, поэтому слой 1 сам добавляет своё сглаживание к внешнему bias.
+half3 ENV_SurfaceUnderLayer2TS(ENV_BaseGeometry geo, ENV_Projection proj1, ENV_MaskField mask1, half bias)
+{
+    half3 baseTS = ENV_BaseSurfaceNormalTS(geo, ENV_BuildBaseProjection(geo), bias);
+    half3 layer1TS = ENV_Layer1CoveredNormalTS(geo, proj1, mask1, bias);
+    return lerp(baseTS, layer1TS, mask1.mask);
+}
+
+// Итоговая нормаль слоя 2 внутри его покрытия (тикет 06) — та же схема, что у слоя 1, но подложка —
+// итог Base и слоя 1, а не один Base. topBias — mip-смещение пути Top (основной путь зовёт с нулём).
+// underAtOuterTS — подложка, уже собранная вызывающим на смещении topBias (lerp Base/слой 1 по mask1):
+// при Relief Smoothing 0 собственное размытие слоя нулевое и пересобирать её незачем. Ветвление —
+// по материальной константе, а не по маске: внутри ddx/ddy и выборки с неявными производными.
+half3 ENV_Layer2CoveredNormalTS(ENV_BaseGeometry geo, ENV_Projection proj1, ENV_MaskField mask1,
+                                ENV_Projection proj2, ENV_MaskField mask2,
+                                half topBias, half3 underAtOuterTS)
+{
+    half smoothing = saturate(_MixReliefSmoothing2);
+    half smoothing2 = smoothing * smoothing;
+    half ownBias = max(topBias, half(0.0));
+    half combinedBias = ENV_CombinedReliefBias(smoothing2 * half(5.0), ownBias);
+    half amplitude = (half(1.0) - smoothing2 * smoothing2) * step(half(0.5), _MixInheritRelief2);
+
+    half3 inheritedTS = half3(0.0, 0.0, 1.0);
+    if (amplitude > half(0.0))
+    {
+        half3 underTS = underAtOuterTS;
+        if (smoothing > half(0.0))
+            underTS = ENV_SurfaceUnderLayer2TS(geo, proj1, mask1, combinedBias);
+        inheritedTS = normalize(lerp(half3(0.0, 0.0, 1.0), underTS, amplitude));
+    }
+
+    half3 ownTS = ENV_Mix2SurfaceNormalTS(geo, proj2, ownBias);
+    half3 coveredTS = normalize(inheritedTS + half3(ownTS.xy, half(0.0)));
+    return ENV_ApplyLayerEdgeTS(coveredTS, geo, mask2, _MixEdgeThickness2, _MixEdgeSoftness2);
 }
 
 // Смешивание материалов мазком (_MATERIAL_MIX), тикет 06: покрытие обоих слоёв.
@@ -941,14 +1462,30 @@ half2 SampleMixCoverage(half4 vertexColor)
     return half2(coverage1, coverage2);
 }
 
+// Каналы комплекта материальных карт слоя по проекции — раскладка та же, что у
+// ENV_SampleLayerMaterialChannels (R metallic, G occlusion, A smoothness; раздельный режим — R
+// каждой карты). Возвращает каналы как есть, до множителей слоя.
+half3 ENV_SampleLayerMaterialChannelsProjected(ENV_Projection p, uint mode,
+    TEXTURE2D_PARAM(maskMap, samp),
+    TEXTURE2D(metallicMap), TEXTURE2D(occlusionMap), TEXTURE2D(smoothnessMap))
+{
+#if defined(_MASKMAP_SEPARATE)
+    return half3(ENV_SampleProjected(TEXTURE2D_ARGS(metallicMap, samp), p, mode).r,
+                 ENV_SampleProjected(TEXTURE2D_ARGS(occlusionMap, samp), p, mode).r,
+                 ENV_SampleProjected(TEXTURE2D_ARGS(smoothnessMap, samp), p, mode).r);
+#else
+    half4 packed = ENV_SampleProjected(TEXTURE2D_ARGS(maskMap, samp), p, mode);
+    return half3(packed.r, packed.g, packed.a);
+#endif
+}
+
 // Один подмешиваемый слой. Именно функция, а не два развёрнутых блока на два слоя: тикет
 // требует, чтобы оба слоя вели себя одинаково, и общая функция это гарантирует, а не обещает.
 //
-// Текстуры слоёв идут по UV БАЗЫ (со своим множителем тайлинга), а не планарно. Довод
-// решающий и технический: нормаль слоя тогда смешивается прямо в surfaceData.normalTS,
-// то есть ДО сборки мировой нормали, — и маска наноса ниже по коду видит уже смешанную
-// нормаль сама, без единой правки. Планарный вариант потребовал бы дубля GetOverlayNormalWS0
-// на слой и смешивания нормалей в мировом пространстве после InitializeInputData.
+// Карты слоя идут по СВОЕЙ проекции (Mesh UV / Local / World, свой ST и Rotation), не по UV
+// Base — сэмплируются на стороне вызова. Нормаль слоя по-прежнему смешивается прямо
+// в surfaceData.normalTS, то есть ДО сборки мировой нормали, — маска наноса ниже по коду видит
+// уже смешанную нормаль сама, без единой правки.
 //
 // Нормали лерпятся без нормализации здесь: оба потребителя ниже (ENV_ResolveNormalWS
 // и InitializeInputData) зовут NormalizeNormalPerPixel сами.
@@ -961,31 +1498,15 @@ half2 SampleMixCoverage(half4 vertexColor)
 // materialChannels приходит параметром, а не читается здесь: keyword комплекта свой у каждого
 // слоя (_MIX_MAPS_1 / _MIX_MAPS_2), а функция одна на оба — ветвление на стороне вызова,
 // в ApplyMaterialMix. Без карты слоя вызывающий передаёт half3(1,1,1) — нейтраль формулы
-// "канал × ползунок", арифметически равная сегодняшнему поведению без комплекта.
-//
-// layerUV приходит готовым, не (uv, tiling): та же координата нужна и альбедо/нормали слоя,
-// и его комплекту карт на стороне вызова — вычислять её дважды было бы тем расхождением,
-// которое разъезжается молча через год.
+// "канал × ползунок".
 //
 // alpha — по той же причине, что у наноса и градиента: подмешивать после AlphaModulate надо
 // тем же способом, иначе прозрачная поверхность красит фон.
 void ENV_ApplyMixLayer(
-    float2 layerUV, half mask, half alpha,
-    TEXTURE2D_PARAM(albedoMap, albedoSampler),
-    TEXTURE2D_PARAM(normalMap, normalSampler),
-    half3 tint, half normalScale, half metallic, half smoothness, half3 materialChannels,
-    half occlusionStrength,
+    half3 layerAlbedo, half3 layerNormalTS, half mask, half alpha,
+    half metallic, half smoothness, half3 materialChannels, half occlusionStrength,
     inout SurfaceData surfaceData)
 {
-    half3 layerAlbedo = SAMPLE_TEXTURE2D(albedoMap, albedoSampler, layerUV).rgb * tint;
-
-    half4 packedNormal = SAMPLE_TEXTURE2D(normalMap, normalSampler, layerUV);
-#if BUMP_SCALE_NOT_SUPPORTED
-    half3 layerNormalTS = UnpackNormal(packedNormal);
-#else
-    half3 layerNormalTS = UnpackNormalScale(packedNormal, normalScale);
-#endif
-
     half layerMetallic = metallic * materialChannels.r;
     half layerSmoothness = smoothness * materialChannels.b;
     // Тикет 2-03: своя сила затенения слоя, не общая _OcclusionStrength базы.
@@ -998,80 +1519,131 @@ void ENV_ApplyMixLayer(
     surfaceData.occlusion  = lerp(surfaceData.occlusion, layerOcclusion, mask);
 }
 
+// Маска слоя Blend: покрытие + RGB Noise. Шум читается тем же ядром проекций, что и карты
+// (ENV_BuildProjection), но в своём режиме: Mesh UV / Local / World Triplanar — независимо
+// от карт слоя, другого слоя, Top и градиента. Tiling — повторов на метр (World), на локальную
+// единицу (Local), на UV-остров (Mesh UV, сырой uv0 — Tiling/Offset Base маску не двигают).
+// Веса трипланара — по нормали меша (geo.normalWS), не по рельефу: Normal/Height маску не двигают.
+// Offset у маски нет.
+//
+// При выключенном _PATTERN источник = 0.5 постоянно — без узора детализацию брать неоткуда,
+// граница идёт жёстко по покрытию, мягчит её только Edge Softness слоя.
+half ENV_MixLayerSource(ENV_BaseGeometry geo, float4 tiling, half rotationDeg,
+                        half channel, half strength, half bias, uint mode)
+{
+    half source = half(0.5);
+#if defined(_PATTERN)
+    ENV_Projection p = ENV_BuildProjection(geo, float4(tiling.xy, 0.0, 0.0), rotationDeg, mode);
+    half3 noise = ENV_SampleProjected(TEXTURE2D_ARGS(_PatternMap, sampler_PatternMap), p, mode).rgb;
+    source = ENV_NoiseSource(half(0.5), noise, channel, strength, bias);
+#endif
+    return source;
+}
+
+// Оба слоя — порог Top: середина перехода неподвижна при любой мягкости, концы 0/1 жёсткие.
+// Поле d и полуширина нужны кромке слоя (ENV_ApplyLayerEdgeTS).
+ENV_MaskField ENV_MixLayerMask(ENV_BaseGeometry geo, half coverage, float4 tiling, half rotationDeg,
+                               half channel, half strength, half bias, half softness, uint mode)
+{
+    half source = ENV_MixLayerSource(geo, tiling, rotationDeg, channel, strength, bias, mode);
+    return ENV_TopReliefMaskField(float(source), coverage, softness);
+}
+
 // Смешивание материалов мазком целиком, тикет 06. Зовётся ДО слоя наноса: снег падает
 // на то, что под ним уже сложилось, и маска наноса считается по смешанной нормали.
 //
-// Одна общая карта шума, но каждый слой читает её своей проекцией, тайлингом и поворотом.
-//
-// При выключенном _PATTERN источник = 0.5 у обоих слоёв постоянно — без узора детализацию
-// брать неоткуда, граница идёт жёстко по покрытию, мягчит её только Edge Softness слоя.
-//
-// normalWS — геометрическая мировая нормаль (до карты нормалей, эта функция зовётся раньше
-// её сборки): нужна только как normalPS для весов трипланара узора смешивания.
+// Одна общая карта шума, но каждый слой читает её своей проекцией, тайлингом и поворотом
+// (ENV_MixLayerMask); карты слоя (Albedo/Normal/PBR) имеют свою, независимую (ENV_MIXn_MODE).
 //
 // Слой 2 ложится ПОСЛЕ слоя 1 — порядок фиксирован тикетом 04. Кисть держит сумму весов <= 1
 // («база есть остаток»), так что на практике перекрытия почти нет; при обоих каналах
 // на максимуме выигрывает второй, и это названное решение, а не побочный эффект.
-void ApplyMaterialMix(float2 uv, float3 positionPS, half3 normalWS, half4 vertexColor,
-                      half alpha, inout SurfaceData surfaceData)
+void ApplyMaterialMix(ENV_BaseGeometry geo, half4 vertexColor, half alpha, inout SurfaceData surfaceData)
 {
 #if defined(_MATERIAL_MIX)
     half2 coverage = SampleMixCoverage(vertexColor);
 
-    half source1 = half(0.5);
-#if defined(_PATTERN)
-    half3 normalPS = ENV_GetProjectionNormalFromWorld(normalWS);
-    half3 noise1 = ENV_SampleNoiseMix1(uv, positionPS, normalPS);
-    source1 = ENV_NoiseSource(half(0.5), noise1, _MixPatternChannel1, _MixPatternStrength1, _MixPatternBias1);
-#endif
-
-    float2 layerUV1 = uv * _MixMap1_ST.xy + _MixMap1_ST.zw;
+    ENV_Projection proj1 = ENV_BuildProjection(geo, _MixMap1_ST, _MixRotation1, ENV_MIX1_MODE);
+    half3 layerAlbedo1 = ENV_SampleProjected(
+        TEXTURE2D_ARGS(_MixMap1, sampler_MixMap1), proj1, ENV_MIX1_MODE).rgb * _MixColor1.rgb;
     half3 materialChannels1 = half3(1.0, 1.0, 1.0);
 #if defined(_MIX_MAPS_1)
-    materialChannels1 = ENV_SampleLayerMaterialChannels(layerUV1,
+    materialChannels1 = ENV_SampleLayerMaterialChannelsProjected(proj1, ENV_MIX1_MODE,
         TEXTURE2D_ARGS(_MixMaskMap1, sampler_MixMap1),
         _MixMetallicMap1, _MixOcclusionMap1, _MixSmoothnessMap1);
 #endif
 
-    half mask1 = ENV_ThresholdMask(float(source1), coverage.x, _MixEdgeSoftness1);
-    ENV_ApplyMixLayer(layerUV1, mask1, alpha,
-        TEXTURE2D_ARGS(_MixMap1, sampler_MixMap1),
-        TEXTURE2D_ARGS(_MixNormalMap1, sampler_MixMap1),
-        _MixColor1.rgb, _MixNormalScale1, _MixMetallic1, _MixSmoothness1, materialChannels1,
-        _MixOcclusionStrength1,
+    ENV_MaskField mask1 = ENV_MixLayerMask(geo, coverage.x, _MixPatternTiling1, _MixPatternRotation1,
+        _MixPatternChannel1, _MixPatternStrength1, _MixPatternBias1, _MixEdgeSoftness1, ENV_MIXPAT1_MODE);
+    // Рельеф слоя 1 (тикет 05): наследование Base, своя фактура и кромка — ENV_Layer1CoveredNormalTS.
+    // normalTS читают только ветки под _NORMALMAP; инспектор включает его вместе с Material Blending.
+    half3 layerNormalTS1 = half3(0.0, 0.0, 1.0);
+#if defined(_NORMALMAP)
+    layerNormalTS1 = ENV_Layer1CoveredNormalTS(geo, proj1, mask1, half(0.0));
+#endif
+    ENV_ApplyMixLayer(layerAlbedo1, layerNormalTS1, mask1.mask, alpha,
+        _MixMetallic1, _MixSmoothness1, materialChannels1, _MixOcclusionStrength1,
         surfaceData);
 
 #if defined(_MATERIAL_MIX_2)
-    half source2 = half(0.5);
-#if defined(_PATTERN)
-    half3 noise2 = ENV_SampleNoiseMix2(uv, positionPS, normalPS);
-    source2 = ENV_NoiseSource(half(0.5), noise2, _MixPatternChannel2, _MixPatternStrength2, _MixPatternBias2);
-#endif
-
-    float2 layerUV2 = uv * _MixMap2_ST.xy + _MixMap2_ST.zw;
+    ENV_Projection proj2 = ENV_BuildProjection(geo, _MixMap2_ST, _MixRotation2, ENV_MIX2_MODE);
+    half3 layerAlbedo2 = ENV_SampleProjected(
+        TEXTURE2D_ARGS(_MixMap2, sampler_MixMap1), proj2, ENV_MIX2_MODE).rgb * _MixColor2.rgb;
     half3 materialChannels2 = half3(1.0, 1.0, 1.0);
 #if defined(_MIX_MAPS_2)
-    materialChannels2 = ENV_SampleLayerMaterialChannels(layerUV2,
+    materialChannels2 = ENV_SampleLayerMaterialChannelsProjected(proj2, ENV_MIX2_MODE,
         TEXTURE2D_ARGS(_MixMaskMap2, sampler_MixMap1),
         _MixMetallicMap2, _MixOcclusionMap2, _MixSmoothnessMap2);
 #endif
 
-    half mask2 = ENV_ThresholdMask(float(source2), coverage.y, _MixEdgeSoftness2);
-    ENV_ApplyMixLayer(layerUV2, mask2, alpha,
-        TEXTURE2D_ARGS(_MixMap2, sampler_MixMap1),
-        TEXTURE2D_ARGS(_MixNormalMap2, sampler_MixMap1),
-        _MixColor2.rgb, _MixNormalScale2, _MixMetallic2, _MixSmoothness2, materialChannels2,
-        _MixOcclusionStrength2,
+    ENV_MaskField mask2 = ENV_MixLayerMask(geo, coverage.y, _MixPatternTiling2, _MixPatternRotation2,
+        _MixPatternChannel2, _MixPatternStrength2, _MixPatternBias2, _MixEdgeSoftness2, ENV_MIXPAT2_MODE);
+    // Рельеф слоя 2 (тикет 06): подложка — итог Base и слоя 1, уже лежащий в surfaceData.normalTS.
+    half3 layerNormalTS2 = half3(0.0, 0.0, 1.0);
+#if defined(_NORMALMAP)
+    layerNormalTS2 = ENV_Layer2CoveredNormalTS(geo, proj1, mask1, proj2, mask2, half(0.0), surfaceData.normalTS);
+#endif
+    ENV_ApplyMixLayer(layerAlbedo2, layerNormalTS2, mask2.mask, alpha,
+        _MixMetallic2, _MixSmoothness2, materialChannels2, _MixOcclusionStrength2,
         surfaceData);
 #endif
 #endif
+}
+
+half3 ENV_TopReliefFilteredSurfaceNormalTS(ENV_BaseGeometry geo, half4 vertexColor)
+{
+    // Все три комплекта идут по своим проекциям: иначе наследование Top тянуло бы под себя
+    // UV-рельеф, которого у слоя уже нет.
+    half bias = ENV_TopReliefReliefMipBias();
+    half3 normalTS = ENV_BaseSurfaceNormalTS(geo, ENV_BuildBaseProjection(geo), bias);
+
+#if defined(_MATERIAL_MIX)
+    half2 coverage = SampleMixCoverage(vertexColor);
+    ENV_MaskField mask1 = ENV_MixLayerMask(geo, coverage.x, _MixPatternTiling1, _MixPatternRotation1,
+        _MixPatternChannel1, _MixPatternStrength1, _MixPatternBias1, _MixEdgeSoftness1, ENV_MIXPAT1_MODE);
+    ENV_Projection proj1 = ENV_BuildProjection(geo, _MixMap1_ST, _MixRotation1, ENV_MIX1_MODE);
+    // Внутри покрытия слоя 1 Top наследует его итог (Base под ним, своя фактура, кромка), а не голый Base.
+    half3 layerNormal1 = ENV_Layer1CoveredNormalTS(geo, proj1, mask1, bias);
+    normalTS = lerp(normalTS, layerNormal1, mask1.mask);
+
+#if defined(_MATERIAL_MIX_2)
+    ENV_MaskField mask2 = ENV_MixLayerMask(geo, coverage.y, _MixPatternTiling2, _MixPatternRotation2,
+        _MixPatternChannel2, _MixPatternStrength2, _MixPatternBias2, _MixEdgeSoftness2, ENV_MIXPAT2_MODE);
+    ENV_Projection proj2 = ENV_BuildProjection(geo, _MixMap2_ST, _MixRotation2, ENV_MIX2_MODE);
+    // Внутри покрытия слоя 2 Top наследует его итог (Base и слой 1 под ним, своя фактура, кромка):
+    // normalTS сейчас — подложка Base/слой 1 на смещении Top.
+    half3 layerNormal2 = ENV_Layer2CoveredNormalTS(geo, proj1, mask1, proj2, mask2, bias, normalTS);
+    normalTS = lerp(normalTS, layerNormal2, mask2.mask);
+#endif
+#endif
+    return normalize(normalTS);
 }
 
 // ENV_Lit: градиент по высоте (_HEIGHT_GRADIENT). Раньше жил в ENV_LitForwardPass.hlsl —
 // переехал сюда вместе с собственным мета-пассом (ENV_LitMetaPass.hlsl), который теперь
 // тоже его вызывает. Принимает готовую высоту, а не позицию: в мета-пассе обратного
 // преобразования из мировой позиции нет, каждый пасс подаёт число своим способом через
-// GetProjectionPosition выше.
+// ENV_GradientHeight выше.
 //
 // alpha приезжает параметром из-за порядка: InitializeStandardLitSurfaceData уже прогнала
 // альбедо через AlphaModulate (на Multiply-блендинге это lerp к белому по альфе), а мы
@@ -1096,9 +1668,16 @@ half3 ApplyHeightGradient(half3 albedo, float height, half alpha)
     return albedo;
 }
 
-inline void InitializeStandardLitSurfaceData(float2 uv, out SurfaceData outSurfaceData)
+inline void InitializeStandardLitSurfaceData(ENV_BaseGeometry geo, out SurfaceData outSurfaceData)
 {
-    half4 albedoAlpha = SampleAlbedoAlpha(uv, TEXTURE2D_ARGS(_BaseMap, sampler_BaseMap));
+    ENV_Projection proj = ENV_BuildBaseProjection(geo);
+
+    half4 albedoAlpha = ENV_SampleBase(TEXTURE2D_ARGS(_BaseMap, sampler_BaseMap), proj);
+#if defined(_ALPHATEST_ON) || defined(_SURFACE_TYPE_TRANSPARENT)
+    // Вырез и прозрачность — всегда по Mesh UV без Rotation: те же координаты читают пакетные
+    // ShadowCaster/DepthOnly/DepthNormals, и тень с глубиной совпадают с видимым вырезом.
+    albedoAlpha.a = SampleAlbedoAlpha(geo.uv, TEXTURE2D_ARGS(_BaseMap, sampler_BaseMap)).a;
+#endif
     outSurfaceData.alpha = Alpha(albedoAlpha.a, _BaseColor, _Cutoff);
 
     outSurfaceData.albedo = albedoAlpha.rgb * _BaseColor.rgb;
@@ -1110,11 +1689,11 @@ inline void InitializeStandardLitSurfaceData(float2 uv, out SurfaceData outSurfa
     half smoothnessChannel;
 
 #if defined(_MASKMAP_SEPARATE)
-    metallicChannel = SAMPLE_TEXTURE2D(_MetallicMap, sampler_MetallicMap, uv).r;
-    occlusionChannel = SAMPLE_TEXTURE2D(_OcclusionMap, sampler_MetallicMap, uv).r;
-    smoothnessChannel = SAMPLE_TEXTURE2D(_SmoothnessMap, sampler_MetallicMap, uv).r;
+    metallicChannel = ENV_SampleBase(TEXTURE2D_ARGS(_MetallicMap, sampler_MetallicMap), proj).r;
+    occlusionChannel = ENV_SampleBase(TEXTURE2D_ARGS(_OcclusionMap, sampler_MetallicMap), proj).r;
+    smoothnessChannel = ENV_SampleBase(TEXTURE2D_ARGS(_SmoothnessMap, sampler_MetallicMap), proj).r;
 #else
-    half4 mask = SampleMaskMap(uv);
+    half4 mask = ENV_SampleBase(TEXTURE2D_ARGS(_MaskMap, sampler_MaskMap), proj);
     metallicChannel = mask.r;
     occlusionChannel = mask.g;
     smoothnessChannel = mask.a;
@@ -1130,27 +1709,22 @@ inline void InitializeStandardLitSurfaceData(float2 uv, out SurfaceData outSurfa
 
     // Без инверсии зелёного канала: она применилась бы только здесь, а пакетные пассы
     // DepthNormals / ShadowCaster сэмплят нормаль сами — см. комментарий в ENV_Lit.shader.
-    outSurfaceData.normalTS = SampleNormal(uv, TEXTURE2D_ARGS(_BumpMap, sampler_BumpMap), _BumpScale);
-    // Бамп из высоты базы (_HEIGHT_BUMP, тикет 02) — до слоёв смешивания (они перезаписывают
-    // normalTS по маске, рельеф базы под заменённым материалом оставаться не должен) и до
-    // сборки нормали для маски наноса (ENV_ResolveNormalWS), то есть нанос видит рельеф базы.
-#if defined(_HEIGHT_BUMP)
-    outSurfaceData.normalTS = BlendNormal(outSurfaceData.normalTS, ENV_HeightBumpTS(uv));
+    // Карта нормалей и бамп из высоты базы (_HEIGHT_BUMP) — до слоёв смешивания (они
+    // перезаписывают normalTS по маске, рельеф базы под заменённым материалом оставаться
+    // не должен) и до сборки нормали для маски наноса (ENV_ResolveNormalWS), то есть нанос
+    // видит рельеф базы. Читают normalTS только ветки под _NORMALMAP — без него плоская.
+#if defined(_NORMALMAP)
+    outSurfaceData.normalTS = ENV_BaseSurfaceNormalTS(geo, proj, half(0.0));
+#else
+    outSurfaceData.normalTS = half3(0.0, 0.0, 1.0);
 #endif
 
     outSurfaceData.occlusion = SampleMaskMapOcclusion(occlusionChannel);
 
-    // Свой тайлинг у эмиссии: uv приезжает уже трансформированным по _BaseMap_ST (и в
-    // ForwardLit, и в Meta-пассе). URP-шный UNDO_TRANSFORM_TEX сюда не годится — вне
-    // DEBUG_DISPLAY это no-op (see Debug/DebuggingCommon.hlsl), задуманный как быстрый путь
-    // для отладочного оверлея, а не как всегда работающая функция. Разворачиваем сами.
-    // Тайлинг 0 инспектор принимает молча — без защиты деление даёт inf, TRANSFORM_TEX
-    // тащит его дальше, и эмиссия возвращает NaN, который блум размазывает по кадру.
-    // Знак сохраняем: отрицательный тайлинг — это законное зеркалирование.
-    float2 safeTiling = max(abs(_BaseMap_ST.xy), 1e-5);
-    float2 baseTiling = _BaseMap_ST.xy < 0.0 ? -safeTiling : safeTiling;
-    float2 uv0 = (uv - _BaseMap_ST.zw) / baseTiling;
-    float2 emissionUV = TRANSFORM_TEX(uv0, _EmissionMap);
+    // Эмиссия — по Mesh UV со своим тайлингом, проекция и Rotation Base на неё не действуют.
+    // Берётся сырой uv0 из вершины: прежнее обратное деление на _BaseMap_ST.xy теряло данные
+    // при Tiling 0 (inf, а с ним NaN, который блум размазывает по кадру).
+    float2 emissionUV = TRANSFORM_TEX(geo.uv0, _EmissionMap);
     outSurfaceData.emission = SampleEmission(emissionUV, _EmissionColor.rgb, TEXTURE2D_ARGS(_EmissionMap, sampler_EmissionMap));
 
     outSurfaceData.clearCoatMask = half(0.0);

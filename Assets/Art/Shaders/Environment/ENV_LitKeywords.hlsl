@@ -4,8 +4,6 @@
 // пассах отдельно; здесь одна точка объявления не даёт им разойтись молча.
 //
 // Что сюда НЕ едет и почему — не наводить тут порядок следующим заходом:
-//   _PROJECTIONSPACE_WORLD — в ForwardLit объявлен с суффиксом _fragment, в Meta без
-//     него: мета резолвит positionPS в вершине, форвард — во фрагменте (ENV_Lit.shader).
 //   _NORMALMAP — гейтит вершинную работу (сборку тангента) в обоих пассах, не только
 //     фрагментную часть.
 //   _OVERLAY_HEIGHT_0 — только ForwardLit: итоговая нормаль наноса не участвует
@@ -22,14 +20,28 @@
 #pragma shader_feature_local_fragment _OVERLAY_LAYER_0
 #pragma shader_feature_local_fragment _PATTERN
 
-// Проекция узора наноса и узора смешивания — раздельные keyword'ы, у каждого своя
-// трёхпозиционная форма (позиция 0 — Planar XZ, дефолт; UV — развёртка меша; Triplanar).
-// Keyword, не сравнение с uniform: у трипланара меняется число текстурных выборок между
-// ветками (одна против трёх), а производные UV внутри ветвления формально не определены —
-// тот случай, где платформенные компиляторы расходятся.
+// Проекция шума наноса — трёхпозиционная форма (позиция 0 — Planar XZ, дефолт; UV — развёртка
+// меша; Triplanar). Keyword, не сравнение с uniform: у трипланара меняется число текстурных
+// выборок между ветками (одна против трёх), а производные UV внутри ветвления формально
+// не определены — тот случай, где платформенные компиляторы расходятся.
 #pragma shader_feature_local_fragment _ _PATTERNSPACE0_UV _PATTERNSPACE0_TRIPLANAR
-#pragma shader_feature_local_fragment _ _MIXPATTERNSPACE1_UV _MIXPATTERNSPACE1_TRIPLANAR
-#pragma shader_feature_local_fragment _ _MIXPATTERNSPACE2_UV _MIXPATTERNSPACE2_TRIPLANAR
+
+// Пространство эффектов — у каждого потребителя своё, общего переключателя нет:
+// слой Top (карты, наклон, шум) и градиент по высоте. Только World; Local — отсутствие keyword'а.
+#pragma shader_feature_local_fragment _OVERLAYSPACE0_WORLD
+#pragma shader_feature_local_fragment _GRADIENTSPACE_WORLD
+
+// Проекция карт Base: позиция 0 — Mesh UV (обе выключены), Local и World — трипланар.
+// Тоже keyword, а не uniform: у трипланара три выборки на карту вместо одной.
+#pragma shader_feature_local_fragment _ _BASEPROJECTION_LOCAL _BASEPROJECTION_WORLD
+
+// Проекция карт слоёв Blend — у каждого слоя своя, независимо от Base и друг от друга.
+#pragma shader_feature_local_fragment _ _MIXPROJECTION1_LOCAL _MIXPROJECTION1_WORLD
+#pragma shader_feature_local_fragment _ _MIXPROJECTION2_LOCAL _MIXPROJECTION2_WORLD
+
+// Проекция RGB Noise (маски) слоёв Blend — отдельно от карт слоя, другого слоя, Top и градиента.
+#pragma shader_feature_local_fragment _ _MIXPATTERNPROJECTION1_LOCAL _MIXPATTERNPROJECTION1_WORLD
+#pragma shader_feature_local_fragment _ _MIXPATTERNPROJECTION2_LOCAL _MIXPATTERNPROJECTION2_WORLD
 
 #pragma shader_feature_local_fragment _MATERIAL_MIX
 #pragma shader_feature_local_fragment _MATERIAL_MIX_2

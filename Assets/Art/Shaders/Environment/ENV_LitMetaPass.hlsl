@@ -34,21 +34,23 @@ struct Attributes
 };
 
 // ENV_Lit: бюджет интерполяторов при target 2.0 — восемь. Заняты: uv(0), VizUV(1),
-// LightCoord(2) — оба только под EDITOR_VISUALIZATION, positionPS(3), normalWS(4),
+// LightCoord(2) — оба только под EDITOR_VISUALIZATION, positionWS(3), normalWS(4),
 // tangentWS(5) — только под _NORMALMAP, vertexColor(6). Худший случай — 7 из 8, один
 // слот свободен под будущие тикеты 02-04.
 struct Varyings
 {
     float4 positionCS   : SV_POSITION;
-    float2 uv           : TEXCOORD0;
+    // ENV_Lit: xy — TRANSFORM_TEX(uv0, _BaseMap), zw — сырой uv0 (см. ENV_LitForwardPass.hlsl).
+    float4 uv           : TEXCOORD0;
 #ifdef EDITOR_VISUALIZATION
     float2 VizUV        : TEXCOORD1;
     float4 LightCoord   : TEXCOORD2;
 #endif
-    // ENV_Lit: единая точка пространства проекции — GetProjectionPosition (ENV_LitInput.hlsl)
-    // резолвится здесь, в вершине, а не во фрагменте: преобразование аффинное, интерполяция
-    // даёт то же число, и это экономит интерполятор против провоза обеих позиций отдельно.
-    float3 positionPS   : TEXCOORD3;
+    // ENV_Lit: мировая позиция. Пространство проекции резолвится во фрагменте так же, как
+    // в ForwardLit (positionOS = TransformWorldToObject, дальше ENV_OverlayPosition):
+    // трипланар карт Base нужны и мировая, и объектная позиция, а преобразование аффинное,
+    // поэтому интерполяция даёт то же число, что считалось бы в вершине.
+    float3 positionWS   : TEXCOORD3;
     // ENV_Lit: мировая нормаль меша — вход для маски слоя наноса (02), она считается
     // по нормали ПОСЛЕ карты нормалей (см. ENV_ResolveNormalWS в ENV_LitInput.hlsl).
     float3 normalWS     : TEXCOORD4;
@@ -67,14 +69,13 @@ Varyings ENV_LitMetaVertex(Attributes input)
     // и для UV-развёртки лайтмапа затирает только локальную копию x/y внутри себя. Читать
     // input.positionOS дальше для мировой/объектной позиции безопасно.
     output.positionCS = UnityMetaVertexPosition(input.positionOS.xyz, input.uv1, input.uv2);
-    output.uv = TRANSFORM_TEX(input.uv0, _BaseMap);
+    output.uv = float4(TRANSFORM_TEX(input.uv0, _BaseMap), input.uv0);
 
 #ifdef EDITOR_VISUALIZATION
     UnityEditorVizData(input.positionOS.xyz, input.uv0, input.uv1, input.uv2, output.VizUV, output.LightCoord);
 #endif
 
-    float3 positionWS = TransformObjectToWorld(input.positionOS.xyz);
-    output.positionPS = GetProjectionPosition(positionWS, input.positionOS.xyz);
+    output.positionWS = TransformObjectToWorld(input.positionOS.xyz);
 
     VertexNormalInputs normalInput = GetVertexNormalInputs(input.normalOS, input.tangentOS);
     output.normalWS = normalInput.normalWS;
@@ -96,31 +97,38 @@ half4 ENV_LitMetaFragment(Varyings input) : SV_Target
     metaInputViz.LightCoord = input.LightCoord;
 #endif
 
+    // ENV_Lit: та же геометрия карт Base, что в ForwardLit — покрытие и цвет в запечке
+    // обязаны совпадать с видимыми при любой проекции.
+#if defined(_NORMALMAP)
+    half4 baseTangentWS = input.tangentWS;
+#else
+    half4 baseTangentWS = half4(0.0, 0.0, 0.0, 1.0);
+#endif
+    ENV_BaseGeometry baseGeo = ENV_MakeBaseGeometry(input.uv, input.positionWS, input.normalWS, baseTangentWS);
+
     SurfaceData surfaceData;
-    InitializeStandardLitSurfaceData(input.uv, surfaceData);
+    InitializeStandardLitSurfaceData(baseGeo, surfaceData);
 
     // ENV_Lit: та же точка входа, что и в ForwardLit — оба пасса считают эффект одинаково.
-    surfaceData.albedo = ApplyHeightGradient(surfaceData.albedo, input.positionPS.y, surfaceData.alpha);
+    surfaceData.albedo = ApplyHeightGradient(surfaceData.albedo,
+        ENV_GradientHeight(input.positionWS, baseGeo.positionOS), surfaceData.alpha);
 
     // ENV_Lit: те же ApplyMaterialMix/ComputeOverlayMask0, что и в ForwardLit — оба пасса
     // считают поверхность одной парой функций (каждая сама сэмплирует свой блок узора,
     // тикет 06), иначе площадь эффекта в кадре и в запечке разойдётся. Нормаль здесь
     // не собирается: UnityMetaFragment её не читает, но normalTS мазок всё равно правит —
     // её читает маска наноса ниже.
-    ApplyMaterialMix(input.uv, input.positionPS, input.normalWS, input.vertexColor,
-                     surfaceData.alpha, surfaceData);
+    ApplyMaterialMix(baseGeo, input.vertexColor, surfaceData.alpha, surfaceData);
 
 #if defined(_OVERLAY_LAYER_0)
     // ENV_Lit: та же ComputeOverlayMask0/ApplyOverlayLayer0, что и в ForwardLit — то самое
     // место, где «площадь наноса в запечке совпадает с видимой» либо выполняется, либо нет.
     // Мировая нормаль слоя здесь не считается: UnityMetaFragment её не читает вовсе.
-#if defined(_NORMALMAP)
-    half3 overlayBaseNormalWS = ENV_ResolveNormalWS(surfaceData.normalTS, input.normalWS, input.tangentWS);
-#else
-    half3 overlayBaseNormalWS = normalize(input.normalWS);
-#endif
-    half overlayMask = ComputeOverlayMask0(input.uv, input.positionPS, overlayBaseNormalWS);
-    ApplyOverlayLayer0(input.positionPS, overlayMask, surfaceData.alpha, surfaceData);
+    // ENV_Lit Top Relief: Meta uses the same mesh-normal mask contract as ForwardLit.
+    float3 positionPS = ENV_OverlayPosition(input.positionWS, baseGeo.positionOS);
+    half3 overlayBaseNormalWS = NormalizeNormalPerPixel(input.normalWS);
+    half overlayMask = ComputeOverlayMask0(baseGeo.uv0, positionPS, overlayBaseNormalWS);
+    ApplyOverlayLayer0(positionPS, overlayMask, surfaceData.alpha, surfaceData);
 #endif
 
     BRDFData brdfData;

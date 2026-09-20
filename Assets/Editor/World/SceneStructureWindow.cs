@@ -343,61 +343,62 @@ namespace Editor.World
             }
         }
 
-        // Гейт по включённому потребителю пространства, а не по одному _ProjectionSpace:
-        // Local сам по себе ни на что не влияет, и без гейта правило кричало бы на каждом
-        // материале с дефолтными настройками.
-        //
-        // Безусловных потребителей два: градиент по высоте и слой наноса
-        // (.scratch/env-lit-layers/issues/02-overlay-layer.md). Оба читают positionPS всегда,
-        // независимо от прочих настроек.
-        //
-        // Третий — смешивание материалов мазком (04), и он условный, поэтому вынесен
-        // в отдельный метод: сам по себе _MaterialMix координат не читает. Текстуры слоёв
-        // идут по UV базы, а вес в вершинном режиме приходит из покраски — ни там, ни там
-        // пространства проекции нет. Оно появляется только через GetPatternUV, у которой
-        // два входа: узор и текстурная маска мазка. И только в планарном режиме —
-        // Mesh UV не трогает positionPS вовсе.
-        //
-        // HasProperty на каждой галочке отдельно, а не одним «и»: материал на старой
-        // ревизии ENV_Lit несёт не весь набор, и отсутствие одного свойства не должно
-        // отключать проверку по остальным.
+        // Гейт по включённому потребителю, а не по значению одного свойства: Local сам по себе
+        // ни на что не влияет, и без гейта правило кричало бы на каждом материале с дефолтными
+        // настройками. Общего переключателя пространства нет — у каждого эффекта свой выбор,
+        // и проверяются только реально активные потребители:
+        //   - карты Base (_BaseProjection) — всегда активны, галочки нет;
+        //   - смешивание (_MaterialMix): карты Layer 1 и маска Layer 1; Layer 2 — только при
+        //     включённом Second Blend Layer, и тогда его карты и маска;
+        //   - маски Blend читают проекцию только при включённом RGB Noise (_Pattern);
+        //   - градиент по высоте (_HeightGradient) со своим _GradientSpace;
+        //   - слой Top (_OverlayLayer0) со своим _OverlaySpace0.
+        // Значения трёхпозиционных проекций: 0 Mesh UV, 1 Local, 2 World. У _GradientSpace и
+        // _OverlaySpace0 Local — 0. Отсутствующее свойство (старая ревизия шейдера) находки не даёт.
         private static bool UsesLocalProjection(Material material)
         {
-            if (material == null || !material.HasProperty("_ProjectionSpace"))
+            if (material == null)
                 return false;
 
-            if (material.GetFloat("_ProjectionSpace") >= 0.5f)
-                return false;
-
-            return IsToggleOn(material, "_HeightGradient") ||
-                IsToggleOn(material, "_OverlayLayer0") ||
-                MixUsesProjection(material);
-        }
-
-        // Смешивание читает пространство проекции только при включённом RGB Noise.
-        // У каждого слоя свой режим: Mesh UV к пространству не обращается, Planar XZ
-        // и Triplanar обращаются. Второй слой участвует только когда он включён.
-        private static bool MixUsesProjection(Material material)
-        {
-            if (!IsToggleOn(material, "_MaterialMix") || !IsToggleOn(material, "_Pattern"))
-                return false;
-
-            if (UsesProjectionSpace(material, "_MixPatternSpace1"))
+            if (IsLocalProjectionValue(material, "_BaseProjection"))
                 return true;
 
-            return IsToggleOn(material, "_MaterialMixTwo") &&
-                UsesProjectionSpace(material, "_MixPatternSpace2");
-        }
+            if (IsToggleOn(material, "_MaterialMix"))
+            {
+                bool pattern = IsToggleOn(material, "_Pattern");
+                if (IsLocalProjectionValue(material, "_MixProjection1"))
+                    return true;
+                if (pattern && IsLocalProjectionValue(material, "_MixPatternProjection1"))
+                    return true;
 
-        private static bool UsesProjectionSpace(Material material, string projectionProperty)
-        {
-            // Отсутствующее свойство старого материала трактуется как Planar XZ —
-            // это дефолт шейдера. Только Mesh UV (значение 1) не использует пространство.
-            if (!material.HasProperty(projectionProperty))
+                if (IsToggleOn(material, "_MaterialMixTwo"))
+                {
+                    if (IsLocalProjectionValue(material, "_MixProjection2"))
+                        return true;
+                    if (pattern && IsLocalProjectionValue(material, "_MixPatternProjection2"))
+                        return true;
+                }
+            }
+
+            if (IsToggleOn(material, "_HeightGradient") && IsLocalSpaceValue(material, "_GradientSpace"))
                 return true;
 
-            float value = material.GetFloat(projectionProperty);
-            return value < 0.5f || value > 1.5f;
+            return IsToggleOn(material, "_OverlayLayer0") && IsLocalSpaceValue(material, "_OverlaySpace0");
+        }
+
+        // Трёхпозиционная проекция: Local — значение 1.
+        private static bool IsLocalProjectionValue(Material material, string propertyName)
+        {
+            if (!material.HasProperty(propertyName))
+                return false;
+            float value = material.GetFloat(propertyName);
+            return value > 0.5f && value < 1.5f;
+        }
+
+        // Двухпозиционное пространство (Local 0 / World 1).
+        private static bool IsLocalSpaceValue(Material material, string propertyName)
+        {
+            return material.HasProperty(propertyName) && material.GetFloat(propertyName) < 0.5f;
         }
 
         private static bool IsToggleOn(Material material, string property)

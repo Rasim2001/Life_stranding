@@ -20,18 +20,24 @@ Shader "SpiderRig/ENV_Lit"
         [MainTexture] _BaseMap("Albedo", 2D) = "white" {}
         [MainColor] _BaseColor("Color", Color) = (1,1,1,1)
 
+        // Проекция карт Base (_BASEPROJECTION_*): Mesh UV / Local Triplanar / World Triplanar.
+        // Один Tiling/Offset (_BaseMap_ST) на все режимы — смысл единиц меняется, значения нет.
+        // Вырез (Alpha Clip, прозрачность) и Emission всегда по Mesh UV: так тень и глубина,
+        // которые считают пакетные пассы URP, совпадают с видимым вырезом по построению.
+        [Enum(Mesh UV, 0, Local Triplanar, 1, World Triplanar, 2)] _BaseProjection("Projection", Float) = 0.0
+        _BaseRotation("Rotation", Range(0.0, 360.0)) = 0.0
+
         _Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
 
         // Режим маски (_MASKMAP_SEPARATE): упакованная одна карта или три раздельные —
         // см. спек .scratch/env-lit-shader/spec.md, "Два режима карт — оба финальные".
         [ToggleUI] _MaskMapSeparate("Separate Metallic/AO/Smoothness Maps", Float) = 0.0
 
-        // Пространство проекции — режим материала, общий для градиента по высоте и для
-        // будущих слоёв наноса/узора (см. .scratch/env-lit-layers/spec.md). World даёт
-        // непрерывность через стыки модулей (четыре плиты пола — одна поверхность),
-        // Local прибивает эффект к мешу и терпит перемещение объекта (башня из повторяющихся
-        // этажей). Один переключатель на материал — не три вырожденных случая.
-        [Enum(Local, 0, World, 1)] _ProjectionSpace("Projection Space", Float) = 0.0
+        // Общего переключателя пространства проекции больше нет: у каждого эффекта свой выбор —
+        // карты Base (_BaseProjection), карты и маски слоёв Blend (_MixProjectionN,
+        // _MixPatternProjectionN), слой Top (_OverlaySpace0), градиент (_GradientSpace).
+        // World даёт непрерывность через стыки модулей (четыре плиты пола — одна поверхность),
+        // Local прибивает эффект к мешу и терпит перемещение объекта (башня из повторяющихся этажей).
         [NoScaleOffset] _MaskMap("Mask Map (R:Metallic G:AO B:Height A:Smoothness)", 2D) = "white" {}
         [NoScaleOffset] _MetallicMap("Metallic", 2D) = "white" {}
         [NoScaleOffset] _OcclusionMap("Occlusion", 2D) = "white" {}
@@ -39,7 +45,7 @@ Shader "SpiderRig/ENV_Lit"
         [NoScaleOffset] _HeightMap("Height", 2D) = "white" {}
         // Бамп из высоты базы (_HEIGHT_BUMP) — псевдо-нормаль конечной разностью карты
         // высоты, без смещения геометрии. 0 — поверхность плоская, дефолт 1 — рельеф
-        // в базовом виде карты. См. ENV_HeightBumpTS в ENV_LitInput.hlsl.
+        // в базовом виде карты. См. ENV_TopReliefBaseHeightNormalTS в ENV_LitInput.hlsl.
         _HeightStrength("Height Strength", Range(0.0, 6.0)) = 1.0
         // Дефолты консервативные, а не «прозрачный множитель»: слоты карт по умолчанию
         // "white", поэтому скаляр 1.0 дал бы материалу без единой текстуры metallic = 1
@@ -62,15 +68,17 @@ Shader "SpiderRig/ENV_Lit"
         _EmissionMap("Emission", 2D) = "white" {}
 
         // Правка альбедо (_ALBEDO_ADJUST) — до освещения, порядок фиксирован: сдвиг тона,
-        // потом контраст/яркость. Один keyword на оба, см. спек.
+        // насыщенность, потом контраст/яркость. Один keyword на все четыре, см. спек.
         [ToggleUI] _AlbedoAdjust("Albedo Adjust", Float) = 0.0
         _HueShift("Hue Shift", Range(-0.5, 0.5)) = 0.0
+        _Saturation("Saturation", Range(-1.0, 1.0)) = 0.0
         _Contrast("Contrast", Range(0.0, 2.0)) = 1.0
         _Brightness("Brightness", Range(-0.5, 0.5)) = 0.0
 
         // Градиент по высоте (_HEIGHT_GRADIENT) — lerp к цвету, не умножение. Пространство
-        // проекции — свойство материала _ProjectionSpace выше, не своё.
+        // своё, _GradientSpace (_GRADIENTSPACE_WORLD): Local — объектная Y, World — мировая.
         [ToggleUI] _HeightGradient("Height Gradient", Float) = 0.0
+        [Enum(Local, 0, World, 1)] _GradientSpace("Space", Float) = 0.0
         // Границы градиента ползунками, а не полями ввода: их крутят на глаз, а не набирают
         // числом. Диапазон ±10 взят под Local — пространство по умолчанию, где высота
         // отсчитывается от опорной точки чанка или пропса и в эти пределы укладывается.
@@ -86,9 +94,10 @@ Shader "SpiderRig/ENV_Lit"
         // Индекс 0 в именах свойств с самого начала: второй слой заложен именованием,
         // не реализуется (.scratch/env-lit-layers/spec.md, "Один слой, второй заложен
         // именованием"). Маска считается по нормали ПОСЛЕ карты нормалей и по высоте
-        // микрорельефа — см. ComputeOverlayMask0 в ENV_LitInput.hlsl. Пространство проекции —
-        // общее свойство материала _ProjectionSpace выше, не своё.
+        // микрорельефа — см. ComputeOverlayMask0 в ENV_LitInput.hlsl. Пространство слоя своё,
+        // _OverlaySpace0 (_OVERLAYSPACE0_WORLD): планарные карты XZ, ось наклона и шум Top.
         [ToggleUI] _OverlayLayer0("Top Projection Layer", Float) = 0.0
+        [Enum(Local, 0, World, 1)] _OverlaySpace0("Space", Float) = 0.0
         _OverlayMap0("Albedo Top", 2D) = "white" {}
         // Комплект материальных карт наноса (тикет 07) — та же раскладка режима _MASKMAP_SEPARATE,
         // что у базы: упакованная Mask Map либо три раздельные. Keyword _OVERLAY_MAPS_0 выводится
@@ -113,12 +122,14 @@ Shader "SpiderRig/ENV_Lit"
         // без единой карты не должен менять вид при включении наноса).
         _OverlayCoverage0("Coverage", Range(0.0, 1.0)) = 0.0
         _OverlayEdgeSoftness0("Edge Softness", Range(0.0, 1.0)) = 0.1
-        // Питает два слагаемых сразу (тикет 2-03, решение владельца 15.09.2026): вклад
-        // в порог покрытия — из высоты БАЗЫ (снег затекает в швы кладки), визуальный бамп —
-        // из своей Height Top (толщина слоя). Дефолт 0, не 1 как у базы в 2-02: ручка
-        // дополнительно двигает площадь покрытия, которая раньше была прибита к нулю
-        // дефолтом _OverlayHeightDepth0. Дефолт 1 менял бы вид любого материала с уже
-        // назначенной базовой картой высоты.
+        // Степень подавления рельефа Base/Blend под наносом: 0 — пыль повторяет
+        // основание, 1 — текстурный рельеф полностью сглажен.
+        _OverlayThickness0("Relief Smoothing", Range(0.0, 1.0)) = 0.0
+        // Независимая визуальная выраженность виртуальной кромки; геометрию и маску не двигает.
+        _OverlayEdgeThickness0("Edge Thickness", Range(0.0, 1.0)) = 0.0
+        [ToggleUI] _OverlayInheritRelief0("Inherit Underlying Relief", Float) = 1.0
+        // Сила только визуального бампа из Height Top. Маска не зависит от Base/Top height,
+        // Relief Smoothing, Edge Thickness или наследования рельефа.
         _OverlayHeightStrength0("Height Strength", Range(0.0, 6.0)) = 0.0
         // Своя сила затенения слоя (тикет 2-03, разворот решения тикета 07) — база под
         // сплошным снегом не может остаться такой, как была.
@@ -130,7 +141,7 @@ Shader "SpiderRig/ENV_Lit"
         // смешивания свои. .scratch/env-lit-layers/issues/06-noise-per-consumer.md.
         [ToggleUI] _Pattern("RGB Noise", Float) = 0.0
         // Дефолт "gray", не "white": формула СМЕЩАЕТ источник, а не умножает его (тикет 06),
-        // и серый при байасе 0.5 — нейтраль (сдвиг = 0 при любой силе).
+        // и серый при Bias 0 — нейтраль (сдвиг = 0 при любой силе).
         [NoScaleOffset] _PatternMap("RGB Noise Map", 2D) = "gray" {}
 
         [Enum(Planar XZ, 0, Mesh UV, 1, Triplanar, 2)] _PatternSpace0("Projection", Float) = 0.0
@@ -141,7 +152,7 @@ Shader "SpiderRig/ENV_Lit"
         [Enum(R, 0, G, 1, B, 2)] _PatternChannel0("Channel", Float) = 0.0
         // 0 — источник не смещается, граница наноса гладкая аналитическая, как до тикета 06.
         _PatternStrength0("Strength", Range(0.0, 1.0)) = 0.0
-        _PatternBias0("Bias", Range(0.0, 1.0)) = 0.5
+        _PatternBias0("Bias", Range(-1.0, 1.0)) = 0.0
 
         // Смешивание материалов мазком (_MATERIAL_MIX) — второй и третий материал по весу
         // из вершинного цвета или маски-текстуры (.scratch/env-lit-layers/issues/
@@ -155,6 +166,10 @@ Shader "SpiderRig/ENV_Lit"
         [ToggleUI] _MaterialMixTwo("Second Blend Layer", Float) = 0.0
 
         _MixMap1("Layer 1 Albedo", 2D) = "white" {}
+        // Проекция и Rotation карт слоя (_MIXPROJECTION1_*): Mesh UV / Local / World Triplanar.
+        // Tiling/Offset — штатное поле слота Albedo (_MixMap1_ST) на все режимы, от Base не зависит.
+        [Enum(Mesh UV, 0, Local Triplanar, 1, World Triplanar, 2)] _MixProjection1("Projection", Float) = 0.0
+        _MixRotation1("Rotation", Range(0.0, 360.0)) = 0.0
         // Как у наноса — sRGB 235, потолок дисциплины альбедо (§8), не белый.
         _MixColor1("Layer 1 Color", Color) = (0.921, 0.921, 0.921, 1)
         _MixNormalMap1("Layer 1 Normal", 2D) = "bump" {}
@@ -173,16 +188,30 @@ Shader "SpiderRig/ENV_Lit"
         _MixOcclusionStrength1("Layer 1 Occlusion Strength", Range(0.0, 1.0)) = 1.0
         [Enum(Vertex Color, 0, RGB Noise, 1)] _MixMaskFromTexture1("Mask Source", Float) = 0.0
         _MixCoverage1("Blend Coverage", Range(0.0, 1.0)) = 0.0
-        [Enum(Planar XZ, 0, Mesh UV, 1, Triplanar, 2)] _MixPatternSpace1("Projection", Float) = 0.0
+        // Проекция RGB Noise (маски) слоя — отдельно от карт слоя (_MIXPATTERNPROJECTION1_*).
+        [Enum(Mesh UV, 0, Local Triplanar, 1, World Triplanar, 2)] _MixPatternProjection1("Projection", Float) = 0.0
         _MixPatternTiling1("Tiling", Vector) = (1,1,0,0)
         _MixPatternRotation1("Rotation", Range(0.0, 360.0)) = 0.0
         // Раскладка кисти RealBlend по умолчанию: слой 1 на G — см. тикет 04.
         [Enum(R, 0, G, 1, B, 2)] _MixPatternChannel1("Channel", Float) = 1.0
         _MixPatternStrength1("Strength", Range(0.0, 1.0)) = 0.0
-        _MixPatternBias1("Bias", Range(0.0, 1.0)) = 0.5
+        _MixPatternBias1("Bias", Range(-1.0, 1.0)) = 0.0
         _MixEdgeSoftness1("Edge Softness", Range(0.0, 1.0)) = 0.1
+        // Рельеф слоя 1 (тикет 05): перенос принятого рельефа Top. Свой Height (Packed B _MixMaskMap1
+        // либо отдельная карта; keyword _MIX_HEIGHT_1 выводится из наличия текстуры активного режима),
+        // наследование Base со сглаживанием и подписанная виртуальная кромка: минус — углубление,
+        // плюс — выступ, 0 — без кромки (слой остаётся). Маску, геометрию и AO не двигают.
+        [NoScaleOffset] _MixHeightMap1("Layer 1 Height", 2D) = "white" {}
+        _MixHeightStrength1("Height Strength", Range(0.0, 6.0)) = 0.0
+        _MixReliefSmoothing1("Relief Smoothing", Range(0.0, 1.0)) = 0.0
+        _MixEdgeThickness1("Edge Thickness", Range(-1.0, 1.0)) = 0.0
+        [ToggleUI] _MixInheritRelief1("Inherit Underlying Relief", Float) = 1.0
 
         _MixMap2("Layer 2 Albedo", 2D) = "white" {}
+        // Проекция и Rotation карт слоя (_MIXPROJECTION2_*): Mesh UV / Local / World Triplanar.
+        // Tiling/Offset — штатное поле слота Albedo (_MixMap2_ST) на все режимы, от Base не зависит.
+        [Enum(Mesh UV, 0, Local Triplanar, 1, World Triplanar, 2)] _MixProjection2("Projection", Float) = 0.0
+        _MixRotation2("Rotation", Range(0.0, 360.0)) = 0.0
         _MixColor2("Layer 2 Color", Color) = (0.921, 0.921, 0.921, 1)
         _MixNormalMap2("Layer 2 Normal", 2D) = "bump" {}
         _MixNormalScale2("Scale", Range(0.0, 4.0)) = 1.0
@@ -197,14 +226,21 @@ Shader "SpiderRig/ENV_Lit"
         _MixOcclusionStrength2("Layer 2 Occlusion Strength", Range(0.0, 1.0)) = 1.0
         [Enum(Vertex Color, 0, RGB Noise, 1)] _MixMaskFromTexture2("Mask Source", Float) = 0.0
         _MixCoverage2("Blend Coverage", Range(0.0, 1.0)) = 0.0
-        [Enum(Planar XZ, 0, Mesh UV, 1, Triplanar, 2)] _MixPatternSpace2("Projection", Float) = 0.0
+        // Проекция RGB Noise (маски) слоя — отдельно от карт слоя (_MIXPATTERNPROJECTION2_*).
+        [Enum(Mesh UV, 0, Local Triplanar, 1, World Triplanar, 2)] _MixPatternProjection2("Projection", Float) = 0.0
         _MixPatternTiling2("Tiling", Vector) = (1,1,0,0)
         _MixPatternRotation2("Rotation", Range(0.0, 360.0)) = 0.0
         // Раскладка кисти RealBlend по умолчанию: слой 2 на B — см. тикет 04.
         [Enum(R, 0, G, 1, B, 2)] _MixPatternChannel2("Channel", Float) = 2.0
         _MixPatternStrength2("Strength", Range(0.0, 1.0)) = 0.0
-        _MixPatternBias2("Bias", Range(0.0, 1.0)) = 0.5
+        _MixPatternBias2("Bias", Range(-1.0, 1.0)) = 0.0
         _MixEdgeSoftness2("Edge Softness", Range(0.0, 1.0)) = 0.1
+        // Рельеф слоя 2 (тикет 06) — те же ручки и смысл, что у слоя 1; подложка — итог Base и слоя 1.
+        [NoScaleOffset] _MixHeightMap2("Layer 2 Height", 2D) = "white" {}
+        _MixHeightStrength2("Height Strength", Range(0.0, 6.0)) = 0.0
+        _MixReliefSmoothing2("Relief Smoothing", Range(0.0, 1.0)) = 0.0
+        _MixEdgeThickness2("Edge Thickness", Range(-1.0, 1.0)) = 0.0
+        [ToggleUI] _MixInheritRelief2("Inherit Underlying Relief", Float) = 1.0
 
         // Blending state — унаследовано от URP Lit один в один, переключатель Surface Type
         // достаётся бесплатно (§6 "База": прозрачность есть в базе).
@@ -263,14 +299,14 @@ Shader "SpiderRig/ENV_Lit"
             #pragma shader_feature_local_fragment _ALPHATEST_ON
             #pragma shader_feature_local_fragment _ _ALPHAPREMULTIPLY_ON _ALPHAMODULATE_ON
             #pragma shader_feature_local_fragment _EMISSION
-            // _PROJECTIONSPACE_WORLD остаётся здесь, не в ENV_LitKeywords.hlsl: в Meta тот
-            // же keyword объявлен без суффикса _fragment (мета резолвит positionPS в вершине).
-            #pragma shader_feature_local_fragment _PROJECTIONSPACE_WORLD
             // _HEIGHT_BUMP общий с Meta: базовая нормаль определяет маску наноса
             // и тем самым альбедо, которое попадает в запечку.
             // _OVERLAY_HEIGHT_0 (тикет 2-03) остаётся здесь: бамп слоя наноса участвует
             // только в мировой нормали ForwardLit, Meta её не читает.
             #pragma shader_feature_local_fragment _OVERLAY_HEIGHT_0
+            // _MIX_HEIGHT_1 (тикет 05) — там же: высота слоя 1 правит только нормаль, Meta её не читает.
+            #pragma shader_feature_local_fragment _MIX_HEIGHT_1
+            #pragma shader_feature_local_fragment _MIX_HEIGHT_2
             // Остальные ENV-специфичные фрагментные keyword'ы — общий список для ForwardLit
             // и Meta, тикет 06 (.scratch/env-lit-layers/issues/06-noise-per-consumer.md).
             #include_with_pragmas "ENV_LitKeywords.hlsl"
@@ -391,7 +427,14 @@ Shader "SpiderRig/ENV_Lit"
             #pragma vertex DepthNormalsVertex
             #pragma fragment DepthNormalsFragment
 
-            #pragma shader_feature_local _NORMALMAP
+            // Без _NORMALMAP сознательно: пакетный пасс тогда пишет в _CameraNormalsTexture нормаль
+            // меша, а не карту нормалей по UV. Карты Base идут по Mesh UV / Local / World Triplanar
+            // с Rotation, а этот пасс про проекцию не знает — на World он рисовал в SSAO «трафарет»
+            // UV-развёртки, которого нет на видимой поверхности (замечено при SSAO Intensity 20).
+            // Геометрическая нормаль не зависит от проекции, поворота и движения объекта, одинакова
+            // для Base, Blend и Top и дешевле: нет выборки нормали и тангентного интерполятора.
+            // Микрорельеф в SSAO при рабочих 0.2 не читался. Решение: .scratch/env-lit-blend-relief-projection,
+            // тикет 02; закрывает и .scratch/deferred/21.
             #pragma shader_feature_local _ALPHATEST_ON
 
             #pragma multi_compile _ LOD_FADE_CROSSFADE
@@ -424,10 +467,8 @@ Shader "SpiderRig/ENV_Lit"
             #pragma vertex ENV_LitMetaVertex
             #pragma fragment ENV_LitMetaFragment
 
-            // _NORMALMAP и _PROJECTIONSPACE_WORLD без _fragment: оба гейтят работу вершинника
-            // (тангент — первый, резолв пространства — второй), а не только фрагмента.
+            // _NORMALMAP без _fragment: гейтит работу вершинника (сборку тангента), а не только фрагмента.
             #pragma shader_feature_local _NORMALMAP
-            #pragma shader_feature_local _PROJECTIONSPACE_WORLD
             #pragma shader_feature_local_fragment _EMISSION
             #pragma shader_feature_local_fragment _ALPHATEST_ON
             // Остальные ENV-специфичные фрагментные keyword'ы — общий список с ForwardLit,

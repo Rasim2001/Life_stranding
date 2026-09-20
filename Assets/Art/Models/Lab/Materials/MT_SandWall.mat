@@ -25,10 +25,10 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - _BASEPROJECTION_WORLD
   - _MASKMAP_SEPARATE
-  - _NORMALMAP
+  m_InvalidKeywords:
   - _PROJECTIONSPACE_WORLD
-  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -46,7 +46,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 2800000, guid: 7b656e3bc63762f459fa62cdc33b8901, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Scale: {x: 0.15, y: 0.15}
         m_Offset: {x: 0, y: 0}
     - _BlendingNormalMapB:
         m_Texture: {fileID: 2800000, guid: 6246e3fe4a63c1f4f9acec9623576fc7, type: 3}
@@ -290,6 +290,8 @@ Material:
     - _AlphaToMask: 0
     - _AnisoShininess: 0.85
     - _Anisotropy: 0.45
+    - _BaseProjection: 2
+    - _BaseRotation: 0
     - _Blend: 0
     - _BlendDst: 0
     - _BlendModePreserveSpecular: 1
@@ -361,6 +363,7 @@ Material:
     - _GlossyReflections: 0
     - _GradientMaxHeight: 1
     - _GradientMinHeight: 0
+    - _GradientSpace: 0
     - _GradientStrength: 0
     - _GreyScaleStage: 0
     - _Greyscale: 0
@@ -441,12 +444,18 @@ Material:
     - _MixPatternBias2: 0.5
     - _MixPatternChannel1: 1
     - _MixPatternChannel2: 2
+    - _MixPatternProjection1: 0
+    - _MixPatternProjection2: 0
     - _MixPatternRotation1: 0
     - _MixPatternRotation2: 0
     - _MixPatternSpace1: 0
     - _MixPatternSpace2: 0
     - _MixPatternStrength1: 0
     - _MixPatternStrength2: 0
+    - _MixProjection1: 0
+    - _MixProjection2: 0
+    - _MixRotation1: 0
+    - _MixRotation2: 0
     - _MixSmoothness1: 0.5
     - _MixSmoothness2: 0.5
     - _NearFade: 0
@@ -459,12 +468,16 @@ Material:
     - _OutlineType: 0
     - _OverlayCoverage0: 0
     - _OverlayEdgeSoftness0: 0.1
+    - _OverlayEdgeThickness0: 0
     - _OverlayHeightStrength0: 0
+    - _OverlayInheritRelief0: 1
     - _OverlayLayer0: 0
     - _OverlayMetallic0: 0
     - _OverlayNormalScale0: 1
     - _OverlayOcclusionStrength0: 1
     - _OverlaySmoothness0: 0.2
+    - _OverlaySpace0: 0
+    - _OverlayThickness0: 0
     - _Parallax: 0.005
     - _Pattern: 0
     - _PatternBias0: 0.5
@@ -492,6 +505,7 @@ Material:
     - _SSSFrontAtten: 0.3
     - _SSSFrontPower: 3
     - _SSSPower: 1
+    - _Saturation: 0
     - _ScaleWithCameraDistance: 0
     - _ScreenSpaceUVOn: 0
     - _ScrollTextureOn: 0
