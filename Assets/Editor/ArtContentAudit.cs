@@ -31,6 +31,18 @@ namespace Editor
         private const string ReportFolder = ".scratch/art-cleanup";
         private const string GraphicsSettingsPath = "ProjectSettings/GraphicsSettings.asset";
 
+        // Structure rules from .scratch/art-cleanup/plan.md: a leading '_' in a root folder of
+        // Assets means "not in the build"; ThirdParty is vendor content that does ship.
+        private const string ThirdPartyRoot = "Assets/ThirdParty/";
+        private const string BlockoutRoot = "Assets/_PolygonPrototype/";
+        private const string ToolsRoot = "Assets/_TK_Tools/";
+        private const string ExperimentsRoot = "Assets/_Experiments/";
+        private static readonly string[] ChunkPrefabRoots =
+        {
+            "Assets/Art/Prefabs/Chunks/",
+            "Assets/Art/Chunks/",
+        };
+
         // Vendor packages that currently live inside Art. Listed so their files can be
         // counted separately: per asset-organization-and-naming.md §8.1 a vendor island
         // is not normalized to project rules, so mixing it into the cleanup list is noise.
@@ -53,6 +65,7 @@ namespace Editor
         // project config, code or a vendor island. Bucket D ignores them.
         private static readonly string[] LegitimateOutsideArt =
         {
+            "Assets/ThirdParty/",
             "Assets/Resources/",
             "Assets/Settings/",
             "Assets/Scenes/",
@@ -135,11 +148,111 @@ namespace Editor
                 }
             }
 
+            StructureFindings structure = CheckStructure(allAssets, buildSet);
+
             string report = BuildReport(
                 allAssets, buildRoots, nonBuildScenes,
-                inBuild, projectOnly, unreferenced, outsideArtInBuild);
+                inBuild, projectOnly, unreferenced, outsideArtInBuild, structure);
 
-            WriteReport(report, unreferenced, projectOnly, outsideArtInBuild);
+            WriteReport(report, unreferenced, projectOnly, outsideArtInBuild, structure);
+        }
+
+        private class DebtRow
+        {
+            public string Owner;
+            public int Total;
+            public int Geometry;
+        }
+
+        private class StructureFindings
+        {
+            // rule 1: build-reachable file under Assets/_* (blockout kit excluded)
+            public List<string> UnderscoreInBuild = new List<string>();
+            // rule 2: file outside _TK_Tools that depends on it
+            public List<string> DependsOnTools = new List<string>();
+            // rule 3: file in Art that depends on _Experiments
+            public List<string> DependsOnExperiments = new List<string>();
+            // blockout debt per scene and per chunk prefab
+            public List<DebtRow> BlockoutDebt = new List<DebtRow>();
+
+            public int ErrorCount
+            {
+                get { return UnderscoreInBuild.Count + DependsOnTools.Count + DependsOnExperiments.Count; }
+            }
+        }
+
+        private static bool IsUnderscoreRoot(string path)
+        {
+            const string assets = "Assets/";
+            if (!path.StartsWith(assets, StringComparison.Ordinal) || path.Length <= assets.Length)
+                return false;
+            return path[assets.Length] == '_';
+        }
+
+        private static bool IsChunkPrefab(string path)
+        {
+            if (!path.EndsWith(".prefab", StringComparison.OrdinalIgnoreCase))
+                return false;
+            foreach (string root in ChunkPrefabRoots)
+            {
+                if (path.StartsWith(root, StringComparison.Ordinal))
+                    return true;
+            }
+            return false;
+        }
+
+        private static bool IsGeometrySource(string path)
+        {
+            string extension = Path.GetExtension(path).ToLowerInvariant();
+            return extension == ".prefab" || extension == ".fbx" || extension == ".obj" || extension == ".blend";
+        }
+
+        private static StructureFindings CheckStructure(List<string> allAssets, HashSet<string> buildSet)
+        {
+            StructureFindings result = new StructureFindings();
+
+            foreach (string path in allAssets)
+            {
+                bool inTools = path.StartsWith(ToolsRoot, StringComparison.Ordinal);
+
+                if (buildSet.Contains(path) && IsUnderscoreRoot(path) &&
+                    !path.StartsWith(BlockoutRoot, StringComparison.Ordinal))
+                {
+                    result.UnderscoreInBuild.Add(path);
+                }
+
+                bool inArt = path.StartsWith(ArtRoot, StringComparison.Ordinal);
+                if (!inTools || inArt)
+                {
+                    // Direct dependencies only: a chain is reported at its first tracked link.
+                    string[] direct = AssetDatabase.GetDependencies(path, false);
+                    if (!inTools && direct.Any(d => d.StartsWith(ToolsRoot, StringComparison.Ordinal)))
+                        result.DependsOnTools.Add(path);
+                    if (inArt && direct.Any(d => d.StartsWith(ExperimentsRoot, StringComparison.Ordinal)))
+                        result.DependsOnExperiments.Add(path);
+                }
+
+                bool isScene = path.EndsWith(".unity", StringComparison.OrdinalIgnoreCase) &&
+                               path.StartsWith("Assets/Scenes/", StringComparison.Ordinal);
+                if (isScene || IsChunkPrefab(path))
+                {
+                    List<string> kit = AssetDatabase.GetDependencies(path, true)
+                        .Where(d => d.StartsWith(BlockoutRoot, StringComparison.Ordinal))
+                        .ToList();
+                    result.BlockoutDebt.Add(new DebtRow
+                    {
+                        Owner = path,
+                        Total = kit.Count,
+                        Geometry = kit.Count(IsGeometrySource),
+                    });
+                }
+            }
+
+            result.DependsOnTools.Sort(StringComparer.Ordinal);
+            result.DependsOnExperiments.Sort(StringComparer.Ordinal);
+            result.BlockoutDebt = result.BlockoutDebt
+                .OrderByDescending(r => r.Total).ThenBy(r => r.Owner, StringComparer.Ordinal).ToList();
+            return result;
         }
 
         private static List<string> CollectProjectAssets()
@@ -242,6 +355,9 @@ namespace Editor
 
         private static bool IsVendorInArt(string path)
         {
+            if (path.StartsWith(ThirdPartyRoot, StringComparison.Ordinal))
+                return true;
+
             foreach (string island in VendorIslandsInArt)
             {
                 if (path.StartsWith(island, StringComparison.Ordinal))
@@ -273,7 +389,8 @@ namespace Editor
             List<Entry> inBuild,
             List<Entry> projectOnly,
             List<Entry> unreferenced,
-            List<Entry> outsideArtInBuild)
+            List<Entry> outsideArtInBuild,
+            StructureFindings structure)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -342,7 +459,63 @@ namespace Editor
             sb.AppendLine("Поэтому категория C — **список кандидатов, а не приговор**. Каждая партия смотрится глазами.");
             sb.AppendLine();
 
+            AppendStructure(sb, structure);
+
             return sb.ToString();
+        }
+
+        private static void AppendStructure(StringBuilder sb, StructureFindings s)
+        {
+            sb.AppendLine("## 9. Правила структуры (`_` = не в билде)");
+            sb.AppendLine();
+            sb.AppendLine("Ошибок: **" + s.ErrorCount + "** (правило 1: " + s.UnderscoreInBuild.Count +
+                          " · правило 2: " + s.DependsOnTools.Count + " · правило 3: " + s.DependsOnExperiments.Count + ").");
+            sb.AppendLine("Долг блокаута — не ошибка, к релизу уровня должен быть 0.");
+            sb.AppendLine();
+
+            AppendViolationList(sb, "### 9.1 Правило 1 · файл под `Assets/_*` достижим из билда (кроме `_PolygonPrototype`)",
+                s.UnderscoreInBuild);
+            AppendViolationList(sb, "### 9.2 Правило 2 · файл под git зависит от `_TK_Tools` (папка в `.gitignore`)",
+                s.DependsOnTools);
+            AppendViolationList(sb, "### 9.3 Правило 3 · продакшн в Art зависит от `_Experiments`",
+                s.DependsOnExperiments);
+
+            sb.AppendLine("### 9.4 Долг блокаута (`_PolygonPrototype`) по сценам и чанк-префабам");
+            sb.AppendLine();
+            sb.AppendLine("«Всего» — ассетов кита в рекурсивных зависимостях (префабы, модели, материалы, текстуры);");
+            sb.AppendLine("«Геометрия» — из них префабы и модели. Показаны только строки с долгом > 0.");
+            sb.AppendLine();
+            List<DebtRow> debt = s.BlockoutDebt.Where(r => r.Total > 0).ToList();
+            if (debt.Count == 0)
+            {
+                sb.AppendLine("Пусто.");
+                sb.AppendLine();
+                return;
+            }
+            sb.AppendLine("| Владелец | Всего | Геометрия |");
+            sb.AppendLine("|---|---:|---:|");
+            foreach (DebtRow row in debt)
+                sb.AppendLine("| `" + row.Owner + "` | " + row.Total + " | " + row.Geometry + " |");
+            sb.AppendLine();
+        }
+
+        private static void AppendViolationList(StringBuilder sb, string header, List<string> paths)
+        {
+            sb.AppendLine(header);
+            sb.AppendLine();
+            if (paths.Count == 0)
+            {
+                sb.AppendLine("Нарушений нет.");
+                sb.AppendLine();
+                return;
+            }
+            sb.AppendLine("Нарушений: " + paths.Count + ". Полный список — в `structure-violations.txt`.");
+            sb.AppendLine();
+            foreach (string path in paths.Take(30))
+                sb.AppendLine("- `" + path + "`");
+            if (paths.Count > 30)
+                sb.AppendLine("- … ещё " + (paths.Count - 30));
+            sb.AppendLine();
         }
 
         private static void AppendSummaryRow(StringBuilder sb, string label, List<Entry> entries)
@@ -613,7 +786,8 @@ namespace Editor
             string report,
             List<Entry> unreferenced,
             List<Entry> projectOnly,
-            List<Entry> outsideArtInBuild)
+            List<Entry> outsideArtInBuild,
+            StructureFindings structure)
         {
             Directory.CreateDirectory(ReportFolder);
 
@@ -623,11 +797,27 @@ namespace Editor
             WriteList(Path.Combine(ReportFolder, "C-art-unreferenced.txt"), unreferenced);
             WriteList(Path.Combine(ReportFolder, "B-art-project-only.txt"), projectOnly);
             WriteList(Path.Combine(ReportFolder, "D-outside-art-in-build.txt"), outsideArtInBuild);
+            WriteStructureList(Path.Combine(ReportFolder, "structure-violations.txt"), structure);
 
             Debug.Log("Art Content Audit: отчёт записан в " + reportPath +
                       "\nC (несвязано в Art): " + unreferenced.Count + " файлов, " + Mib(unreferenced.Sum(e => e.Bytes)) +
                       "\nB (только не-билдовые сцены): " + projectOnly.Count + " файлов, " + Mib(projectOnly.Sum(e => e.Bytes)) +
-                      "\nD (вне Art, в билде): " + outsideArtInBuild.Count + " файлов, " + Mib(outsideArtInBuild.Sum(e => e.Bytes)));
+                      "\nD (вне Art, в билде): " + outsideArtInBuild.Count + " файлов, " + Mib(outsideArtInBuild.Sum(e => e.Bytes)) +
+                      "\nСтруктура, ошибок: " + structure.ErrorCount + " (правило 1: " + structure.UnderscoreInBuild.Count +
+                      ", правило 2: " + structure.DependsOnTools.Count + ", правило 3: " + structure.DependsOnExperiments.Count + ")" +
+                      "\nДолг блокаута: " + structure.BlockoutDebt.Count(r => r.Total > 0) + " владельцев из " + structure.BlockoutDebt.Count);
+        }
+
+        private static void WriteStructureList(string path, StructureFindings s)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (string p in s.UnderscoreInBuild)
+                sb.AppendLine("rule1  " + p);
+            foreach (string p in s.DependsOnTools)
+                sb.AppendLine("rule2  " + p);
+            foreach (string p in s.DependsOnExperiments)
+                sb.AppendLine("rule3  " + p);
+            File.WriteAllText(path, sb.ToString(), new UTF8Encoding(false));
         }
 
         private static void WriteList(string path, List<Entry> entries)
