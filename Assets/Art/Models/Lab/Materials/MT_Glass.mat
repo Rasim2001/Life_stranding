@@ -127,6 +127,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MixHeightMap1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixHeightMap2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MixMap1:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -289,6 +297,8 @@ Material:
     - _AlphaToMask: 1
     - _AnisoShininess: 0.85
     - _Anisotropy: 0.45
+    - _BaseProjection: 0
+    - _BaseRotation: 0
     - _Blend: 0
     - _BlendDst: 10
     - _BlendModePreserveSpecular: 1
@@ -360,6 +370,7 @@ Material:
     - _GlossyReflections: 0
     - _GradientMaxHeight: 1
     - _GradientMinHeight: 0
+    - _GradientSpace: 0
     - _GradientStrength: 0
     - _GreyScaleStage: 0
     - _Greyscale: 0
@@ -428,6 +439,12 @@ Material:
     - _MixCoverage2: 0
     - _MixEdgeSoftness1: 0.1
     - _MixEdgeSoftness2: 0.1
+    - _MixEdgeThickness1: 0
+    - _MixEdgeThickness2: 0
+    - _MixHeightStrength1: 0
+    - _MixHeightStrength2: 0
+    - _MixInheritRelief1: 1
+    - _MixInheritRelief2: 1
     - _MixMaskFromTexture1: 0
     - _MixMaskFromTexture2: 0
     - _MixMetallic1: 0
@@ -436,16 +453,24 @@ Material:
     - _MixNormalScale2: 1
     - _MixOcclusionStrength1: 1
     - _MixOcclusionStrength2: 1
-    - _MixPatternBias1: 0.5
-    - _MixPatternBias2: 0.5
+    - _MixPatternBias1: 0
+    - _MixPatternBias2: 0
     - _MixPatternChannel1: 1
     - _MixPatternChannel2: 2
+    - _MixPatternProjection1: 0
+    - _MixPatternProjection2: 0
     - _MixPatternRotation1: 0
     - _MixPatternRotation2: 0
     - _MixPatternSpace1: 0
     - _MixPatternSpace2: 0
     - _MixPatternStrength1: 0
     - _MixPatternStrength2: 0
+    - _MixProjection1: 0
+    - _MixProjection2: 0
+    - _MixReliefSmoothing1: 0
+    - _MixReliefSmoothing2: 0
+    - _MixRotation1: 0
+    - _MixRotation2: 0
     - _MixSmoothness1: 0.5
     - _MixSmoothness2: 0.5
     - _NearFade: 0
@@ -458,15 +483,19 @@ Material:
     - _OutlineType: 0
     - _OverlayCoverage0: 0
     - _OverlayEdgeSoftness0: 0.1
+    - _OverlayEdgeThickness0: 0
     - _OverlayHeightStrength0: 0
+    - _OverlayInheritRelief0: 1
     - _OverlayLayer0: 0
     - _OverlayMetallic0: 0
     - _OverlayNormalScale0: 1
     - _OverlayOcclusionStrength0: 1
     - _OverlaySmoothness0: 0.2
+    - _OverlaySpace0: 0
+    - _OverlayThickness0: 0
     - _Parallax: 0.005
     - _Pattern: 0
-    - _PatternBias0: 0.5
+    - _PatternBias0: 0
     - _PatternChannel0: 0
     - _PatternRotation0: 0
     - _PatternSpace0: 0
@@ -491,6 +520,7 @@ Material:
     - _SSSFrontAtten: 0.3
     - _SSSFrontPower: 3
     - _SSSPower: 0
+    - _Saturation: 0
     - _ScaleWithCameraDistance: 0
     - _ScreenSpaceUVOn: 0
     - _ScrollTextureOn: 0

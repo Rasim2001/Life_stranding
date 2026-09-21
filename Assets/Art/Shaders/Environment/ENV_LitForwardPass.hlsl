@@ -296,7 +296,8 @@ void LitPassFragment(
     // ENV_Lit Top Relief: both slope and triplanar noise weights use the mesh normal before texture relief.
     // Шум Top в режиме Mesh UV идёт по сырому uv0: Tiling/Offset Base его не двигают.
     half3 overlayBaseNormalWS = NormalizeNormalPerPixel(input.normalWS);
-    half overlayMask = ComputeOverlayMask0(baseGeo.uv0, positionPS, overlayBaseNormalWS);
+    ENV_MaskField overlayField = ComputeOverlayField0(baseGeo.uv0, positionPS, overlayBaseNormalWS);
+    half overlayMask = overlayField.mask;
 #if defined(_NORMALMAP)
     half3 filteredSurfaceNormalTS = ENV_TopReliefFilteredSurfaceNormalTS(
         baseGeo, input.vertexColor);
@@ -335,15 +336,13 @@ void LitPassFragment(
 
     // Virtual cap: the gradient stays inside the coverage transition and affects lighting
     // only. Edge Thickness zero has exactly no raised edge; a wider Softness lowers its slope.
-    float3 dpdx = ddx(input.positionWS);
-    float3 dpdy = ddy(input.positionWS);
-    float maskDx = ddx(float(overlayMask));
-    float maskDy = ddy(float(overlayMask));
-    float3 capGradient = dpdx * (maskDx / max(dot(dpdx, dpdx), 1e-5))
-                       + dpdy * (maskDy / max(dot(dpdy, dpdy), 1e-5));
-    half edgeThickness = saturate(_OverlayEdgeThickness0);
-    half capStrength = edgeThickness * lerp(half(0.16), half(0.06), saturate(_OverlayEdgeSoftness0));
-    coveredNormalWS = normalize(coveredNormalWS - half3(capGradient) * capStrength);
+    // Формула общая со слоями Blend — ENV_EdgeOffsetWS. Своего здесь нет ничего: смещение
+    // уже лежит в касательной плоскости, и вычитание в мировом пространстве — та же правка
+    // касательной части нормали, что у слоя правка xy при нетронутом z.
+    // Только выпуклость: у _OverlayEdgeThickness0 ползунок Range(0, 1), в отличие от слоёв.
+    float3 edgeOffsetWS = ENV_EdgeOffsetWS(overlayField, input.positionWS,
+        _OverlayEdgeThickness0, _OverlayEdgeSoftness0);
+    coveredNormalWS = normalize(coveredNormalWS - half3(edgeOffsetWS));
 
     inputData.normalWS = normalize(lerp(inputData.normalWS, coveredNormalWS, overlayMask));
 #endif

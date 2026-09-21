@@ -30,12 +30,12 @@ Material:
   - _HEIGHT_GRADIENT
   - _MASKMAP_SEPARATE
   - _MATERIAL_MIX
-  - _MIXPATTERNSPACE1_TRIPLANAR
   - _NORMALMAP
   - _OVERLAY_LAYER_0
   - _OVERLAY_MAPS_0
   - _PATTERN
   m_InvalidKeywords:
+  - _MIXPATTERNSPACE1_TRIPLANAR
   - _PATTERNSPACE_UV
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
@@ -90,6 +90,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MetallicMap:
         m_Texture: {fileID: 2800000, guid: 0dba556b4c072ee4d98a67447d045927, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixHeightMap1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixHeightMap2:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MixMap1:
@@ -210,6 +218,8 @@ Material:
     - _AlbedoAdjust: 1
     - _AlphaClip: 0
     - _AlphaToMask: 0
+    - _BaseProjection: 0
+    - _BaseRotation: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _Brightness: -0.204
@@ -245,6 +255,12 @@ Material:
     - _MixEdgeSoftness: 0.033
     - _MixEdgeSoftness1: 0.203
     - _MixEdgeSoftness2: 0.1
+    - _MixEdgeThickness1: 0
+    - _MixEdgeThickness2: 0
+    - _MixHeightStrength1: 0
+    - _MixHeightStrength2: 0
+    - _MixInheritRelief1: 1
+    - _MixInheritRelief2: 1
     - _MixMaskFromTexture: 0
     - _MixMaskFromTexture1: 0
     - _MixMaskFromTexture2: 0
@@ -256,15 +272,23 @@ Material:
     - _MixOcclusionStrength1: 1
     - _MixOcclusionStrength2: 1
     - _MixPatternBias1: 0.559
-    - _MixPatternBias2: 0.5
+    - _MixPatternBias2: 0
     - _MixPatternChannel1: 2
     - _MixPatternChannel2: 2
+    - _MixPatternProjection1: 0
+    - _MixPatternProjection2: 0
     - _MixPatternRotation1: 0
     - _MixPatternRotation2: 0
     - _MixPatternSpace1: 2
     - _MixPatternSpace2: 0
     - _MixPatternStrength1: 1
     - _MixPatternStrength2: 0
+    - _MixProjection1: 0
+    - _MixProjection2: 0
+    - _MixReliefSmoothing1: 0
+    - _MixReliefSmoothing2: 0
+    - _MixRotation1: 0
+    - _MixRotation2: 0
     - _MixSmoothness1: 0.5
     - _MixSmoothness2: 0.5
     - _MixTiling1: 1
@@ -272,17 +296,21 @@ Material:
     - _OcclusionStrength: 1
     - _OverlayCoverage0: 0
     - _OverlayEdgeSoftness0: 0.1
+    - _OverlayEdgeThickness0: 0
     - _OverlayHeightDepth0: 0
     - _OverlayHeightStrength0: 0
+    - _OverlayInheritRelief0: 1
     - _OverlayLayer0: 1
     - _OverlayMetallic0: 1
     - _OverlayNormalScale0: 1
     - _OverlayOcclusionStrength0: 1
     - _OverlaySmoothness0: 1
+    - _OverlaySpace0: 0
+    - _OverlayThickness0: 0
     - _OverlayTiling0: 1
     - _Parallax: 0.005
     - _Pattern: 1
-    - _PatternBias0: 0.5
+    - _PatternBias0: 0
     - _PatternChannel: 0
     - _PatternChannel0: 0
     - _PatternProjection: 1
@@ -294,6 +322,7 @@ Material:
     - _ProjectionSpace: 0
     - _QueueOffset: 6
     - _ReceiveShadows: 1
+    - _Saturation: 0
     - _Smoothness: 0.5
     - _SmoothnessIsRoughness: 0
     - _SmoothnessTextureChannel: 0

@@ -287,11 +287,14 @@ namespace SpiderRig.Editor.Shaders
             CoreUtils.SetKeyword(material, "_OVERLAY_LAYER_0", material.GetFloat("_OverlayLayer0") > 0.5f);
             CoreUtils.SetKeyword(material, "_OVERLAYSPACE0_WORLD",
                 material.GetFloat("_OverlayLayer0") > 0.5f && material.GetFloat("_OverlaySpace0") > 0.5f);
-            CoreUtils.SetKeyword(material, "_PATTERN", material.GetFloat("_Pattern") > 0.5f);
+            bool pattern = material.GetFloat("_Pattern") > 0.5f;
+            CoreUtils.SetKeyword(material, "_PATTERN", pattern);
 
             // Проекция шума блока наноса — трёхпозиционная, keyword'ом (тикет 06): 0 — Planar XZ
-            // (обе выключены), 1 — Mesh UV, 2 — Triplanar.
-            SetProjectionKeywords(material, "_PatternSpace0", "_PATTERNSPACE0_UV", "_PATTERNSPACE0_TRIPLANAR");
+            // (обе выключены), 1 — Mesh UV, 2 — Triplanar. Все проекции шума читаются только
+            // под _PATTERN: без узора они дают тот же код, но множат варианты втрое каждая.
+            SetProjectionKeywords(material, "_PatternSpace0",
+                "_PATTERNSPACE0_UV", "_PATTERNSPACE0_TRIPLANAR", pattern);
             // Проекция карт Base: 0 — Mesh UV (обе выключены), 1 — Local, 2 — World. Это не та же
             // раскладка, что у шума, поэтому свой вызов, а не SetProjectionKeywords.
             SetMapProjectionKeywords(material, "_BaseProjection",
@@ -314,9 +317,9 @@ namespace SpiderRig.Editor.Shaders
                 materialMixTwo && material.GetFloat("_MixMaskFromTexture2") > 0.5f);
             // Проекция RGB Noise (маски) слоёв Blend — независимо от карт слоя и друг от друга.
             SetMapProjectionKeywords(material, "_MixPatternProjection1",
-                "_MIXPATTERNPROJECTION1_LOCAL", "_MIXPATTERNPROJECTION1_WORLD", materialMix);
+                "_MIXPATTERNPROJECTION1_LOCAL", "_MIXPATTERNPROJECTION1_WORLD", materialMix && pattern);
             SetMapProjectionKeywords(material, "_MixPatternProjection2",
-                "_MIXPATTERNPROJECTION2_LOCAL", "_MIXPATTERNPROJECTION2_WORLD", materialMixTwo);
+                "_MIXPATTERNPROJECTION2_LOCAL", "_MIXPATTERNPROJECTION2_WORLD", materialMixTwo && pattern);
 
             // _NORMALMAP доставляется принудительно, если назначена нормаль подмешиваемого
             // слоя. Причина: слой правит surfaceData.normalTS, а её ниже по коду читают

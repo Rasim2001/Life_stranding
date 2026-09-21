@@ -584,15 +584,6 @@ TEXTURE2D(_MixHeightMap2);
 // смешивания свои. Проекция и тайлинг неразделимы (тайлинг planar — «тайлов на метр»,
 // тайлинг UV — «тайлов на UV-шелл»), поэтому идут парой в один keyword-набор.
 
-// Шкала мягкости края — ползунок в квадрате, а не напрямую. Полезный диапазон для наклона
-// источника примерно 0-0.3, ползолнок отдан под 0-1: линейная шкала топит слой в равномерную
-// полупрозрачную плёнку уже на 0.2 (грилл 15.09.2026, пункт 7 — арифметически верное, но
-// нечитаемое поведение). Квадрат отдаёт разрешение низу шкалы.
-half ENV_EdgeFromSlider(half slider)
-{
-    return slider * slider * half(0.5);
-}
-
 // Источник границы: карта шума СМЕЩАЕТ базовое значение, а не умножает его. Умножение
 // на канал со средней яркостью ~0.5 опускало средний источник и честно уменьшало площадь
 // покрытия при росте силы — старый дефект (грилл 15.09.2026, причина 3). Смещение держит
@@ -808,6 +799,8 @@ struct ENV_MaskField
     float hw;
 };
 
+// Шкала мягкости края — ползунок 0-1 линейно в полуширину 0-0.25. Нижняя граница —
+// половина пикселя: жёсткий край (Softness 0) всё равно сглажен, а не алиасит.
 ENV_MaskField ENV_TopReliefMaskField(float source, half coverage, half softness)
 {
     float d = source - (1.0 - float(coverage));
@@ -834,8 +827,49 @@ half ENV_TopReliefOverlayMask(float source, half coverage, half softness)
     return ENV_TopReliefMaskField(source, coverage, softness).mask;
 }
 
+// Виртуальная кромка — ОДНО место на всех трёх потребителей: Top и оба слоя Blend. Формула
+// жила в двух копиях, копии разошлись, и это стоило дефекта: слои перешли на поле d, а Top
+// остался на маске и получил по контуру лесенку из блоков 2x2. Правка кромки — сюда и только сюда.
+//
+// Градиент берётся от гладкого поля d (знаковая глубина относительно контура), а не от самой
+// маски: маска меняется на 1-3 пикселях, и ddx/ddy по ней считаются теми самыми блоками 2x2.
+// Вес скоса — производная smoothstep по d, посчитанная по пикселю точно; полуширина скоса
+// не меньше 1.5 пикселя, чтобы жёсткий край (Softness 0) давал сглаженную линию, а не аляс.
+// Коэффициенты 0.16 (жёсткий край) .. 0.06 (самый мягкий): шире переход — положе скос.
+//
+// Минус — углубление, плюс — выступ. Диапазон решает СВОЙСТВО шейдера, не эта функция:
+// у слоёв ползунок -1..1, у Top 0..1 (только выпуклость, решение умышленное), и clamp здесь —
+// страховка от значения, пришедшего мимо ползунка, а не место, где это различие задано.
+//
+// Результат — смещение в мировом пространстве. Оно по построению лежит в касательной плоскости:
+// собрано из ddx/ddy позиции, а те — векторы вдоль поверхности. Поэтому вычитание его из нормали
+// в тангенциальном базисе (правка xy при нетронутом z) и в мировом — одна и та же операция.
+// Маску не двигает: mask сюда только приходит.
+float3 ENV_EdgeOffsetWS(ENV_MaskField mask, float3 positionWS, half thickness, half softness)
+{
+    float3 dpdx = ddx(positionWS);
+    float3 dpdy = ddy(positionWS);
+    float fieldDx = ddx(mask.d);
+    float fieldDy = ddy(mask.d);
+    // Порог только против деления на ноль. Он в метрах в квадрате: 1e-5 — это пиксель
+    // размером 3 мм, то есть кромка слабела уже с трёх метров, а у самой земли исчезала.
+    float3 fieldGradientWS = dpdx * (fieldDx / max(dot(dpdx, dpdx), 1e-12))
+                           + dpdy * (fieldDy / max(dot(dpdy, dpdy), 1e-12));
+    float capHalfWidth = max(mask.hw, 1.5 * max(fwidth(mask.d), 1e-4));
+    float ramp = saturate((mask.d + capHalfWidth) / (2.0 * capHalfWidth));
+    float bevelWeight = 6.0 * ramp * (1.0 - ramp) / (2.0 * capHalfWidth);
+    // Оба множителя применяются во float до сужения: bevelWeight на узком крае доходит
+    // до нескольких тысяч, а capStrength его гасит. Сузить раньше — потерять точность там,
+    // где скос и так самый крутой.
+    float capStrength = float(clamp(thickness, half(-1.0), half(1.0)))
+        * lerp(0.16, 0.06, float(saturate(softness)));
+    return fieldGradientWS * (bevelWeight * capStrength);
+}
+
 // uv — сырой uv0 меша (шум Top в режиме Mesh UV); positionPS — ENV_OverlayPosition.
-half ComputeOverlayMask0(float2 uv, float3 positionPS, half3 normalWS)
+// Возвращает поле целиком: кромке Top нужен гладкий d, а не одна маска — по тем же причинам,
+// что и кромке слоёв Blend (см. ENV_ApplyLayerEdgeTS).
+ENV_MaskField ComputeOverlayField0(float2 uv, float3 positionPS, half3 normalWS)
 {
 #if defined(_OVERLAY_LAYER_0)
     half3 upPS = half3(ENV_OverlayDirection(float3(0.0, 1.0, 0.0)));
@@ -853,10 +887,20 @@ half ComputeOverlayMask0(float2 uv, float3 positionPS, half3 normalWS)
     half source = baseSource;
 #endif
 
-    return ENV_TopReliefOverlayMask(float(source), _OverlayCoverage0, _OverlayEdgeSoftness0);
+    return ENV_TopReliefMaskField(float(source), _OverlayCoverage0, _OverlayEdgeSoftness0);
 #else
-    return half(0.0);
+    // Слой выключен: поле уведено за контур так же, как при Coverage 0 — кромке взяться неоткуда.
+    ENV_MaskField f;
+    f.mask = half(0.0);
+    f.d = -1.0;
+    f.hw = 1e-4;
+    return f;
 #endif
+}
+
+half ComputeOverlayMask0(float2 uv, float3 positionPS, half3 normalWS)
+{
+    return ComputeOverlayField0(uv, positionPS, normalWS).mask;
 }
 
 // Комплект материальных карт одного слоя (тикет 07, .scratch/env-lit-layers/issues/
@@ -1343,32 +1387,17 @@ half ENV_CombinedReliefBias(half layerBias, half outerBias)
         : layerBias;
 }
 
-// Виртуальная кромка. Градиент берётся от гладкого поля d (знаковая глубина относительно контура), а не от
-// самой маски: маска меняется на 1-3 пикселях, и ddx/ddy по ней считаются блоками 2x2 — по контуру шла
-// пиксельная лесенка. Вес скоса — производная smoothstep по d, посчитанная по пикселю точно; полуширина
-// скоса не меньше 1.5 пикселя, чтобы жёсткий край (Softness 0) давал сглаженную линию, а не аляс.
-// Коэффициенты 0.16 (жёсткий край) .. 0.06 (самый мягкий) — как у Top: шире переход — положе скос.
-// Минус — углубление, плюс — выступ; маску не двигает (mask сюда только приходит).
+// Кромка слоя Blend — тангенциальная обёртка над ENV_EdgeOffsetWS. Своего здесь только
+// проекция готового смещения на базис слоя: правим xy, z не трогаем. Сама формула — в хелпере.
 half3 ENV_ApplyLayerEdgeTS(half3 coveredTS, ENV_BaseGeometry geo, ENV_MaskField mask,
                            half edgeThickness, half softness)
 {
 #if defined(_NORMALMAP)
-    float3 dpdx = ddx(geo.positionWS);
-    float3 dpdy = ddy(geo.positionWS);
-    float fieldDx = ddx(mask.d);
-    float fieldDy = ddy(mask.d);
-    float3 fieldGradientWS = dpdx * (fieldDx / max(dot(dpdx, dpdx), 1e-5))
-                           + dpdy * (fieldDy / max(dot(dpdy, dpdy), 1e-5));
-    float capHalfWidth = max(mask.hw, 1.5 * max(fwidth(mask.d), 1e-4));
-    float ramp = saturate((mask.d + capHalfWidth) / (2.0 * capHalfWidth));
-    float bevelWeight = 6.0 * ramp * (1.0 - ramp) / (2.0 * capHalfWidth);
+    float3 offsetWS = ENV_EdgeOffsetWS(mask, geo.positionWS, edgeThickness, softness);
     half3 tangent = normalize(geo.tangentWS.xyz);
     half3 bitangent = geo.tangentWS.w * cross(geo.normalWS, tangent);
-    half2 gradientTS = half2(dot(half3(fieldGradientWS), tangent), dot(half3(fieldGradientWS), bitangent))
-                     * half(bevelWeight);
-    half capStrength = clamp(edgeThickness, half(-1.0), half(1.0))
-        * lerp(half(0.16), half(0.06), saturate(softness));
-    coveredTS = normalize(half3(coveredTS.xy - gradientTS * capStrength, coveredTS.z));
+    half2 offsetTS = half2(dot(half3(offsetWS), tangent), dot(half3(offsetWS), bitangent));
+    coveredTS = normalize(half3(coveredTS.xy - offsetTS, coveredTS.z));
 #endif
     return coveredTS;
 }

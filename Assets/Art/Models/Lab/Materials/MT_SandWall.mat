@@ -27,6 +27,7 @@ Material:
   m_ValidKeywords:
   - _BASEPROJECTION_WORLD
   - _MASKMAP_SEPARATE
+  - _NORMALMAP
   m_InvalidKeywords:
   - _PROJECTIONSPACE_WORLD
   m_LightmapFlags: 4
@@ -73,7 +74,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 23272a24855ff5b4e9e26dda017d0c6b, type: 3}
+        m_Texture: {fileID: 2800000, guid: a8b308a9392ba374698ec97b17cdec6d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ColorRampTex:
@@ -126,6 +127,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MetallicMap:
         m_Texture: {fileID: 2800000, guid: 8eb093ca38d927943834be307af65a46, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixHeightMap1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixHeightMap2:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MixMap1:
@@ -432,6 +441,12 @@ Material:
     - _MixCoverage2: 0
     - _MixEdgeSoftness1: 0.1
     - _MixEdgeSoftness2: 0.1
+    - _MixEdgeThickness1: 0
+    - _MixEdgeThickness2: 0
+    - _MixHeightStrength1: 0
+    - _MixHeightStrength2: 0
+    - _MixInheritRelief1: 1
+    - _MixInheritRelief2: 1
     - _MixMaskFromTexture1: 0
     - _MixMaskFromTexture2: 0
     - _MixMetallic1: 0
@@ -440,8 +455,8 @@ Material:
     - _MixNormalScale2: 1
     - _MixOcclusionStrength1: 1
     - _MixOcclusionStrength2: 1
-    - _MixPatternBias1: 0.5
-    - _MixPatternBias2: 0.5
+    - _MixPatternBias1: 0
+    - _MixPatternBias2: 0
     - _MixPatternChannel1: 1
     - _MixPatternChannel2: 2
     - _MixPatternProjection1: 0
@@ -454,6 +469,8 @@ Material:
     - _MixPatternStrength2: 0
     - _MixProjection1: 0
     - _MixProjection2: 0
+    - _MixReliefSmoothing1: 0
+    - _MixReliefSmoothing2: 0
     - _MixRotation1: 0
     - _MixRotation2: 0
     - _MixSmoothness1: 0.5
@@ -480,7 +497,7 @@ Material:
     - _OverlayThickness0: 0
     - _Parallax: 0.005
     - _Pattern: 0
-    - _PatternBias0: 0.5
+    - _PatternBias0: 0
     - _PatternChannel0: 0
     - _PatternRotation0: 0
     - _PatternSpace0: 0
