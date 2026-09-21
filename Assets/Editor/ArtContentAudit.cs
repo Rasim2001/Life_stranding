@@ -117,6 +117,8 @@ namespace Editor
             HashSet<string> buildSet = new HashSet<string>(AssetDatabase.GetDependencies(buildRoots, true));
             foreach (string root in buildRoots)
                 buildSet.Add(root);
+            // Editor folders never ship, even when an asset in the build lists them as a dependency.
+            buildSet.RemoveWhere(IsEditorOnly);
 
             string[] nonBuildScenes = CollectNonBuildScenes(allAssets, buildSet);
             HashSet<string> projectOnlySet = new HashSet<string>(AssetDatabase.GetDependencies(nonBuildScenes, true));
@@ -270,6 +272,11 @@ namespace Editor
             return result;
         }
 
+        private static bool IsEditorOnly(string path)
+        {
+            return path.Contains("/Editor/");
+        }
+
         private static string[] CollectBuildRoots(List<string> allAssets)
         {
             HashSet<string> roots = new HashSet<string>(StringComparer.Ordinal);
@@ -284,7 +291,7 @@ namespace Editor
             // reachable by string path — the dependency graph cannot see those calls.
             foreach (string path in allAssets)
             {
-                if (path.Contains("/Resources/"))
+                if (path.Contains("/Resources/") && !IsEditorOnly(path))
                     roots.Add(path);
             }
 
