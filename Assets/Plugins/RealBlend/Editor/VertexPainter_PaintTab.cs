@@ -9,10 +9,10 @@ namespace RealBlend
     public class VertexPainter_PaintTab : IVertexPainterTab
     {
         [System.NonSerialized] private EditorWindow _owner;
-        private const string PaletteRelativeDirectory = "Assets/RealBlend/VertexColorPalettes";
+        private const string PaletteRelativeDirectory = "Assets/Plugins/RealBlend/VertexColorPalettes";
         private const string PaletteLastUsedNameKey = "RealBlend_LastVertexColorPaletteName";
         private const string VertexColorPreviewShaderName = "RealBlend/Vertex Color Preview";
-        private const string VertexColorPreviewShaderAssetPath = "Assets/RealBlend/Art/Shaders/VertexColorPreview.shader";
+        private const string VertexColorPreviewShaderAssetPath = "Assets/Plugins/RealBlend/Art/Shaders/VertexColorPreview.shader";
 
         public enum PaintLayer { Base_Rock = 0, Layer1 = 1, Layer2 = 2, Wetness = 3, Variation = 4 }
         public enum PaintWorkflow { LayeredBlend = 0, VertexColor = 1 }
