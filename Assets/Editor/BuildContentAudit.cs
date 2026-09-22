@@ -26,13 +26,13 @@ namespace Editor
     /// Also collects the actual prefix/suffix vocabulary in use, to compare against
     /// docs/asset-organization-and-naming.md §6.3 and §6.5.
     /// </summary>
-    public static class ArtContentAudit
+    public static class BuildContentAudit
     {
         private const string ArtRoot = "Assets/Art/";
-        private const string ReportFolder = ".scratch/art-cleanup";
+        private const string ReportFolder = ".scratch/build-audit";
         private const string GraphicsSettingsPath = "ProjectSettings/GraphicsSettings.asset";
 
-        // Structure rules from .scratch/art-cleanup/plan.md: a leading '_' in a root folder of
+        // Structure rules: docs/asset-organization-and-naming.md §8.3, §8.5: a leading '_' in a root folder of
         // Assets means "not in the build"; ThirdParty is vendor content that does ship.
         private const string ThirdPartyRoot = "Assets/ThirdParty/";
         private const string BlockoutRoot = "Assets/_PolygonPrototype/";
@@ -44,9 +44,8 @@ namespace Editor
             "Assets/Art/Chunks/",
         };
 
-        // Vendor packages that currently live inside Art. Listed so their files can be
-        // counted separately: per asset-organization-and-naming.md §8.1 a vendor island
-        // is not normalized to project rules, so mixing it into the cleanup list is noise.
+        // Vendor content is counted separately; after the 09.2026 cleanup all vendors live in
+        // Assets/ThirdParty, the list guards against a relapse.
         private static readonly string[] VendorIslandsInArt =
         {
             "Assets/Art/Shaders/AllIn13DShader/",
@@ -109,22 +108,19 @@ namespace Editor
             public bool IsVendor;
         }
 
-        [MenuItem("GD Tools/Art Content Audit")]
+        [MenuItem("GD Tools/Build Content Audit")]
         public static void Run()
         {
             List<string> allAssets = CollectProjectAssets();
+            Dictionary<string, string[]> directDepsCache = new Dictionary<string, string[]>(StringComparer.Ordinal);
 
             string[] buildRoots = CollectBuildRoots(allAssets);
-            HashSet<string> buildSet = new HashSet<string>(AssetDatabase.GetDependencies(buildRoots, true));
-            foreach (string root in buildRoots)
-                buildSet.Add(root);
+            HashSet<string> buildSet = CollectDependenciesStoppingAtScenes(buildRoots, directDepsCache);
             // Editor folders never ship, even when an asset in the build lists them as a dependency.
             buildSet.RemoveWhere(IsEditorOnly);
 
             string[] nonBuildScenes = CollectNonBuildScenes(allAssets, buildSet);
-            HashSet<string> projectOnlySet = new HashSet<string>(AssetDatabase.GetDependencies(nonBuildScenes, true));
-            foreach (string scene in nonBuildScenes)
-                projectOnlySet.Add(scene);
+            HashSet<string> projectOnlySet = CollectDependenciesStoppingAtScenes(nonBuildScenes, directDepsCache);
             projectOnlySet.ExceptWith(buildSet);
 
             List<Entry> inBuild = new List<Entry>();
@@ -151,7 +147,7 @@ namespace Editor
                 }
             }
 
-            StructureFindings structure = CheckStructure(allAssets, buildSet);
+            StructureFindings structure = CheckStructure(allAssets, buildSet, directDepsCache);
 
             string report = BuildReport(
                 allAssets, buildRoots, nonBuildScenes,
@@ -210,7 +206,8 @@ namespace Editor
             return extension == ".prefab" || extension == ".fbx" || extension == ".obj" || extension == ".blend";
         }
 
-        private static StructureFindings CheckStructure(List<string> allAssets, HashSet<string> buildSet)
+        private static StructureFindings CheckStructure(
+            List<string> allAssets, HashSet<string> buildSet, Dictionary<string, string[]> directDepsCache)
         {
             StructureFindings result = new StructureFindings();
 
@@ -228,7 +225,7 @@ namespace Editor
                 if (!inTools || inArt)
                 {
                     // Direct dependencies only: a chain is reported at its first tracked link.
-                    string[] direct = AssetDatabase.GetDependencies(path, false);
+                    string[] direct = GetDirectDependenciesCached(path, directDepsCache);
                     if (!inTools && direct.Any(d => d.StartsWith(ToolsRoot, StringComparison.Ordinal)))
                         result.DependsOnTools.Add(path);
                     if (inArt && direct.Any(d => d.StartsWith(ExperimentsRoot, StringComparison.Ordinal)))
@@ -239,7 +236,10 @@ namespace Editor
                                path.StartsWith("Assets/Scenes/", StringComparison.Ordinal);
                 if (isScene || IsChunkPrefab(path))
                 {
-                    List<string> kit = AssetDatabase.GetDependencies(path, true)
+                    // Owner is the sole root: the walk stops at any other scene, so a shared
+                    // multi-scene bake asset does not smuggle in the neighbour's blockout debt.
+                    HashSet<string> reachable = CollectDependenciesStoppingAtScenes(new[] { path }, directDepsCache);
+                    List<string> kit = reachable
                         .Where(d => d.StartsWith(BlockoutRoot, StringComparison.Ordinal))
                         .ToList();
                     result.BlockoutDebt.Add(new DebtRow
@@ -256,6 +256,54 @@ namespace Editor
             result.BlockoutDebt = result.BlockoutDebt
                 .OrderByDescending(r => r.Total).ThenBy(r => r.Owner, StringComparer.Ordinal).ToList();
             return result;
+        }
+
+        // BFS that treats a '.unity' scene as a dead end unless it is one of the roots: a scene
+        // enters the build only via Build Settings, never because some other asset references it.
+        private static HashSet<string> CollectDependenciesStoppingAtScenes(
+            string[] roots, Dictionary<string, string[]> directDepsCache)
+        {
+            HashSet<string> rootSet = new HashSet<string>(roots, StringComparer.Ordinal);
+            HashSet<string> result = new HashSet<string>(StringComparer.Ordinal);
+            HashSet<string> visited = new HashSet<string>(StringComparer.Ordinal);
+            Queue<string> queue = new Queue<string>();
+
+            foreach (string root in roots)
+            {
+                result.Add(root);
+                if (visited.Add(root))
+                    queue.Enqueue(root);
+            }
+
+            while (queue.Count > 0)
+            {
+                string current = queue.Dequeue();
+                string[] direct = GetDirectDependenciesCached(current, directDepsCache);
+                foreach (string dep in direct)
+                {
+                    bool isForeignScene = dep.EndsWith(".unity", StringComparison.OrdinalIgnoreCase) &&
+                                          !rootSet.Contains(dep);
+                    if (isForeignScene)
+                        continue;
+
+                    result.Add(dep);
+                    if (visited.Add(dep))
+                        queue.Enqueue(dep);
+                }
+            }
+
+            return result;
+        }
+
+        private static string[] GetDirectDependenciesCached(string path, Dictionary<string, string[]> cache)
+        {
+            string[] deps;
+            if (!cache.TryGetValue(path, out deps))
+            {
+                deps = AssetDatabase.GetDependencies(path, false);
+                cache[path] = deps;
+            }
+            return deps;
         }
 
         private static List<string> CollectProjectAssets()
@@ -437,10 +485,10 @@ namespace Editor
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.AppendLine("# Аудит Assets/Art против графа зависимостей билда");
+            sb.AppendLine("# Аудит содержимого билда: Assets/Art и структура против графа билда");
             sb.AppendLine();
             sb.AppendLine("**Сгенерировано:** " + DateTime.Now.ToString("dd.MM.yyyy HH:mm") +
-                          " · `GD Tools/Art Content Audit`");
+                          " · `GD Tools/Build Content Audit`");
             sb.AppendLine("**Режим:** только чтение. Ни один файл не перемещён, не переименован и не удалён.");
             sb.AppendLine();
 
@@ -842,7 +890,7 @@ namespace Editor
             WriteList(Path.Combine(ReportFolder, "D-outside-art-in-build.txt"), outsideArtInBuild);
             WriteStructureList(Path.Combine(ReportFolder, "structure-violations.txt"), structure);
 
-            Debug.Log("Art Content Audit: отчёт записан в " + reportPath +
+            Debug.Log("Build Content Audit: отчёт записан в " + reportPath +
                       "\nC (несвязано в Art): " + unreferenced.Count + " файлов, " + Mib(unreferenced.Sum(e => e.Bytes)) +
                       "\nB (только не-билдовые сцены): " + projectOnly.Count + " файлов, " + Mib(projectOnly.Sum(e => e.Bytes)) +
                       "\nD (вне Art, в билде): " + outsideArtInBuild.Count + " файлов, " + Mib(outsideArtInBuild.Sum(e => e.Bytes)) +
