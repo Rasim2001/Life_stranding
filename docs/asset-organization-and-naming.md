@@ -1095,9 +1095,9 @@ Rendering Debugger в билде и реестр APV-данных по сцен�
 
 ### 8.5 Аудит содержимого билда
 
-Правила 8.3 держит инструмент `Assets/Editor/ArtContentAudit.cs` (меню сейчас
-`GD Tools/Art Content Audit`; переименование в `Build Content Audit` — отдельной правкой кода).
-Он строит граф того, что уходит в билд, и сверяет с ним папки.
+Правила 8.3 держит инструмент `Assets/Editor/BuildContentAudit.cs`, меню
+`GD Tools/Build Content Audit`. Он строит граф того, что уходит в билд, и сверяет с ним папки.
+Отчёт — `.scratch/build-audit/audit-report.md` и четыре списка рядом; ничего не двигает и не удаляет.
 
 **Входы билда** — от них `AssetDatabase.GetDependencies` собирает всё остальное:
 
@@ -1106,6 +1106,11 @@ Rendering Debugger в билде и реестр APV-данных по сцен�
 - Always Included Shaders и Preloaded Assets;
 - ассеты, на которые ссылаются настройки плеера: `GraphicsSettings`, `QualitySettings`,
   `ProjectSettings`, `VFXManager` (URP-ассеты уровней качества и подобное).
+
+**Сцена — не зависимость.** Обход графа не проходит через `.unity`, если это не вход: в билд
+сцена попадает только из Build Settings, а не потому, что на неё ссылается ассет. Без этого
+общий `LightingData` мульти-сценового бейка приписывал одной сцене долг соседки, а тестовые
+сцены Zenject из `Resources` раздували граф билда.
 
 **Категории:**
 
