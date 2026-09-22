@@ -13,7 +13,8 @@ namespace Editor
     /// Nothing is moved, renamed or deleted — the tool only reports.
     ///
     /// Build root: enabled scenes from Build Settings + every asset under any Resources
-    /// folder + Always Included Shaders + Preloaded Assets. Addressables are not installed,
+    /// folder + Always Included Shaders + Preloaded Assets + assets referenced from player-side
+    /// ProjectSettings (pipeline, cursor, icons, splash). Addressables are not installed,
     /// so this root is complete for the current project (see docs/art-content-organization-assessment.md §2).
     ///
     /// Four buckets:
@@ -307,7 +308,42 @@ namespace Editor
                     roots.Add(path);
             }
 
+            foreach (string path in CollectPlayerSettingsReferences())
+                roots.Add(path);
+
             return roots.ToArray();
+        }
+
+        // Settings that ship with the player: render pipeline assets (and through them
+        // renderer features with their materials), cursor, icons, splash logos, VFX runtime.
+        // EditorBuildSettings is excluded — it lists disabled scenes too.
+        private static readonly string[] PlayerSettingsFiles =
+        {
+            "ProjectSettings/GraphicsSettings.asset",
+            "ProjectSettings/QualitySettings.asset",
+            "ProjectSettings/ProjectSettings.asset",
+            "ProjectSettings/VFXManager.asset",
+        };
+
+        private static List<string> CollectPlayerSettingsReferences()
+        {
+            List<string> result = new List<string>();
+            System.Text.RegularExpressions.Regex guidPattern =
+                new System.Text.RegularExpressions.Regex("guid: ([0-9a-f]{32})");
+
+            foreach (string file in PlayerSettingsFiles)
+            {
+                if (!File.Exists(file))
+                    continue;
+                foreach (System.Text.RegularExpressions.Match match in guidPattern.Matches(File.ReadAllText(file)))
+                {
+                    string path = AssetDatabase.GUIDToAssetPath(match.Groups[1].Value);
+                    if (path.StartsWith("Assets/", StringComparison.Ordinal))
+                        result.Add(path);
+                }
+            }
+
+            return result;
         }
 
         private static List<string> CollectAlwaysIncludedShaders()
@@ -412,7 +448,7 @@ namespace Editor
             sb.AppendLine();
             sb.AppendLine("Всего ассетов в `Assets`: " + allAssets.Count);
             sb.AppendLine("Корневых входов билда: " + buildRoots.Length +
-                          " (включённые сцены + всё под `Resources` + Always Included Shaders + Preloaded Assets)");
+                          " (включённые сцены + всё под `Resources` + Always Included Shaders + Preloaded Assets + ссылки из настроек плеера: пайплайн, курсор, иконки, сплэш)");
             sb.AppendLine("Сцен проекта вне билда: " + nonBuildScenes.Length);
             sb.AppendLine();
             sb.AppendLine("Включённые сцены билда:");
