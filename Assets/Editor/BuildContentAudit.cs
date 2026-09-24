@@ -29,19 +29,25 @@ namespace Editor
     public static class BuildContentAudit
     {
         private const string ArtRoot = "Assets/Art/";
+        private const string ModulesRoot = "Assets/Modules/";
         private const string ReportFolder = ".scratch/build-audit";
         private const string GraphicsSettingsPath = "ProjectSettings/GraphicsSettings.asset";
 
         // Structure rules: docs/asset-organization-and-naming.md §8.3, §8.5: a leading '_' in a root folder of
         // Assets means "not in the build"; ThirdParty is vendor content that does ship.
         private const string ThirdPartyRoot = "Assets/ThirdParty/";
-        private const string BlockoutRoot = "Assets/_PolygonPrototype/";
-        private const string ToolsRoot = "Assets/_TK_Tools/";
         private const string ExperimentsRoot = "Assets/_Experiments/";
+
+        // Production zone: Art plus Modules. Old and new root names are both accepted while the
+        // art-organization migration is in flight (old names go away with ticket 18).
+        private static readonly string[] ProductionRoots = { ArtRoot, ModulesRoot };
+        private static readonly string[] BlockoutRoots = { "Assets/_PolygonPrototype/", "Assets/_BlockoutKit/" };
+        private static readonly string[] ToolsRoots = { "Assets/_TK_Tools/", "Assets/_Local/" };
         private static readonly string[] ChunkPrefabRoots =
         {
             "Assets/Art/Prefabs/Chunks/",
             "Assets/Art/Chunks/",
+            "Assets/Art/Worlds/",
         };
 
         // Vendor content is counted separately; after the 09.2026 cleanup all vendors live in
@@ -91,14 +97,20 @@ namespace Editor
             ".ttf", ".otf",
         };
 
+        // Old vocabulary plus the new one ("MAHS", "MS" from the 09.2026 dictionary).
         private static readonly string[] TextureMapSuffixes =
         {
-            "BC", "N", "AO", "M", "R", "S", "E", "Mask", "H", "O",
+            "BC", "N", "AO", "M", "R", "S", "E", "Mask", "H", "O", "MAHS", "MS",
         };
 
         private static readonly string[] PrefabRoles =
         {
             "Actor", "Chunk", "Kit", "Prop", "UI", "FX",
+        };
+
+        private static readonly string[] NewPrefabPrefixes =
+        {
+            "CHNK_", "CHR_", "ACT_", "KIT_", "PRP_", "FX_",
         };
 
         private class Entry
@@ -118,6 +130,8 @@ namespace Editor
             HashSet<string> buildSet = CollectDependenciesStoppingAtScenes(buildRoots, directDepsCache);
             // Editor folders never ship, even when an asset in the build lists them as a dependency.
             buildSet.RemoveWhere(IsEditorOnly);
+            // AssetDatabase does not see '#include', so shader includes are resolved from the text.
+            List<string> includedByText = AddShaderIncludes(buildSet);
 
             string[] nonBuildScenes = CollectNonBuildScenes(allAssets, buildSet);
             HashSet<string> projectOnlySet = CollectDependenciesStoppingAtScenes(nonBuildScenes, directDepsCache);
@@ -132,8 +146,12 @@ namespace Editor
             {
                 Entry entry = MakeEntry(path);
 
-                if (path.StartsWith(ArtRoot, StringComparison.Ordinal))
+                if (IsProduction(path))
                 {
+                    // Module code compiles into the player whether or not an asset points at it,
+                    // so the dependency graph says nothing about it; it is not content.
+                    if (IsCodeFile(path) && path.StartsWith(ModulesRoot, StringComparison.Ordinal))
+                        continue;
                     if (buildSet.Contains(path))
                         inBuild.Add(entry);
                     else if (projectOnlySet.Contains(path))
@@ -149,11 +167,118 @@ namespace Editor
 
             StructureFindings structure = CheckStructure(allAssets, buildSet, directDepsCache);
 
+            Dictionary<string, string> previousSnapshot = ReadSnapshot(SnapshotPath);
+            Dictionary<string, string> currentSnapshot = MakeSnapshot(inBuild);
+
             string report = BuildReport(
                 allAssets, buildRoots, nonBuildScenes,
-                inBuild, projectOnly, unreferenced, outsideArtInBuild, structure);
+                inBuild, projectOnly, unreferenced, outsideArtInBuild, structure,
+                includedByText, previousSnapshot, currentSnapshot);
 
-            WriteReport(report, unreferenced, projectOnly, outsideArtInBuild, structure);
+            WriteReport(report, unreferenced, projectOnly, outsideArtInBuild, structure, currentSnapshot);
+        }
+
+        private static bool IsProduction(string path)
+        {
+            return StartsWithAny(path, ProductionRoots);
+        }
+
+        private static bool IsCodeFile(string path)
+        {
+            string extension = Path.GetExtension(path).ToLowerInvariant();
+            return extension == ".cs" || extension == ".asmdef" || extension == ".asmref";
+        }
+
+        private static bool StartsWithAny(string path, string[] roots)
+        {
+            foreach (string root in roots)
+            {
+                if (path.StartsWith(root, StringComparison.Ordinal))
+                    return true;
+            }
+            return false;
+        }
+
+        // Follows '#include "..."' from every shader/include file in the build set, transitively.
+        // Only includes that resolve to a project asset outside Editor folders are added.
+        // Returns the files added to the set.
+        private static List<string> AddShaderIncludes(HashSet<string> buildSet)
+        {
+            System.Text.RegularExpressions.Regex includePattern = new System.Text.RegularExpressions.Regex(
+                "^\\s*#\\s*include(?:_with_pragmas)?\\s+\"([^\"]+)\"",
+                System.Text.RegularExpressions.RegexOptions.Multiline);
+
+            List<string> added = new List<string>();
+            Queue<string> queue = new Queue<string>(buildSet.Where(IsShaderText));
+
+            while (queue.Count > 0)
+            {
+                string current = queue.Dequeue();
+                if (!File.Exists(current))
+                    continue;
+
+                string directory = Path.GetDirectoryName(current);
+                foreach (System.Text.RegularExpressions.Match match in includePattern.Matches(File.ReadAllText(current)))
+                {
+                    string target = ResolveInclude(directory, match.Groups[1].Value);
+                    if (target == null || IsEditorOnly(target) || !buildSet.Add(target))
+                        continue;
+
+                    added.Add(target);
+                    if (IsShaderText(target))
+                        queue.Enqueue(target);
+                }
+            }
+
+            added.Sort(StringComparer.Ordinal);
+            return added;
+        }
+
+        private static bool IsShaderText(string path)
+        {
+            string extension = Path.GetExtension(path).ToLowerInvariant();
+            return extension == ".shader" || extension == ".hlsl" || extension == ".cginc";
+        }
+
+        private static string ResolveInclude(string fromDirectory, string include)
+        {
+            string candidate = include.StartsWith("Assets/", StringComparison.Ordinal)
+                ? include
+                : Path.Combine(fromDirectory, include);
+            string normalized = Path.GetFullPath(candidate).Replace('\\', '/');
+            string projectRoot = Path.GetFullPath(".").Replace('\\', '/').TrimEnd('/') + "/";
+            if (!normalized.StartsWith(projectRoot, StringComparison.OrdinalIgnoreCase))
+                return null;
+
+            string relative = normalized.Substring(projectRoot.Length);
+            return relative.StartsWith("Assets/", StringComparison.Ordinal) && File.Exists(relative) ? relative : null;
+        }
+
+        private const string SnapshotPath = ReportFolder + "/A-guid-snapshot.txt";
+
+        // guid -> path for category A. A moved file keeps its guid, so a move is not a difference;
+        // a file that dropped out of the build and another that came in are.
+        private static Dictionary<string, string> MakeSnapshot(List<Entry> inBuild)
+        {
+            Dictionary<string, string> result = new Dictionary<string, string>(StringComparer.Ordinal);
+            foreach (Entry entry in inBuild)
+                result[AssetDatabase.AssetPathToGUID(entry.Path)] = entry.Path;
+            return result;
+        }
+
+        private static Dictionary<string, string> ReadSnapshot(string path)
+        {
+            if (!File.Exists(path))
+                return null;
+
+            Dictionary<string, string> result = new Dictionary<string, string>(StringComparer.Ordinal);
+            foreach (string line in File.ReadAllLines(path))
+            {
+                int space = line.IndexOf(' ');
+                if (space == 32)
+                    result[line.Substring(0, space)] = line.Substring(space + 1).TrimStart();
+            }
+            return result;
         }
 
         private class DebtRow
@@ -190,14 +315,8 @@ namespace Editor
 
         private static bool IsChunkPrefab(string path)
         {
-            if (!path.EndsWith(".prefab", StringComparison.OrdinalIgnoreCase))
-                return false;
-            foreach (string root in ChunkPrefabRoots)
-            {
-                if (path.StartsWith(root, StringComparison.Ordinal))
-                    return true;
-            }
-            return false;
+            return path.EndsWith(".prefab", StringComparison.OrdinalIgnoreCase) &&
+                   StartsWithAny(path, ChunkPrefabRoots);
         }
 
         private static bool IsGeometrySource(string path)
@@ -213,22 +332,19 @@ namespace Editor
 
             foreach (string path in allAssets)
             {
-                bool inTools = path.StartsWith(ToolsRoot, StringComparison.Ordinal);
+                bool inTools = StartsWithAny(path, ToolsRoots);
 
-                if (buildSet.Contains(path) && IsUnderscoreRoot(path) &&
-                    !path.StartsWith(BlockoutRoot, StringComparison.Ordinal))
-                {
+                if (buildSet.Contains(path) && IsUnderscoreRoot(path) && !StartsWithAny(path, BlockoutRoots))
                     result.UnderscoreInBuild.Add(path);
-                }
 
-                bool inArt = path.StartsWith(ArtRoot, StringComparison.Ordinal);
-                if (!inTools || inArt)
+                bool inProduction = IsProduction(path);
+                if (!inTools || inProduction)
                 {
                     // Direct dependencies only: a chain is reported at its first tracked link.
                     string[] direct = GetDirectDependenciesCached(path, directDepsCache);
-                    if (!inTools && direct.Any(d => d.StartsWith(ToolsRoot, StringComparison.Ordinal)))
+                    if (!inTools && direct.Any(d => StartsWithAny(d, ToolsRoots)))
                         result.DependsOnTools.Add(path);
-                    if (inArt && direct.Any(d => d.StartsWith(ExperimentsRoot, StringComparison.Ordinal)))
+                    if (inProduction && direct.Any(d => d.StartsWith(ExperimentsRoot, StringComparison.Ordinal)))
                         result.DependsOnExperiments.Add(path);
                 }
 
@@ -240,7 +356,7 @@ namespace Editor
                     // multi-scene bake asset does not smuggle in the neighbour's blockout debt.
                     HashSet<string> reachable = CollectDependenciesStoppingAtScenes(new[] { path }, directDepsCache);
                     List<string> kit = reachable
-                        .Where(d => d.StartsWith(BlockoutRoot, StringComparison.Ordinal))
+                        .Where(d => StartsWithAny(d, BlockoutRoots))
                         .ToList();
                     result.BlockoutDebt.Add(new DebtRow
                     {
@@ -481,7 +597,10 @@ namespace Editor
             List<Entry> projectOnly,
             List<Entry> unreferenced,
             List<Entry> outsideArtInBuild,
-            StructureFindings structure)
+            StructureFindings structure,
+            List<string> includedByText,
+            Dictionary<string, string> previousSnapshot,
+            Dictionary<string, string> currentSnapshot)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -525,6 +644,15 @@ namespace Editor
             AppendSummaryRow(sb, "C · в Art, ни с чем не связано", unreferenced);
             AppendSummaryRow(sb, "D · вне Art, идёт в билд", outsideArtInBuild);
             sb.AppendLine();
+            sb.AppendLine("Продакшн-зона — `Assets/Art/` и `Assets/Modules/`; категории A–C считаются по обеим.");
+            List<Entry> modulesInAudit = inBuild.Concat(projectOnly).Concat(unreferenced)
+                .Where(e => e.Path.StartsWith(ModulesRoot, StringComparison.Ordinal)).ToList();
+            List<Entry> modulesInBuild = inBuild
+                .Where(e => e.Path.StartsWith(ModulesRoot, StringComparison.Ordinal)).ToList();
+            sb.AppendLine("Из них `Assets/Modules/`: всего " + modulesInAudit.Count + " файлов / " +
+                          Mib(modulesInAudit.Sum(e => e.Bytes)) + " · в A " + modulesInBuild.Count + " файлов / " +
+                          Mib(modulesInBuild.Sum(e => e.Bytes)) + ".");
+            sb.AppendLine();
             sb.AppendLine("A — трогать нельзя. B — требует решения по каждой сцене-владельцу.");
             sb.AppendLine("C — кандидаты на вывоз из Art. D — кандидаты на въезд в Art.");
             sb.AppendLine();
@@ -533,7 +661,7 @@ namespace Editor
             AppendTopList(sb, "## 4. B · крупнейшее связанное только с не-билдовыми сценами", projectOnly, 25);
             AppendTopList(sb, "## 5. D · крупнейшее вне Art, идущее в билд", outsideArtInBuild, 40);
 
-            AppendFolderBreakdown(sb, "## 6. C · несвязанное по папкам Art", unreferenced);
+            AppendFolderBreakdown(sb, "## 6. C · несвязанное по папкам Art и Modules", unreferenced);
 
             AppendNamingInventory(sb, inBuild);
 
@@ -543,6 +671,13 @@ namespace Editor
             sb.AppendLine();
             sb.AppendLine("- загрузку по строке, собранной в рантайме (не через `Resources`, которое здесь покрыто целиком);");
             sb.AppendLine("- ссылку шейдера на другой шейдер по имени через `Fallback` или `UsePass`;");
+            sb.AppendLine("- `#include`: граф его не видит, поэтому аудит разбирает текст `.shader`/`.hlsl`/`.cginc` из билда сам " +
+                          "(только `#include \"…\"` с путём внутри `Assets`; include через макрос и пакетные пути не ловятся). " +
+                          "Найдено таким способом: " + includedByText.Count +
+                          ", из них в продакшн-зоне (добавлено в A, перечислено ниже): " +
+                          includedByText.Count(IsProduction) + ".");
+            foreach (string path in includedByText.Where(IsProduction))
+                sb.AppendLine("  - `" + path + "`");
             sb.AppendLine("- ассет, нужный только editor-тулингу: он попадёт в C, хотя нужен;");
             sb.AppendLine("- содержимое, на которое ссылается только выключенная ветка префаба — она всё равно в билде, но это граф видит;");
             sb.AppendLine("- будущий контент, ещё не подключённый к сцене: он неотличим от мусора.");
@@ -551,8 +686,47 @@ namespace Editor
             sb.AppendLine();
 
             AppendStructure(sb, structure);
+            AppendSnapshotDiff(sb, previousSnapshot, currentSnapshot);
 
             return sb.ToString();
+        }
+
+        private static void AppendSnapshotDiff(
+            StringBuilder sb, Dictionary<string, string> previous, Dictionary<string, string> current)
+        {
+            sb.AppendLine("## 10. Разница снимка категории A по GUID");
+            sb.AppendLine();
+            sb.AppendLine("Снимок: `" + SnapshotPath + "` (GUID → путь). Перенос файла разницы не даёт — GUID переезжает с ним.");
+            sb.AppendLine();
+            if (previous == null)
+            {
+                sb.AppendLine("Предыдущего снимка нет — это первый. Записано GUID: " + current.Count + ".");
+                sb.AppendLine();
+                return;
+            }
+
+            List<KeyValuePair<string, string>> gone = previous.Where(p => !current.ContainsKey(p.Key))
+                .OrderBy(p => p.Value, StringComparer.Ordinal).ToList();
+            List<KeyValuePair<string, string>> added = current.Where(p => !previous.ContainsKey(p.Key))
+                .OrderBy(p => p.Value, StringComparer.Ordinal).ToList();
+            sb.AppendLine("Было: " + previous.Count + " · стало: " + current.Count +
+                          " · ушло из A: " + gone.Count + " · пришло в A: " + added.Count + ".");
+            sb.AppendLine();
+            AppendSnapshotList(sb, "Ушло из A (путь из прошлого снимка):", gone);
+            AppendSnapshotList(sb, "Пришло в A:", added);
+        }
+
+        private static void AppendSnapshotList(StringBuilder sb, string header, List<KeyValuePair<string, string>> items)
+        {
+            if (items.Count == 0)
+                return;
+            sb.AppendLine(header);
+            sb.AppendLine();
+            foreach (KeyValuePair<string, string> item in items.Take(100))
+                sb.AppendLine("- `" + item.Value + "` · " + item.Key);
+            if (items.Count > 100)
+                sb.AppendLine("- … ещё " + (items.Count - 100));
+            sb.AppendLine();
         }
 
         private static void AppendStructure(StringBuilder sb, StructureFindings s)
@@ -564,14 +738,14 @@ namespace Editor
             sb.AppendLine("Долг блокаута — не ошибка, к релизу уровня должен быть 0.");
             sb.AppendLine();
 
-            AppendViolationList(sb, "### 9.1 Правило 1 · файл под `Assets/_*` достижим из билда (кроме `_PolygonPrototype`)",
+            AppendViolationList(sb, "### 9.1 Правило 1 · файл под `Assets/_*` достижим из билда (кроме `_PolygonPrototype` / `_BlockoutKit`)",
                 s.UnderscoreInBuild);
-            AppendViolationList(sb, "### 9.2 Правило 2 · файл под git зависит от `_TK_Tools` (папка в `.gitignore`)",
+            AppendViolationList(sb, "### 9.2 Правило 2 · файл под git зависит от `_TK_Tools` / `_Local` (папка в `.gitignore`)",
                 s.DependsOnTools);
-            AppendViolationList(sb, "### 9.3 Правило 3 · продакшн в Art зависит от `_Experiments`",
+            AppendViolationList(sb, "### 9.3 Правило 3 · продакшн (Art, Modules) зависит от `_Experiments`",
                 s.DependsOnExperiments);
 
-            sb.AppendLine("### 9.4 Долг блокаута (`_PolygonPrototype`) по сценам и чанк-префабам");
+            sb.AppendLine("### 9.4 Долг блокаута (`_PolygonPrototype` / `_BlockoutKit`) по сценам и чанк-префабам");
             sb.AppendLine();
             sb.AppendLine("«Всего» — ассетов кита в рекурсивных зависимостях (префабы, модели, материалы, текстуры);");
             sb.AppendLine("«Геометрия» — из них префабы и модели. Показаны только строки с долгом > 0.");
@@ -679,18 +853,19 @@ namespace Editor
 
         private static string SecondLevelFolder(string path)
         {
-            string tail = path.Substring(ArtRoot.Length);
+            string zone = ProductionRoots.First(r => path.StartsWith(r, StringComparison.Ordinal));
+            string tail = path.Substring(zone.Length);
             int firstSlash = tail.IndexOf('/');
             if (firstSlash < 0)
-                return ArtRoot + "<корень>";
+                return zone + "<корень>";
 
             string first = tail.Substring(0, firstSlash);
             string rest = tail.Substring(firstSlash + 1);
             int secondSlash = rest.IndexOf('/');
             if (secondSlash < 0)
-                return ArtRoot + first;
+                return zone + first;
 
-            return ArtRoot + first + "/" + rest.Substring(0, secondSlash);
+            return zone + first + "/" + rest.Substring(0, secondSlash);
         }
 
         private static void AppendNamingInventory(StringBuilder sb, List<Entry> inBuild)
@@ -704,11 +879,13 @@ namespace Editor
             sb.AppendLine("здесь решение по неймингу имеет цену.");
             sb.AppendLine();
 
-            AppendPrefixTable(sb, "### 7.1 Текстуры (`TEX_` по §6.3)", own,
-                new[] { ".png", ".tga", ".jpg", ".jpeg", ".tif", ".tiff", ".exr", ".psd", ".hdr" });
+            string[] textureExtensions = { ".png", ".tga", ".jpg", ".jpeg", ".tif", ".tiff", ".exr", ".psd", ".hdr" };
+            AppendPrefixTable(sb, "### 7.1 Текстуры (`TEX_` по §6.3)", own, textureExtensions, "TEX_", "TEX_");
             AppendTextureSuffixTable(sb, own);
-            AppendPrefixTable(sb, "### 7.3 Материалы (`MAT_` по §6.3)", own, new[] { ".mat" });
-            AppendPrefixTable(sb, "### 7.4 Модели (`MSH_` по §6.3)", own, new[] { ".fbx", ".obj", ".blend" });
+            AppendPrefixTable(sb, "### 7.3 Материалы (`MAT_` по §6.3; новый словарь `MT_` / `MTV_`)", own,
+                new[] { ".mat" }, "MAT_", "MT_", "MTV_");
+            AppendPrefixTable(sb, "### 7.4 Модели (`MSH_` по §6.3; новый словарь `SM_` / `SK_`)", own,
+                new[] { ".fbx", ".obj", ".blend" }, "MSH_", "SM_", "SK_");
             AppendPrefabTable(sb, own);
             AppendPrefixTable(sb, "### 7.6 Шейдеры (`SHD_` / `SHG_` по §6.3)", own,
                 new[] { ".shader", ".shadergraph" });
@@ -716,7 +893,11 @@ namespace Editor
                 new[] { ".anim", ".controller" });
         }
 
-        private static void AppendPrefixTable(StringBuilder sb, string header, List<Entry> own, string[] extensions)
+        // oldPrefix / newPrefixes: vocabulary of §6.3 and the new dictionary, counted side by side
+        // while both are in use. TEX_ is the same in both, so it is passed once as the old one.
+        private static void AppendPrefixTable(
+            StringBuilder sb, string header, List<Entry> own, string[] extensions,
+            string oldPrefix = null, params string[] newPrefixes)
         {
             sb.AppendLine(header);
             sb.AppendLine();
@@ -742,6 +923,18 @@ namespace Editor
             }
 
             sb.AppendLine("Всего: " + names.Count + " · различных префиксов: " + counts.Count);
+            if (oldPrefix != null)
+            {
+                bool sameVocabulary = newPrefixes.Length == 1 && newPrefixes[0] == oldPrefix;
+                string oldLabel = sameVocabulary ? "с `" + oldPrefix + "`" : "старый словарь `" + oldPrefix + "`";
+                string line = oldLabel + ": " + names.Count(n => n.StartsWith(oldPrefix, StringComparison.Ordinal));
+                if (!sameVocabulary)
+                {
+                    foreach (string prefix in newPrefixes)
+                        line += " · новый `" + prefix + "`: " + names.Count(n => n.StartsWith(prefix, StringComparison.Ordinal));
+                }
+                sb.AppendLine(line);
+            }
             sb.AppendLine();
             sb.AppendLine("| Префикс | Файлов | Доля |");
             sb.AppendLine("|---|---:|---:|");
@@ -839,6 +1032,11 @@ namespace Editor
             int chunkAlt = names.Count(n => n.StartsWith("CHN_", StringComparison.Ordinal) ||
                                             n.StartsWith("CNK_", StringComparison.Ordinal));
             sb.AppendLine("| `CHN_` / `CNK_` (вне словаря) | " + chunkAlt + " |");
+            foreach (string prefix in NewPrefabPrefixes)
+            {
+                int count = names.Count(n => n.StartsWith(prefix, StringComparison.Ordinal));
+                sb.AppendLine("| `" + prefix + "` (новый словарь) | " + count + " |");
+            }
             sb.AppendLine();
 
             Dictionary<string, int> counts = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -878,7 +1076,8 @@ namespace Editor
             List<Entry> unreferenced,
             List<Entry> projectOnly,
             List<Entry> outsideArtInBuild,
-            StructureFindings structure)
+            StructureFindings structure,
+            Dictionary<string, string> currentSnapshot)
         {
             Directory.CreateDirectory(ReportFolder);
 
@@ -889,6 +1088,10 @@ namespace Editor
             WriteList(Path.Combine(ReportFolder, "B-art-project-only.txt"), projectOnly);
             WriteList(Path.Combine(ReportFolder, "D-outside-art-in-build.txt"), outsideArtInBuild);
             WriteStructureList(Path.Combine(ReportFolder, "structure-violations.txt"), structure);
+            File.WriteAllText(SnapshotPath,
+                string.Join("\n", currentSnapshot.OrderBy(p => p.Key, StringComparer.Ordinal)
+                    .Select(p => p.Key + " " + p.Value)) + "\n",
+                new UTF8Encoding(false));
 
             Debug.Log("Build Content Audit: отчёт записан в " + reportPath +
                       "\nC (несвязано в Art): " + unreferenced.Count + " файлов, " + Mib(unreferenced.Sum(e => e.Bytes)) +
