@@ -51,11 +51,11 @@ MonoBehaviour:
     m_Values:
     - position: {x: -1, y: 0, z: 0}
       index: 12
-      probeCount: 60416
+      probeCount: 59776
       minSubdiv: 0
       indexChunkCount: 209
       shChunkCount: 8
-      bricksCount: 944
+      bricksCount: 934
       indirectionEntryInfo:
       - positionInBricks: {x: -81, y: 0, z: 0}
         minSubdiv: 4
@@ -221,11 +221,11 @@ MonoBehaviour:
         hasOnlyBiggerBricks: 1
     - position: {x: 0, y: 0, z: 0}
       index: 13
-      probeCount: 43264
+      probeCount: 43200
       minSubdiv: 0
       indexChunkCount: 209
       shChunkCount: 6
-      bricksCount: 676
+      bricksCount: 675
       indirectionEntryInfo:
       - positionInBricks: {x: 0, y: 0, z: 0}
         minSubdiv: 1
@@ -753,7 +753,7 @@ MonoBehaviour:
     - Sealed
     - Breached
     m_Values:
-    - sceneHash: 1025380200
+    - sceneHash: -893783226
       cellDataAsset:
         m_AssetGUID: cbf21a303be396c4d8ba90ab1c4e584b
         m_StreamableAssetPath: APVStreamingAssets\9fbb0ee0ee3cc8446b811c0f28617644\cbf21a303be396c4d8ba90ab1c4e584b.bytes
@@ -801,8 +801,8 @@ MonoBehaviour:
             elementCount: 20
           - offset: 0
             elementCount: 28
-        m_Asset: {fileID: 4900000, guid: edb93c7bb3cf22847b603ed7065916a3, type: 3}
-    - sceneHash: 2027606954
+        m_Asset: {fileID: 0}
+    - sceneHash: -893783226
       cellDataAsset:
         m_AssetGUID: c059c5baf7afc5f4385519b4885428cf
         m_StreamableAssetPath: APVStreamingAssets\9fbb0ee0ee3cc8446b811c0f28617644\c059c5baf7afc5f4385519b4885428cf.bytes
@@ -836,8 +836,8 @@ MonoBehaviour:
             elementCount: 28
         m_Asset: {fileID: 4900000, guid: c422a5fd42948534b9a22ce2a1dead34, type: 3}
       cellProbeOcclusionDataAsset:
-        m_AssetGUID: 
-        m_StreamableAssetPath: APVStreamingAssets\9fbb0ee0ee3cc8446b811c0f28617644\.bytes
+        m_AssetGUID: e8402d27fc7654c479b926d39e43c146
+        m_StreamableAssetPath: APVStreamingAssets\9fbb0ee0ee3cc8446b811c0f28617644\e8402d27fc7654c479b926d39e43c146.bytes
         m_ElementSize: 0
         m_StreamableCellDescs:
           m_Keys: 0c0000000d0000000300000004000000
@@ -859,12 +859,12 @@ MonoBehaviour:
       m_Keys: 0c0000000d0000000300000004000000
       m_Values:
       - offset: 0
-        elementCount: 944
-      - offset: 15104
-        elementCount: 676
-      - offset: 25920
+        elementCount: 934
+      - offset: 14944
+        elementCount: 675
+      - offset: 25744
         elementCount: 2560
-      - offset: 66880
+      - offset: 66704
         elementCount: 3537
     m_Asset: {fileID: 4900000, guid: b65aba9310e20eb4286ce44539c84941, type: 3}
   cellSupportDataAsset:
@@ -882,7 +882,7 @@ MonoBehaviour:
         elementCount: 20
       - offset: 8912896
         elementCount: 28
-    m_Asset: {fileID: 4900000, guid: 5be2e5bd5d43b754da4ab56ca1c54045, type: 3}
+    m_Asset: {fileID: 0}
   chunkSizeInBricks: 128
   maxCellPosition: {x: 1, y: 1, z: 1}
   minCellPosition: {x: -1, y: -1, z: -1}
@@ -916,9 +916,9 @@ MonoBehaviour:
   supportLayerMaskChunkSize: 0
   supportOffsetsChunkSize: 98304
   supportDataChunkSize: 262144
-  lightingScenario: Breached
+  lightingScenario: Sealed
   version: 2
-  freezePlacement: 0
+  freezePlacement: 1
   probeOffset: {x: 0, y: 0, z: 0}
   simplificationLevels: 4
   minDistanceBetweenProbes: 1
