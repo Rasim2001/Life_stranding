@@ -30,8 +30,11 @@
 ## Включено
 
 **Пайплайн задач** (`disable-model-invocation`, запускает только владелец):
-`grill-me`, `to-spec`, `to-tickets`, `to-docs`, `handoff`. Плюс `grilling`,
+`grill-me`, `to-spec`, `to-tickets`, `to-docs`, `handoff`, `review-rules`. Плюс `grilling`,
 `spec-review`, `graphify`.
+
+`review-rules` — ревью кода по `docs/code-quality.md`; заменяет встроенный `/code-review`,
+который регламент не читает (фича `code-quality`, 26.09.2026).
 
 **Регламенты проекта:** `unity-verification-loop`, `urp-shader-authoring`,
 `zenject-conventions`, `r3-patterns`.
