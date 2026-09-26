@@ -135,6 +135,7 @@ namespace Editor
 
             string[] nonBuildScenes = CollectNonBuildScenes(allAssets, buildSet);
             HashSet<string> projectOnlySet = CollectDependenciesStoppingAtScenes(nonBuildScenes, directDepsCache);
+            AddShaderIncludes(projectOnlySet);
             projectOnlySet.ExceptWith(buildSet);
 
             List<Entry> inBuild = new List<Entry>();
