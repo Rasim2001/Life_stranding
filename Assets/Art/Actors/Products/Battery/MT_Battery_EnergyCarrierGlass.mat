@@ -1,5 +1,18 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6700428802649609042
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 9
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -7,13 +20,13 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MT_CS_TowerBase
+  m_Name: MT_Battery_EnergyCarrierGlass
   m_Shader: {fileID: 4800000, guid: 0dde7f0097aeb2541aea684ca0ad0e3c, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ALBEDOVERTEXCOLORMODE_REPLACE
-  - _ALPHA_CUTOFF_ON
+  - _ALLIN13D_SURFACE_TRANSPARENT
   - _CAST_SHADOWS_ON
   - _COLORRAMPLIGHTINGSTAGE_BEFORELIGHTING
   - _FADEUVSET_UV1
@@ -26,8 +39,8 @@ Material:
   - _RECEIVE_SHADOWS_ON
   - _REFLECTIONS_NONE
   - _RIMLIGHTINGSTAGE_BEFORELIGHTING
-  - _SHADINGMODEL_BASIC
-  - _SPECULARMODEL_NONE
+  - _SHADINGMODEL_PBR
+  - _SPECULARMODEL_CLASSIC
   - _TEXTUREBLENDINGMODE_RGB
   - _TEXTUREBLENDINGSOURCE_VERTEXCOLOR
   - _TRIPLANARNORMALSPACE_WORLD
@@ -37,7 +50,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
@@ -110,7 +123,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 41e6cbb63b11ae049a5911852d6de81b, type: 3}
+        m_Texture: {fileID: 2800000, guid: c32f46f05cf26854ebd8692da51b7869, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MatcapTex:
@@ -146,7 +159,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecularMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: db91805ffafc5584d9a5e2f33f91a7d3, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TexBlendingMask:
@@ -155,10 +168,6 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _ToonRamp:
         m_Texture: {fileID: 2800000, guid: 339398f75cfa2714d93579662d08ec9a, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _TriplanarNoiseTex:
-        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TriplanarTopNormalMap:
@@ -196,16 +205,16 @@ Material:
     - _AlbedoVertexColorMode: 1
     - _AlbedoVertexColorOn: 0
     - _AlphaClip: 0
-    - _AlphaCutoffOn: 1
+    - _AlphaCutoffOn: 0
     - _AlphaCutoffValue: 0.25
     - _AlphaRoundOn: 0
     - _AlphaToMask: 0
     - _AnisoShininess: 0.85
     - _Anisotropy: 0.45
     - _Blend: 0
-    - _BlendDst: 0
+    - _BlendDst: 10
     - _BlendModePreserveSpecular: 1
-    - _BlendSrc: 1
+    - _BlendSrc: 5
     - _BlendingMaskCutoffB: 0.1
     - _BlendingMaskCutoffG: 0.1
     - _BlendingMaskCutoffWhite: 0.15
@@ -259,8 +268,6 @@ Material:
     - _FadePower: 1
     - _FadeTransition: 0.2
     - _FadeUVSet: 0
-    - _FlatNormalsBlend: 1
-    - _FlatNormalsEnabled: 0
     - _FogOn: 0
     - _GeneralAlpha: 1
     - _Glitch: 0
@@ -274,7 +281,6 @@ Material:
     - _GreyScaleStage: 0
     - _Greyscale: 0
     - _GreyscaleBlend: 1
-    - _GreyscaleBlending: 1
     - _GreyscaleLuminosity: 0
     - _HalfLambertWrap: 1
     - _HandDrawn: 0
@@ -350,7 +356,7 @@ Material:
     - _ReceivedShadowsType: 0
     - _Reflections: 0
     - _ReflectionsAtten: 0.5
-    - _RenderPreset: 1
+    - _RenderPreset: 2
     - _RimAttenuation: 1
     - _RimLighting: 0
     - _RimLightingStage: 0
@@ -363,16 +369,16 @@ Material:
     - _ScrollTextureOn: 0
     - _ScrollTextureX: 1
     - _ScrollTextureY: 1
-    - _ShadingModel: 0
+    - _ShadingModel: 1
     - _ShadowCutoff: 0.2
     - _ShakeBlend: 1
     - _ShakeSpeedMult: 1
     - _Shininess: 16
-    - _Smoothness: 0.5
+    - _Smoothness: 0.031
     - _SmoothnessTextureChannel: 0
-    - _SpecularAtten: 0.5
+    - _SpecularAtten: 0.807
     - _SpecularHighlights: 1
-    - _SpecularModel: 0
+    - _SpecularModel: 1
     - _SpecularToonCutoff: 0.35
     - _SpecularToonSmoothness: 0
     - _SpherizeNormals: 0
@@ -393,17 +399,13 @@ Material:
     - _ToonSmoothness: 0.5
     - _TopNormalStrength: 1
     - _TriplanarMappingOn: 0
-    - _TriplanarNoiseTransitionOn: 0
     - _TriplanarNormalSpace: 1
     - _TriplanarSharpness: 15
-    - _TriplanarTransitionPower: 0.75
     - _UVDistortion: 0
     - _UseCustomTime: 0
     - _UseVerticalMask: 1
     - _VertexColorBlending: 1
     - _VertexDistortionAmount: 0
-    - _VertexDistortionNoiseSpeedX: 4
-    - _VertexDistortionNoiseSpeedY: 4
     - _VertexDistortionOn: 0
     - _VertexInflate: 0
     - _VertexShakeOn: 0
@@ -422,7 +424,7 @@ Material:
     - _WindVerticalMaskMinY: -1
     - _WorkflowMode: 1
     - _ZTestMode: 4
-    - _ZWrite: 1
+    - _ZWrite: 0
     m_Colors:
     - _AOColor: {r: 0, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
@@ -450,16 +452,3 @@ Material:
     - _VertexDistortionNoiseSpeed: {r: 4, g: 4, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &6425922974616026849
-MonoBehaviour:
-  m_ObjectHideFlags: 11
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 9
