@@ -294,7 +294,7 @@ Shader "SpiderRig/Experiments/ENV_LitTopReliefProof"
             #pragma shader_feature_local_fragment _MIX_HEIGHT_2
             // Остальные ENV-специфичные фрагментные keyword'ы — общий список для ForwardLit
             // и Meta, тикет 06 (.scratch/env-lit-layers/issues/06-noise-per-consumer.md).
-            #include_with_pragmas "Assets/Art/Shaders/Environment/ENV_LitKeywords.hlsl"
+            #include_with_pragmas "Assets/Modules/ENV_Lit/Shaders/ENV_LitKeywords.hlsl"
 
             // -------------------------------------
             // Universal Pipeline keywords
@@ -336,8 +336,8 @@ Shader "SpiderRig/Experiments/ENV_LitTopReliefProof"
             #pragma instancing_options renderinglayer
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 
-            #include "Assets/Art/Shaders/Environment/ENV_LitInput.hlsl"
-            #include "Assets/Art/Shaders/Environment/ENV_LitForwardPass.hlsl"
+            #include "Assets/Modules/ENV_Lit/Shaders/ENV_LitInput.hlsl"
+            #include "Assets/Modules/ENV_Lit/Shaders/ENV_LitForwardPass.hlsl"
             ENDHLSL
         }
 
@@ -365,7 +365,7 @@ Shader "SpiderRig/Experiments/ENV_LitTopReliefProof"
             #pragma multi_compile _ LOD_FADE_CROSSFADE
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
 
-            #include "Assets/Art/Shaders/Environment/ENV_LitInput.hlsl"
+            #include "Assets/Modules/ENV_Lit/Shaders/ENV_LitInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/ShadowCasterPass.hlsl"
             ENDHLSL
         }
@@ -392,7 +392,7 @@ Shader "SpiderRig/Experiments/ENV_LitTopReliefProof"
             #pragma multi_compile_instancing
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 
-            #include "Assets/Art/Shaders/Environment/ENV_LitInput.hlsl"
+            #include "Assets/Modules/ENV_Lit/Shaders/ENV_LitInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/DepthOnlyPass.hlsl"
             ENDHLSL
         }
@@ -422,7 +422,7 @@ Shader "SpiderRig/Experiments/ENV_LitTopReliefProof"
             #pragma multi_compile_instancing
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 
-            #include "Assets/Art/Shaders/Environment/ENV_LitInput.hlsl"
+            #include "Assets/Modules/ENV_Lit/Shaders/ENV_LitInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/LitDepthNormalsPass.hlsl"
             ENDHLSL
         }
@@ -452,11 +452,11 @@ Shader "SpiderRig/Experiments/ENV_LitTopReliefProof"
             // Остальные ENV-специфичные фрагментные keyword'ы — общий список с ForwardLit,
             // тикет 06 (.scratch/env-lit-layers/issues/06-noise-per-consumer.md). Мазок
             // и узор обязаны попасть в запечку — мета-пасс для того и форкался в 01.
-            #include_with_pragmas "Assets/Art/Shaders/Environment/ENV_LitKeywords.hlsl"
+            #include_with_pragmas "Assets/Modules/ENV_Lit/Shaders/ENV_LitKeywords.hlsl"
             #pragma shader_feature EDITOR_VISUALIZATION
 
-            #include "Assets/Art/Shaders/Environment/ENV_LitInput.hlsl"
-            #include "Assets/Art/Shaders/Environment/ENV_LitMetaPass.hlsl"
+            #include "Assets/Modules/ENV_Lit/Shaders/ENV_LitInput.hlsl"
+            #include "Assets/Modules/ENV_Lit/Shaders/ENV_LitMetaPass.hlsl"
             ENDHLSL
         }
     }
