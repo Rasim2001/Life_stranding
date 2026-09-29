@@ -125,7 +125,7 @@ Linear рассматривался 06.09.2026 и **отклонён**. Разб
 
 Вместо `N` — номера колонок таблицы (с единицы): что отложено, почему, когда вернуться. Строка
 `Пересмотрено` позволяет скрипту сказать, сколько реестр не пересматривали. Сейчас якоря стоят
-в `docs/scene-architecture.md` §12, `docs/asset-organization-and-naming.md` §12
+в `docs/scene-architecture.md` §12, `docs/asset-organization.md` §10
 и `.scratch/GRILL-LEDGER-2026-08-31.md`.
 
 ## Бэклог
