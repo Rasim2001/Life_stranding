@@ -26,8 +26,6 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ALPHAPREMULTIPLY_ON
-  - _ALPHATEST_ON
-  - _MASKMAP_SEPARATE
   - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -294,7 +292,7 @@ Material:
     - _AlbedoAdjust: 0
     - _AlbedoVertexColorMode: 1
     - _AlbedoVertexColorOn: 0
-    - _AlphaClip: 1
+    - _AlphaClip: 0
     - _AlphaCutoffOn: 1
     - _AlphaCutoffValue: 0.25
     - _AlphaRoundOn: 0
@@ -303,7 +301,7 @@ Material:
     - _Anisotropy: 0.45
     - _BaseProjection: 0
     - _BaseRotation: 0
-    - _Blend: 0
+    - _Blend: 2
     - _BlendDst: 10
     - _BlendModePreserveSpecular: 1
     - _BlendSrc: 5
@@ -333,7 +331,7 @@ Material:
     - _CullingMode: 2
     - _CustomAmbientLightOn: 0
     - _CustomShadowColorOn: 0
-    - _Cutoff: 0
+    - _Cutoff: 1
     - _DepthColoringOn: 0
     - _DepthGlowColorIntensity: 25
     - _DepthGlowDist: 0.2
@@ -346,8 +344,8 @@ Material:
     - _DistortTexYSpeed: 2
     - _DitherOn: 0
     - _DitherScale: 1
-    - _DstBlend: 10
-    - _DstBlendAlpha: 10
+    - _DstBlend: 1
+    - _DstBlendAlpha: 1
     - _EmissionEnabled: 0
     - _EmissionSelfGlow: 1
     - _EnvironmentReflections: 1
@@ -420,7 +418,7 @@ Material:
     - _IntersectionGlowOn: 0
     - _LightModel: 1
     - _LightmapColorCorrection: 0
-    - _MaskMapSeparate: 1
+    - _MaskMapSeparate: 0
     - _Matcap: 0
     - _MatcapBlend: 1
     - _MatcapBlendMode: 0
@@ -433,7 +431,7 @@ Material:
     - _MaxGradientHeight: 0.75
     - _MaxInflate: 0.2
     - _MaxRim: 1
-    - _Metallic: 0.346
+    - _Metallic: 1
     - _MetallicMapOn: 0
     - _MinDistanceToFade: 0
     - _MinGradientHeight: 0
@@ -535,7 +533,7 @@ Material:
     - _ShakeBlend: 1
     - _ShakeSpeedMult: 1
     - _Shininess: 16
-    - _Smoothness: 0.567
+    - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularAtten: 1
     - _SpecularHighlights: 1
@@ -592,7 +590,7 @@ Material:
     - _ZWrite: 0
     m_Colors:
     - _AOColor: {r: 1, g: 0.5851396, b: 0, a: 0}
-    - _BaseColor: {r: 0.86274827, g: 0.90188676, b: 0.90180725, a: 0}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _CustomAmbientColor: {r: 0.65, g: 0.65, b: 0.65, a: 1}
     - _DepthGlowColor: {r: 1, g: 0.9869999, b: 0.6, a: 1}
