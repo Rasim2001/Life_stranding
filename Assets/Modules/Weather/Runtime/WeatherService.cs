@@ -29,9 +29,6 @@ namespace WeatherSystem
         private readonly ICameraProviderService _cameraProviderService;
         private readonly WeatherRig _rig;
 
-        private Material _originalSkybox;
-        private Material _skyboxInstance;
-
         private Material _originalCloudMaterial;
         private Material _cloudMaterialInstance;
 
@@ -69,17 +66,7 @@ namespace WeatherSystem
             // солнце, той же одной строкой (CozyWeather.cs:947).
             RenderSettings.sun = _rig.SunLight;
 
-            // Работаем по рантайм-копии скайбокс-материала, а не по самому ассету.
-            // RenderSettings.skybox в редакторе указывает на общий ассет, и запись в него
-            // каждый кадр помечает его грязным: авторские значения молча затираются тем,
-            // где в тот момент был паук, и в git приезжает паразитный дифф материала.
-            _originalSkybox = RenderSettings.skybox;
-
-            if (_originalSkybox != null)
-            {
-                _skyboxInstance = new Material(_originalSkybox);
-                RenderSettings.skybox = _skyboxInstance;
-            }
+            // RenderSettings.skybox — источник отражений, погода в него не пишет; небо рисуют купола.
 
             // Тот же приём для материала облачного слоя: renderer.sharedMaterial — тоже
             // общий ассет, а не рантайм-копия сама по себе.
@@ -134,13 +121,6 @@ namespace WeatherSystem
             // в рендерере глобально — без сброса следующая сцена без WeatherRig (меню,
             // загрузочный экран) получила бы туман предыдущего уровня.
             WeatherFogApplier.ResetGlobals();
-
-            if (_skyboxInstance != null)
-            {
-                RenderSettings.skybox = _originalSkybox;
-                UnityEngine.Object.Destroy(_skyboxInstance);
-                _skyboxInstance = null;
-            }
 
             if (_cloudMaterialInstance != null)
             {
@@ -284,14 +264,13 @@ namespace WeatherSystem
             Shader.SetGlobalFloat(WeatherShaderIds.TimeOfDay01Global, TimeOfDay01);
         }
 
-        // Один вызов бьёт по всем трём материалам (старый skybox + оба купола) —
+        // Один вызов бьёт по двум куполам —
         // Material.SetFloat/SetColor на свойстве, которого нет в конкретном шейдере,
         // молча ничего не делает (задокументированное поведение Unity, не ошибка).
         // Поэтому не нужно разбирать, что из ~35 свойств относится к Sky, а что к Clouds:
         // каждый материал сам берёт то, что у него объявлено в CBUFFER, и игнорирует остальное.
         private void ApplySky(SkyState sky)
         {
-            ApplySkyToMaterial(RenderSettings.skybox, sky);
             ApplySkyToMaterial(_skyDomeMaterialInstance, sky);
             ApplySkyToMaterial(_cloudsDomeMaterialInstance, sky);
         }
