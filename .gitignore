@@ -107,17 +107,22 @@ Assets/FR2_Cache.asset.meta
 
 # Сгенерённые Unity-данные — не версионируем  Если сильно нужно то передавать через ТГ
 **/LightingData.asset
+**/LightingData.asset.meta
 **/OcclusionCullingData.asset
+**/OcclusionCullingData.asset.meta
 **/NavMesh.asset
+**/NavMesh.asset.meta
 **/LightmapSnapshot.asset
-# Артефакты бейка наших сцен — не версионируем никогда (docs/scene-regulations.md §10).
-# Область сужена до Assets/Scenes: под Assets/Art лежат демо-сцены вендорских пакетов
-# со своими .exr, их версионирование не наше дело.
-Assets/Scenes/**/Lightmap-*.exr
-Assets/Scenes/**/Lightmap-*.png
-Assets/Scenes/**/ReflectionProbe-*.exr
-Assets/Scenes/**/*.Cell*.bytes
-Assets/Scenes/**/*.Cell*.bytes.meta
+**/LightmapSnapshot.asset.meta
+# Артефакты бейка во всём проекте, включая .meta — не версионируем (docs/scene-regulations.md §10).
+Lightmap-*.exr
+Lightmap-*.exr.meta
+Lightmap-*.png
+Lightmap-*.png.meta
+ReflectionProbe-*.exr
+ReflectionProbe-*.exr.meta
+*.Cell*.bytes
+*.Cell*.bytes.meta
 
 # Одноразовое разрешение на коммит бейка (docs/scene-regulations.md §10)
 /.allow-bake-commit
