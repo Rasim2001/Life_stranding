@@ -14,11 +14,7 @@ Material:
   m_ValidKeywords:
   - _ALBEDO_ADJUST
   - _MASKMAP_SEPARATE
-  - _MATERIAL_MIX
-  - _MIXPROJECTION1_WORLD
-  - _MIX_MAPS_1
   - _NORMALMAP
-  - _PATTERN
   m_InvalidKeywords:
   - _MIXPATTERNSPACE1_UV
   - _PROJECTIONSPACE_WORLD
@@ -415,7 +411,7 @@ Material:
     - _MatcapBlend: 1
     - _MatcapBlendMode: 0
     - _MatcapIntensity: 1
-    - _MaterialMix: 1
+    - _MaterialMix: 0
     - _MaterialMixTwo: 0
     - _MaxCameraDistance: 1000
     - _MaxDistanceToFade: 100
@@ -488,7 +484,7 @@ Material:
     - _OverlaySpace0: 0
     - _OverlayThickness0: 0
     - _Parallax: 0.005
-    - _Pattern: 1
+    - _Pattern: 0
     - _PatternBias0: 0
     - _PatternChannel0: 0
     - _PatternRotation0: 0
