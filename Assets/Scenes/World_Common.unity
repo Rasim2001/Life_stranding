@@ -20,11 +20,11 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
-  m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
-  m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
+  m_AmbientSkyColor: {r: 0.5601894, g: 0.7309775, b: 0.80777377, a: 1}
+  m_AmbientEquatorColor: {r: 0.60277194, g: 0.85490197, b: 0.9606172, a: 1}
+  m_AmbientGroundColor: {r: 0.39180174, g: 0.55568624, b: 0.62440115, a: 0.65}
   m_AmbientIntensity: 1
-  m_AmbientMode: 0
+  m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: e257210c53b46634aa4fee17e9871444, type: 2}
   m_HaloStrength: 0.5
@@ -93,7 +93,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000004, guid: 9086f2c025459b0468c027ed74cc971d, type: 2}
+  m_LightingDataAsset: {fileID: 112000004, guid: f445e703093c11140a499816e68cb159, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: c2984068ed808944a8e84f1c576fcda2, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -288,25 +288,41 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7948983444500103440, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.9330127
+      objectReference: {fileID: 0}
+    - target: {fileID: 7948983444500103440, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.06698732
+      objectReference: {fileID: 0}
+    - target: {fileID: 7948983444500103440, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.25000012
+      objectReference: {fileID: 0}
+    - target: {fileID: 7948983444500103440, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.25000003
+      objectReference: {fileID: 0}
     - target: {fileID: 9064363662116806332, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
       propertyPath: m_Lightmapping
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9064363662116806332, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
       propertyPath: m_BoundingSphereOverride.w
-      value: 1.6530639e-38
+      value: 2.2e-44
       objectReference: {fileID: 0}
     - target: {fileID: 9064363662116806332, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
       propertyPath: m_BoundingSphereOverride.x
-      value: 1.616329e-38
+      value: 1.83716e-40
       objectReference: {fileID: 0}
     - target: {fileID: 9064363662116806332, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
       propertyPath: m_BoundingSphereOverride.y
-      value: 1.6346966e-38
+      value: 9.1835e-41
       objectReference: {fileID: 0}
     - target: {fileID: 9064363662116806332, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
       propertyPath: m_BoundingSphereOverride.z
-      value: 1.653064e-38
+      value: 2.4405384e-30
       objectReference: {fileID: 0}
     - target: {fileID: 9180306622396424289, guid: 13a405111459a84488a68ce8f9f5eb4c, type: 3}
       propertyPath: _startingTimeOfDay01
