@@ -63,6 +63,17 @@
 `shader-graph-create-custom-node`, `optimize-audio`, `audio-setup-mixers`,
 `optimize-text-mesh-pro`, `ui-ugui`, `unity-cli`, `unity-package-management`.
 
+## Зеркало для Codex
+
+Codex читает скилы из `.agents/skills/`. Скилы пайплайна (`grill-me`, `to-spec`, `to-tickets`,
+`spec-review`, `to-docs`, `handoff`) там переписаны вручную под Codex. Рабочие скилы — проектные
+четыре и включённые `unity-*` из таблицы выше — **зеркалятся без правок** скриптом
+`.agents/sync-skills.ps1` (03.10.2026, причина — план и код по тикетам ушли в Codex).
+
+- Источник — `.claude/skills/`. Зеркало руками не правится; после правки оригинала — перезапуск скрипта.
+- Скил включили или выключили здесь — поправить список `$MirrorList` в скрипте.
+- Скрипт добавляет к копии `agents/openai.yaml` с `allow_implicit_invocation: true`.
+
 ## В архиве
 
 Выключены через `skillOverrides`. Причина — в колонке справа.
