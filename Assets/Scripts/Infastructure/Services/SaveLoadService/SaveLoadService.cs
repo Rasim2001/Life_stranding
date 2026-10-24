@@ -22,12 +22,28 @@ namespace Infastructure.Services.SaveLoadService
             _progressWatchersService = progressWatchersService;
         }
 
+        public static string SerializeProgress(PlayerProgress progress)
+        {
+            progress.Version = PlayerProgress.CurrentVersion;
+            return JsonUtility.ToJson(progress, prettyPrint: true);
+        }
+
+        public static PlayerProgress DeserializeProgress(string json)
+        {
+            PlayerProgress progress = JsonUtility.FromJson<PlayerProgress>(json) ?? new PlayerProgress();
+            if (progress.Version != PlayerProgress.CurrentVersion)
+                Debug.LogWarning(
+                    $"[SaveLoadService] Версия сейва {progress.Version} отличается от текущей версии {PlayerProgress.CurrentVersion}.");
+
+            return progress;
+        }
+
         public void SaveProgress()
         {
             foreach (ISavedProgress writer in _progressWatchersService.ProgressWriters)
                 writer.UpdateProgress(_progressService.PlayerProgress);
 
-            string json = JsonUtility.ToJson(_progressService.PlayerProgress, prettyPrint: true);
+            string json = SerializeProgress(_progressService.PlayerProgress);
             File.WriteAllText(SavePath, json);
         }
 
@@ -52,7 +68,7 @@ namespace Infastructure.Services.SaveLoadService
             if (string.IsNullOrEmpty(json))
                 return new PlayerProgress();
 
-            return JsonUtility.FromJson<PlayerProgress>(json) ?? new PlayerProgress();
+            return DeserializeProgress(json);
         }
 
         public bool HasProgress() =>
