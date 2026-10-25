@@ -81,8 +81,7 @@ namespace SpiderController.StateMachine.States.Ground
                 StateMachine.SwitchState<FallingWithControlState>();
 
 
-            if (InputService.JumpPressed && Data.CurrentEnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling &&
-                AbilityService.IsExploredAbility(ProductType.JumpSkillProduct))
+            if (InputService.JumpPressed && Data.CurrentEnergyFillAmount > 0 && !Data.IsStandingUpAfterFalling)
             {
                 StateMachine.SwitchState<JumpingState>();
             }

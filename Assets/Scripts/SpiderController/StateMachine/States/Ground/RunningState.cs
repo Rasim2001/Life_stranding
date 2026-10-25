@@ -54,7 +54,7 @@ namespace SpiderController.StateMachine.States.Ground
                 StateMachine.SwitchState<SlowdownState>();
             else if (IsInputZero())
                 StateMachine.SwitchState<IdlingState>();
-            else if (IsFastRunPressed() && AbilityService.IsExploredAbility(ProductType.FastRunSkillProduct))
+            else if (IsFastRunPressed())
                 StateMachine.SwitchState<FastRunningState>();
         }
     }
